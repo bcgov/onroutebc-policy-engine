@@ -25,6 +25,7 @@ jobs:
           eslint_d: true # Optional: Use ESLint in daemon mode
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.cjs
 
   commit-check:
     runs-on: ubuntu-latest
