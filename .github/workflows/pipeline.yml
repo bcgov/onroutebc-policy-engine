@@ -18,16 +18,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - name: Lint code
+        uses: github/super-linter@latest
         with:
-          node-version: '16' # Specify your Node.js version here
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run linting
-        run: npm run lint # Ensure you have a lint script in your package.json
+          languages: "javascript"
+          eslint_d: true # Optional: Use ESLint in daemon mode
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   commit-check:
     runs-on: ubuntu-latest
