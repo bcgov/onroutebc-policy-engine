@@ -25,7 +25,6 @@ jobs:
           eslint_d: true # Optional: Use ESLint in daemon mode
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_WORKSPACE: onroutebc
 
   commit-check:
     runs-on: ubuntu-latest
