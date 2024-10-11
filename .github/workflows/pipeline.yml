@@ -2,19 +2,32 @@
 name: CI/CD for Node.js Package
 
 on:
+  pull_request: # Triggers on all pull requests
   push:
     branches:
       - main  # Triggers on pushes to the main branch
   release:
     types: [created]  # Triggers on release creation
-  pull_request:
-    branches:
-      - main  # Triggers on pull requests targeting the main branch
 
 jobs:
+  vars:
+    name: Set Variables
+    runs-on: ubuntu-22.04
+    outputs:
+      ref: ${{ steps.commit_ref.outputs.commit_ref }}
+    steps:
+      - name: Commit Refrence
+        id: commit_ref
+        run: | 
+          if [["${{ github.event_name}}" == "pull_request"]]; then
+            echo "commit_ref=${{ github.event.pull_request.base.ref }} >> $GITHUB_OUTPUT"
+          else
+            echo "commit_ref=HEAD^ >> $GITHUB_OUTPUT"
+          fi
+
   lint:
     runs-on: ubuntu-latest  # Runs on the latest version of Ubuntu
-
+    needs: [vars]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2  # Checks out the code from the repository
@@ -32,7 +45,7 @@ jobs:
 
   commit-check:
     runs-on: ubuntu-latest  # Runs on the latest version of Ubuntu
-    needs: lint  # This job depends on the successful completion of the lint job
+    needs: [vars,lint]  # This job depends on the successful completion of the lint job
 
     steps:
       - name: Checkout code
@@ -40,10 +53,10 @@ jobs:
 
       - name: Check commit messages
         run: |
-          git fetch origin ${{ github.event.pull_request.base.ref }}
-          git log --no-merges origin/${{ github.event.pull_request.base.ref }}..HEAD --pretty=format:%s | grep -qE "^(feat|fix|chore|docs|style|refactor|perf|test|build|ci|revert|WIP|BREAKING CHANGE): " || {
+          git fetch origin ${{ needs.vars.outputs.commit_ref }}
+          git log origin/${{ needs.vars.outputs.commit_ref }}..HEAD --pretty=format:%s | grep -qE "^(feat|fix|chore|docs|style|refactor|perf|test|build|ci|revert|WIP|BREAKING CHANGE): " || {
             echo "Aborting: Commit message does not follow conventional commits format.";
-            echo "Message: $(git log --no-merges origin/${{ github.event.pull_request.base.ref }}..HEAD --pretty=format:%s)";
+            echo "Message: $(git log origin/${{ needs.vars.outputs.commit_ref }}..HEAD --pretty=format:%s)";
             exit 1
           }
 
