@@ -41,9 +41,9 @@ jobs:
       - name: Check commit messages
         run: |
           git fetch origin ${{ github.event.pull_request.base.ref }}
-          git log --no-merges origin/main..HEAD --pretty=format:%s | grep -qE "^(feat|fix|chore|docs|style|refactor|perf|test|build|ci|revert|WIP|BREAKING CHANGE): " || {
+          git log --no-merges origin/${{ github.event.pull_request.base.ref }}..HEAD --pretty=format:%s | grep -qE "^(feat|fix|chore|docs|style|refactor|perf|test|build|ci|revert|WIP|BREAKING CHANGE): " || {
             echo "Aborting: Commit message does not follow conventional commits format.";
-            echo "Message: $(git log origin/main..HEAD --pretty=format:%s)";
+            echo "Message: $(git log --no-merges origin/${{ github.event.pull_request.base.ref }}..HEAD --pretty=format:%s)";
             exit 1
           }
 
