@@ -14,7 +14,7 @@ jobs:
     name: Set Variables
     runs-on: ubuntu-22.04
     outputs:
-      ref: ${{ steps.commit_ref.outputs.commit_ref }}
+      commit_ref: ${{ steps.commit_ref.outputs.commit_ref }}
     steps:
       - name: Commit Refrence
         id: commit_ref
