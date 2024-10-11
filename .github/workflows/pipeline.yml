@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      
+      - run: ls -a
 
       - name: Lint code
         uses: github/super-linter@latest
@@ -25,6 +27,7 @@ jobs:
           eslint_d: true # Optional: Use ESLint in daemon mode
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TYPESCRIPT_STANDARD_TSCONFIG_FILE: onroutebc/tsconfig.json  
 
   commit-check:
     runs-on: ubuntu-latest
