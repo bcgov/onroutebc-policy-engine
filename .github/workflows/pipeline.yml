@@ -68,18 +68,4 @@ jobs:
             echo "Message: $(git log origin/${{ needs.vars.outputs.commit_ref }}..HEAD --pretty=format:%s)";
             exit 1
           }
-  versioning:
-    runs-on: ubuntu-latest  # Runs on the latest version of Ubuntu
-    needs: commit-check  # This job depends on the successful completion of the commit-check job
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4  # Checks out the code
-        with:
-          fetch-depth: 0
-      
-      - name: Conventional Changelog Action
-        uses: TriPSs/conventional-changelog-action@v5
-        with:
-          github-token: ${{ secrets.github_token }}
 
