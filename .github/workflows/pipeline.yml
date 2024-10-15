@@ -68,7 +68,7 @@ jobs:
             exit 1
           }
 
-  build:
+  test:
     runs-on: ubuntu-latest  # Runs on the latest version of Ubuntu
     needs: [vars,commit-check]  # This job depends on the successful completion of the lint job
     steps:
