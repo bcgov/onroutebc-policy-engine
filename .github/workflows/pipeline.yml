@@ -68,58 +68,18 @@ jobs:
             echo "Message: $(git log origin/${{ needs.vars.outputs.commit_ref }}..HEAD --pretty=format:%s)";
             exit 1
           }
-
   versioning:
     runs-on: ubuntu-latest  # Runs on the latest version of Ubuntu
     needs: commit-check  # This job depends on the successful completion of the commit-check job
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2  # Checks out the code
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2  # Sets up the Node.js environment
+        uses: actions/checkout@v4  # Checks out the code
         with:
-          node-version: '16'  # Specify the Node.js version to use
-
-      - name: Install dependencies
-        run: npm install  # Installs project dependencies
-
-      - name: Bump version based on commits
-        run: |
-          npx standard-version --release-as patch  # Adjust to minor/major as needed
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Auth token for version bumping
-
-      - name: Commit version bump
-        run: |
-          git config --local user.name "GitHub Action"
-          git config --local user.email "action@github.com"
-          git add package.json package-lock.json
-          git commit -m "chore(release): bump version" || echo "No changes to commit"
-          git push  # Pushes the version bump to the repository
-
-  publish:
-    runs-on: ubuntu-latest  # Runs on the latest version of Ubuntu
-    needs: versioning  # This job depends on the successful completion of the versioning job
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2  # Checks out the code
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2  # Sets up the Node.js environment
+          fetch-depth: 0
+      
+      - name: Conventional Changelog Action
+        uses: TriPSs/conventional-changelog-action@v5
         with:
-          node-version: '16'  # Specify the Node.js version to use
-          registry-url: 'https://npm.pkg.github.com/'  # URL for GitHub Packages
+          github-token: ${{ secrets.github_token }}
 
-      - name: Install dependencies
-        run: npm install  # Installs project dependencies
-
-      - name: Run tests
-        run: npm test  # Runs the project tests
-
-      - name: Publish to GitHub Packages
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Auth token for publishing
-        run: npm publish --access public  # Publishes the package to GitHub Packages
