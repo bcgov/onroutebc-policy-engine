@@ -21,11 +21,12 @@ jobs:
         shell: bash
         run: | 
           if [[ "${{ github.event_name}}" == "pull_request" ]]; then
-            echo "commit_ref=${{ github.event.pull_request.base.ref }} >> $GITHUB_OUTPUT"
+            commit_ref="${{ github.event.pull_request.base.ref }}"
           else
-            echo "commit_ref=HEAD^ >> $GITHUB_OUTPUT"
+            commit_ref="HEAD^"
           fi
           echo "commit_ref: ${commit_ref}"
+          echo "${commit_ref}" >> $GITHUB_OUTPUT
 
   lint:
     runs-on: ubuntu-latest  # Runs on the latest version of Ubuntu
