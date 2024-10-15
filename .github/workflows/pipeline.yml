@@ -58,7 +58,8 @@ jobs:
         run: |
           git fetch origin ${{ needs.vars.outputs.commit_ref }}
           git log origin/${{ needs.vars.outputs.commit_ref }} --pretty=format:%s
-          git log origin/HEAD^ --pretty=format:%s
+          git log HEAD --pretty=format:%s
+          git log HEAD^ --pretty=format:%s
           git log origin/${{ needs.vars.outputs.commit_ref }}..HEAD --pretty=format:%s | grep -qE "^(feat|fix|chore|docs|style|refactor|perf|test|build|ci|revert|WIP|BREAKING CHANGE): " || {
             echo "Aborting: Commit message does not follow conventional commits format.";
             echo "Message: $(git log origin/${{ needs.vars.outputs.commit_ref }}..HEAD --pretty=format:%s)";
