@@ -53,11 +53,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4  # Checks out the code for the current pull request
+        with:
+          fetch-depth: 0
 
       - name: Check commit messages
         run: |
           set -eux
-          git fetch origin ${{ needs.vars.outputs.commit_ref }}
+          #git fetch origin ${{ needs.vars.outputs.commit_ref }}
           git log origin/${{ needs.vars.outputs.commit_ref }} --pretty=format:%s
           git log HEAD --pretty=format:%s
           git log HEAD^ --pretty=format:%s
