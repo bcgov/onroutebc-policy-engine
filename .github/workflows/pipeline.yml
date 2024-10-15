@@ -21,9 +21,9 @@ jobs:
         shell: bash
         run: | 
           if [[ "${{ github.event_name}}" == "pull_request" ]]; then
-            commit_ref="${{ github.event.pull_request.base.ref }}"
+            commit_ref=${{ github.event.pull_request.base.ref }}
           else
-            commit_ref="HEAD^"
+            commit_ref=HEAD^
           fi
           echo "commit_ref: ${commit_ref}"
           echo "${commit_ref}" >> $GITHUB_OUTPUT
