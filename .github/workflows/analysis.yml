@@ -69,6 +69,9 @@ jobs:
       - name: Install dependencies
         run: npm install  # Installs project dependencies
       
+      - name: Build Package
+        run:  npm ci
+      
       - name: Run tests
         run: npm test # Step 4: Run tests using the specified Node.js version.
 
