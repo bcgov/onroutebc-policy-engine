@@ -27,7 +27,8 @@ jobs:
           branch: main
       
       - name: Injecting Semver Into Package.json
-        run:  cat package.json | jq '. + { "version": "${{ steps.semver.outputs.next }}" }' > package.json
+        run:  |
+          cat package.json | jq '. + { "version": "${{ steps.semver.outputs.next }}" }' > package.json
 
       - name: Build Package
         run:  npm ci
