@@ -31,7 +31,8 @@ jobs:
           cat package.json | jq '. + { "version": "${{ steps.semver.outputs.next }}" }' > package.json
 
       - name: Build Package
-        run:  npm ci
+        run:  | 
+          npm ci && tsc && npm test
       
       - name: Create Release
         uses: ncipollo/release-action@v1.12.0
