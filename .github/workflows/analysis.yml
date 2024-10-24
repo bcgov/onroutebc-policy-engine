@@ -14,25 +14,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  conventional-commit-check:
-    name: conventional-commit-check
-    if: ${{ ! github.event.pull_request.draft }}
-    runs-on: ubuntu-latest  # Runs on the latest version of Ubuntu
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4  # Checks out the code for the current pull request
-        with:
-          fetch-depth: 0
+  validate:
+    name: Validate PR
+    if: (! github.event.pull_request.draft)
+    uses: bcgov/quickstart-openshift-helpers/.github/workflows/.pr-validate.yml@v0.8.1
 
-      - name: Check commit messages
-        run: |
-          set -eux
-          #git fetch origin ${{ needs.vars.outputs.commit_ref }}
-          git log origin/${{ github.event.pull_request.base.ref }}..HEAD --pretty=format:%s | grep -qE "^(feat|fix|chore|docs|style|refactor|perf|test|build|ci|revert|WIP|BREAKING CHANGE): " || {
-            echo "Aborting: Commit message does not follow conventional commits format.";
-            echo "Message: $(git log origin/${{ github.event.pull_request.base.ref }}..HEAD --pretty=format:%s)";
-            exit 1
-          }
   lint:
     name: lint
     if: ${{ ! github.event.pull_request.draft }}
