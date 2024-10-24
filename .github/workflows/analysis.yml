@@ -86,7 +86,7 @@ jobs:
 
   results:
     name: Analysis Results
-    needs: [conventional-commit-check, lint ,tests, trivy]
+    needs: [validate, lint ,tests, trivy]
     if: always()
     runs-on: ubuntu-22.04
     steps:
