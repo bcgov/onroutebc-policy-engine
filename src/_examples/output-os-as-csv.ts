@@ -6,12 +6,24 @@ import { toCsv } from '@iwsio/json-csv-core';
 // json-csv-core options object
 const options = {
   fields: [
-    { name: 'noSelfIssue', label: 'No Self Issue', transform: (v: boolean) => v ? 'X' : '' },
+    {
+      name: 'noSelfIssue',
+      label: 'No Self Issue',
+      transform: (v: boolean) => (v ? 'X' : ''),
+    },
     { name: 'commodity', label: 'Commodity' },
     { name: 'powerUnit', label: 'Power Unit' },
     { name: 'trailer', label: 'Trailer' },
-    { name: 'jeep', label: 'Allow Jeep', transform: (v: boolean) => v ? 'X' : '' },
-    { name: 'booster', label: 'Allow Booster', transform: (v: boolean) => v ? 'X' : '' },
+    {
+      name: 'jeep',
+      label: 'Allow Jeep',
+      transform: (v: boolean) => (v ? 'X' : ''),
+    },
+    {
+      name: 'booster',
+      label: 'Allow Booster',
+      transform: (v: boolean) => (v ? 'X' : ''),
+    },
     { name: 'lmn.width', label: 'LMN - Width' },
     { name: 'lmn.height', label: 'LMN - Height' },
     { name: 'lmn.length', label: 'LMN - Length' },
@@ -36,9 +48,7 @@ const options = {
  * @param pol Policy with the size dimension set to convert
  * @returns CSV string matching input size dimension set format
  */
-function sizeDimensionSestToCsv(
-  pol: Policy,
-): string | null {
+function sizeDimensionSestToCsv(pol: Policy): string | null {
   const sizeDimensionSet: Array<any> = [];
 
   pol.policyDefinition.commodities.forEach((commodity) => {
@@ -59,10 +69,10 @@ function sizeDimensionSestToCsv(
             },
             fp: dim.fp,
             rp: dim.rp,
-          }
+          };
         }
 
-        let dimensionSetEntry = {
+        const dimensionSetEntry = {
           noSelfIssue: !trailer.selfIssue,
           commodity: commodityName,
           powerUnit: powerUnitName,
@@ -104,7 +114,7 @@ function getDimensionsForRegion(trailer: TrailerSize, dimRegion: string): any {
           width: region.w ?? dim.w,
           height: region.h ?? dim.h,
           length: region.l ?? dim.l,
-        }
+        };
       }
     }
 
@@ -113,7 +123,7 @@ function getDimensionsForRegion(trailer: TrailerSize, dimRegion: string): any {
       width: dim.w,
       height: dim.h,
       length: dim.l,
-    }
+    };
   }
 
   // No dimensions in the input, return nothing

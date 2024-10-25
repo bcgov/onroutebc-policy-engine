@@ -101,11 +101,16 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
     );
     // Add two jeeps to the configuration list
     // Note that this configuration allows jeeps.
-    permit.permitData.vehicleConfiguration.trailers.splice(1, 0, {
-      vehicleSubType: 'JEEPSRG',
-    },{
-      vehicleSubType: 'JEEPSRG',
-    });
+    permit.permitData.vehicleConfiguration.trailers.splice(
+      1,
+      0,
+      {
+        vehicleSubType: 'JEEPSRG',
+      },
+      {
+        vehicleSubType: 'JEEPSRG',
+      },
+    );
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(0);
@@ -142,4 +147,3 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
     expect(validationResult.violations).toHaveLength(1);
   });
 });
-

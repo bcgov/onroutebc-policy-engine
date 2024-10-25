@@ -47,9 +47,15 @@ function csvRowToObject(
       powerUnit: puId,
       trailer: {
         type: trId,
-        jeep: row[ColumnNumbers.AllowJeep] == 'X' || row[ColumnNumbers.AllowJeep] == 'x',
-        booster: row[ColumnNumbers.AllowBooster] == 'X' || row[ColumnNumbers.AllowBooster] == 'x',
-        selfIssue: row[ColumnNumbers.NoSelfIssue] != 'X' && row[ColumnNumbers.NoSelfIssue] != 'x',
+        jeep:
+          row[ColumnNumbers.AllowJeep] == 'X' ||
+          row[ColumnNumbers.AllowJeep] == 'x',
+        booster:
+          row[ColumnNumbers.AllowBooster] == 'X' ||
+          row[ColumnNumbers.AllowBooster] == 'x',
+        selfIssue:
+          row[ColumnNumbers.NoSelfIssue] != 'X' &&
+          row[ColumnNumbers.NoSelfIssue] != 'x',
       },
     };
 

@@ -3,7 +3,6 @@ import { trosOnly } from '../policy-config/tros-only.sample';
 import { trosNoAllowedVehicles } from '../policy-config/tros-no-allowed-vehicles.sample';
 import { completePolicyConfig } from '../policy-config/complete-in-progress.sample';
 import { trosNoParamsSample } from '../policy-config/tros-no-params.sample';
-import { testStos } from '../permit-app/test-stos';
 import { validTros30Day } from '../permit-app/valid-tros-30day';
 import { validTrow120Day } from '../permit-app/valid-trow-120day';
 import { allEventTypes } from '../policy-config/all-event-types.sample';
