@@ -28,7 +28,7 @@ jobs:
       
       - name: Injecting Semver Into Package.json
         run:  |
-          cat package.json | jq '. + { "version": "${{ steps.semver.outputs.next }}" }' > package.json
+          cat package.json | jq '. + { "version": "${{ steps.semver.outputs.next }}" }' | tee package.json
 
       - run: ls
       - run: cat package.json 
