@@ -30,6 +30,8 @@ jobs:
         run:  |
           cat package.json | jq '. + { "version": "${{ steps.semver.outputs.next }}" }' > package.json
 
+      - run: ls
+      - run: cat package.json 
       - run: npm ci 
       - run: tsc
       - run: npm test
