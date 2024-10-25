@@ -19,11 +19,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bcgov/onroutebc.git"
+    "url": "git+https://github.com/bcgov/onroutebc-policy-engine.git"
   },
   "author": "John Fletcher",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/bcgov/onroutebc#readme",
+  "homepage": "https://github.com/bcgov/onroutebc-policy-engine#readme",
   "devDependencies": {
     "@iwsio/json-csv-core": "^1.1.7",
     "@types/jest": "^29.5.12",
