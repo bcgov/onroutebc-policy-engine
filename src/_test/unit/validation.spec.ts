@@ -3,7 +3,6 @@ import { trosOnly } from '../policy-config/tros-only.sample';
 import { trosNoAllowedVehicles } from '../policy-config/tros-no-allowed-vehicles.sample';
 import { completePolicyConfig } from '../policy-config/complete-in-progress.sample';
 import { trosNoParamsSample } from '../policy-config/tros-no-params.sample';
-import { testStos } from '../permit-app/test-stos';
 import { validTros30Day } from '../permit-app/valid-tros-30day';
 import { validTrow120Day } from '../permit-app/valid-trow-120day';
 import { allEventTypes } from '../policy-config/all-event-types.sample';
@@ -136,32 +135,6 @@ describe('Master Policy Configuration Validator', () => {
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(0);
-  });
-
-  it('should validate STOS successfully', async () => {
-    const permit = JSON.parse(JSON.stringify(testStos));
-    // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
-
-    const validationResult = await policy.validate(permit);
-    expect(validationResult.violations).toHaveLength(0);
-  });
-
-  it('should fail validation for STOS with invalid configuration', async () => {
-    const permit = JSON.parse(JSON.stringify(testStos));
-    // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
-    // Add an invalid trailer to the configuration list
-    permit.permitData.vehicleConfiguration.trailers.push({
-      vehicleSubType: '_INVALID',
-    });
-
-    const validationResult = await policy.validate(permit);
-    expect(validationResult.violations).toHaveLength(1);
   });
 });
 

@@ -714,27 +714,6 @@ export const completePolicyConfig: PolicyDefinition = {
       weightDimensionRequired: false,
       sizeDimensionRequired: true,
       commodityRequired: true,
-      allowedCommodities: ['EMPTYXX', 'BRGBEAM', 'AUTOCRR', 'BRSHCUT'],
-      allowedVehicles: [
-        'DOLLIES',
-        'FEBGHSE',
-        'FECVYER',
-        'FEDRMMX',
-        'FEPNYTR',
-        'FESEMTR',
-        'FEWHELR',
-        'REDIMIX',
-        'CONCRET',
-        'CRAFTAT',
-        'CRAFTMB',
-        'GRADERS',
-        'MUNFITR',
-        'OGOILSW',
-        'OGSERVC',
-        'OGSRRAH',
-        'PICKRTT',
-        'TOWVEHC',
-      ],
       rules: [
         {
           conditions: {
@@ -781,6 +760,24 @@ export const completePolicyConfig: PolicyDefinition = {
                 'Vehicle configuration is not permittable for this commodity',
               code: 'field-validation-error',
               fieldReference: 'permitData.vehicleConfiguration.trailers',
+            },
+          },
+        },
+        {
+          conditions: {
+            not: {
+              fact: 'permitData',
+              operator: 'stringMinimumLength',
+              value: 1,
+              path: '$.permittedCommodity.loadDescription',
+            },
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'Commodity load description is required',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.permittedCommodity.loadDescription',
             },
           },
         },
@@ -1235,6 +1232,8 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 3,
                     rp: 6.5,
+                    w: 2.6,
+                    h: 4.15,
                     l: 15.5,
                   },
                 ],
@@ -1333,7 +1332,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
+                    w: 2.6,
                     h: 4.42,
+                    l: 12.5,
                     regions: [
                       {
                         region: 'LMN',
@@ -1363,6 +1366,7 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
                     rp: 4,
                     w: 3.2,
                     h: 4.3,
@@ -1377,6 +1381,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: false,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
                     w: 3.5,
                     h: 4.4,
                     l: 12.5,
@@ -1407,7 +1413,15 @@ export const completePolicyConfig: PolicyDefinition = {
                 jeep: false,
                 booster: false,
                 selfIssue: false,
-                sizeDimensions: [{}],
+                sizeDimensions: [
+                  {
+                    fp: 1,
+                    rp: 1,
+                    w: 2.6,
+                    h: 4.15,
+                    l: 20,
+                  },
+                ],
               },
             ],
           },
@@ -1424,6 +1438,8 @@ export const completePolicyConfig: PolicyDefinition = {
                     fp: 3,
                     rp: 6.5,
                     w: 4.4,
+                    h: 4.15,
+                    l: 23,
                   },
                 ],
               },
@@ -1439,6 +1455,10 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: false,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
+                    w: 2.6,
+                    h: 4.15,
                     l: 32,
                     regions: [
                       {
@@ -1461,6 +1481,10 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
+                    w: 2.6,
+                    h: 4.15,
                     l: 41,
                   },
                 ],
@@ -1477,6 +1501,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: false,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
                     w: 2.6,
                     h: 4.15,
                     l: 23,
@@ -1496,6 +1522,7 @@ export const completePolicyConfig: PolicyDefinition = {
                 sizeDimensions: [
                   {
                     fp: 3,
+                    rp: 1,
                     w: 2.6,
                     h: 4.15,
                     l: 16,
@@ -1524,6 +1551,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.88,
                     l: 40,
@@ -1543,6 +1572,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.88,
                     l: 36,
@@ -1567,6 +1598,10 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
+                    w: 2.6,
+                    h: 4.15,
                     l: 12.5,
                   },
                 ],
@@ -1667,6 +1702,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.88,
                     l: 31,
@@ -1686,7 +1723,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: false,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
                     w: 3.65,
+                    h: 4.15,
+                    l: 23,
                   },
                 ],
               },
@@ -1699,6 +1740,9 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 3,
                     rp: 6.5,
+                    w: 2.6,
+                    h: 4.15,
+                    l: 23,
                   },
                 ],
               },
@@ -1711,9 +1755,18 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 3,
                     rp: 6.5,
+                    w: 2.6,
                     h: 4.3,
                     l: 31,
                     regions: [
+                      {
+                        region: 'LMN',
+                        l: 23,
+                      },
+                      {
+                        region: 'KTN',
+                        l: 23,
+                      },
                       {
                         region: 'PCE',
                         h: 5.33,
@@ -1729,7 +1782,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
+                    w: 2.6,
                     h: 4.3,
+                    l: 23,
                   },
                 ],
               },
@@ -1738,7 +1795,15 @@ export const completePolicyConfig: PolicyDefinition = {
                 jeep: false,
                 booster: false,
                 selfIssue: true,
-                sizeDimensions: [{}],
+                sizeDimensions: [
+                  {
+                    fp: 5,
+                    rp: 2.25,
+                    w: 2.6,
+                    h: 4.15,
+                    l: 20,
+                  },
+                ],
               },
               {
                 type: 'STSDBDK',
@@ -1768,6 +1833,9 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
+                    w: 2.6,
                     h: 4.15,
                     l: 40,
                   },
@@ -1780,6 +1848,10 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
+                    w: 2.6,
+                    h: 4.15,
                     l: 36,
                   },
                 ],
@@ -1811,6 +1883,7 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
                     rp: 4,
                     w: 3.2,
                     h: 4.3,
@@ -1825,9 +1898,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
                     rp: 6.5,
                     w: 3.8,
                     h: 4.3,
+                    l: 23,
                     regions: [
                       {
                         region: 'PCE',
@@ -1846,6 +1921,7 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 1,
                     rp: 6.9,
+                    w: 5,
                     h: 4.88,
                     l: 31.5,
                     regions: [
@@ -1867,11 +1943,13 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 1,
                     rp: 6.9,
+                    w: 6,
                     h: 4.88,
                     l: 31.5,
                     regions: [
                       {
                         region: 'PCE',
+                        w: 6.1,
                         h: 5.33,
                         l: 36,
                       },
@@ -1907,7 +1985,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
                     w: 3.65,
+                    h: 4.15,
+                    l: 23,
                   },
                 ],
               },
@@ -1939,9 +2021,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
                     rp: 6.5,
                     w: 3.2,
                     h: 4.3,
+                    l: 23,
                     regions: [
                       {
                         region: 'PCE',
@@ -1963,7 +2047,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
                     w: 3.2,
+                    h: 4.15,
+                    l: 12.5,
                   },
                 ],
               },
@@ -1987,7 +2075,10 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
                     rp: 5,
+                    w: 2.6,
+                    h: 4.15,
                     l: 13.5,
                   },
                 ],
@@ -2012,7 +2103,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 0,
+                    rp: 0,
                     w: 4.4,
+                    h: 4.15,
+                    l: 12.5,
                   },
                 ],
               },
@@ -2036,8 +2131,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
                     rp: 5,
+                    w: 2.6,
                     h: 4.15,
+                    l: 23,
                   },
                 ],
               },
@@ -2061,6 +2159,9 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
+                    w: 2.6,
                     h: 4.4,
                     l: 26,
                   },
@@ -2073,6 +2174,9 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
+                    w: 2.6,
                     h: 4.4,
                     l: 27.5,
                   },
@@ -2085,7 +2189,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
+                    w: 2.6,
                     h: 4.4,
+                    l: 23,
                   },
                 ],
               },
@@ -2101,7 +2209,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
+                    w: 2.6,
                     h: 4.4,
+                    l: 12.5,
                   },
                 ],
               },
@@ -2125,8 +2237,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
                     w: 4.4,
                     h: 4.72,
+                    l: 23,
                   },
                 ],
               },
@@ -2153,6 +2268,7 @@ export const completePolicyConfig: PolicyDefinition = {
                     fp: 3,
                     rp: 6.5,
                     w: 2.9,
+                    h: 4.15,
                     l: 27.5,
                   },
                 ],
@@ -2167,6 +2283,7 @@ export const completePolicyConfig: PolicyDefinition = {
                     fp: 3,
                     rp: 5,
                     w: 2.6,
+                    h: 4.15,
                     l: 25,
                   },
                 ],
@@ -2181,6 +2298,7 @@ export const completePolicyConfig: PolicyDefinition = {
                     fp: 3,
                     rp: 6.5,
                     w: 2.9,
+                    h: 4.15,
                     l: 27.5,
                   },
                 ],
@@ -2195,6 +2313,7 @@ export const completePolicyConfig: PolicyDefinition = {
                     fp: 3,
                     rp: 6.5,
                     w: 2.9,
+                    h: 4.15,
                     l: 26,
                   },
                 ],
@@ -2209,6 +2328,7 @@ export const completePolicyConfig: PolicyDefinition = {
                     fp: 3,
                     rp: 6.5,
                     w: 2.9,
+                    h: 4.15,
                     l: 27.5,
                   },
                 ],
@@ -2223,6 +2343,7 @@ export const completePolicyConfig: PolicyDefinition = {
                     fp: 3,
                     rp: 6.5,
                     w: 2.9,
+                    h: 4.15,
                     l: 25,
                   },
                 ],
@@ -2237,6 +2358,7 @@ export const completePolicyConfig: PolicyDefinition = {
                     fp: 3,
                     rp: 6.5,
                     w: 2.9,
+                    h: 4.15,
                     l: 25,
                   },
                 ],
@@ -2263,6 +2385,8 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 10,
                     rp: 10,
+                    w: 2.6,
+                    h: 4.15,
                     l: 40,
                   },
                 ],
@@ -2276,6 +2400,8 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 8,
                     rp: 9,
+                    w: 2.6,
+                    h: 4.15,
                     l: 40,
                   },
                 ],
@@ -2289,6 +2415,8 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 10,
                     rp: 10,
+                    w: 2.6,
+                    h: 4.15,
                     l: 40,
                   },
                 ],
@@ -2302,6 +2430,8 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 10,
                     rp: 10,
+                    w: 2.6,
+                    h: 4.15,
                     l: 36,
                   },
                 ],
@@ -2328,6 +2458,7 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 3,
                     rp: 7.5,
+                    w: 5,
                     h: 4.88,
                     l: 31.5,
                     regions: [
@@ -2349,6 +2480,7 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 3,
                     rp: 7.5,
+                    w: 5,
                     h: 4.88,
                     l: 31.5,
                     regions: [
@@ -2375,6 +2507,7 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 1,
                     rp: 6.9,
+                    w: 5,
                     h: 4.88,
                     l: 31.5,
                     regions: [
@@ -2396,6 +2529,7 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 1,
                     rp: 6.9,
+                    w: 5,
                     h: 4.57,
                     l: 31.5,
                     regions: [
@@ -2417,6 +2551,7 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 1,
                     rp: 6.9,
+                    w: 5,
                     h: 4.88,
                     l: 31.5,
                     regions: [
@@ -2451,11 +2586,13 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 3,
                     rp: 7.5,
+                    w: 6,
                     h: 4.88,
                     l: 31.5,
                     regions: [
                       {
                         region: 'PCE',
+                        w: 6.1,
                         h: 5.33,
                         l: 36,
                       },
@@ -2472,11 +2609,13 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 3,
                     rp: 7.5,
+                    w: 6,
                     h: 4.88,
                     l: 31.5,
                     regions: [
                       {
                         region: 'PCE',
+                        w: 6.1,
                         h: 5.33,
                         l: 36,
                       },
@@ -2498,11 +2637,13 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 1,
                     rp: 6.9,
+                    w: 6,
                     h: 4.88,
                     l: 31.5,
                     regions: [
                       {
                         region: 'PCE',
+                        w: 6.1,
                         h: 5.33,
                         l: 36,
                       },
@@ -2519,11 +2660,13 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 1,
                     rp: 6.9,
+                    w: 6,
                     h: 4.57,
                     l: 31.5,
                     regions: [
                       {
                         region: 'PCE',
+                        w: 6.1,
                         h: 5.33,
                         l: 36,
                       },
@@ -2540,11 +2683,13 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 1,
                     rp: 6.9,
+                    w: 6,
                     h: 4.88,
                     l: 31.5,
                     regions: [
                       {
                         region: 'PCE',
+                        w: 6.1,
                         h: 5.33,
                         l: 36,
                       },
@@ -2569,7 +2714,7 @@ export const completePolicyConfig: PolicyDefinition = {
                 type: 'DOLLIES',
                 jeep: false,
                 booster: false,
-                selfIssue: false,
+                selfIssue: true,
                 sizeDimensions: [
                   {
                     fp: 3,
@@ -2590,7 +2735,7 @@ export const completePolicyConfig: PolicyDefinition = {
                 type: 'FLOATTR',
                 jeep: false,
                 booster: false,
-                selfIssue: false,
+                selfIssue: true,
                 sizeDimensions: [
                   {
                     fp: 3,
@@ -2611,7 +2756,7 @@ export const completePolicyConfig: PolicyDefinition = {
                 type: 'PONYTRL',
                 jeep: false,
                 booster: false,
-                selfIssue: false,
+                selfIssue: true,
                 sizeDimensions: [
                   {
                     fp: 3,
@@ -2721,6 +2866,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 3.2,
                     h: 4.15,
                     l: 27.5,
@@ -2734,6 +2881,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: false,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 3.2,
                     h: 4.3,
                     l: 27.5,
@@ -2753,6 +2902,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 3.2,
                     h: 4.3,
                     l: 27.5,
@@ -2772,6 +2923,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 3.2,
                     h: 4.3,
                     l: 26,
@@ -2791,6 +2944,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 3.2,
                     h: 4.3,
                     l: 27.5,
@@ -2810,6 +2965,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 3.2,
                     h: 4.3,
                     l: 27.5,
@@ -2829,6 +2986,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 3.2,
                     h: 4.3,
                     l: 27.5,
@@ -2848,6 +3007,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 3.2,
                     h: 4.3,
                     l: 27.5,
@@ -2867,6 +3028,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 3.2,
                     h: 4.3,
                     l: 27.5,
@@ -2886,6 +3049,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: false,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 3.2,
                     h: 4.3,
                     l: 27.5,
@@ -2905,6 +3070,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: false,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 3.2,
                     h: 4.3,
                     l: 27.5,
@@ -2924,6 +3091,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 3.2,
                     h: 4.3,
                     l: 27.5,
@@ -2943,6 +3112,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: false,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 3.2,
                     h: 4.3,
                     l: 40,
@@ -2962,6 +3133,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 3.2,
                     h: 4.3,
                     l: 36,
@@ -2987,6 +3160,7 @@ export const completePolicyConfig: PolicyDefinition = {
                 sizeDimensions: [
                   {
                     fp: 3,
+                    rp: 6.5,
                     w: 3.2,
                     h: 4.3,
                     l: 27.5,
@@ -3007,6 +3181,7 @@ export const completePolicyConfig: PolicyDefinition = {
                 sizeDimensions: [
                   {
                     fp: 3,
+                    rp: 6.5,
                     w: 3.2,
                     h: 4.3,
                     l: 27.5,
@@ -3027,6 +3202,7 @@ export const completePolicyConfig: PolicyDefinition = {
                 sizeDimensions: [
                   {
                     fp: 3,
+                    rp: 6.5,
                     w: 3.2,
                     h: 4.3,
                     l: 27.5,
@@ -3047,6 +3223,7 @@ export const completePolicyConfig: PolicyDefinition = {
                 sizeDimensions: [
                   {
                     fp: 3,
+                    rp: 6.5,
                     w: 3.2,
                     h: 4.3,
                     l: 27.5,
@@ -3073,6 +3250,7 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 1,
                     rp: 1.2,
+                    w: 2.6,
                     h: 4.3,
                     l: 25,
                     regions: [
@@ -3093,6 +3271,7 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 1,
                     rp: 1.2,
+                    w: 2.6,
                     h: 4.3,
                     l: 25,
                     regions: [
@@ -3213,6 +3392,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: false,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
                     w: 3.2,
                     h: 4.3,
                     l: 25,
@@ -3247,6 +3428,7 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 3,
                     rp: 6.5,
+                    w: 2.6,
                     h: 4.3,
                     l: 27.5,
                   },
@@ -3259,6 +3441,7 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
                     rp: 5,
                     w: 3.3,
                     h: 4.3,
@@ -3293,6 +3476,7 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
                     rp: 5,
                     w: 3.2,
                     h: 4.3,
@@ -3425,9 +3609,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
                     rp: 5,
                     w: 2.9,
                     h: 4.3,
+                    l: 12.5,
                   },
                 ],
               },
@@ -3443,9 +3629,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
                     rp: 5,
                     w: 2.9,
                     h: 4.3,
+                    l: 12.5,
                   },
                 ],
               },
@@ -3469,6 +3657,9 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
+                    w: 2.6,
                     h: 4.3,
                     l: 27.5,
                   },
@@ -3494,7 +3685,9 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
                     rp: 5,
+                    w: 2.6,
                     h: 4.3,
                     l: 13.5,
                   },
@@ -3512,7 +3705,9 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
                     rp: 5,
+                    w: 2.6,
                     h: 4.3,
                     l: 13.5,
                   },
@@ -3538,6 +3733,9 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
+                    w: 2.6,
                     h: 4.45,
                     l: 27.5,
                   },
@@ -3566,6 +3764,8 @@ export const completePolicyConfig: PolicyDefinition = {
                     fp: 0,
                     rp: 0,
                     w: 3.2,
+                    h: 4.15,
+                    l: 23,
                   },
                 ],
               },
@@ -3576,15 +3776,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: false,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 3.2,
-                    h: 4.88,
+                    h: 4.15,
                     l: 27.5,
-                    regions: [
-                      {
-                        region: 'PCE',
-                        h: 5.33,
-                      },
-                    ],
                   },
                 ],
               },
@@ -3597,7 +3793,19 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 3,
                     rp: 6.5,
+                    w: 2.6,
+                    h: 4.4,
                     l: 31,
+                    regions: [
+                      {
+                        region: 'LMN',
+                        h: 4.15,
+                      },
+                      {
+                        region: 'PCE',
+                        h: 5.33,
+                      },
+                    ],
                   },
                 ],
               },
@@ -3610,7 +3818,19 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 3,
                     rp: 6.5,
+                    w: 2.6,
+                    h: 4.4,
                     l: 27.5,
+                    regions: [
+                      {
+                        region: 'LMN',
+                        h: 4.15,
+                      },
+                      {
+                        region: 'PCE',
+                        h: 5.33,
+                      },
+                    ],
                   },
                 ],
               },
@@ -3624,7 +3844,18 @@ export const completePolicyConfig: PolicyDefinition = {
                     fp: 3,
                     rp: 6.5,
                     w: 3.2,
+                    h: 4.4,
                     l: 31,
+                    regions: [
+                      {
+                        region: 'LMN',
+                        h: 4.15,
+                      },
+                      {
+                        region: 'PCE',
+                        h: 5.33,
+                      },
+                    ],
                   },
                 ],
               },
@@ -3635,10 +3866,16 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: false,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 3.2,
                     h: 4.88,
                     l: 27.5,
                     regions: [
+                      {
+                        region: 'LMN',
+                        h: 4.15,
+                      },
                       {
                         region: 'PCE',
                         h: 5.33,
@@ -3654,29 +3891,16 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: false,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 3.2,
                     h: 4.88,
                     l: 27.5,
                     regions: [
                       {
-                        region: 'PCE',
-                        h: 5.33,
+                        region: 'LMN',
+                        h: 4.15,
                       },
-                    ],
-                  },
-                ],
-              },
-              {
-                type: 'STCRANE',
-                jeep: true,
-                booster: true,
-                selfIssue: true,
-                sizeDimensions: [
-                  {
-                    w: 3.2,
-                    h: 4.88,
-                    l: 27.5,
-                    regions: [
                       {
                         region: 'PCE',
                         h: 5.33,
@@ -3700,7 +3924,7 @@ export const completePolicyConfig: PolicyDefinition = {
                     fp: 3,
                     rp: 6.5,
                     w: 3.2,
-                    h: 4.3,
+                    h: 4.15,
                     l: 23,
                   },
                 ],
@@ -3712,15 +3936,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: false,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 3.2,
-                    h: 4.88,
+                    h: 4.15,
                     l: 27.5,
-                    regions: [
-                      {
-                        region: 'PCE',
-                        h: 5.33,
-                      },
-                    ],
                   },
                 ],
               },
@@ -3733,6 +3953,8 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 3,
                     rp: 6.5,
+                    w: 2.6,
+                    h: 4.15,
                     l: 25,
                     regions: [
                       {
@@ -3750,15 +3972,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: false,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 3.2,
-                    h: 4.88,
+                    h: 4.15,
                     l: 27.5,
-                    regions: [
-                      {
-                        region: 'PCE',
-                        h: 5.33,
-                      },
-                    ],
                   },
                 ],
               },
@@ -3769,34 +3987,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: false,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 3.2,
-                    h: 4.88,
+                    h: 4.15,
                     l: 27.5,
-                    regions: [
-                      {
-                        region: 'PCE',
-                        h: 5.33,
-                      },
-                    ],
-                  },
-                ],
-              },
-              {
-                type: 'STCRANE',
-                jeep: true,
-                booster: true,
-                selfIssue: true,
-                sizeDimensions: [
-                  {
-                    w: 3.2,
-                    h: 4.88,
-                    l: 27.5,
-                    regions: [
-                      {
-                        region: 'PCE',
-                        h: 5.33,
-                      },
-                    ],
                   },
                 ],
               },
@@ -3822,6 +4017,9 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 3,
                     rp: 6.5,
+                    w: 2.6,
+                    h: 4.15,
+                    l: 23,
                   },
                 ],
               },
@@ -3834,6 +4032,9 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 3,
                     rp: 6.5,
+                    w: 2.6,
+                    h: 4.15,
+                    l: 12.5,
                   },
                 ],
               },
@@ -3846,6 +4047,9 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 3,
                     rp: 6.5,
+                    w: 2.6,
+                    h: 4.15,
+                    l: 23,
                   },
                 ],
               },
@@ -3871,6 +4075,8 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 3,
                     rp: 6.5,
+                    w: 2.6,
+                    h: 4.15,
                     l: 40,
                   },
                 ],
@@ -3884,6 +4090,8 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 3,
                     rp: 6.5,
+                    w: 2.6,
+                    h: 4.15,
                     l: 31,
                   },
                 ],
@@ -3908,6 +4116,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
                     w: 3.05,
                     h: 4.3,
                     l: 26,
@@ -3927,6 +4137,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
                     w: 3.05,
                     h: 4.3,
                     l: 27.5,
@@ -3950,6 +4162,7 @@ export const completePolicyConfig: PolicyDefinition = {
                     rp: 6.5,
                     w: 3.05,
                     h: 4.4,
+                    l: 23,
                     regions: [
                       {
                         region: 'LMN',
@@ -3978,6 +4191,7 @@ export const completePolicyConfig: PolicyDefinition = {
                     rp: 6.5,
                     w: 3.05,
                     h: 4.3,
+                    l: 23,
                     regions: [
                       {
                         region: 'PCE',
@@ -3999,9 +4213,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
                     rp: 4,
                     w: 3.05,
                     h: 4.3,
+                    l: 23,
                     regions: [
                       {
                         region: 'PCE',
@@ -4018,8 +4234,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
                     w: 3.05,
                     h: 4.3,
+                    l: 12.5,
                     regions: [
                       {
                         region: 'PCE',
@@ -4036,9 +4255,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
                     rp: 4,
                     w: 3.05,
                     h: 4.3,
+                    l: 23,
                     regions: [
                       {
                         region: 'PCE',
@@ -4068,6 +4289,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
                     w: 3.5,
                     h: 4.3,
                     l: 26,
@@ -4088,6 +4311,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
                     w: 3.5,
                     h: 4.3,
                     l: 27.5,
@@ -4112,6 +4337,7 @@ export const completePolicyConfig: PolicyDefinition = {
                     rp: 6.5,
                     w: 3.5,
                     h: 4.3,
+                    l: 23,
                     regions: [
                       {
                         region: 'PCE',
@@ -4133,6 +4359,7 @@ export const completePolicyConfig: PolicyDefinition = {
                     rp: 6.5,
                     w: 3.5,
                     h: 4.3,
+                    l: 23,
                     regions: [
                       {
                         region: 'PCE',
@@ -4155,9 +4382,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
                     rp: 4,
                     w: 3.5,
                     h: 4.3,
+                    l: 23,
                     regions: [
                       {
                         region: 'PCE',
@@ -4175,8 +4404,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
                     w: 3.5,
                     h: 4.3,
+                    l: 12.5,
                     regions: [
                       {
                         region: 'PCE',
@@ -4194,9 +4426,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
                     rp: 4,
                     w: 3.5,
                     h: 4.3,
+                    l: 23,
                     regions: [
                       {
                         region: 'PCE',
@@ -4227,6 +4461,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
                     w: 3.05,
                     h: 4.3,
                     l: 26,
@@ -4246,6 +4482,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
                     w: 3.05,
                     h: 4.3,
                     l: 27.5,
@@ -4269,6 +4507,7 @@ export const completePolicyConfig: PolicyDefinition = {
                     rp: 6.5,
                     w: 3.05,
                     h: 4.3,
+                    l: 23,
                     regions: [
                       {
                         region: 'PCE',
@@ -4289,6 +4528,7 @@ export const completePolicyConfig: PolicyDefinition = {
                     rp: 6.5,
                     w: 3.05,
                     h: 4.3,
+                    l: 23,
                     regions: [
                       {
                         region: 'PCE',
@@ -4310,9 +4550,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
                     rp: 4,
                     w: 3.05,
                     h: 4.3,
+                    l: 23,
                     regions: [
                       {
                         region: 'PCE',
@@ -4329,8 +4571,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
                     w: 3.05,
                     h: 4.3,
+                    l: 12.5,
                     regions: [
                       {
                         region: 'PCE',
@@ -4347,9 +4592,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
                     rp: 4,
                     w: 3.05,
                     h: 4.3,
+                    l: 23,
                     regions: [
                       {
                         region: 'PCE',
@@ -4381,7 +4628,30 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 3,
                     rp: 6.5,
+                    w: 2.6,
+                    h: 4.15,
                     l: 31,
+                  },
+                ],
+              },
+              {
+                type: 'SEMITRL',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    fp: 3,
+                    rp: 6.5,
+                    w: 3.2,
+                    h: 4.3,
+                    l: 31,
+                    regions: [
+                      {
+                        region: 'PCE',
+                        h: 5.33,
+                      },
+                    ],
                   },
                 ],
               },
@@ -4405,6 +4675,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: false,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 3.8,
                     h: 4.15,
                     l: 27.5,
@@ -4418,6 +4690,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: false,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.88,
                     l: 27.5,
@@ -4437,6 +4711,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.88,
                     l: 27.5,
@@ -4456,6 +4732,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.4,
                     l: 26,
@@ -4475,6 +4753,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.4,
                     l: 27.5,
@@ -4494,6 +4774,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.4,
                     l: 27.5,
@@ -4513,6 +4795,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.4,
                     l: 27.5,
@@ -4532,6 +4816,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.88,
                     l: 27.5,
@@ -4551,6 +4837,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: false,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.88,
                     l: 27.5,
@@ -4570,6 +4858,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.88,
                     l: 27.5,
@@ -4589,6 +4879,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.88,
                     l: 27.5,
@@ -4608,6 +4900,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.88,
                     l: 27.5,
@@ -4627,6 +4921,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.88,
                     l: 40,
@@ -4646,6 +4942,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.88,
                     l: 36,
@@ -4686,6 +4984,7 @@ export const completePolicyConfig: PolicyDefinition = {
                 sizeDimensions: [
                   {
                     fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.88,
                     l: 25,
@@ -4706,6 +5005,7 @@ export const completePolicyConfig: PolicyDefinition = {
                 sizeDimensions: [
                   {
                     fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.4,
                     l: 25,
@@ -4726,6 +5026,7 @@ export const completePolicyConfig: PolicyDefinition = {
                 sizeDimensions: [
                   {
                     fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.4,
                     l: 25,
@@ -4746,6 +5047,7 @@ export const completePolicyConfig: PolicyDefinition = {
                 sizeDimensions: [
                   {
                     fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.88,
                     l: 25,
@@ -4765,6 +5067,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.88,
                     l: 27.5,
@@ -4784,6 +5088,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: false,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.88,
                     l: 27.5,
@@ -4803,6 +5109,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.88,
                     l: 27.5,
@@ -4822,6 +5130,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.88,
                     l: 27.5,
@@ -4841,6 +5151,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.88,
                     l: 40,
@@ -4860,6 +5172,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 3,
+                    rp: 6.5,
                     w: 5,
                     h: 4.88,
                     l: 36,
@@ -4886,6 +5200,7 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 1,
                     rp: 1.2,
+                    w: 2.6,
                     h: 4.88,
                     l: 25,
                     regions: [
@@ -4906,6 +5221,7 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 1,
                     rp: 1.2,
+                    w: 2.6,
                     h: 4.88,
                     l: 25,
                     regions: [
@@ -5028,6 +5344,7 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 1,
                     rp: 1.2,
+                    w: 2.6,
                     h: 4.4,
                     l: 25,
                     regions: [
@@ -5067,6 +5384,8 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
                     w: 3.5,
                     h: 4.3,
                     l: 26,
@@ -5087,8 +5406,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
                     w: 3.5,
                     h: 4.3,
+                    l: 27.5,
                     regions: [
                       {
                         region: 'PCE',
@@ -5110,6 +5432,7 @@ export const completePolicyConfig: PolicyDefinition = {
                     rp: 6.5,
                     w: 3.5,
                     h: 4.3,
+                    l: 23,
                     regions: [
                       {
                         region: 'PCE',
@@ -5131,6 +5454,7 @@ export const completePolicyConfig: PolicyDefinition = {
                     rp: 6.5,
                     w: 3.5,
                     h: 4.3,
+                    l: 23,
                     regions: [
                       {
                         region: 'PCE',
@@ -5153,9 +5477,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
                     rp: 4,
                     w: 3.5,
                     h: 4.3,
+                    l: 23,
                     regions: [
                       {
                         region: 'PCE',
@@ -5173,8 +5499,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
                     w: 3.5,
                     h: 4.3,
+                    l: 12.5,
                     regions: [
                       {
                         region: 'PCE',
@@ -5192,9 +5521,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
                     rp: 4,
                     w: 3.5,
                     h: 4.3,
+                    l: 23,
                     regions: [
                       {
                         region: 'PCE',
@@ -5227,6 +5558,9 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 3,
                     rp: 6.5,
+                    w: 2.6,
+                    h: 4.15,
+                    l: 23,
                     regions: [
                       {
                         region: 'PCE',
@@ -5246,6 +5580,9 @@ export const completePolicyConfig: PolicyDefinition = {
                   {
                     fp: 3,
                     rp: 6.5,
+                    w: 2.6,
+                    h: 4.15,
+                    l: 23,
                     regions: [
                       {
                         region: 'PCE',
@@ -5268,6 +5605,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
+                    w: 2.6,
+                    h: 4.15,
+                    l: 12.5,
                     regions: [
                       {
                         region: 'PCE',
@@ -5285,6 +5627,11 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
+                    rp: 1,
+                    w: 2.6,
+                    h: 4.15,
+                    l: 23,
                     regions: [
                       {
                         region: 'PCE',
@@ -5319,7 +5666,6 @@ export const completePolicyConfig: PolicyDefinition = {
                     rp: 9.5,
                     w: 3.8,
                     h: 4.72,
-                    l: 31,
                     regions: [
                       {
                         region: 'PCE',
@@ -5340,7 +5686,6 @@ export const completePolicyConfig: PolicyDefinition = {
                     rp: 6.5,
                     w: 3.8,
                     h: 4.72,
-                    l: 31,
                     regions: [
                       {
                         region: 'PCE',
@@ -5361,7 +5706,6 @@ export const completePolicyConfig: PolicyDefinition = {
                     rp: 6.5,
                     w: 4.26,
                     h: 4.72,
-                    l: 31,
                     regions: [
                       {
                         region: 'PCE',
@@ -5382,7 +5726,6 @@ export const completePolicyConfig: PolicyDefinition = {
                     rp: 6.5,
                     w: 3.8,
                     h: 4.72,
-                    l: 31,
                     regions: [
                       {
                         region: 'PCE',
@@ -5403,7 +5746,6 @@ export const completePolicyConfig: PolicyDefinition = {
                     rp: 6.5,
                     w: 3.8,
                     h: 4.72,
-                    l: 31,
                     regions: [
                       {
                         region: 'PCE',
@@ -5429,7 +5771,6 @@ export const completePolicyConfig: PolicyDefinition = {
                     rp: 9.5,
                     w: 3.2,
                     h: 4.3,
-                    l: 31,
                   },
                 ],
               },
@@ -5444,7 +5785,6 @@ export const completePolicyConfig: PolicyDefinition = {
                     rp: 6.5,
                     w: 3.8,
                     h: 4.72,
-                    l: 31,
                     regions: [
                       {
                         region: 'PCE',
@@ -5461,10 +5801,10 @@ export const completePolicyConfig: PolicyDefinition = {
                 selfIssue: true,
                 sizeDimensions: [
                   {
+                    fp: 1,
                     rp: 4,
                     w: 3.2,
                     h: 4.3,
-                    l: 31,
                   },
                 ],
               },
@@ -5479,7 +5819,6 @@ export const completePolicyConfig: PolicyDefinition = {
                     rp: 6.5,
                     w: 4.26,
                     h: 4.72,
-                    l: 31,
                   },
                 ],
               },
