@@ -285,6 +285,10 @@ export const completePolicyConfig: PolicyDefinition = {
       ],
     },
   ],
+  bridgeCalculationConstants: {
+    minWeight: 18000,
+    multiplier: 30,
+  },
   commonRules: [
     {
       conditions: {

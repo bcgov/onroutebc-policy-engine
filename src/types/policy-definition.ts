@@ -7,6 +7,7 @@ import {
   SizeDimension,
   VehicleCategories,
   RangeMatrix,
+  BridgeCalculationConstants,
 } from 'onroute-policy-engine/types';
 import { RuleProperties } from 'json-rules-engine';
 
@@ -21,4 +22,5 @@ export type PolicyDefinition = {
   vehicleTypes: VehicleTypes;
   commodities: Array<Commodity>;
   rangeMatrices?: Array<RangeMatrix>;
+  bridgeCalculationConstants: BridgeCalculationConstants;
 };

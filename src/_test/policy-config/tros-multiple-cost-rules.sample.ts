@@ -4,6 +4,10 @@ export const multipleCostRules: PolicyDefinition = {
   version: '2024.03.18.001',
   geographicRegions: [],
   commonRules: [],
+  bridgeCalculationConstants: {
+    minWeight: 18000,
+    multiplier: 30,
+  },
   permitTypes: [
     {
       id: 'TROS',
