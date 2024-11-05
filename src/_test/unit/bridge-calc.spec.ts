@@ -1,6 +1,6 @@
-import { Policy } from "../../policy-engine";
-import { AxleConfiguration } from "../../types";
-import { minimalPolicyDef } from "../policy-config/mimimal.sample";
+import { Policy } from '../../policy-engine';
+import { AxleConfiguration } from '../../types';
+import { minimalPolicyDef } from '../policy-config/mimimal.sample';
 
 const threeAxleConfig: Array<AxleConfiguration> = [
   {
@@ -29,24 +29,24 @@ describe('Bridge Calculation Results Validation Tests', () => {
     // three results
     expect(res.length).toBe(3);
     // all successful
-    expect(res.filter(r => r.success).length).toBe(3);
+    expect(res.filter((r) => r.success).length).toBe(3);
   });
 
   it('should return correct values in the bridge calc response', async () => {
     const res = policy.calculateBridge(threeAxleConfig);
     // three results
     expect(res.length).toBe(3);
-    const group12 = res.find(r => r.startAxleUnit == 1 && r.endAxleUnit == 2);
+    const group12 = res.find((r) => r.startAxleUnit == 1 && r.endAxleUnit == 2);
     expect(group12).not.toBeFalsy();
     expect(group12?.actualWeight).toBe(18700);
     expect(group12?.maxBridge).toBe(33300);
 
-    const group13 = res.find(r => r.startAxleUnit == 1 && r.endAxleUnit == 3);
+    const group13 = res.find((r) => r.startAxleUnit == 1 && r.endAxleUnit == 3);
     expect(group13).not.toBeFalsy();
     expect(group13?.actualWeight).toBe(40700);
     expect(group13?.maxBridge).toBe(60900);
 
-    const group23 = res.find(r => r.startAxleUnit == 2 && r.endAxleUnit == 3);
+    const group23 = res.find((r) => r.startAxleUnit == 2 && r.endAxleUnit == 3);
     expect(group23).not.toBeFalsy();
     expect(group23?.actualWeight).toBe(34000);
     expect(group23?.maxBridge).toBe(50400);
@@ -60,9 +60,9 @@ describe('Bridge Calculation Results Validation Tests', () => {
     // three results
     expect(res.length).toBe(3);
     // two successful
-    expect(res.filter(r => r.success).length).toBe(2);
+    expect(res.filter((r) => r.success).length).toBe(2);
     // one unsuccessful
-    expect(res.filter(r => !r.success).length).toBe(1);
+    expect(res.filter((r) => !r.success).length).toBe(1);
   });
 
   it('should return two unsuccessful axle group results with two axle group failures', async () => {
@@ -73,9 +73,9 @@ describe('Bridge Calculation Results Validation Tests', () => {
     // three results
     expect(res.length).toBe(3);
     // one successful
-    expect(res.filter(r => r.success).length).toBe(1);
+    expect(res.filter((r) => r.success).length).toBe(1);
     // two unsuccessful
-    expect(res.filter(r => !r.success).length).toBe(2);
+    expect(res.filter((r) => !r.success).length).toBe(2);
   });
 });
 
@@ -179,5 +179,4 @@ describe('Bridge Calculation Input Validation Error Tests', () => {
     delete conf[0].spacingToNext;
     expect(() => policy.calculateBridge(conf)).toThrow();
   });
-
 });
