@@ -16,6 +16,10 @@ export const fiveTypes: PolicyDefinition = {
       name: 'Peace',
     },
   ],
+  bridgeCalculationConstants: {
+    minWeight: 18000,
+    multiplier: 30,
+  },
   commonRules: [
     {
       conditions: {

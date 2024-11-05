@@ -3,6 +3,10 @@ import { PolicyDefinition } from '../../types/policy-definition';
 export const minimalPolicyDef: PolicyDefinition = {
   version: '2024.03.18.001',
   geographicRegions: [],
+  bridgeCalculationConstants: {
+    minWeight: 18000,
+    multiplier: 30,
+  },
   commonRules: [],
   permitTypes: [
     {

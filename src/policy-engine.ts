@@ -6,6 +6,8 @@ import {
   SizeDimension,
   RegionSizeOverride,
   TrailerSize,
+  AxleConfiguration,
+  BridgeCalculationResult,
 } from 'onroute-policy-engine/types';
 import {
   extractIdentifiedObjects,
@@ -23,6 +25,7 @@ import {
   RelativePosition,
   VehicleTypes,
 } from 'onroute-policy-engine/enum';
+import { runBridgeFormula } from './helper/bridge-calculation.helper';
 
 /** Class representing commercial vehicle policy. */
 export class Policy {
@@ -789,5 +792,25 @@ export class Policy {
     } else {
       return null;
     }
+  }
+
+  /**
+   * Convenience method of policy that delegates the bridge calculation
+   * to the helper method.
+   * @param axleConfig Vehicle dimensions and weights per axle
+   * @returns Array of BridgeCalculationResult objects, one for each
+   * axle group in the vehicle configuration
+   */
+  calculateBridge(
+    axleConfig: Array<AxleConfiguration>,
+  ): Array<BridgeCalculationResult> {
+    let bridgeResults;
+    try {
+      bridgeResults = runBridgeFormula(axleConfig, this);
+    } catch (e: any) {
+      console.log(`Error calculating bridge formula: ${e.message}`);
+      throw e;
+    }
+    return bridgeResults;
   }
 }

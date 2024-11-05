@@ -1,3 +1,6 @@
+export { AxleConfiguration } from './axle-configuration';
+export { BridgeCalculationConstants } from './bridge-calculation-constants';
+export { BridgeCalculationResult } from './bridge-calculation-result';
 export { Commodity, CommoditySize, CommodityWeight } from './commodity';
 export { CostRule } from './cost-rule';
 export { DimensionModifier } from './dimension-modifier';
