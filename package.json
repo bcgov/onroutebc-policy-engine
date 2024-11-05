@@ -19,7 +19,7 @@
         "dist/enum/index.d.ts"
       ]
     }
-  }, 
+  },
   "types": "dist/index.d.ts",
   "private": false,
   "scripts": {
