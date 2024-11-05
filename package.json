@@ -7,6 +7,19 @@
     "./types": "./dist/types/index.js",
     "./enum": "./dist/enum/index.js"
   },
+  "typesVersions": {
+    "*": {
+      ".": [
+        "dist/index.d.ts"
+      ],
+      "types": [
+        "dist/types/index.d.ts"
+      ],
+      "enum": [
+        "dist/enum/index.d.ts"
+      ]
+    }
+  },
   "types": "dist/index.d.ts",
   "private": false,
   "scripts": {
