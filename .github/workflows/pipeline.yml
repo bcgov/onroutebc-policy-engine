@@ -46,9 +46,9 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-       - name: Create Release
-         run: |
-           gh release create "${{ steps.semver.outputs.next }}" \
-           --repo="${{ github.repository }}" \
-           --title="${{ steps.semver.outputs.next }}" \
-           --generate-notes
+      - name: Create Release
+        run: |
+          gh release create "${{ steps.semver.outputs.next }}" \
+          --repo="${{ github.repository }}" \
+          --title="${{ steps.semver.outputs.next }}" \
+          --generate-notes
