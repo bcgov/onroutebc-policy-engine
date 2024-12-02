@@ -795,6 +795,371 @@ export const completePolicyConfig: PolicyDefinition = {
         },
       ],
     },
+    {
+      id: 'STFR',
+      name: 'Single Trip ICBC Basic Insurance (FR)',
+      routingRequired: false,
+      weightDimensionRequired: false,
+      sizeDimensionRequired: false,
+      commodityRequired: false,
+      allowedVehicles: [
+        'BUSCRUM',
+        'BUSTRLR',
+        'CONCRET',
+        'CRAFTAT',
+        'CRAFTMB',
+        'DDCKBUS',
+        'FARMVEH',
+        'GRADERS',
+        'LCVRMDB',
+        'LCVTPDB',
+        'LOGGING',
+        'LOGOFFH',
+        'LWBTRCT',
+        'MUNFITR',
+        'OGBEDTK',
+        'OGOILSW',
+        'OGSERVC',
+        'OGSRRAH',
+        'PICKRTT',
+        'PLOWBLD',
+        'PUTAXIS',
+        'REGTRCK',
+        'SCRAPER',
+        'SPAUTHV',
+        'STINGER',
+        'TOWVEHC',
+        'TRKTRAC',
+      ],
+      rules: [
+        {
+          conditions: {
+            any: [
+              {
+                not: {
+                  fact: 'permitData',
+                  operator: 'lessThanInclusive',
+                  value: 30,
+                  path: '$.permitDuration',
+                },
+              },
+              {
+                not: {
+                  fact: 'permitData',
+                  operator: 'greaterThan',
+                  value: 0,
+                  path: '$.permitDuration',
+                },
+              },
+            ],
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'Duration must be 30 days or less',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.permitDuration',
+            },
+          },
+        },
+        {
+          conditions: {
+            not: {
+              fact: 'permitData',
+              path: '$.vehicleDetails.licensedGVW',
+              operator: 'greaterThan',
+              value: 0,
+            },
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'Licensed GVW must be greater than zero',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.vehicleDetails.licensedGVW',
+            },
+          },
+        },
+        {
+          conditions: {
+            all: [
+              {
+                fact: 'permitData',
+                path: '$.vehicleDetails.licensedGVW',
+                operator: 'greaterThan',
+                value: 63500,
+              },
+            ],
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'Licensed GVW may not exceed 63,500 kg',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.vehicleDetails.licensedGVW',
+            },
+          },
+        },
+        {
+          conditions: {
+            all: [
+              {
+                fact: 'permitData',
+                path: '$.vehicleDetails.countryCode',
+                operator: 'equal',
+                value: 'CA',
+              },
+              {
+                fact: 'permitData',
+                path: '$.vehicleDetails.provinceCode',
+                operator: 'equal',
+                value: 'BC',
+              },
+            ],
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'BC plated vehicles do not require this permit',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.vehicleDetails.provinceCode',
+            },
+          },
+        },
+        {
+          conditions: {
+            not: {
+              fact: 'permitData',
+              path: '$.vehicleDetails.vehicleSubType',
+              operator: 'in',
+              value: {
+                fact: 'allowedVehicles',
+              },
+            },
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'Vehicle type not permittable for this permit type',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.vehicleDetails.vehicleSubType',
+            },
+          },
+        },
+        {
+          conditions: {
+            not: {
+              fact: 'permitData',
+              path: '$.thirdPartyLiability',
+              operator: 'in',
+              value: ['GENERAL_GOODS', 'DANGEROUS_GOODS'],
+            },
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'Third party liability is invalid',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.thirdPartyLiability',
+            },
+          },
+        },
+      ],
+      costRules: [
+        {
+          fact: 'fixedCost',
+          params: {
+            cost: 84,
+          },
+        },
+        {
+          fact: 'conditionalFixedCost',
+          params: {
+            cost: 5,
+            fact: 'thirdPartyLiability',
+            value: 'DANGEROUS_GOODS',
+          },
+        },
+      ],
+    },
+    {
+      id: 'QRFR',
+      name: 'Quarterly ICBC Basic Insurance (FR)',
+      routingRequired: false,
+      weightDimensionRequired: false,
+      sizeDimensionRequired: false,
+      commodityRequired: false,
+      allowedVehicles: [
+        'BUSCRUM',
+        'BUSTRLR',
+        'CONCRET',
+        'CRAFTAT',
+        'CRAFTMB',
+        'DDCKBUS',
+        'FARMVEH',
+        'GRADERS',
+        'LCVRMDB',
+        'LCVTPDB',
+        'LOGGING',
+        'LOGOFFH',
+        'LWBTRCT',
+        'MUNFITR',
+        'OGBEDTK',
+        'OGOILSW',
+        'OGSERVC',
+        'OGSRRAH',
+        'PICKRTT',
+        'PLOWBLD',
+        'PUTAXIS',
+        'REGTRCK',
+        'SCRAPER',
+        'SPAUTHV',
+        'STINGER',
+        'TOWVEHC',
+        'TRKTRAC',
+      ],
+      rules: [
+        {
+          conditions: {
+            not: {
+              fact: 'permitData',
+              path: '$.expiryDate',
+              operator: 'equal',
+              value: {
+                fact: 'endOfPermitQuarter',
+              },
+            },
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message:
+                'Permit end date must be the end of the quarter in which the permit starts',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.expiryDate',
+            },
+          },
+        },
+        {
+          conditions: {
+            not: {
+              fact: 'permitData',
+              path: '$.vehicleDetails.licensedGVW',
+              operator: 'greaterThan',
+              value: 0,
+            },
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'Licensed GVW must be greater than zero',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.vehicleDetails.licensedGVW',
+            },
+          },
+        },
+        {
+          conditions: {
+            all: [
+              {
+                fact: 'permitData',
+                path: '$.vehicleDetails.licensedGVW',
+                operator: 'greaterThan',
+                value: 63500,
+              },
+            ],
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'Licensed GVW may not exceed 63,500 kg',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.vehicleDetails.licensedGVW',
+            },
+          },
+        },
+        {
+          conditions: {
+            all: [
+              {
+                fact: 'permitData',
+                path: '$.vehicleDetails.countryCode',
+                operator: 'equal',
+                value: 'CA',
+              },
+              {
+                fact: 'permitData',
+                path: '$.vehicleDetails.provinceCode',
+                operator: 'equal',
+                value: 'BC',
+              },
+            ],
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'BC plated vehicles do not require this permit',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.vehicleDetails.provinceCode',
+            },
+          },
+        },
+        {
+          conditions: {
+            not: {
+              fact: 'permitData',
+              path: '$.vehicleDetails.vehicleSubType',
+              operator: 'in',
+              value: {
+                fact: 'allowedVehicles',
+              },
+            },
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'Vehicle type not permittable for this permit type',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.vehicleDetails.vehicleSubType',
+            },
+          },
+        },
+        {
+          conditions: {
+            not: {
+              fact: 'permitData',
+              operator: 'in',
+              value: ['GENERAL_GOODS', 'DANGEROUS_GOODS'],
+              path: '$.thirdPartyLiability',
+            },
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'Third party liability is invalid',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.thirdPartyLiability',
+            },
+          },
+        },
+      ],
+      costRules: [
+        {
+          fact: 'fixedCost',
+          params: {
+            cost: 843,
+          },
+        },
+        {
+          fact: 'conditionalFixedCost',
+          params: {
+            cost: 56,
+            fact: 'thirdPartyLiability',
+            value: 'DANGEROUS_GOODS',
+          },
+        },
+      ],
+    },
   ],
   globalWeightDefaults: {
     powerUnits: [],
