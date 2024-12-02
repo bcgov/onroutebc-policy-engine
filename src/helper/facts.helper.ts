@@ -1,7 +1,10 @@
 import dayjs from 'dayjs';
+import quarterOfYear from 'dayjs/plugin/quarterOfYear';
 import { Engine } from 'json-rules-engine';
 import { PermitAppInfo, PolicyFacts } from 'onroute-policy-engine/enum';
 import { Policy } from '../policy-engine';
+
+dayjs.extend(quarterOfYear);
 
 /**
  * Adds runtime facts for the validation. For example, adds the
@@ -28,6 +31,27 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
       const dateFrom = dayjs(startDate, PermitAppInfo.PermitDateFormat);
       const daysInPermitYear = dateFrom.add(1, 'year').diff(dateFrom, 'day');
       return daysInPermitYear;
+    },
+  );
+
+  /**
+   * Add runtime fact to get the last day of the quarter
+   * that the permit start date falls in. Returns the date
+   * formatted as a string in the standard permit date format.
+   */
+  engine.addFact(
+    PolicyFacts.EndOfPermitQuarter,
+    async function (params, almanac) {
+      const startDate: string = await almanac.factValue(
+        PermitAppInfo.PermitData,
+        {},
+        PermitAppInfo.PermitStartDate,
+      );
+
+      const dateFrom = dayjs(startDate, PermitAppInfo.PermitDateFormat);
+      const endOfQuarter = dateFrom.endOf('quarter');
+
+      return endOfQuarter.format(PermitAppInfo.PermitDateFormat);
     },
   );
 
@@ -85,6 +109,28 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
   engine.addFact(PolicyFacts.FixedCost.toString(), async function (params) {
     return params.cost;
   });
+
+  /**
+   * Add runtime fact for a conditional fixed permit cost, where the
+   * cost rule applied only when the fact and value supplied as parameters
+   * match.
+   */
+  engine.addFact(
+    PolicyFacts.ConditionalFixedCost.toString(),
+    async function (params, almanac) {
+      const conditionValue: any = await almanac.factValue(
+        PermitAppInfo.PermitData,
+        {},
+        params.fact,
+      );
+
+      if (conditionValue && conditionValue === params.value) {
+        return params.cost;
+      } else {
+        return 0;
+      }
+    },
+  );
 
   /**
    * Add runtime fact for cost per month, where month is defined by

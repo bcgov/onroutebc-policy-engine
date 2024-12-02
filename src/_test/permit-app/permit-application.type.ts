@@ -58,6 +58,7 @@ type PermitData = {
   vehicleConfiguration?: VehicleConfiguration | null;
   permittedRoute?: PermittedRoute | null;
   applicationNotes?: string | null;
+  thirdPartyLiability?: string | null;
 };
 
 type PermittedCommodity = {
