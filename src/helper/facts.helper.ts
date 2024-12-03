@@ -1,7 +1,11 @@
 import dayjs from 'dayjs';
 import quarterOfYear from 'dayjs/plugin/quarterOfYear';
 import { Engine } from 'json-rules-engine';
-import { PermitAppInfo, PolicyFacts } from 'onroute-policy-engine/enum';
+import {
+  PermitAppInfo,
+  PolicyFacts,
+  CostFacts,
+} from 'onroute-policy-engine/enum';
 import { Policy } from '../policy-engine';
 
 dayjs.extend(quarterOfYear);
@@ -106,7 +110,7 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
    * Add runtime fact for a fixed permit cost, the cost supplied
    * as a parameter.
    */
-  engine.addFact(PolicyFacts.FixedCost.toString(), async function (params) {
+  engine.addFact(CostFacts.FixedCost.toString(), async function (params) {
     return params.cost;
   });
 
@@ -116,7 +120,7 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
    * match.
    */
   engine.addFact(
-    PolicyFacts.ConditionalFixedCost.toString(),
+    CostFacts.ConditionalFixedCost.toString(),
     async function (params, almanac) {
       const conditionValue: any = await almanac.factValue(
         PermitAppInfo.PermitData,
@@ -138,7 +142,7 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
    * case of a full year in which case it is 12 months.
    */
   engine.addFact(
-    PolicyFacts.CostPerMonth.toString(),
+    CostFacts.CostPerMonth.toString(),
     async function (params, almanac) {
       const duration: number = await almanac.factValue(
         PermitAppInfo.PermitData,
@@ -161,6 +165,30 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
       }
 
       return months * params.cost;
+    },
+  );
+
+  /**
+   * Add runtime fact for cost per kilometre driven in the applicant's
+   * permitted route. Accepts an optional parameter minValue which
+   * specifies the minimum value for the permit if the kilometre cost
+   * is less than that value.
+   */
+  engine.addFact(
+    CostFacts.CostPerKilometre.toString(),
+    async function (params, almanac) {
+      const distance: number = await almanac.factValue(
+        PermitAppInfo.PermitData,
+        {},
+        PermitAppInfo.TotalDistance,
+      );
+
+      let cost = distance * params.cost;
+      if (typeof params.minValue === 'number') {
+        cost = Math.max(cost, params.minValue);
+      }
+
+      return cost;
     },
   );
 }

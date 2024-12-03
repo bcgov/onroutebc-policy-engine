@@ -1160,6 +1160,194 @@ export const completePolicyConfig: PolicyDefinition = {
         },
       ],
     },
+    {
+      id: 'MFP',
+      name: 'Motive Fuel User Permit',
+      routingRequired: true,
+      weightDimensionRequired: false,
+      sizeDimensionRequired: false,
+      commodityRequired: false,
+      allowedVehicles: [
+        'BUSCRUM',
+        'BUSTRLR',
+        'CONCRET',
+        'CRAFTAT',
+        'CRAFTMB',
+        'DDCKBUS',
+        'GRADERS',
+        'LCVRMDB',
+        'LCVTPDB',
+        'LOGGING',
+        'LOGOFFH',
+        'LWBTRCT',
+        'OGBEDTK',
+        'OGOILSW',
+        'OGSERVC',
+        'OGSRRAH',
+        'PICKRTT',
+        'PLOWBLD',
+        'REGTRCK',
+        'SCRAPER',
+        'SPAUTHV',
+        'STINGER',
+        'TOWVEHC',
+        'TRKTRAC',
+      ],
+      rules: [
+        {
+          conditions: {
+            any: [
+              {
+                not: {
+                  fact: 'permitData',
+                  operator: 'lessThanInclusive',
+                  value: 7,
+                  path: '$.permitDuration',
+                },
+              },
+              {
+                not: {
+                  fact: 'permitData',
+                  operator: 'greaterThan',
+                  value: 0,
+                  path: '$.permitDuration',
+                },
+              },
+            ],
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'Duration must be 7 days or less',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.permitDuration',
+            },
+          },
+        },
+        {
+          conditions: {
+            not: {
+              fact: 'permitData',
+              path: '$.vehicleDetails.licensedGVW',
+              operator: 'greaterThan',
+              value: 0,
+            },
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'Licensed GVW must be greater than zero',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.vehicleDetails.licensedGVW',
+            },
+          },
+        },
+        {
+          conditions: {
+            all: [
+              {
+                fact: 'permitData',
+                path: '$.vehicleDetails.licensedGVW',
+                operator: 'greaterThan',
+                value: 63500,
+              },
+            ],
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'Licensed GVW may not exceed 63,500 kg',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.vehicleDetails.licensedGVW',
+            },
+          },
+        },
+        {
+          conditions: {
+            not: {
+              fact: 'permitData',
+              path: '$.vehicleDetails.vehicleSubType',
+              operator: 'in',
+              value: {
+                fact: 'allowedVehicles',
+              },
+            },
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'Vehicle type not permittable for this permit type',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.vehicleDetails.vehicleSubType',
+            },
+          },
+        },
+        {
+          conditions: {
+            not: {
+              fact: 'permitData',
+              path: '$.permittedRoute.manualRoute.origin',
+              operator: 'stringMinimumLength',
+              value: 1,
+            },
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'Route origin is required',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.permittedRoute.manualRoute.origin',
+            },
+          },
+        },
+        {
+          conditions: {
+            not: {
+              fact: 'permitData',
+              path: '$.permittedRoute.manualRoute.destination',
+              operator: 'stringMinimumLength',
+              value: 1,
+            },
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'Route destination is required',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.permittedRoute.manualRoute.origin',
+            },
+          },
+        },
+        {
+          conditions: {
+            not: {
+              fact: 'permitData',
+              path: '$.permittedRoute.manualRoute.totalDistance',
+              operator: 'greaterThan',
+              value: 0,
+            },
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'Trip distance must be greater than zero',
+              code: 'field-validation-error',
+              fieldReference:
+                'permitData.permittedRoute.manualRoute.totalDistance',
+            },
+          },
+        },
+      ],
+      costRules: [
+        {
+          fact: 'costPerKilometre',
+          params: {
+            cost: 0.11,
+            minValue: 20,
+          },
+        },
+      ],
+    },
   ],
   globalWeightDefaults: {
     powerUnits: [],
