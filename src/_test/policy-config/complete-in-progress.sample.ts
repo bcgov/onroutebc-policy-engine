@@ -565,19 +565,19 @@ export const completePolicyConfig: PolicyDefinition = {
               {
                 not: {
                   fact: 'permitData',
+                  path: 'permitDuration',
                   operator: 'in',
                   value: [30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330],
-                  path: '$.permitDuration',
                 },
               },
               {
                 not: {
                   fact: 'permitData',
+                  path: 'permitDuration',
                   operator: 'equal',
                   value: {
                     fact: 'daysInPermitYear',
                   },
-                  path: '$.permitDuration',
                 },
               },
             ],
@@ -595,7 +595,7 @@ export const completePolicyConfig: PolicyDefinition = {
           conditions: {
             not: {
               fact: 'permitData',
-              path: '$.vehicleDetails.vehicleSubType',
+              path: 'vehicleDetails.vehicleSubType',
               operator: 'in',
               value: {
                 fact: 'allowedVehicles',
@@ -655,7 +655,7 @@ export const completePolicyConfig: PolicyDefinition = {
               {
                 not: {
                   fact: 'permitData',
-                  path: '$.permitDuration',
+                  path: 'permitDuration',
                   operator: 'in',
                   value: [30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330],
                 },
@@ -663,7 +663,7 @@ export const completePolicyConfig: PolicyDefinition = {
               {
                 not: {
                   fact: 'permitData',
-                  path: '$.permitDuration',
+                  path: 'permitDuration',
                   operator: 'equal',
                   value: {
                     fact: 'daysInPermitYear',
@@ -685,7 +685,7 @@ export const completePolicyConfig: PolicyDefinition = {
           conditions: {
             not: {
               fact: 'permitData',
-              path: '$.vehicleDetails.vehicleSubType',
+              path: 'vehicleDetails.vehicleSubType',
               operator: 'in',
               value: {
                 fact: 'allowedVehicles',
@@ -725,17 +725,17 @@ export const completePolicyConfig: PolicyDefinition = {
               {
                 not: {
                   fact: 'permitData',
+                  path: 'permitDuration',
                   operator: 'lessThanInclusive',
                   value: 7,
-                  path: '$.permitDuration',
                 },
               },
               {
                 not: {
                   fact: 'permitData',
+                  path: 'permitDuration',
                   operator: 'greaterThan',
                   value: 0,
-                  path: '$.permitDuration',
                 },
               },
             ],
@@ -771,9 +771,9 @@ export const completePolicyConfig: PolicyDefinition = {
           conditions: {
             not: {
               fact: 'permitData',
+              path: 'permittedCommodity.loadDescription',
               operator: 'stringMinimumLength',
               value: 1,
-              path: '$.permittedCommodity.loadDescription',
             },
           },
           event: {
@@ -838,17 +838,17 @@ export const completePolicyConfig: PolicyDefinition = {
               {
                 not: {
                   fact: 'permitData',
+                  path: 'permitDuration',
                   operator: 'lessThanInclusive',
                   value: 30,
-                  path: '$.permitDuration',
                 },
               },
               {
                 not: {
                   fact: 'permitData',
+                  path: 'permitDuration',
                   operator: 'greaterThan',
                   value: 0,
-                  path: '$.permitDuration',
                 },
               },
             ],
@@ -866,7 +866,7 @@ export const completePolicyConfig: PolicyDefinition = {
           conditions: {
             not: {
               fact: 'permitData',
-              path: '$.vehicleDetails.licensedGVW',
+              path: 'vehicleDetails.licensedGVW',
               operator: 'greaterThan',
               value: 0,
             },
@@ -885,7 +885,7 @@ export const completePolicyConfig: PolicyDefinition = {
             all: [
               {
                 fact: 'permitData',
-                path: '$.vehicleDetails.licensedGVW',
+                path: 'vehicleDetails.licensedGVW',
                 operator: 'greaterThan',
                 value: 63500,
               },
@@ -905,13 +905,13 @@ export const completePolicyConfig: PolicyDefinition = {
             all: [
               {
                 fact: 'permitData',
-                path: '$.vehicleDetails.countryCode',
+                path: 'vehicleDetails.countryCode',
                 operator: 'equal',
                 value: 'CA',
               },
               {
                 fact: 'permitData',
-                path: '$.vehicleDetails.provinceCode',
+                path: 'vehicleDetails.provinceCode',
                 operator: 'equal',
                 value: 'BC',
               },
@@ -930,7 +930,7 @@ export const completePolicyConfig: PolicyDefinition = {
           conditions: {
             not: {
               fact: 'permitData',
-              path: '$.vehicleDetails.vehicleSubType',
+              path: 'vehicleDetails.vehicleSubType',
               operator: 'in',
               value: {
                 fact: 'allowedVehicles',
@@ -950,7 +950,7 @@ export const completePolicyConfig: PolicyDefinition = {
           conditions: {
             not: {
               fact: 'permitData',
-              path: '$.thirdPartyLiability',
+              path: 'thirdPartyLiability',
               operator: 'in',
               value: ['GENERAL_GOODS', 'DANGEROUS_GOODS'],
             },
@@ -1023,7 +1023,7 @@ export const completePolicyConfig: PolicyDefinition = {
           conditions: {
             not: {
               fact: 'permitData',
-              path: '$.expiryDate',
+              path: 'expiryDate',
               operator: 'equal',
               value: {
                 fact: 'endOfPermitQuarter',
@@ -1044,7 +1044,7 @@ export const completePolicyConfig: PolicyDefinition = {
           conditions: {
             not: {
               fact: 'permitData',
-              path: '$.vehicleDetails.licensedGVW',
+              path: 'vehicleDetails.licensedGVW',
               operator: 'greaterThan',
               value: 0,
             },
@@ -1063,7 +1063,7 @@ export const completePolicyConfig: PolicyDefinition = {
             all: [
               {
                 fact: 'permitData',
-                path: '$.vehicleDetails.licensedGVW',
+                path: 'vehicleDetails.licensedGVW',
                 operator: 'greaterThan',
                 value: 63500,
               },
@@ -1083,13 +1083,13 @@ export const completePolicyConfig: PolicyDefinition = {
             all: [
               {
                 fact: 'permitData',
-                path: '$.vehicleDetails.countryCode',
+                path: 'vehicleDetails.countryCode',
                 operator: 'equal',
                 value: 'CA',
               },
               {
                 fact: 'permitData',
-                path: '$.vehicleDetails.provinceCode',
+                path: 'vehicleDetails.provinceCode',
                 operator: 'equal',
                 value: 'BC',
               },
@@ -1108,7 +1108,7 @@ export const completePolicyConfig: PolicyDefinition = {
           conditions: {
             not: {
               fact: 'permitData',
-              path: '$.vehicleDetails.vehicleSubType',
+              path: 'vehicleDetails.vehicleSubType',
               operator: 'in',
               value: {
                 fact: 'allowedVehicles',
@@ -1130,7 +1130,7 @@ export const completePolicyConfig: PolicyDefinition = {
               fact: 'permitData',
               operator: 'in',
               value: ['GENERAL_GOODS', 'DANGEROUS_GOODS'],
-              path: '$.thirdPartyLiability',
+              path: 'thirdPartyLiability',
             },
           },
           event: {
@@ -1200,17 +1200,17 @@ export const completePolicyConfig: PolicyDefinition = {
               {
                 not: {
                   fact: 'permitData',
+                  path: 'permitDuration',
                   operator: 'lessThanInclusive',
                   value: 7,
-                  path: '$.permitDuration',
                 },
               },
               {
                 not: {
                   fact: 'permitData',
+                  path: 'permitDuration',
                   operator: 'greaterThan',
                   value: 0,
-                  path: '$.permitDuration',
                 },
               },
             ],
@@ -1228,7 +1228,7 @@ export const completePolicyConfig: PolicyDefinition = {
           conditions: {
             not: {
               fact: 'permitData',
-              path: '$.vehicleDetails.licensedGVW',
+              path: 'vehicleDetails.licensedGVW',
               operator: 'greaterThan',
               value: 0,
             },
@@ -1247,7 +1247,7 @@ export const completePolicyConfig: PolicyDefinition = {
             all: [
               {
                 fact: 'permitData',
-                path: '$.vehicleDetails.licensedGVW',
+                path: 'vehicleDetails.licensedGVW',
                 operator: 'greaterThan',
                 value: 63500,
               },
@@ -1266,7 +1266,7 @@ export const completePolicyConfig: PolicyDefinition = {
           conditions: {
             not: {
               fact: 'permitData',
-              path: '$.vehicleDetails.vehicleSubType',
+              path: 'vehicleDetails.vehicleSubType',
               operator: 'in',
               value: {
                 fact: 'allowedVehicles',
@@ -1286,7 +1286,7 @@ export const completePolicyConfig: PolicyDefinition = {
           conditions: {
             not: {
               fact: 'permitData',
-              path: '$.permittedRoute.manualRoute.origin',
+              path: 'permittedRoute.manualRoute.origin',
               operator: 'stringMinimumLength',
               value: 1,
             },
@@ -1304,7 +1304,7 @@ export const completePolicyConfig: PolicyDefinition = {
           conditions: {
             not: {
               fact: 'permitData',
-              path: '$.permittedRoute.manualRoute.destination',
+              path: 'permittedRoute.manualRoute.destination',
               operator: 'stringMinimumLength',
               value: 1,
             },
@@ -1322,7 +1322,7 @@ export const completePolicyConfig: PolicyDefinition = {
           conditions: {
             not: {
               fact: 'permitData',
-              path: '$.permittedRoute.manualRoute.totalDistance',
+              path: 'permittedRoute.manualRoute.totalDistance',
               operator: 'greaterThan',
               value: 0,
             },
@@ -1457,13 +1457,14 @@ export const completePolicyConfig: PolicyDefinition = {
                     value: 'farm',
                   },
                 ],
-              }
+              },
             ],
           },
           event: {
             type: 'violation',
             params: {
-              message: 'Loaded GVW may not exceed 63,500 kg, or 24,400 for a farm vehicle',
+              message:
+                'Loaded GVW may not exceed 63,500 kg, or 24,400 for a farm vehicle',
               code: 'field-validation-error',
               fieldReference: 'permitData.vehicleDetails.licensedGVW',
             },
@@ -1658,13 +1659,14 @@ export const completePolicyConfig: PolicyDefinition = {
                     value: 'farm',
                   },
                 ],
-              }
+              },
             ],
           },
           event: {
             type: 'violation',
             params: {
-              message: 'Loaded GVW may not exceed 63,500 kg, or 24,400 for a farm vehicle',
+              message:
+                'Loaded GVW may not exceed 63,500 kg, or 24,400 for a farm vehicle',
               code: 'field-validation-error',
               fieldReference: 'permitData.vehicleDetails.licensedGVW',
             },

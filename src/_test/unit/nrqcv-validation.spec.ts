@@ -17,12 +17,29 @@ describe('Non-Resident Quarterly Validation Tests', () => {
     permit.permitData.startDate = dateFrom.format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
-    permit.permitData.expiryDate = dateFrom.endOf('quarter').format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    permit.permitData.expiryDate = dateFrom
+      .endOf('quarter')
+      .format(PermitAppInfo.PermitDateFormat.toString());
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(0);
+  });
+
+  it('should fail validation for NRQCV with invalid vehicle subtype', async () => {
+    const permit = JSON.parse(JSON.stringify(validNrqcv));
+    // Set startDate to today, end date to the end of the quarter
+    const dateFrom = dayjs();
+    permit.permitData.startDate = dateFrom.format(
+      PermitAppInfo.PermitDateFormat.toString(),
+    );
+    permit.permitData.expiryDate = dateFrom
+      .endOf('quarter')
+      .format(PermitAppInfo.PermitDateFormat.toString());
+
+    permit.permitData.vehicleDetails.vehicleSubType = '__INVALID';
+
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.violations).toHaveLength(1);
   });
 
   it('should fail validation for NRQCV with start date not end of quarter', async () => {
@@ -45,9 +62,9 @@ describe('Non-Resident Quarterly Validation Tests', () => {
     permit.permitData.startDate = dateFrom.format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
-    permit.permitData.expiryDate = dateFrom.endOf('quarter').format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    permit.permitData.expiryDate = dateFrom
+      .endOf('quarter')
+      .format(PermitAppInfo.PermitDateFormat.toString());
 
     // Set loadedGVW to 63501
     permit.permitData.vehicleConfiguration.loadedGVW = 63501;
@@ -63,9 +80,9 @@ describe('Non-Resident Quarterly Validation Tests', () => {
     permit.permitData.startDate = dateFrom.format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
-    permit.permitData.expiryDate = dateFrom.endOf('quarter').format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    permit.permitData.expiryDate = dateFrom
+      .endOf('quarter')
+      .format(PermitAppInfo.PermitDateFormat.toString());
 
     // Set loadedGVW to 24401
     permit.permitData.vehicleConfiguration.loadedGVW = 24401;
@@ -84,9 +101,9 @@ describe('Non-Resident Quarterly Validation Tests', () => {
     permit.permitData.startDate = dateFrom.format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
-    permit.permitData.expiryDate = dateFrom.endOf('quarter').format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    permit.permitData.expiryDate = dateFrom
+      .endOf('quarter')
+      .format(PermitAppInfo.PermitDateFormat.toString());
 
     // Set loadedGVW to 0
     permit.permitData.vehicleConfiguration.loadedGVW = 0;
@@ -102,9 +119,9 @@ describe('Non-Resident Quarterly Validation Tests', () => {
     permit.permitData.startDate = dateFrom.format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
-    permit.permitData.expiryDate = dateFrom.endOf('quarter').format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    permit.permitData.expiryDate = dateFrom
+      .endOf('quarter')
+      .format(PermitAppInfo.PermitDateFormat.toString());
 
     // Set loadedGVW to -1000
     permit.permitData.vehicleConfiguration.loadedGVW = -1000;
@@ -120,9 +137,9 @@ describe('Non-Resident Quarterly Validation Tests', () => {
     permit.permitData.startDate = dateFrom.format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
-    permit.permitData.expiryDate = dateFrom.endOf('quarter').format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    permit.permitData.expiryDate = dateFrom
+      .endOf('quarter')
+      .format(PermitAppInfo.PermitDateFormat.toString());
 
     // Set loadedGVW to 63500
     permit.permitData.vehicleConfiguration.loadedGVW = 63500;
@@ -138,9 +155,9 @@ describe('Non-Resident Quarterly Validation Tests', () => {
     permit.permitData.startDate = dateFrom.format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
-    permit.permitData.expiryDate = dateFrom.endOf('quarter').format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    permit.permitData.expiryDate = dateFrom
+      .endOf('quarter')
+      .format(PermitAppInfo.PermitDateFormat.toString());
 
     // Set loadedGVW to 1
     permit.permitData.vehicleConfiguration.loadedGVW = 1;
@@ -156,9 +173,9 @@ describe('Non-Resident Quarterly Validation Tests', () => {
     permit.permitData.startDate = dateFrom.format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
-    permit.permitData.expiryDate = dateFrom.endOf('quarter').format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    permit.permitData.expiryDate = dateFrom
+      .endOf('quarter')
+      .format(PermitAppInfo.PermitDateFormat.toString());
 
     // Set conditionalLicensingFee to none
     permit.permitData.conditionalLicensingFee = 'none';
@@ -174,9 +191,9 @@ describe('Non-Resident Quarterly Validation Tests', () => {
     permit.permitData.startDate = dateFrom.format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
-    permit.permitData.expiryDate = dateFrom.endOf('quarter').format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    permit.permitData.expiryDate = dateFrom
+      .endOf('quarter')
+      .format(PermitAppInfo.PermitDateFormat.toString());
 
     // Set conditionalLicensingFee to x-plated
     permit.permitData.conditionalLicensingFee = 'x-plated';
@@ -192,9 +209,9 @@ describe('Non-Resident Quarterly Validation Tests', () => {
     permit.permitData.startDate = dateFrom.format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
-    permit.permitData.expiryDate = dateFrom.endOf('quarter').format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    permit.permitData.expiryDate = dateFrom
+      .endOf('quarter')
+      .format(PermitAppInfo.PermitDateFormat.toString());
 
     // Set conditionalLicensingFee to farm
     permit.permitData.conditionalLicensingFee = 'farm';
@@ -210,9 +227,9 @@ describe('Non-Resident Quarterly Validation Tests', () => {
     permit.permitData.startDate = dateFrom.format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
-    permit.permitData.expiryDate = dateFrom.endOf('quarter').format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    permit.permitData.expiryDate = dateFrom
+      .endOf('quarter')
+      .format(PermitAppInfo.PermitDateFormat.toString());
 
     // Set conditionalLicensingFee to conditional
     permit.permitData.conditionalLicensingFee = 'conditional';
@@ -228,9 +245,9 @@ describe('Non-Resident Quarterly Validation Tests', () => {
     permit.permitData.startDate = dateFrom.format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
-    permit.permitData.expiryDate = dateFrom.endOf('quarter').format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    permit.permitData.expiryDate = dateFrom
+      .endOf('quarter')
+      .format(PermitAppInfo.PermitDateFormat.toString());
 
     // Set conditionalLicensingFee to __invalid
     permit.permitData.conditionalLicensingFee = '__invalid';
@@ -246,9 +263,9 @@ describe('Non-Resident Quarterly Validation Tests', () => {
     permit.permitData.startDate = dateFrom.format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
-    permit.permitData.expiryDate = dateFrom.endOf('quarter').format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    permit.permitData.expiryDate = dateFrom
+      .endOf('quarter')
+      .format(PermitAppInfo.PermitDateFormat.toString());
 
     // deletee conditionalLicensingFee
     delete permit.permitData.conditionalLicensingFee;
@@ -264,9 +281,9 @@ describe('Non-Resident Quarterly Validation Tests', () => {
     permit.permitData.startDate = dateFrom.format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
-    permit.permitData.expiryDate = dateFrom.endOf('quarter').format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    permit.permitData.expiryDate = dateFrom
+      .endOf('quarter')
+      .format(PermitAppInfo.PermitDateFormat.toString());
     // Set conditionalLicensingFee to conditional
     permit.permitData.conditionalLicensingFee = 'conditional';
 
@@ -287,9 +304,9 @@ describe('Non-Resident Quarterly Validation Tests', () => {
     permit.permitData.startDate = dateFrom.format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
-    permit.permitData.expiryDate = dateFrom.endOf('quarter').format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    permit.permitData.expiryDate = dateFrom
+      .endOf('quarter')
+      .format(PermitAppInfo.PermitDateFormat.toString());
     // Set conditionalLicensingFee to none
     permit.permitData.conditionalLicensingFee = 'none';
     // Set loadedGVW to 6000
@@ -312,9 +329,9 @@ describe('Non-Resident Quarterly Validation Tests', () => {
     permit.permitData.startDate = dateFrom.format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
-    permit.permitData.expiryDate = dateFrom.endOf('quarter').format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    permit.permitData.expiryDate = dateFrom
+      .endOf('quarter')
+      .format(PermitAppInfo.PermitDateFormat.toString());
     // Set conditionalLicensingFee to none
     permit.permitData.conditionalLicensingFee = 'none';
     // Set loadedGVW to 25000
@@ -337,9 +354,9 @@ describe('Non-Resident Quarterly Validation Tests', () => {
     permit.permitData.startDate = dateFrom.format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
-    permit.permitData.expiryDate = dateFrom.endOf('quarter').format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    permit.permitData.expiryDate = dateFrom
+      .endOf('quarter')
+      .format(PermitAppInfo.PermitDateFormat.toString());
     // Set conditionalLicensingFee to x-plated
     permit.permitData.conditionalLicensingFee = 'x-plated';
     // Set loadedGVW to 6000
@@ -362,9 +379,9 @@ describe('Non-Resident Quarterly Validation Tests', () => {
     permit.permitData.startDate = dateFrom.format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
-    permit.permitData.expiryDate = dateFrom.endOf('quarter').format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    permit.permitData.expiryDate = dateFrom
+      .endOf('quarter')
+      .format(PermitAppInfo.PermitDateFormat.toString());
     // Set conditionalLicensingFee to farm
     permit.permitData.conditionalLicensingFee = 'farm';
     // Set loadedGVW to 24400

@@ -21,6 +21,19 @@ describe('Non-Resident Single Trip Validation Tests', () => {
     expect(validationResult.violations).toHaveLength(0);
   });
 
+  it('should fail validation for NRSCV with invalid vehicle subtype', async () => {
+    const permit = JSON.parse(JSON.stringify(validNrscv));
+    // Set startDate to today
+    permit.permitData.startDate = dayjs().format(
+      PermitAppInfo.PermitDateFormat.toString(),
+    );
+
+    permit.permitData.vehicleDetails.vehicleSubType = '__INVALID';
+
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.violations).toHaveLength(1);
+  });
+
   it('should validate NRSCV successfully with 29 day duration', async () => {
     const permit = JSON.parse(JSON.stringify(validNrscv));
     // Set startDate to today
