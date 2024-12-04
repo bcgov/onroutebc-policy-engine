@@ -7,6 +7,7 @@ import {
   CostFacts,
 } from 'onroute-policy-engine/enum';
 import { Policy } from '../policy-engine';
+import { RangeMatrix } from '../types';
 
 dayjs.extend(quarterOfYear);
 
@@ -186,6 +187,87 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
       let cost = distance * params.cost;
       if (typeof params.minValue === 'number') {
         cost = Math.max(cost, params.minValue);
+      }
+
+      return cost;
+    },
+  );
+
+  /**
+   * Add runtime fact to look up the permit cost from a matrix of
+   * value ranges configured in policy json. This is most commonly
+   * used for a permit cost that is based on the vehicle weight.
+   */
+  engine.addFact(
+    CostFacts.RangeMatrixCostLookup.toString(),
+    async function (params, almanac) {
+      // Get the parameter from the permit application whose
+      // value will be used to select the correct range matrix key
+      const rangeLookupKey: any = await almanac.factValue(
+        PermitAppInfo.PermitData,
+        {},
+        params.rangeLookupKey,
+      );
+
+      // Initialize cost to zero, if we are unable to find
+      // a matching value or matrix for whatever reason, the
+      // cost will default to zero (no matrix applicable)
+      let cost = 0;
+
+      // Get the ID of the matrix to look up
+      const matrixRef = (params.matrixMap as Array<any>)?.find(
+        (r) => r.key === rangeLookupKey,
+      );
+
+      if (matrixRef) {
+        // If a matrix ID was returned, retrieve the matrix from the
+        // policy configuration that we need to use for cost lookup
+        // (for example, the 'annualFeeIndustrial' matrix)
+        const matrix: RangeMatrix | undefined =
+          policy.policyDefinition.rangeMatrices?.find(
+            (m) => m.id === matrixRef.value,
+          );
+
+        if (matrix) {
+          // if the matrix exists in policy configuration
+          // Retrieve the numeric value for the matrix lookup
+          // (for example, may be loaded GVW)
+          const matrixFactValue: number = await almanac.factValue(
+            PermitAppInfo.PermitData,
+            {},
+            params.matrixFactValue,
+          );
+
+          // Look up the correct entry in the matrix, where the lookup
+          // value falls within the min/max range
+          const matrixMatch = matrix.matrix.find((m) => {
+            let min = m.min;
+            if (typeof min !== 'number') {
+              min = Number.MIN_SAFE_INTEGER;
+            }
+            let max = m.max;
+            if (typeof max !== 'number') {
+              max = Number.MAX_SAFE_INTEGER;
+            }
+            return matrixFactValue >= min && matrixFactValue <= max;
+          });
+
+          if (matrixMatch) {
+            // If we got a hit from the matrix
+            cost = matrixMatch.value;
+
+            // If the cost rule includes a divisor, apply it here. A divisor
+            // may be used if, for example, the value from the lookup matrix
+            // is an annual fee but the permit is just a month or quarter.
+            if (typeof params.divisor === 'number' && params.divisor > 0) {
+              cost = Math.round(cost / params.divisor);
+            }
+          }
+        } else {
+          console.log(
+            `No range matrix with id ${matrixRef} found in the policy configuration`,
+          );
+        }
       }
 
       return cost;
