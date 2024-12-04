@@ -21,6 +21,19 @@ describe('Single Trip ICBC (FR) Validator', () => {
     expect(validationResult.violations).toHaveLength(0);
   });
 
+  it('should fail validation for STFR with invalid vehicle subtype', async () => {
+    const permit = JSON.parse(JSON.stringify(validStfr30Day));
+    // Set startDate to today
+    permit.permitData.startDate = dayjs().format(
+      PermitAppInfo.PermitDateFormat.toString(),
+    );
+
+    permit.permitData.vehicleDetails.vehicleSubType = '__INVALID';
+
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.violations).toHaveLength(1);
+  });
+
   it('should validate STFR successfully with 29 day duration', async () => {
     const permit = JSON.parse(JSON.stringify(validStfr30Day));
     // Set startDate to today
