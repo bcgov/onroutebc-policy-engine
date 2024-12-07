@@ -26,6 +26,10 @@ import {
   VehicleTypes,
 } from 'onroute-policy-engine/enum';
 import { runBridgeFormula } from './helper/bridge-calculation.helper';
+import { version } from './version';
+import semverValid from 'semver/functions/valid';
+import semverLt from 'semver/functions/lt';
+import semverMajor from 'semver/functions/major';
 
 /** Class representing commercial vehicle policy. */
 export class Policy {
@@ -44,6 +48,17 @@ export class Policy {
    * @param definition Policy definition to validate permits against
    */
   constructor(definition: PolicyDefinition) {
+    // Check compatibility of the policy engine with the policy config
+    if (!semverValid(version)) {
+      throw new Error(`Cannot determine the version of the policy engine for compatibility: invalid semver: ${version}`);
+    } else if (!semverValid(definition.minPEVersion)) {
+      throw new Error(`Cannot determine the minimum PE version for the configuration: invalid semver: ${definition.minPEVersion}`);
+    } else if (semverLt(version, definition.minPEVersion)) {
+      throw new Error(`Current policy engine version is less than minimum version required for policy config: ${version} > ${definition.minPEVersion}`);
+    } else if (semverMajor(version) > semverMajor(definition.minPEVersion)) {
+      throw new Error(`Current policy config minimum version is at least one major version behind policy engine: major(${definition.minPEVersion}) < major(${version}))`);
+    }
+
     this.policyDefinition = definition;
 
     this.rulesEngines = getRulesEngines(this);

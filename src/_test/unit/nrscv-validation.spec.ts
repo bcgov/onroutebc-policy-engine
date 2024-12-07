@@ -1,11 +1,11 @@
 import { Policy } from 'onroute-policy-engine';
-import { completePolicyConfig } from '../policy-config/complete-in-progress.sample';
-import { validNrscv } from '../permit-app/valid-nrscv-30day';
+import currentConfig from '../policy-config/_current-config.json';
+import validNrscv from '../permit-app/valid-nrscv-30day.json';
 import dayjs from 'dayjs';
 import { PermitAppInfo } from '../../enum/permit-app-info';
 
 describe('Non-Resident Single Trip Validation Tests', () => {
-  const policy: Policy = new Policy(completePolicyConfig);
+  const policy: Policy = new Policy(currentConfig);
 
   it('should validate NRSCV successfully', async () => {
     const permit = JSON.parse(JSON.stringify(validNrscv));

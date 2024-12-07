@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { parse } from 'csv-parse';
-import { completePolicyConfig } from '../_test/policy-config/complete-in-progress.sample';
+import completePolicyConfig from '../_test/policy-config/_current-config.json';
 import { Policy } from '../policy-engine';
 import { getIdFromName } from '../helper/lists.helper';
 import { RegionSizeOverride, SizeDimension, TrailerSize } from '../types';

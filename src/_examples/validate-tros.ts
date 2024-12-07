@@ -1,7 +1,7 @@
 import { Policy } from 'onroute-policy-engine';
 import { PermitAppInfo } from 'onroute-policy-engine/enum';
-import { masterPolicyConfig } from '../_test/policy-config/master.sample';
-import { validTros30Day } from '../_test/permit-app/valid-tros-30day';
+import masterPolicyConfig from '../_test/policy-config/master.sample.json';
+import validTros30Day from '../_test/permit-app/valid-tros-30day.json';
 import dayjs from 'dayjs';
 
 async function start() {

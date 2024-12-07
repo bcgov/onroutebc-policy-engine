@@ -1,11 +1,11 @@
 import { Policy } from 'onroute-policy-engine';
-import { completePolicyConfig } from '../policy-config/complete-in-progress.sample';
-import { validMFP } from '../permit-app/valid-mfp';
+import currentConfig from '../policy-config/_current-config.json';
+import validMFP from '../permit-app/valid-mfp.json';
 import dayjs from 'dayjs';
 import { PermitAppInfo } from '../../enum/permit-app-info';
 
 describe('Motive Fuel User Permit (MFP) Validator', () => {
-  const policy: Policy = new Policy(completePolicyConfig);
+  const policy: Policy = new Policy(currentConfig);
 
   it('should validate MFP successfully', async () => {
     const permit = JSON.parse(JSON.stringify(validMFP));

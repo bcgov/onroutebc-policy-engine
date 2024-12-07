@@ -1,4 +1,4 @@
-import { completePolicyConfig } from '../_test/policy-config/complete-in-progress.sample';
+import completePolicyConfig from '../_test/policy-config/_current-config.json';
 import { Policy } from '../policy-engine';
 import { TrailerSize } from '../types';
 import { toCsv } from '@iwsio/json-csv-core';
