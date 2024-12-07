@@ -9,7 +9,7 @@ const options = {
     {
       name: 'noSelfIssue',
       label: 'No Self Issue',
-      transform: (v: boolean) => (v ? 'X' : ''),
+      transform: (v: any) => (v ? 'X' : ''),
     },
     { name: 'commodity', label: 'Commodity' },
     { name: 'powerUnit', label: 'Power Unit' },
@@ -17,12 +17,12 @@ const options = {
     {
       name: 'jeep',
       label: 'Allow Jeep',
-      transform: (v: boolean) => (v ? 'X' : ''),
+      transform: (v: any) => (v ? 'X' : ''),
     },
     {
       name: 'booster',
       label: 'Allow Booster',
-      transform: (v: boolean) => (v ? 'X' : ''),
+      transform: (v: any) => (v ? 'X' : ''),
     },
     { name: 'lmn.width', label: 'LMN - Width' },
     { name: 'lmn.height', label: 'LMN - Height' },

@@ -150,8 +150,8 @@ describe('Policy Configuration Missing Elements', () => {
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
-    expect(validationResult.violations[0].message).not.toBeUndefined;
-    expect(validationResult.violations[0].message).not.toBeNull;
+    expect(validationResult.violations[0].message).not.toBeUndefined();
+    expect(validationResult.violations[0].message).not.toBeNull();
   });
 });
 
