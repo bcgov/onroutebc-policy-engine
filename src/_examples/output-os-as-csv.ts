@@ -1,4 +1,4 @@
-import { completePolicyConfig } from '../_test/policy-config/complete-in-progress.sample';
+import completePolicyConfig from '../_test/policy-config/_current-config.json';
 import { Policy } from '../policy-engine';
 import { TrailerSize } from '../types';
 import { toCsv } from '@iwsio/json-csv-core';
@@ -9,7 +9,7 @@ const options = {
     {
       name: 'noSelfIssue',
       label: 'No Self Issue',
-      transform: (v: boolean) => (v ? 'X' : ''),
+      transform: (v: any) => (v ? 'X' : ''),
     },
     { name: 'commodity', label: 'Commodity' },
     { name: 'powerUnit', label: 'Power Unit' },
@@ -17,12 +17,12 @@ const options = {
     {
       name: 'jeep',
       label: 'Allow Jeep',
-      transform: (v: boolean) => (v ? 'X' : ''),
+      transform: (v: any) => (v ? 'X' : ''),
     },
     {
       name: 'booster',
       label: 'Allow Booster',
-      transform: (v: boolean) => (v ? 'X' : ''),
+      transform: (v: any) => (v ? 'X' : ''),
     },
     { name: 'lmn.width', label: 'LMN - Width' },
     { name: 'lmn.height', label: 'LMN - Height' },

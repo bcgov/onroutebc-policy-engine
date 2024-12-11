@@ -1,6 +1,6 @@
 import { Policy } from '../../policy-engine';
 import { AxleConfiguration } from '../../types';
-import { minimalPolicyDef } from '../policy-config/mimimal.sample';
+import minimalPolicyDef from '../policy-config/mimimal.sample.json';
 
 const threeAxleConfig: Array<AxleConfiguration> = [
   {

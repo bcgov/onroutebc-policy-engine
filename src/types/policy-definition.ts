@@ -12,7 +12,7 @@ import {
 import { RuleProperties } from 'json-rules-engine';
 
 export type PolicyDefinition = {
-  version: string;
+  minPEVersion: string;
   geographicRegions: Array<GeographicRegion>;
   permitTypes: Array<PermitType>;
   commonRules: Array<RuleProperties>;

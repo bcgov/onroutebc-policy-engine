@@ -1,5 +1,5 @@
 import { Policy } from '../../policy-engine';
-import { stosPolicyConfig } from '../policy-config/stos-vehicle-config.sample';
+import stosPolicyConfig from '../policy-config/stos-vehicle-config.sample.json';
 
 describe('Permit Engine Size Dimension Functions', () => {
   const policy: Policy = new Policy(stosPolicyConfig);

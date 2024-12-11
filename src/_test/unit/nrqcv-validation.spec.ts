@@ -1,6 +1,6 @@
 import { Policy } from 'onroute-policy-engine';
-import { completePolicyConfig } from '../policy-config/complete-in-progress.sample';
-import { validNrqcv } from '../permit-app/valid-nrqcv';
+import currentConfig from '../policy-config/_current-config.json';
+import validNrqcv from '../permit-app/valid-nrqcv.json';
 import dayjs from 'dayjs';
 import quarterOfYear from 'dayjs/plugin/quarterOfYear';
 import { PermitAppInfo } from '../../enum/permit-app-info';
@@ -8,7 +8,7 @@ import { PermitAppInfo } from '../../enum/permit-app-info';
 dayjs.extend(quarterOfYear);
 
 describe('Non-Resident Quarterly Validation Tests', () => {
-  const policy: Policy = new Policy(completePolicyConfig);
+  const policy: Policy = new Policy(currentConfig);
 
   it('should validate NRQCV successfully', async () => {
     const permit = JSON.parse(JSON.stringify(validNrqcv));

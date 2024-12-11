@@ -99,8 +99,8 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
           commodity,
           fullVehicleConfiguration,
         );
-      } catch (e) {
-        console.log(`Error validating vehicle configuration: '{e.message}'`);
+      } catch (e: any) {
+        console.log(`Error validating vehicle configuration: '${e.message}'`);
         isValid = false;
       }
       return isValid;

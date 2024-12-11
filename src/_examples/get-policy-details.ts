@@ -1,5 +1,5 @@
 import { Policy } from 'onroute-policy-engine';
-import { completePolicyConfig } from '../_test/policy-config/complete-in-progress.sample';
+import completePolicyConfig from '../_test/policy-config/_current-config.json';
 
 function start() {
   const policy: Policy = new Policy(completePolicyConfig);

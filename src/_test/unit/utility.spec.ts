@@ -1,6 +1,6 @@
 import { PermitType } from 'onroute-policy-engine/types';
 import { Policy } from 'onroute-policy-engine';
-import { fiveTypes } from '../policy-config/five-types.sample';
+import fiveTypes from '../policy-config/five-types.sample.json';
 
 describe('Permit Engine Utility Functions', () => {
   const policy: Policy = new Policy(fiveTypes);

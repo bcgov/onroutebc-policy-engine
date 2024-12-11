@@ -31,7 +31,7 @@ jobs:
         run: npm install  # Installs project dependencies
 
       - name: Lint code
-        run: npx eslint . --config .eslintrc.cjs  # Run ESLint with the specified config
+        run: npx eslint "{src,apps,libs,test}/**/*.ts"  # Run ESLint with the specified config
       
 
   # https://github.com/marketplace/actions/aqua-security-trivy

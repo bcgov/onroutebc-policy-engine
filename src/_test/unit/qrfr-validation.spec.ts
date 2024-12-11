@@ -1,6 +1,6 @@
 import { Policy } from 'onroute-policy-engine';
-import { completePolicyConfig } from '../policy-config/complete-in-progress.sample';
-import { validQrfr } from '../permit-app/valid-qrfr';
+import currentConfig from '../policy-config/_current-config.json';
+import validQrfr from '../permit-app/valid-qrfr.json';
 import dayjs from 'dayjs';
 import quarterOfYear from 'dayjs/plugin/quarterOfYear';
 import { PermitAppInfo } from '../../enum/permit-app-info';
@@ -8,7 +8,7 @@ import { PermitAppInfo } from '../../enum/permit-app-info';
 dayjs.extend(quarterOfYear);
 
 describe('Quarterly ICBC Basic Insurance (FR) Validation Tests', () => {
-  const policy: Policy = new Policy(completePolicyConfig);
+  const policy: Policy = new Policy(currentConfig);
 
   it('should validate QRFR successfully', async () => {
     const permit = JSON.parse(JSON.stringify(validQrfr));

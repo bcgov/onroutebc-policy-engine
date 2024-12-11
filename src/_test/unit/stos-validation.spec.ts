@@ -1,11 +1,11 @@
 import { Policy } from 'onroute-policy-engine';
-import { completePolicyConfig } from '../policy-config/complete-in-progress.sample';
-import { testStos } from '../permit-app/test-stos';
+import currentConfig from '../policy-config/_current-config.json';
+import testStos from '../permit-app/test-stos.json';
 import dayjs from 'dayjs';
 import { PermitAppInfo } from '../../enum/permit-app-info';
 
 describe('Single Trip Oversize Policy Configuration Validator', () => {
-  const policy: Policy = new Policy(completePolicyConfig);
+  const policy: Policy = new Policy(currentConfig);
 
   it('should validate STOS successfully', async () => {
     const permit = JSON.parse(JSON.stringify(testStos));

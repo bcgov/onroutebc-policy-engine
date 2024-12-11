@@ -1,11 +1,11 @@
 import { Policy } from 'onroute-policy-engine';
-import { trosOnly } from '../policy-config/tros-only.sample';
-import { trosNoAllowedVehicles } from '../policy-config/tros-no-allowed-vehicles.sample';
-import { completePolicyConfig } from '../policy-config/complete-in-progress.sample';
-import { trosNoParamsSample } from '../policy-config/tros-no-params.sample';
-import { validTros30Day } from '../permit-app/valid-tros-30day';
-import { validTrow120Day } from '../permit-app/valid-trow-120day';
-import { allEventTypes } from '../policy-config/all-event-types.sample';
+import trosOnly from '../policy-config/tros-only.sample.json';
+import trosNoAllowedVehicles from '../policy-config/tros-no-allowed-vehicles.sample.json';
+import currentConfig from '../policy-config/_current-config.json';
+import trosNoParamsSample from '../policy-config/tros-no-params.sample.json';
+import validTros30Day from '../permit-app/valid-tros-30day.json';
+import validTrow120Day from '../permit-app/valid-trow-120day.json';
+import allEventTypes from '../policy-config/all-event-types.sample.json';
 import dayjs from 'dayjs';
 import { PermitAppInfo } from '../../enum/permit-app-info';
 import { ValidationResultCode } from '../../enum/validation-result-code';
@@ -113,7 +113,7 @@ describe('Policy Engine Validator', () => {
 });
 
 describe('Master Policy Configuration Validator', () => {
-  const policy: Policy = new Policy(completePolicyConfig);
+  const policy: Policy = new Policy(currentConfig);
 
   it('should validate TROS successfully', async () => {
     const permit = JSON.parse(JSON.stringify(validTros30Day));
@@ -150,8 +150,8 @@ describe('Policy Configuration Missing Elements', () => {
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
-    expect(validationResult.violations[0].message).not.toBeUndefined;
-    expect(validationResult.violations[0].message).not.toBeNull;
+    expect(validationResult.violations[0].message).not.toBeUndefined();
+    expect(validationResult.violations[0].message).not.toBeNull();
   });
 });
 
