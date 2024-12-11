@@ -33,7 +33,7 @@ export default [{
 
         parserOptions: {
             project: ["./tsconfig.json"],
-            tsconfigRootDir: "C:\\_projects\\bcgov\\onroutebc-policy-engine",
+            tsconfigRootDir: __dirname,
         },
     },
 
