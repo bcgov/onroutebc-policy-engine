@@ -40,7 +40,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - run: npm ci
-      - run: npm install genversion
+      - run: npm install genversion --save-dev
       - run: npx genversion -e src/version.ts
       - run: tsc
       - run: npm test
