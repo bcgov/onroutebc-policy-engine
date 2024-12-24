@@ -13,6 +13,7 @@ export { Matrix, RangeMatrix } from './range-matrix';
 export { RegionSizeOverride } from './region-size-override';
 export { SelfIssuable } from './self-issuable';
 export { SizeDimension } from './size-dimension';
+export { SpecialAuthorizations } from './special-authorizations';
 export {
   VehicleCategory,
   PowerUnitCategory,
