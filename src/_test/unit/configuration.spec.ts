@@ -1,8 +1,10 @@
 import { Policy } from '../../policy-engine';
-import stosPolicyConfig from '../policy-config/stos-vehicle-config.sample.json';
+import currentPolicyConfig from '../policy-config/_current-config.json';
+import specialAuth from '../policy-config/special-auth-lcv.sample.json';
 
-describe('Permit Engine Oversize Configuration Functions', () => {
-  const policy: Policy = new Policy(stosPolicyConfig);
+describe('Policy Engine Oversize Configuration Functions', () => {
+  const policy: Policy = new Policy(currentPolicyConfig);
+  const lcvPolicy: Policy = new Policy(currentPolicyConfig, specialAuth);
 
   it('should retrieve all permittable power unit types for STOS', async () => {
     const puTypes = policy.getPermittablePowerUnitTypes('STOS', 'EMPTYXX');
@@ -21,15 +23,64 @@ describe('Permit Engine Oversize Configuration Functions', () => {
     const puTypes = policy.getPermittablePowerUnitTypes('STOS', '_INVALID');
     expect(puTypes.size).toBe(0);
   });
+
+  it('should return only non-lcv power unit types if not authorized for lcv', async () => {
+    const puTypes = policy.getPermittablePowerUnitTypes('STOS', 'NONEXXX');
+    const nonLcvPULength = puTypes.size;
+
+    expect(puTypes.keys()).not.toContain('LCVRMDB');
+    expect(puTypes.keys()).not.toContain('LCVTPDB');
+
+    const lcvPuTypes = lcvPolicy.getPermittablePowerUnitTypes(
+      'STOS',
+      'NONEXXX',
+    );
+    // There are 2 permittable LCV types
+    expect(lcvPuTypes.size - nonLcvPULength).toBe(2);
+    expect(lcvPuTypes.keys()).toContain('LCVRMDB');
+    expect(lcvPuTypes.keys()).toContain('LCVTPDB');
+  });
 });
 
-describe('Permit Engine Get Next Permittable Vehicles', () => {
-  const policy: Policy = new Policy(stosPolicyConfig);
+describe('Policy Engine Get Next Permittable Vehicles', () => {
+  const policy: Policy = new Policy(currentPolicyConfig);
+  const lcvPolicy: Policy = new Policy(currentPolicyConfig, specialAuth);
 
   it('should return permittable power units with empty current configuration', async () => {
     const vehicles = policy.getNextPermittableVehicles('STOS', 'LAMBEAM', []);
     expect(vehicles.size).toBe(1);
     expect(vehicles.keys()).toContain('TRKTRAC');
+  });
+
+  it('should return only non-lcv permittable power units with empty current configuration', async () => {
+    const vehicles = policy.getNextPermittableVehicles('STOS', 'NONEXXX', []);
+    expect(vehicles.keys()).not.toContain('LCVRMDB');
+    expect(vehicles.keys()).not.toContain('LCVTPDB');
+  });
+
+  it('should return lcv permittable power units with empty current configuration and lcv auth', async () => {
+    const vehicles = lcvPolicy.getNextPermittableVehicles(
+      'STOS',
+      'NONEXXX',
+      [],
+    );
+    expect(vehicles.keys()).toContain('LCVRMDB');
+    expect(vehicles.keys()).toContain('LCVTPDB');
+  });
+
+  it('should return no next vehicles with lcv pu and no lcv auth', async () => {
+    const vehicles = policy.getNextPermittableVehicles('STOS', 'NONEXXX', [
+      'LCVRMDB',
+    ]);
+    expect(vehicles.size).toBe(0);
+  });
+
+  it('should return one semi-trailer with lcv pu and lcv auth', async () => {
+    const vehicles = lcvPolicy.getNextPermittableVehicles('STOS', 'NONEXXX', [
+      'LCVRMDB',
+    ]);
+    expect(vehicles.size).toBe(1);
+    expect(vehicles.keys()).toContain('SEMITRL');
   });
 
   it('should return jeep and a trailer when current config is just power unit', async () => {
@@ -71,8 +122,8 @@ describe('Permit Engine Get Next Permittable Vehicles', () => {
   });
 });
 
-describe('Permit Engine Configuration Validation', () => {
-  const policy: Policy = new Policy(stosPolicyConfig);
+describe('Policy Engine Configuration Validation', () => {
+  const policy: Policy = new Policy(currentPolicyConfig);
 
   it('should return true for a valid configuration with power unit and trailer', async () => {
     const isValid = policy.isConfigurationValid('STOS', 'LAMBEAM', [
