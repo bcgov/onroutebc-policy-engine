@@ -2,7 +2,6 @@ import { Engine, RuleProperties } from 'json-rules-engine';
 import { CustomOperators } from '../rule-operator/custom-operators';
 import { Policy } from 'onroute-policy-engine';
 import { PolicyDefinition } from 'onroute-policy-engine/types';
-import { PolicyFacts } from 'onroute-policy-engine/enum';
 
 /**
  * Gets a json-rules-engine with all onRouteBC custom operators added,
@@ -63,16 +62,6 @@ export function getRulesEngines(policy: Policy): Map<string, Engine> {
 
       engine.addRule(costRule);
     });
-
-    let allowedVehicles: Array<string>;
-    if (permitType.allowedVehicles && permitType.allowedVehicles.length > 0) {
-      allowedVehicles = permitType.allowedVehicles;
-    } else {
-      // If no allowed vehicles are specified, none are permitted
-      allowedVehicles = [];
-    }
-    // Each permit type should have a list of allowed vehicles configured.
-    engine.addFact(PolicyFacts.AllowedVehicles.toString(), allowedVehicles);
 
     engineMap.set(permitType.id, engine);
   });

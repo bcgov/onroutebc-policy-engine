@@ -4,4 +4,5 @@ export enum ValidationResultCode {
   ConfigurationInvalid = 'configuration-invalid',
   GeneralResult = 'general-result',
   CostValue = 'cost-value',
+  IsLcvCarrier = 'lcv-carrier',
 }

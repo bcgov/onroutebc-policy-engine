@@ -1,11 +1,14 @@
 import { Policy } from 'onroute-policy-engine';
 import currentConfig from '../policy-config/_current-config.json';
 import testStos from '../permit-app/test-stos.json';
+import lcvStos from '../permit-app/valid-stos-lcv.json';
+import specialAuth from '../policy-config/special-auth-lcv.sample.json';
 import dayjs from 'dayjs';
 import { PermitAppInfo } from '../../enum/permit-app-info';
 
 describe('Single Trip Oversize Policy Configuration Validator', () => {
   const policy: Policy = new Policy(currentConfig);
+  const lcvPolicy: Policy = new Policy(currentConfig, specialAuth);
 
   it('should validate STOS successfully', async () => {
     const permit = JSON.parse(JSON.stringify(testStos));
@@ -16,6 +19,28 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(0);
+  });
+
+  it('should validate LCV STOS successfully with LCV auth', async () => {
+    const permit = JSON.parse(JSON.stringify(lcvStos));
+    // Set startDate to today
+    permit.permitData.startDate = dayjs().format(
+      PermitAppInfo.PermitDateFormat.toString(),
+    );
+
+    const validationResult = await lcvPolicy.validate(permit);
+    expect(validationResult.violations).toHaveLength(0);
+  });
+
+  it('should fail to validate LCV STOS successfully without LCV auth', async () => {
+    const permit = JSON.parse(JSON.stringify(lcvStos));
+    // Set startDate to today
+    permit.permitData.startDate = dayjs().format(
+      PermitAppInfo.PermitDateFormat.toString(),
+    );
+
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.violations).toHaveLength(1);
   });
 
   it('should validate STOS successfully with 6 day duration', async () => {

@@ -93,10 +93,11 @@
       "commodityRequired": false,
       "allowedVehicles": [
         "TRKTRAK",
-        "TRUCK",
+        "REGTRCK",
         "SEMITRL",
         "PLTFRM",
-        "OGSEMI"
+        "OGSEMI",
+        "LCVRMDB"
       ],
       "rules": [
         {
@@ -182,8 +183,41 @@
     "powerUnitCategories": []
   },
   "vehicleTypes": {
-    "powerUnitTypes": [],
-    "trailerTypes": []
+    "powerUnitTypes": [
+      {
+        "id": "REGTRCK",
+        "name": "Trucks",
+        "category": "powerunit"
+      },
+      {
+        "id": "LCVRMDB",
+        "name": "Long Combination Vehicles (LCV) - Rocky Mountain Doubles",
+        "category": "powerunit",
+        "isLcv": true
+      },
+      {
+        "id": "TRKTRAC",
+        "name": "Truck Tractors",
+        "category": "powerunit"
+      }
+    ],
+    "trailerTypes": [
+      {
+        "id": "OGSEMI",
+        "name": "Oil and Gas - Oversize Oilfield Flat Deck Semi-Trailers",
+        "category": "trailer"
+      },
+      {
+        "id": "PLATFRM",
+        "name": "Platform Trailers",
+        "category": "trailer"
+      },
+      {
+        "id": "SEMITRL",
+        "name": "Semi-Trailers",
+        "category": "trailer"
+      }
+    ]
   },
   "commodities": []
 }
