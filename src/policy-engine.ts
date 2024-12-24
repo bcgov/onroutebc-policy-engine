@@ -125,12 +125,12 @@ export class Policy {
       const validationResults = new ValidationResults(engineResult);
 
       // Include an informational message if the client is an LCV carrier
-      if (this.specialAuthorizations?.lcv) {
+      if (this.specialAuthorizations?.isLcvAllowed) {
         validationResults.information.push(
           new ValidationResult(
             ValidationResultType.Information,
             ValidationResultCode.IsLcvCarrier,
-            `Policy validation allowing long combination vahicle permitting for client '${this.specialAuthorizations.clientNumber}'`,
+            `Policy validation allowing long combination vahicle permitting for client '${this.specialAuthorizations.companyId}'`,
           ),
         );
       }
@@ -289,7 +289,7 @@ export class Policy {
       let trTypeIdsOW: Array<string> = [];
 
       // Remove long combination vehicles if needed
-      if (!this.specialAuthorizations?.lcv) {
+      if (!this.specialAuthorizations?.isLcvAllowed) {
         if (puTypeIdsOS) {
           puTypeIdsOS = this.filterOutLongCombinationVehicles(puTypeIdsOS);
         }
@@ -487,7 +487,7 @@ export class Policy {
     }
 
     // Remove long combination vehicles if required
-    if (!this.specialAuthorizations?.lcv) {
+    if (!this.specialAuthorizations?.isLcvAllowed) {
       if (vehicleTypeIds) {
         vehicleTypeIds = this.filterOutLongCombinationVehicles(vehicleTypeIds);
       }
@@ -550,7 +550,10 @@ export class Policy {
       return validatePartial;
     }
 
-    if (!this.specialAuthorizations || !this.specialAuthorizations.lcv) {
+    if (
+      !this.specialAuthorizations ||
+      !this.specialAuthorizations.isLcvAllowed
+    ) {
       // No provision for allowing long combination vehicles
       const filteredConfiguration =
         this.filterOutLongCombinationVehicles(currentConfiguration);

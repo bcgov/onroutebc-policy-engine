@@ -130,7 +130,7 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
           // Filter out long combination vehcles if necessary
           if (
             !policy.specialAuthorizations ||
-            !policy.specialAuthorizations.lcv
+            !policy.specialAuthorizations.isLcvAllowed
           ) {
             allowedVehicles =
               policy.filterOutLongCombinationVehicles(allowedVehicles);
