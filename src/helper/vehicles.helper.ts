@@ -1,3 +1,4 @@
+import { VehicleCategory } from '../enum';
 import { VehicleType, VehicleTypes } from '../types';
 
 /**
@@ -27,4 +28,42 @@ export function filterOutLcv(
   });
 
   return filteredList;
+}
+
+/**
+ * Filters a list of vehicles to include only those matching the supplied
+ * vehicle type - either powerUnit or trailer.
+ * @param vehicleList List of vehicle IDs to filter
+ * @param vehicleTypes Configured vehicle types from policy configuration
+ * @param type Type of vehicle to filter, either powerUnit or trailer
+ */
+export function filterVehiclesByType(
+  vehicleList: Array<string>,
+  vehicleTypes: VehicleTypes,
+  type: string,
+): Array<string> {
+  if (
+    type !== VehicleCategory.PowerUnit.toString() &&
+    type !== VehicleCategory.Trailer.toString()
+  ) {
+    throw new Error(`Cannot filter based on invalid type '${type}'`);
+  }
+
+  let targetVehicleTypes;
+  if (type === VehicleCategory.PowerUnit) {
+    targetVehicleTypes = vehicleTypes.powerUnitTypes;
+  } else {
+    targetVehicleTypes = vehicleTypes.trailerTypes;
+  }
+
+  if (!targetVehicleTypes) {
+    return new Array<string>();
+  }
+
+  const filteredVehicles = vehicleList.filter((vid) => {
+    const vehicleDef = targetVehicleTypes.find((vt) => vt.id === vid);
+    return vehicleDef;
+  });
+
+  return filteredVehicles;
 }
