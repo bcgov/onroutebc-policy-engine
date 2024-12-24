@@ -552,7 +552,8 @@ export class Policy {
 
     if (!this.specialAuthorizations || !this.specialAuthorizations.lcv) {
       // No provision for allowing long combination vehicles
-      const filteredConfiguration = this.filterOutLongCombinationVehicles(currentConfiguration);
+      const filteredConfiguration =
+        this.filterOutLongCombinationVehicles(currentConfiguration);
       if (filteredConfiguration.length !== currentConfiguration.length) {
         // There is an LCV in the configuration, but we are not allowing
         // LCV permitting. Return false.

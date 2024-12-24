@@ -2,7 +2,6 @@ import { Engine, RuleProperties } from 'json-rules-engine';
 import { CustomOperators } from '../rule-operator/custom-operators';
 import { Policy } from 'onroute-policy-engine';
 import { PolicyDefinition } from 'onroute-policy-engine/types';
-import { PolicyFacts } from 'onroute-policy-engine/enum';
 
 /**
  * Gets a json-rules-engine with all onRouteBC custom operators added,
