@@ -24,6 +24,7 @@ import {
   ValidationResultCode,
   RelativePosition,
   VehicleTypes,
+  VehicleCategory,
 } from 'onroute-policy-engine/enum';
 import { runBridgeFormula } from './helper/bridge-calculation.helper';
 import { version } from './version';
@@ -31,7 +32,7 @@ import semverValid from 'semver/functions/valid';
 import semverLt from 'semver/functions/lt';
 import semverMajor from 'semver/functions/major';
 import { SpecialAuthorizations } from './types/special-authorizations';
-import { filterOutLcv } from './helper/vehicles.helper';
+import { filterOutLcv, filterVehiclesByType } from './helper/vehicles.helper';
 
 /** Class representing commercial vehicle policy. */
 export class Policy {
@@ -240,10 +241,10 @@ export class Policy {
    */
   getPermittableVehicleTypes(
     permitTypeId: string,
-    commodityId: string,
+    commodityId?: string,
   ): Map<string, Map<string, string>> {
-    if (!permitTypeId || !commodityId) {
-      throw new Error('Missing permitTypeId and/or commodityId');
+    if (!permitTypeId) {
+      throw new Error('Missing permitTypeId');
     }
 
     const permitType = this.getPermitTypeDefinition(permitTypeId);
@@ -252,16 +253,18 @@ export class Policy {
     }
 
     if (!permitType.commodityRequired) {
-      // If commodity is not required, this method cannot calculate the
-      // permittable vehicle types since they will not be configured.
-      throw new Error(
-        `Permit type '${permitTypeId}' does not require a commodity`,
-      );
+      // If commodity is not required, get the permittable vehicle types
+      // from the permit allowedVehicles list.
+      return this.getAllowedVehicles(permitType);
     }
 
     let puTypes: Map<string, string>;
     let trTypes: Map<string, string>;
     const allowableCommodities = this.getCommodities(permitTypeId);
+
+    if (!commodityId) {
+      throw new Error('Missing commodityId, permit type requires it');
+    }
 
     if (!allowableCommodities.has(commodityId)) {
       // If the commodity is not allowed for the permit type, no power
@@ -918,5 +921,60 @@ export class Policy {
       throw e;
     }
     return bridgeResults;
+  }
+
+  /**
+   * Gets the list of allowed vehicles separated into two maps, one
+   * for trailers and one for power units. This will filter out LCV
+   * vehicles unless authorized in special authorizations.
+   * @param permitType Permit type definition
+   */
+  getAllowedVehicles(permitType: PermitType): Map<string, Map<string, string>> {
+    if (permitType.commodityRequired) {
+      // If commodity is required, this method cannot be used since it
+      // requires a fixed set of allowed vehicle types, not commodity-based
+      throw new Error(`Allowed vehicles not configured for permit type requiring commodity: '${permitType.id}'`);
+    }
+
+    let allowedVehicles = permitType.allowedVehicles;
+
+    if (!allowedVehicles) {
+      return new Map<string, Map<string, string>>();
+    }
+
+    if (
+      !this.specialAuthorizations ||
+      !this.specialAuthorizations.isLcvAllowed
+    ) {
+      allowedVehicles = this.filterOutLongCombinationVehicles(allowedVehicles);
+    }
+
+    const allowedVehicleMap = new Map<string, Map<string, string>>();
+    const powerUnitIds = filterVehiclesByType(
+      allowedVehicles,
+      this.policyDefinition.vehicleTypes,
+      VehicleCategory.PowerUnit,
+    );
+    const trailerIds = filterVehiclesByType(
+      allowedVehicles,
+      this.policyDefinition.vehicleTypes,
+      VehicleCategory.Trailer,
+    );
+
+    allowedVehicleMap.set(
+      VehicleTypes.PowerUnits,
+      extractIdentifiedObjects(
+        this.policyDefinition.vehicleTypes.powerUnitTypes,
+        powerUnitIds,
+      ),
+    );
+    allowedVehicleMap.set(
+      VehicleTypes.Trailers,
+      extractIdentifiedObjects(
+        this.policyDefinition.vehicleTypes.trailerTypes,
+        trailerIds,
+      ),
+    );
+    return allowedVehicleMap;
   }
 }

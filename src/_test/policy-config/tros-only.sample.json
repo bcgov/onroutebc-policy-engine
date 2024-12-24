@@ -92,11 +92,11 @@
       "sizeDimensionRequired": false,
       "commodityRequired": false,
       "allowedVehicles": [
-        "TRKTRAK",
+        "TRKTRAC",
         "REGTRCK",
         "SEMITRL",
-        "PLTFRM",
-        "OGSEMI",
+        "PLATFRM",
+        "OGOSFDT",
         "LCVRMDB"
       ],
       "rules": [
@@ -203,7 +203,7 @@
     ],
     "trailerTypes": [
       {
-        "id": "OGSEMI",
+        "id": "OGOSFDT",
         "name": "Oil and Gas - Oversize Oilfield Flat Deck Semi-Trailers",
         "category": "trailer"
       },
