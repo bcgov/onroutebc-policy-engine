@@ -933,7 +933,9 @@ export class Policy {
     if (permitType.commodityRequired) {
       // If commodity is required, this method cannot be used since it
       // requires a fixed set of allowed vehicle types, not commodity-based
-      throw new Error(`Allowed vehicles not configured for permit type requiring commodity: '${permitType.id}'`);
+      throw new Error(
+        `Allowed vehicles not configured for permit type requiring commodity: '${permitType.id}'`,
+      );
     }
 
     let allowedVehicles = permitType.allowedVehicles;

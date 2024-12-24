@@ -51,13 +51,19 @@ describe('Permit Engine Permittable Vehicle Functions', () => {
   const lcvPolicy: Policy = new Policy(trosOnly, specialAuth);
 
   it('should return the correct number of permittable vehicles, excluding lcv', async () => {
-    const permittableVehicles: Map<string, Map<string, string>> = policy.getPermittableVehicleTypes('TROS');
+    const permittableVehicles: Map<
+      string,
+      Map<string, string>
+    > = policy.getPermittableVehicleTypes('TROS');
     expect(permittableVehicles.get('powerUnits')?.size).toBe(2);
     expect(permittableVehicles.get('trailers')?.size).toBe(3);
   });
 
   it('should return the correct number of permittable vehicles, including lcv', async () => {
-    const permittableVehicles: Map<string, Map<string, string>> = lcvPolicy.getPermittableVehicleTypes('TROS');
+    const permittableVehicles: Map<
+      string,
+      Map<string, string>
+    > = lcvPolicy.getPermittableVehicleTypes('TROS');
     expect(permittableVehicles.get('powerUnits')?.size).toBe(3);
     expect(permittableVehicles.get('trailers')?.size).toBe(3);
   });
