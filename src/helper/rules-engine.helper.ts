@@ -64,16 +64,6 @@ export function getRulesEngines(policy: Policy): Map<string, Engine> {
       engine.addRule(costRule);
     });
 
-    let allowedVehicles: Array<string>;
-    if (permitType.allowedVehicles && permitType.allowedVehicles.length > 0) {
-      allowedVehicles = permitType.allowedVehicles;
-    } else {
-      // If no allowed vehicles are specified, none are permitted
-      allowedVehicles = [];
-    }
-    // Each permit type should have a list of allowed vehicles configured.
-    engine.addFact(PolicyFacts.AllowedVehicles.toString(), allowedVehicles);
-
     engineMap.set(permitType.id, engine);
   });
 

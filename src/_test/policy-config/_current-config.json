@@ -1,5 +1,5 @@
 {
-  "minPEVersion": "1.0.0",
+  "minPEVersion": "1.1.0",
   "geographicRegions": [
     {
       "id": "LMN",
@@ -2853,12 +2853,14 @@
       {
         "id": "LCVRMDB",
         "name": "Long Combination Vehicles (LCV) - Rocky Mountain Doubles",
-        "category": "powerunit"
+        "category": "powerunit",
+        "isLcv": true
       },
       {
         "id": "LCVTPDB",
         "name": "Long Combination Vehicles (LCV) - Turnpike Doubles",
-        "category": "powerunit"
+        "category": "powerunit",
+        "isLcv": true
       },
       {
         "id": "LOGGING",

@@ -7,7 +7,7 @@ import {
   CostFacts,
 } from 'onroute-policy-engine/enum';
 import { Policy } from '../policy-engine';
-import { RangeMatrix } from '../types';
+import { PermitType, RangeMatrix } from '../types';
 
 dayjs.extend(quarterOfYear);
 
@@ -105,6 +105,32 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
       }
       return isValid;
     },
+  );
+
+  /**
+   * Add runtime fact to get the list of allowed vehicles taking into
+   * consideration a client special authorization lcv flag.
+   */
+  engine.addFact(PolicyFacts.AllowedVehicles.toString(),
+    async function (params, almanac) {
+
+      let allowedVehicles: Array<string> = [];
+      const permitTypeId: string = await almanac.factValue(PermitAppInfo.PermitType) as string;
+      const permitType: PermitType | null = policy.getPermitTypeDefinition(permitTypeId);
+
+      if (permitType) {
+        if (permitType.allowedVehicles && permitType.allowedVehicles.length > 0) {
+          allowedVehicles = permitType.allowedVehicles;
+          // Filter out long combination vehcles if necessary
+          if (!policy.specialAuthorizations || !policy.specialAuthorizations.lcv) {
+            allowedVehicles =
+              policy.filterOutLongCombinationVehicles(allowedVehicles);
+          }
+        }
+      }
+      
+      return allowedVehicles;
+    }
   );
 
   /**

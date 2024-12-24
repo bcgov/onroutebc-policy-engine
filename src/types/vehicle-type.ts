@@ -9,6 +9,7 @@ export type VehicleType = IdentifiedObject & {
   category: string;
   defaultSizeDimensions?: SizeDimension;
   ignoreForSizeDimensions?: boolean;
+  isLcv?: boolean;
 };
 
 export type PowerUnitType = VehicleType & {

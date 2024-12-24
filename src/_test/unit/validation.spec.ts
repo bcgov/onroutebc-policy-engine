@@ -6,12 +6,29 @@ import trosNoParamsSample from '../policy-config/tros-no-params.sample.json';
 import validTros30Day from '../permit-app/valid-tros-30day.json';
 import validTrow120Day from '../permit-app/valid-trow-120day.json';
 import allEventTypes from '../policy-config/all-event-types.sample.json';
+import specialAuth from '../policy-config/special-auth-lcv.sample.json';
 import dayjs from 'dayjs';
 import { PermitAppInfo } from '../../enum/permit-app-info';
 import { ValidationResultCode } from '../../enum/validation-result-code';
 
 describe('Permit Engine Constructor', () => {
-  it('should construct without error', () => {
+  it('should construct without error with special authorizations', () => {
+    expect(() => new Policy(trosOnly, specialAuth)).not.toThrow();
+  });
+
+  it('should assign policy definition correctly', () => {
+    const policy: Policy = new Policy(trosOnly);
+    expect(policy.policyDefinition).toBeTruthy();
+  });
+
+  it('should assign special auth correctly', () => {
+    const policy: Policy = new Policy(trosOnly, specialAuth);
+    expect(policy.specialAuthorizations).toBeTruthy();
+  });
+});
+
+describe('Permit Engine Constructor', () => {
+  it('should construct without error without special authorizations', () => {
     expect(() => new Policy(trosOnly)).not.toThrow();
   });
 
@@ -23,6 +40,7 @@ describe('Permit Engine Constructor', () => {
 
 describe('Policy Engine Validator', () => {
   const policy: Policy = new Policy(trosOnly);
+  const lcvPolicy: Policy = new Policy(trosOnly, specialAuth);
 
   it('should validate TROS successfully', async () => {
     const permit = JSON.parse(JSON.stringify(validTros30Day));
@@ -69,6 +87,55 @@ describe('Policy Engine Validator', () => {
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
+  });
+
+  it('should raise violation for TROS lcv with no special auth', async () => {
+    const permit = JSON.parse(JSON.stringify(validTros30Day));
+    // Set startDate to today
+    permit.permitData.startDate = dayjs().format(
+      PermitAppInfo.PermitDateFormat.toString(),
+    );
+    // Set an lcv vehicle type
+    permit.permitData.vehicleDetails.vehicleSubType = 'LCVRMDB';
+
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.violations).toHaveLength(1);
+  });
+
+  it('should validate lcv for TROS with special auth', async () => {
+    const permit = JSON.parse(JSON.stringify(validTros30Day));
+    // Set startDate to today
+    permit.permitData.startDate = dayjs().format(
+      PermitAppInfo.PermitDateFormat.toString(),
+    );
+    // Set an lcv vehicle type
+    permit.permitData.vehicleDetails.vehicleSubType = 'LCVRMDB';
+
+    const validationResult = await lcvPolicy.validate(permit);
+    expect(validationResult.violations).toHaveLength(0);
+  });
+
+  it('should validate lcv using set method instead of constructor', async () => {
+    const permit = JSON.parse(JSON.stringify(validTros30Day));
+    // Set startDate to today
+    permit.permitData.startDate = dayjs().format(
+      PermitAppInfo.PermitDateFormat.toString(),
+    );
+    // Set an lcv vehicle type
+    permit.permitData.vehicleDetails.vehicleSubType = 'LCVRMDB';
+
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.violations).toHaveLength(1);
+
+    // Set special auth manually
+    policy.setSpecialAuthorizations(specialAuth);
+    const validationResult2 = await policy.validate(permit);
+    expect(validationResult2.violations).toHaveLength(0);
+
+    // Reset special auth
+    policy.setSpecialAuthorizations(null);
+    const validationResult3 = await policy.validate(permit);
+    expect(validationResult3.violations).toHaveLength(1);
   });
 
   it('should raise violation if no allowed vehicles are specified', async () => {

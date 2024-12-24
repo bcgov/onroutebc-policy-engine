@@ -30,11 +30,19 @@ import { version } from './version';
 import semverValid from 'semver/functions/valid';
 import semverLt from 'semver/functions/lt';
 import semverMajor from 'semver/functions/major';
+import { SpecialAuthorizations } from './types/special-authorizations';
+import { filterOutLcv } from './helper/vehicles.helper';
 
 /** Class representing commercial vehicle policy. */
 export class Policy {
   /** Object representation of policy definition and rules. */
   policyDefinition: PolicyDefinition;
+
+  /**
+   * Special authorizations granted to a client, used
+   * to adjust validations and allowed vehicles for permit types.
+   */
+  specialAuthorizations?: SpecialAuthorizations | null;
 
   /**
    * Map of json-rules-engine instances, one for each
@@ -47,7 +55,10 @@ export class Policy {
    * Creates a new Policy object.
    * @param definition Policy definition to validate permits against
    */
-  constructor(definition: PolicyDefinition) {
+  constructor(
+    definition: PolicyDefinition,
+    authorizations?: SpecialAuthorizations,
+  ) {
     // Check compatibility of the policy engine with the policy config
     if (!semverValid(version)) {
       throw new Error(
@@ -68,8 +79,18 @@ export class Policy {
     }
 
     this.policyDefinition = definition;
+    this.specialAuthorizations = authorizations;
 
     this.rulesEngines = getRulesEngines(this);
+  }
+
+  /**
+   * Sets a client's special authorizations to modify the policy validations
+   * and permittable vehicles for permit types.
+   * @param authorizations Special authorizations for a client
+   */
+  setSpecialAuthorizations(authorizations: SpecialAuthorizations | null) {
+    this.specialAuthorizations = authorizations;
   }
 
   /**
@@ -101,7 +122,20 @@ export class Policy {
       const engineResult: EngineResult = await engine.run(permit);
 
       // Wrap the json-rules-engine result in a ValidationResult object
-      return new ValidationResults(engineResult);
+      const validationResults = new ValidationResults(engineResult);
+
+      // Include an informational message if the client is an LCV carrier
+      if (this.specialAuthorizations?.lcv) {
+        validationResults.information.push(
+          new ValidationResult(
+            ValidationResultType.Information,
+            ValidationResultCode.IsLcvCarrier,
+            `Policy validation allowing long combination vahicle permitting for client '${this.specialAuthorizations.clientNumber}'`,
+          ),
+        );
+      }
+
+      return validationResults;
     }
   }
 
@@ -125,6 +159,16 @@ export class Policy {
       this.policyDefinition.geographicRegions,
     );
     return geographicRegions;
+  }
+
+  /**
+   * Filters out all long combination vehicles from the list of supplied
+   * vehicle IDs, based on policy configuration.
+   * @param vehicleList List of vehicles to filter
+   * @returns Filtered list of vehicles without LCVs
+   */
+  filterOutLongCombinationVehicles(vehicleList: Array<string>): Array<string> {
+    return filterOutLcv(vehicleList, this.policyDefinition.vehicleTypes);
   }
 
   /**
@@ -232,16 +276,34 @@ export class Policy {
         );
       }
 
-      const puTypeIdsOS: Array<string> | undefined =
+      let puTypeIdsOS: Array<string> | undefined =
         commodity.size?.powerUnits?.map((p) => p.type);
-      const trTypeIdsOS: Array<string> | undefined = [];
+      let trTypeIdsOS: Array<string> | undefined = [];
       commodity.size?.powerUnits?.forEach((pu) => {
         const trForPu = pu.trailers.map((t) => t.type);
-        if (trForPu) trTypeIdsOS.concat(trForPu);
+        if (trForPu) trTypeIdsOS?.concat(trForPu);
       });
+
       // TODO: implement along with overweight permits. Stub for now.
-      const puTypeIdsOW: Array<string> = [];
-      const trTypeIdsOW: Array<string> = [];
+      let puTypeIdsOW: Array<string> = [];
+      let trTypeIdsOW: Array<string> = [];
+
+      // Remove long combination vehicles if needed
+      if (!this.specialAuthorizations?.lcv) {
+        if (puTypeIdsOS) {
+          puTypeIdsOS = this.filterOutLongCombinationVehicles(puTypeIdsOS);
+        }
+        if (trTypeIdsOS) {
+          trTypeIdsOS = this.filterOutLongCombinationVehicles(trTypeIdsOS);
+        }
+
+        if (puTypeIdsOW) {
+          puTypeIdsOW = this.filterOutLongCombinationVehicles(puTypeIdsOW);
+        }
+        if (trTypeIdsOW) {
+          trTypeIdsOW = this.filterOutLongCombinationVehicles(trTypeIdsOW);
+        }
+      }
 
       const puTypesOS = extractIdentifiedObjects(
         this.policyDefinition.vehicleTypes.powerUnitTypes,
@@ -424,6 +486,13 @@ export class Policy {
       }
     }
 
+    // Remove long combination vehicles if required
+    if (!this.specialAuthorizations?.lcv) {
+      if (vehicleTypeIds) {
+        vehicleTypeIds = this.filterOutLongCombinationVehicles(vehicleTypeIds);
+      }
+    }
+
     vehicleTypes = extractIdentifiedObjects(allVehicles, vehicleTypeIds);
 
     return vehicleTypes;
@@ -479,6 +548,16 @@ export class Policy {
       // The current configuration is empty. Fine for partial, but
       // invalid as a complete configuration.
       return validatePartial;
+    }
+
+    if (!this.specialAuthorizations || !this.specialAuthorizations.lcv) {
+      // No provision for allowing long combination vehicles
+      const filteredConfiguration = this.filterOutLongCombinationVehicles(currentConfiguration);
+      if (filteredConfiguration.length !== currentConfiguration.length) {
+        // There is an LCV in the configuration, but we are not allowing
+        // LCV permitting. Return false.
+        return false;
+      }
     }
 
     const powerUnit = commodity.size?.powerUnits?.find(
