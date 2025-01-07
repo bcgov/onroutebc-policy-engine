@@ -1,4 +1,5 @@
 {
   "companyId": 2,
-  "isLcvAllowed": true
+  "isLcvAllowed": true,
+  "noFeeType": null
 }
