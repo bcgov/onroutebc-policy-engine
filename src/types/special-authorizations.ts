@@ -1,5 +1,5 @@
 export type SpecialAuthorizations = {
   companyId: number;
-  isLcvAllowed?: boolean;
-  noFeeType?: string;
+  isLcvAllowed: boolean;
+  noFeeType: string | null;
 };
