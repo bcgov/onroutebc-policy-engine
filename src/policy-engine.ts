@@ -241,7 +241,7 @@ export class Policy {
    */
   getPermittableVehicleTypes(
     permitTypeId: string,
-    commodityId?: string,
+    commodityId?: string | null,
   ): Map<string, Map<string, string>> {
     if (!permitTypeId) {
       throw new Error('Missing permitTypeId');
@@ -944,10 +944,7 @@ export class Policy {
       return new Map<string, Map<string, string>>();
     }
 
-    if (
-      !this.specialAuthorizations ||
-      !this.specialAuthorizations.isLcvAllowed
-    ) {
+    if (!this.specialAuthorizations?.isLcvAllowed) {
       allowedVehicles = this.filterOutLongCombinationVehicles(allowedVehicles);
     }
 
