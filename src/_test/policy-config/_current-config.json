@@ -1601,6 +1601,32 @@
             "cost": 30
           }
         }
+      ],
+      "conditions": [
+        {
+          "condition": "CVSE-1000",
+          "mandatory": true
+        },
+        {
+          "condition": "CVSE-1070",
+          "mandatory": true
+        },
+        {
+          "condition": "CVSE-1000S",
+          "mandatory": false
+        },
+        {
+          "condition": "CVSE-1000L",
+          "mandatory": false
+        },
+        {
+          "condition": "CVSE-1012",
+          "mandatory": false
+        },
+        {
+          "condition": "CVSE-1013",
+          "mandatory": false
+        }
       ]
     },
     {
@@ -1705,6 +1731,20 @@
             "cost": 100
           }
         }
+      ],
+      "conditions": [
+        {
+          "condition": "CVSE-1000",
+          "mandatory": true
+        },
+        {
+          "condition": "CVSE-1070",
+          "mandatory": true
+        },
+        {
+          "condition": "CVSE-1011",
+          "mandatory": true
+        }
       ]
     },
     {
@@ -1787,6 +1827,36 @@
           "params": {
             "cost": 15
           }
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "CVSE-1000",
+          "mandatory": true
+        },
+        {
+          "condition": "CVSE-1070",
+          "mandatory": true
+        },
+        {
+          "condition": "CVSE-1001",
+          "mandatory": false
+        },
+        {
+          "condition": "CVSE-1002",
+          "mandatory": false
+        },
+        {
+          "condition": "CVSE-1010",
+          "mandatory": false
+        },
+        {
+          "condition": "CVSE-1012",
+          "mandatory": false
+        },
+        {
+          "condition": "CVSE-1013",
+          "mandatory": false
         }
       ]
     },
@@ -2858,13 +2928,25 @@
         "id": "LCVRMDB",
         "name": "Long Combination Vehicles (LCV) - Rocky Mountain Doubles",
         "category": "powerunit",
-        "isLcv": true
+        "isLcv": true,
+        "conditions": [
+          {
+            "condition": "CVSE-1014",
+            "mandatory": true
+          }
+        ]
       },
       {
         "id": "LCVTPDB",
         "name": "Long Combination Vehicles (LCV) - Turnpike Doubles",
         "category": "powerunit",
-        "isLcv": true
+        "isLcv": true,
+        "conditions": [
+          {
+            "condition": "CVSE-1014",
+            "mandatory": true
+          }
+        ]
       },
       {
         "id": "LOGGING",
@@ -7830,5 +7912,62 @@
     "w": 2.6,
     "h": 4.15,
     "l": 31
+  },
+  "conditions": [
+  {
+    "description": "General Permit Conditions",
+    "condition": "CVSE-1000",
+    "conditionLink": "https://www.th.gov.bc.ca/forms/getForm.aspx?formId=1251"
+  },
+  {
+    "description": "Permit Scope and Limitation",
+    "condition": "CVSE-1070",
+    "conditionLink": "https://www.th.gov.bc.ca/forms/getForm.aspx?formId=1261"
+  },
+  {
+    "description": "Supplement for Structures",
+    "condition": "CVSE-1000S",
+    "conditionLink": "https://www.th.gov.bc.ca/forms/getForm.aspx?formId=1255"
+  },
+  {
+    "description": "Log Permit Conditions",
+    "condition": "CVSE-1000L",
+    "conditionLink": "https://www.th.gov.bc.ca/forms/getForm.aspx?formId=1250"
+  },
+  {
+    "description": "Highways and Restrictive Load Limits",
+    "condition": "CVSE-1011",
+    "conditionLink": "https://www.th.gov.bc.ca/forms/getForm.aspx?formId=1258"
+  },
+  {
+    "description": "Routes Pre-Approved for 5.0 m OAW",
+    "condition": "CVSE-1001",
+    "conditionLink": ""
+  },
+  {
+    "description": "General Permit Conditions to 6.1 m in the Peace River Area",
+    "condition": "CVSE-1002",
+    "conditionLink": ""
+  },
+  {
+    "description": "East-West Overheight Corridors in the Lower Mainland",
+    "condition": "CVSE-1010",
+    "conditionLink": ""
+  },
+  {
+    "description": "Routes - Woods Chips & Residual",
+    "condition": "CVSE-1012",
+    "conditionLink": "https://www.th.gov.bc.ca/forms/getForm.aspx?formId=1259"
+  },
+  {
+    "description": "Restricted Routes for Hauling Wood on Wide Bunks",
+    "condition": "CVSE-1013",
+    "conditionLink": "https://www.th.gov.bc.ca/forms/getForm.aspx?formId=1254"
+  },
+  {
+    "description": "LCV Operating Conditions & Routes",
+    "condition": "CVSE-1014",
+    "conditionLink": "https://www.th.gov.bc.ca/forms/getForm.aspx?formId=1260"
   }
+]
 }

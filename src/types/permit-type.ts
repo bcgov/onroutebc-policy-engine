@@ -1,5 +1,6 @@
 import { RuleProperties } from 'json-rules-engine';
 import { CostRule, IdentifiedObject } from 'onroute-policy-engine/types';
+import { ConditionForPermitType } from './permit-condition';
 
 export type PermitType = IdentifiedObject & {
   routingRequired: boolean;
@@ -10,4 +11,5 @@ export type PermitType = IdentifiedObject & {
   allowedCommodities?: Array<string>;
   rules?: Array<RuleProperties>;
   costRules?: Array<CostRule>;
+  conditions?: Array<ConditionForPermitType>
 };
