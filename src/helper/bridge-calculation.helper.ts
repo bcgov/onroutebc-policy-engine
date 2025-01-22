@@ -41,7 +41,7 @@ export function runBridgeFormula(
     // Do not process once we reach the last axle unit
     // in the configuration, as they have all been calculated
     // by then.
-    if (index < axleConfig.length - 1) {
+    if (index <= axleConfig.length) {
       // Initialize the variables for our start axle
       const firstAxle: number = index + 1;
       let nextAxle: number = firstAxle + 1;
@@ -50,48 +50,51 @@ export function runBridgeFormula(
           `Invalid or missing number of axles for axle unit number ${firstAxle}`,
         );
       }
-      if (!axle.weight || axle.weight < 0) {
+      if (!axle.axleUnitWeight || axle.axleUnitWeight < 0) {
         throw new Error(
           `Invalid or missing weight for axle unit number ${firstAxle}`,
         );
       }
-      let totalWeight: number = axle.weight;
+      let totalWeight: number = axle.axleUnitWeight;
 
       // Spread may be zero or undefined if the axle unit
       // is a single axle. Spacing to next will be zero or
       // undefined for the final axle unit in the configuration.
-      if (axle.numberOfAxles > 1 && (!axle.spread || axle.spread < 0)) {
+      if (axle.numberOfAxles > 1 && (!axle.axleSpread || axle.axleSpread < 0)) {
         throw new Error(
           `Invalid or missing axle spread for axle unit number ${firstAxle}`,
         );
       }
-      if (axle.numberOfAxles == 1 && axle.spread && axle.spread < 0) {
+      if (axle.numberOfAxles == 1 && axle.axleSpread && axle.axleSpread < 0) {
         throw new Error(
           `Invalid axle spread for single axle unit, cannot be a negative number`,
         );
       }
-      if (!axle.spacingToNext || axle.spacingToNext < 0) {
-        throw new Error(
-          `Invalid or missing axle spacing between axle units ${firstAxle} and ${firstAxle + 1}`,
-        );
-      }
-      let wheelbase = (axle.spread ?? 0) + axle.spacingToNext;
+      let wheelbase = axle.axleSpread ?? 0;
 
       // Now loop through all of the next axles, building up a group
       // for each.
       axleConfig.slice(firstAxle).forEach((axleN) => {
-        if (!axleN.weight || axleN.weight < 0) {
+        if (!axleN.axleUnitWeight || axleN.axleUnitWeight < 0) {
           throw new Error(
             `Invalid or missing weight for axle unit number ${nextAxle}`,
           );
         }
-        totalWeight += axleN.weight;
-        if (axleN.numberOfAxles > 1 && (!axleN.spread || axleN.spread < 0)) {
+        totalWeight += axleN.axleUnitWeight;
+        if (
+          axleN.numberOfAxles > 1 &&
+          (!axleN.axleSpread || axleN.axleSpread < 0)
+        ) {
           throw new Error(
             `Invalid or missing axle spread for axle unit number ${nextAxle}`,
           );
         }
-        wheelbase += axleN.spread ?? 0;
+        if (!axleN.interaxleSpacing || axleN.interaxleSpacing < 0) {
+          throw new Error(
+            `Invalid or missing axle spacing between axle units ${firstAxle} and ${nextAxle}`,
+          );
+        }
+        wheelbase += (axleN.axleSpread ?? 0) + axleN.interaxleSpacing;
         // The magic is in the next line
         const maxBridge = BRIDGE_MULTIPLIER * wheelbase + BRIDGE_MIN_WEIGHT;
 
@@ -105,16 +108,6 @@ export function runBridgeFormula(
           success: totalWeight <= maxBridge,
         });
 
-        // Add the wheelbase only if this end axle unit is not the
-        // final one in the configuration
-        if (nextAxle < axleConfig.length) {
-          if (!axleN.spacingToNext || axleN.spacingToNext < 0) {
-            throw new Error(
-              `Invalid or missing axle spacing between axle units ${nextAxle} and ${nextAxle + 1}`,
-            );
-          }
-          wheelbase += axleN.spacingToNext ?? 0;
-        }
         nextAxle++;
       });
     }
