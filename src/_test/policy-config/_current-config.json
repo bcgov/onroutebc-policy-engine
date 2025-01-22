@@ -1,5 +1,5 @@
 {
-  "minPEVersion": "1.1.0",
+  "minPEVersion": "1.5.0",
   "geographicRegions": [
     {
       "id": "LMN",

@@ -8,6 +8,8 @@ import {
   TrailerSize,
   AxleConfiguration,
   BridgeCalculationResult,
+  PermitCondition,
+  ConditionForPermit,
 } from 'onroute-policy-engine/types';
 import {
   extractIdentifiedObjects,
@@ -33,6 +35,7 @@ import semverLt from 'semver/functions/lt';
 import semverMajor from 'semver/functions/major';
 import { SpecialAuthorizations } from './types/special-authorizations';
 import { filterOutLcv, filterVehiclesByType } from './helper/vehicles.helper';
+import { getConditionsForPermitHelper } from './helper/conditions.helper';
 
 /** Class representing commercial vehicle policy. */
 export class Policy {
@@ -138,6 +141,17 @@ export class Policy {
 
       return validationResults;
     }
+  }
+
+  /**
+   * Gets a list of conditions that are applicable for the supplied permit
+   * application. The conditions may be driven by those applicable for the
+   * permit type, or the vehicle type, or other aspects of the permit application.
+   * @param permit The in-progress permit application
+   * @returns Array of conditions that apply to the specific permit application
+   */
+  getConditionsForPermit(permit: any): Array<ConditionForPermit> {
+    return getConditionsForPermitHelper(permit, this);
   }
 
   /**
@@ -883,6 +897,29 @@ export class Policy {
     } else {
       return null;
     }
+  }
+
+  /**
+   * Gets a full VehicleType definition by ID (subType)
+   * @param subType String id (subType) of the vehicle. Can be either
+   * a trailer subtype or a power unit subtype.
+   * @returns Vehicle Type (trailer or power unit), or null if none found
+   */
+  getVehicleDefinition(subType?: string): VehicleType | null {
+    let vehicle: VehicleType | undefined;
+    if (this.policyDefinition.vehicleTypes) {
+      const puType = this.policyDefinition.vehicleTypes.powerUnitTypes?.find(pu => pu.id == subType);
+      if (puType) {
+        return puType;
+      }
+
+      const trType = this.policyDefinition.vehicleTypes.trailerTypes?.find(tr => tr.id == subType);
+      if (trType) {
+        return trType;
+      }
+    }
+
+    return null;
   }
 
   /**

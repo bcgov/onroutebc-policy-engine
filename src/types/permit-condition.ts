@@ -4,7 +4,9 @@ export type PermitCondition = {
   conditionLink: string;
 };
 
-export type ConditionForPermitType = {
+export type ConditionRequirement = {
   condition: string;
   mandatory?: boolean;
 };
+
+export type ConditionForPermit = PermitCondition & ConditionRequirement;
