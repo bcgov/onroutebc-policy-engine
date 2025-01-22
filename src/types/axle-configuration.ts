@@ -1,8 +1,8 @@
 export type AxleConfiguration = {
   numberOfAxles: number;
-  spread?: number;
-  spacingToNext?: number;
-  weight: number;
+  axleSpread?: number;
+  interaxleSpacing?: number;
+  axleUnitWeight: number;
   numberOfTires?: number;
   tireSize?: number;
 };
