@@ -8,6 +8,7 @@ import {
   VehicleCategories,
   RangeMatrix,
   BridgeCalculationConstants,
+  PermitConditionDefinition,
 } from 'onroute-policy-engine/types';
 import { RuleProperties } from 'json-rules-engine';
 
@@ -23,4 +24,5 @@ export type PolicyDefinition = {
   commodities: Array<Commodity>;
   rangeMatrices?: Array<RangeMatrix>;
   bridgeCalculationConstants: BridgeCalculationConstants;
+  conditions?: Array<PermitConditionDefinition>;
 };

@@ -1,5 +1,5 @@
 {
-  "minPEVersion": "1.1.0",
+  "minPEVersion": "1.6.0",
   "geographicRegions": [
     {
       "id": "LMN",
@@ -1471,62 +1471,66 @@
       "sizeDimensionRequired": false,
       "commodityRequired": false,
       "allowedVehicles": [
-        "BOOSTER",
+        "CONCRET",
+        "CRANEAT",
+        "CRANEMB",
+        "DDCKBUS",
+        "GRADERS",
+        "BUSTRLR",
+        "LOGGING",
+        "LOGOFFH",
+        "LCVTPDB",
+        "LCVRMDB",
+        "LWBTRCT",
+        "MUNIFTR",
+        "OGBEDTK",
+        "OGOILSW",
+        "PICKRTT",
+        "PICKRTR",
+        "RBTRLDR",
+        "TLSCONV",
+        "TOWVEHC",
+        "TRKTRAC",
+        "STINGER",
+        "REGTRCK",
+        "PLOWBLD",
         "DOLLIES",
         "EXPANDO",
-        "FEBGHSE",
         "FECVYER",
         "FEDRMMX",
         "FEPNYTR",
+        "FEBGHSE",
         "FESEMTR",
         "FEWHELR",
+        "FEWHLPR",
         "FLOATTR",
         "FULLLTL",
-        "HIBOEXP",
-        "HIBOFLT",
-        "JEEPSRG",
-        "LCVTPDB",
-        "LCVRMDB",
-        "LOGDGLG",
-        "LOGFULL",
         "LOGNTAC",
-        "LOGOWBK",
-        "LOGSMEM",
         "LOGTNDM",
         "LOGTRIX",
-        "ODTRLEX",
+        "LOGDGLG",
+        "LOGSMEM",
+        "LOGFULL",
+        "LOGOWBK",
         "OGOSFDT",
+        "ODTRLEX",
         "PLATFRM",
         "POLETRL",
         "PONYTRL",
         "REDIMIX",
         "SEMITRL",
-        "STBTRAN",
-        "STCHIPS",
-        "STCRANE",
-        "STINGAT",
+        "HIBOEXP",
+        "HIBOFLT",
+        "STREEFR",
         "STLOGNG",
         "STNTSHC",
-        "STREEFR",
         "STSDBDK",
         "STSTNGR",
+        "STCHIPS",
         "STWHELR",
         "STWIDWH",
-        "BUSTRLR",
-        "CONCRET",
-        "DDCKBUS",
-        "GRADERS",
-        "LOGGING",
-        "LOGOFFH",
-        "LWBTRCT",
-        "OGBEDTK",
-        "OGOILSW",
-        "PICKRTT",
-        "PLOWBLD",
-        "REGTRCK",
-        "STINGER",
-        "TOWVEHC",
-        "TRKTRAC"
+        "STCRANE",
+        "STINGAT"
       ],
       "rules": [
         {
@@ -1601,6 +1605,32 @@
             "cost": 30
           }
         }
+      ],
+      "conditions": [
+        {
+          "condition": "CVSE-1000",
+          "mandatory": true
+        },
+        {
+          "condition": "CVSE-1070",
+          "mandatory": true
+        },
+        {
+          "condition": "CVSE-1000S",
+          "mandatory": false
+        },
+        {
+          "condition": "CVSE-1000L",
+          "mandatory": false
+        },
+        {
+          "condition": "CVSE-1012",
+          "mandatory": false
+        },
+        {
+          "condition": "CVSE-1013",
+          "mandatory": false
+        }
       ]
     },
     {
@@ -1611,26 +1641,28 @@
       "sizeDimensionRequired": false,
       "commodityRequired": false,
       "allowedVehicles": [
-        "DOLLIES",
-        "FEBGHSE",
-        "FECVYER",
-        "FEDRMMX",
-        "FEPNYTR",
-        "FESEMTR",
-        "FEWHELR",
-        "REDIMIX",
         "CONCRET",
-        "CRAFTAT",
-        "CRAFTMB",
+        "CRANEAT",
+        "CRANEMB",
         "GRADERS",
+        "MUNIFTR",
         "LCVTPDB",
         "LCVRMDB",
-        "MUNFITR",
         "OGOILSW",
         "OGSERVC",
         "OGSRRAH",
         "PICKRTT",
-        "TOWVEHC"
+        "PICKRTR",
+        "RBTRLDR",
+        "TLSCONV",
+        "TRKTRAC",
+        "FECVYER",
+        "FEDRMMX",
+        "FEBGHSE",
+        "FESEMTR",
+        "FEWHELR",
+        "FEWHLPR",
+        "REDIMIX"
       ],
       "rules": [
         {
@@ -1704,6 +1736,20 @@
           "params": {
             "cost": 100
           }
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "CVSE-1000",
+          "mandatory": true
+        },
+        {
+          "condition": "CVSE-1070",
+          "mandatory": true
+        },
+        {
+          "condition": "CVSE-1011",
+          "mandatory": true
         }
       ]
     },
@@ -1787,6 +1833,36 @@
           "params": {
             "cost": 15
           }
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "CVSE-1000",
+          "mandatory": true
+        },
+        {
+          "condition": "CVSE-1070",
+          "mandatory": true
+        },
+        {
+          "condition": "CVSE-1001",
+          "mandatory": false
+        },
+        {
+          "condition": "CVSE-1002",
+          "mandatory": false
+        },
+        {
+          "condition": "CVSE-1010",
+          "mandatory": false
+        },
+        {
+          "condition": "CVSE-1012",
+          "mandatory": false
+        },
+        {
+          "condition": "CVSE-1013",
+          "mandatory": false
         }
       ]
     },
@@ -2820,13 +2896,18 @@
         "category": "powerunit"
       },
       {
-        "id": "BUSTRLR",
-        "name": "Inter-City Bus (Pulling Pony Trailer)",
+        "id": "CONCRET",
+        "name": "Concrete Pumper Trucks",
         "category": "powerunit"
       },
       {
-        "id": "CONCRET",
-        "name": "Concrete Pumper Trucks",
+        "id": "CRANEAT",
+        "name": "Cranes - All Terrain",
+        "category": "powerunit"
+      },
+      {
+        "id": "CRANEMB",
+        "name": "Cranes - Mobile",
         "category": "powerunit"
       },
       {
@@ -2845,6 +2926,11 @@
         "category": "powerunit"
       },
       {
+        "id": "FARMTRC",
+        "name": "Farm Tractors",
+        "category": "powerunit"
+      },
+      {
         "id": "FARMVEH",
         "name": "Farm Vehicles",
         "category": "powerunit"
@@ -2855,16 +2941,9 @@
         "category": "powerunit"
       },
       {
-        "id": "LCVRMDB",
-        "name": "Long Combination Vehicles (LCV) - Rocky Mountain Doubles",
-        "category": "powerunit",
-        "isLcv": true
-      },
-      {
-        "id": "LCVTPDB",
-        "name": "Long Combination Vehicles (LCV) - Turnpike Doubles",
-        "category": "powerunit",
-        "isLcv": true
+        "id": "BUSTRLR",
+        "name": "Intercity Buses (Pulling Pony Trailers)",
+        "category": "powerunit"
       },
       {
         "id": "LOGGING",
@@ -2875,6 +2954,30 @@
         "id": "LOGOFFH",
         "name": "Logging Trucks - Off-Highway",
         "category": "powerunit"
+      },
+      {
+        "id": "LCVRMDB",
+        "name": "Long Combination Vehicles (LCV) - Rocky Mountain Doubles",
+        "category": "powerunit",
+        "isLcv": true,
+        "conditions": [
+          {
+            "condition": "CVSE-1014",
+            "mandatory": true
+          }
+        ]
+      },
+      {
+        "id": "LCVTPDB",
+        "name": "Long Combination Vehicles (LCV) - Turnpike Doubles",
+        "category": "powerunit",
+        "isLcv": true,
+        "conditions": [
+          {
+            "condition": "CVSE-1014",
+            "mandatory": true
+          }
+        ]
       },
       {
         "id": "LWBTRCT",
@@ -2912,18 +3015,13 @@
         "category": "powerunit"
       },
       {
-        "id": "PLOWBLD",
-        "name": "Trucks Equipped with Front or Underbody Plow Blades",
+        "id": "PICKRTR",
+        "name": "Picker Trucks",
         "category": "powerunit"
       },
       {
-        "id": "PUTAXIS",
-        "name": "Taxis",
-        "category": "powerunit"
-      },
-      {
-        "id": "REGTRCK",
-        "name": "Trucks",
+        "id": "RBTRLDR",
+        "name": "Rubber-Tired Loaders",
         "category": "powerunit"
       },
       {
@@ -2937,8 +3035,13 @@
         "category": "powerunit"
       },
       {
-        "id": "STINGER",
-        "name": "Truck Tractors - Stinger Steered",
+        "id": "PUTAXIS",
+        "name": "Taxis",
+        "category": "powerunit"
+      },
+      {
+        "id": "TLSCONV",
+        "name": "Telescopic Conveyor Trucks",
         "category": "powerunit"
       },
       {
@@ -2950,6 +3053,21 @@
         "id": "TRKTRAC",
         "name": "Truck Tractors",
         "category": "powerunit"
+      },
+      {
+        "id": "STINGER",
+        "name": "Truck Tractors - Stinger Steered",
+        "category": "powerunit"
+      },
+      {
+        "id": "REGTRCK",
+        "name": "Trucks",
+        "category": "powerunit"
+      },
+      {
+        "id": "PLOWBLD",
+        "name": "Trucks Equipped with Front or Underbody Plow Blades",
+        "category": "powerunit"
       }
     ],
     "trailerTypes": [
@@ -2959,11 +3077,6 @@
         "category": "accessory"
       },
       {
-        "id": "DBTRBTR",
-        "name": "Tandem/Tridem Drive B-Train (Super B-Train)",
-        "category": "trailer"
-      },
-      {
         "id": "DOLLIES",
         "name": "Dollies",
         "category": "trailer"
@@ -2971,11 +3084,6 @@
       {
         "id": "EXPANDO",
         "name": "Expando Semi-Trailers",
-        "category": "trailer"
-      },
-      {
-        "id": "FEBGHSE",
-        "name": "Fixed Equipment - Portable Asphalt Baghouses",
         "category": "trailer"
       },
       {
@@ -2999,6 +3107,11 @@
         "category": "trailer"
       },
       {
+        "id": "FEBGHSE",
+        "name": "Fixed Equipment - Portable Asphalt Baghouses",
+        "category": "trailer"
+      },
+      {
         "id": "FESEMTR",
         "name": "Fixed Equipment - Semi-Trailers",
         "category": "trailer"
@@ -3006,6 +3119,11 @@
       {
         "id": "FEWHELR",
         "name": "Fixed Equipment - Wheeler Semi-Trailers",
+        "category": "wheeler"
+      },
+      {
+        "id": "FEWHLPR",
+        "name": "Fixed Equipment Semi-Trailer (16 and 24 Wheeler) Peace River",
         "category": "wheeler"
       },
       {
@@ -3019,48 +3137,13 @@
         "category": "trailer"
       },
       {
-        "id": "HIBOEXP",
-        "name": "Semi-Trailers - Hiboys/Expandos",
-        "category": "trailer"
-      },
-      {
-        "id": "HIBOFLT",
-        "name": "Semi-Trailers - Hiboys/Flat Decks",
-        "category": "trailer"
-      },
-      {
         "id": "JEEPSRG",
         "name": "Jeeps",
         "category": "accessory"
       },
       {
-        "id": "LOGDGLG",
-        "name": "Legacy Logging Trailer Combinations - Tandem Pole Trailers, Dogloggers",
-        "category": "trailer"
-      },
-      {
-        "id": "LOGLGCY",
-        "name": "Legacy Logging Trailer Combinations",
-        "category": "trailer"
-      },
-      {
-        "id": "LOGFULL",
-        "name": "Logging Trailer - Full Trailers, Tri Axle, Quad Axle",
-        "category": "trailer"
-      },
-      {
         "id": "LOGNTAC",
         "name": "Legacy Logging Trailer Combinations - Non-TAC B-Trains",
-        "category": "trailer"
-      },
-      {
-        "id": "LOGOWBK",
-        "name": "Logging Trailer - Overwidth Bunks",
-        "category": "trailer"
-      },
-      {
-        "id": "LOGSMEM",
-        "name": "Logging Semi-Trailer - Empty, 3.2 m Bunks",
         "category": "trailer"
       },
       {
@@ -3074,6 +3157,26 @@
         "category": "trailer"
       },
       {
+        "id": "LOGDGLG",
+        "name": "Legacy Logging Trailer Combinations - Tandem Pole Trailers, Dogloggers",
+        "category": "trailer"
+      },
+      {
+        "id": "LOGSMEM",
+        "name": "Logging Semi-Trailer - Empty, 3.2 m Bunks",
+        "category": "trailer"
+      },
+      {
+        "id": "LOGFULL",
+        "name": "Logging Trailer - Full Trailers, Tri Axle, Quad Axle",
+        "category": "trailer"
+      },
+      {
+        "id": "LOGOWBK",
+        "name": "Logging Trailers - Overwidth Bunks",
+        "category": "trailer"
+      },
+      {
         "id": "MHMBSHG",
         "name": "Manufactured Homes, Modular Buildings, Structures and Houseboats (> 5.0 m OAW) with Attached Axles",
         "category": "trailer"
@@ -3084,23 +3187,23 @@
         "category": "trailer"
       },
       {
-        "id": "ODTRLEX",
-        "name": "Overdimensional Trailers and Semi-Trailers (For Export)",
-        "category": "trailer"
-      },
-      {
         "id": "OGOSFDT",
         "name": "Oil and Gas - Oversize Oilfield Flat Deck Semi-Trailers",
         "category": "trailer"
       },
       {
-        "id": "PLATFRM",
-        "name": "Platform Trailers",
+        "id": "ODTRLEX",
+        "name": "Overdimensional Trailers and Semi-Trailers (For Export)",
         "category": "trailer"
       },
       {
         "id": "PMHWAAX",
         "name": "Park Model Homes with Attached Axles",
+        "category": "trailer"
+      },
+      {
+        "id": "PLATFRM",
+        "name": "Platform Trailers",
         "category": "trailer"
       },
       {
@@ -3134,18 +3237,18 @@
         "category": "trailer"
       },
       {
-        "id": "STCHIPS",
-        "name": "Semi-Trailers - Walled B-Trains (Chip Trucks)",
+        "id": "HIBOEXP",
+        "name": "Semi-Trailers - Hiboys/Expandos",
         "category": "trailer"
       },
       {
-        "id": "STCRANE",
-        "name": "Semi-Trailers with Crane",
+        "id": "HIBOFLT",
+        "name": "Semi-Trailers - Hiboys/Flat Decks",
         "category": "trailer"
       },
       {
-        "id": "STINGAT",
-        "name": "Stinger Steered Automobile Transporters",
+        "id": "STREEFR",
+        "name": "Semi-Trailers - Insulated Vans with Reefer/Refrigeration Units",
         "category": "trailer"
       },
       {
@@ -3159,23 +3262,13 @@
         "category": "trailer"
       },
       {
-        "id": "STREEFR",
-        "name": "Semi-Trailers - Insulated Vans with Reefer/Refrigeration Units",
-        "category": "trailer"
-      },
-      {
-        "id": "STROPRT",
-        "name": "Steering Trailers - Manned",
-        "category": "trailer"
-      },
-      {
-        "id": "STRSELF",
-        "name": "Steering Trailers - Self/Remote",
-        "category": "trailer"
-      },
-      {
         "id": "STSDBDK",
         "name": "Semi-Trailers - Single Drop, Double Drop, Step Decks, Lowbed, Expandos, etc.",
+        "category": "trailer"
+      },
+      {
+        "id": "STWDTAN",
+        "name": "Semi-Trailers - Spread Tandems",
         "category": "trailer"
       },
       {
@@ -3189,8 +3282,8 @@
         "category": "trailer"
       },
       {
-        "id": "STWDTAN",
-        "name": "Semi-Trailers - Spread Tandems",
+        "id": "STCHIPS",
+        "name": "Semi-Trailers - Walled B-Trains (Chip Trucks)",
         "category": "trailer"
       },
       {
@@ -3201,6 +3294,36 @@
       {
         "id": "STWIDWH",
         "name": "Semi-Trailers - Wide Wheelers",
+        "category": "trailer"
+      },
+      {
+        "id": "STCRANE",
+        "name": "Semi-Trailers with Crane",
+        "category": "trailer"
+      },
+      {
+        "id": "STROPRT",
+        "name": "Steering Trailers - Manned",
+        "category": "trailer"
+      },
+      {
+        "id": "STRSELF",
+        "name": "Steering Trailers - Self/Remote",
+        "category": "trailer"
+      },
+      {
+        "id": "STINGAT",
+        "name": "Stinger Steered Automobile Transporters",
+        "category": "trailer"
+      },
+      {
+        "id": "DBTRBTR",
+        "name": "Tandem/Tridem Drive B-Train (Super B-Train)",
+        "category": "trailer"
+      },
+      {
+        "id": "LOGLGCY",
+        "name": "Legacy Logging Trailer Combinations",
         "category": "trailer"
       },
       {
@@ -7830,5 +7953,62 @@
     "w": 2.6,
     "h": 4.15,
     "l": 31
+  },
+  "conditions": [
+  {
+    "description": "General Permit Conditions",
+    "condition": "CVSE-1000",
+    "conditionLink": "https://www.th.gov.bc.ca/forms/getForm.aspx?formId=1251"
+  },
+  {
+    "description": "Permit Scope and Limitation",
+    "condition": "CVSE-1070",
+    "conditionLink": "https://www.th.gov.bc.ca/forms/getForm.aspx?formId=1261"
+  },
+  {
+    "description": "Supplement for Structures",
+    "condition": "CVSE-1000S",
+    "conditionLink": "https://www.th.gov.bc.ca/forms/getForm.aspx?formId=1255"
+  },
+  {
+    "description": "Log Permit Conditions",
+    "condition": "CVSE-1000L",
+    "conditionLink": "https://www.th.gov.bc.ca/forms/getForm.aspx?formId=1250"
+  },
+  {
+    "description": "Highways and Restrictive Load Limits",
+    "condition": "CVSE-1011",
+    "conditionLink": "https://www.th.gov.bc.ca/forms/getForm.aspx?formId=1258"
+  },
+  {
+    "description": "Routes Pre-Approved for 5.0 m OAW",
+    "condition": "CVSE-1001",
+    "conditionLink": ""
+  },
+  {
+    "description": "General Permit Conditions to 6.1 m in the Peace River Area",
+    "condition": "CVSE-1002",
+    "conditionLink": ""
+  },
+  {
+    "description": "East-West Overheight Corridors in the Lower Mainland",
+    "condition": "CVSE-1010",
+    "conditionLink": ""
+  },
+  {
+    "description": "Routes - Woods Chips & Residual",
+    "condition": "CVSE-1012",
+    "conditionLink": "https://www.th.gov.bc.ca/forms/getForm.aspx?formId=1259"
+  },
+  {
+    "description": "Restricted Routes for Hauling Wood on Wide Bunks",
+    "condition": "CVSE-1013",
+    "conditionLink": "https://www.th.gov.bc.ca/forms/getForm.aspx?formId=1254"
+  },
+  {
+    "description": "LCV Operating Conditions & Routes",
+    "condition": "CVSE-1014",
+    "conditionLink": "https://www.th.gov.bc.ca/forms/getForm.aspx?formId=1260"
   }
+  ]
 }
