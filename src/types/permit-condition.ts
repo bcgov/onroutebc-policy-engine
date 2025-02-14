@@ -9,4 +9,5 @@ export type ConditionRequirement = {
   mandatory?: boolean;
 };
 
-export type ConditionForPermit = PermitConditionDefinition & ConditionRequirement;
+export type ConditionForPermit = PermitConditionDefinition &
+  ConditionRequirement;

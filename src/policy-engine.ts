@@ -8,7 +8,6 @@ import {
   TrailerSize,
   AxleConfiguration,
   BridgeCalculationResult,
-  PermitCondition,
   ConditionForPermit,
 } from 'onroute-policy-engine/types';
 import {
@@ -906,14 +905,17 @@ export class Policy {
    * @returns Vehicle Type (trailer or power unit), or null if none found
    */
   getVehicleDefinition(subType?: string): VehicleType | null {
-    let vehicle: VehicleType | undefined;
     if (this.policyDefinition.vehicleTypes) {
-      const puType = this.policyDefinition.vehicleTypes.powerUnitTypes?.find(pu => pu.id == subType);
+      const puType = this.policyDefinition.vehicleTypes.powerUnitTypes?.find(
+        (pu) => pu.id == subType,
+      );
       if (puType) {
         return puType;
       }
 
-      const trType = this.policyDefinition.vehicleTypes.trailerTypes?.find(tr => tr.id == subType);
+      const trType = this.policyDefinition.vehicleTypes.trailerTypes?.find(
+        (tr) => tr.id == subType,
+      );
       if (trType) {
         return trType;
       }

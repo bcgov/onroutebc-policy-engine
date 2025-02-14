@@ -11,5 +11,5 @@ export type PermitType = IdentifiedObject & {
   allowedCommodities?: Array<string>;
   rules?: Array<RuleProperties>;
   costRules?: Array<CostRule>;
-  conditions?: Array<ConditionRequirement>
+  conditions?: Array<ConditionRequirement>;
 };

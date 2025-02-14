@@ -1,5 +1,10 @@
-import { Policy } from "../policy-engine";
-import { ConditionForPermit, ConditionRequirement, PermitConditionDefinition, VehicleType } from "../types";
+import { Policy } from '../policy-engine';
+import {
+  ConditionForPermit,
+  ConditionRequirement,
+  PermitConditionDefinition,
+  VehicleType,
+} from '../types';
 
 /**
  * Gets a list of conditions that are applicable for the supplied permit
@@ -9,21 +14,30 @@ import { ConditionForPermit, ConditionRequirement, PermitConditionDefinition, Ve
  * @param policy Policy object
  * @returns Array of conditions that apply to the specific permit application
  */
-export function getConditionsForPermitHelper(permitApp: any, policy: Policy): Array<ConditionForPermit> {
+export function getConditionsForPermitHelper(
+  permitApp: any,
+  policy: Policy,
+): Array<ConditionForPermit> {
   let conditionsForPermit: Array<ConditionForPermit> = [];
 
   if (permitApp.permitType) {
     // Get all conditions applicable to the permit type
     const permitType = policy.getPermitTypeDefinition(permitApp.permitType);
     if (permitType) {
-      conditionsForPermit = conditionsForPermit.concat(expandConditions(policy, permitType.conditions));
+      conditionsForPermit = conditionsForPermit.concat(
+        expandConditions(policy, permitType.conditions),
+      );
     }
 
     // Get any conditions specific to the permitted vehicle
     if (permitApp.permitData?.vehicleDetails?.vehicleSubType) {
-      const vehicle: VehicleType | null = policy.getVehicleDefinition(permitApp.permitData.vehicleDetails.vehicleSubType);
+      const vehicle: VehicleType | null = policy.getVehicleDefinition(
+        permitApp.permitData.vehicleDetails.vehicleSubType,
+      );
       if (vehicle) {
-        conditionsForPermit = conditionsForPermit.concat(expandConditions(policy, vehicle.conditions));
+        conditionsForPermit = conditionsForPermit.concat(
+          expandConditions(policy, vehicle.conditions),
+        );
       }
     }
   }
@@ -39,11 +53,17 @@ export function getConditionsForPermitHelper(permitApp: any, policy: Policy): Ar
  * @returns Array of full ConditionForPermit object, or empty array if
  * none found matching.
  */
-function expandConditions(policy: Policy, conditions?: Array<ConditionRequirement>): Array<ConditionForPermit> {
+function expandConditions(
+  policy: Policy,
+  conditions?: Array<ConditionRequirement>,
+): Array<ConditionForPermit> {
   const expandedConditions: Array<ConditionForPermit> = [];
 
-  conditions?.forEach(c => {
-    const condition: PermitConditionDefinition | undefined = policy.policyDefinition.conditions?.find(cond => cond.condition == c.condition);
+  conditions?.forEach((c) => {
+    const condition: PermitConditionDefinition | undefined =
+      policy.policyDefinition.conditions?.find(
+        (cond) => cond.condition == c.condition,
+      );
     if (condition) {
       expandedConditions.push({ ...condition, ...c });
     }
