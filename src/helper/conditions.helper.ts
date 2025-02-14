@@ -1,5 +1,5 @@
 import { Policy } from "../policy-engine";
-import { ConditionForPermit, ConditionRequirement, PermitCondition, VehicleType } from "../types";
+import { ConditionForPermit, ConditionRequirement, PermitConditionDefinition, VehicleType } from "../types";
 
 /**
  * Gets a list of conditions that are applicable for the supplied permit
@@ -43,7 +43,7 @@ function expandConditions(policy: Policy, conditions?: Array<ConditionRequiremen
   const expandedConditions: Array<ConditionForPermit> = [];
 
   conditions?.forEach(c => {
-    const condition: PermitCondition | undefined = policy.policyDefinition.conditions?.find(cond => cond.condition == c.condition);
+    const condition: PermitConditionDefinition | undefined = policy.policyDefinition.conditions?.find(cond => cond.condition == c.condition);
     if (condition) {
       expandedConditions.push({ ...condition, ...c });
     }

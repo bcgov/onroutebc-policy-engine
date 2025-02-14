@@ -7,7 +7,7 @@ export { DimensionModifier } from './dimension-modifier';
 export { PermitFacts } from './facts';
 export { GeographicRegion } from './geographic-region';
 export { IdentifiedObject } from './identified-object';
-export { PermitCondition, ConditionRequirement, ConditionForPermit } from './permit-condition';
+export { PermitConditionDefinition, ConditionRequirement, ConditionForPermit } from './permit-condition';
 export { PermitType } from './permit-type';
 export { PolicyDefinition } from './policy-definition';
 export { Matrix, RangeMatrix } from './range-matrix';

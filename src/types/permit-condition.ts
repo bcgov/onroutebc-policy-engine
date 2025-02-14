@@ -1,4 +1,4 @@
-export type PermitCondition = {
+export type PermitConditionDefinition = {
   description: string;
   condition: string;
   conditionLink: string;
@@ -9,4 +9,4 @@ export type ConditionRequirement = {
   mandatory?: boolean;
 };
 
-export type ConditionForPermit = PermitCondition & ConditionRequirement;
+export type ConditionForPermit = PermitConditionDefinition & ConditionRequirement;
