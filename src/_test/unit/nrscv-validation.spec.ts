@@ -350,7 +350,29 @@ describe('Non-Resident Single Trip Validation Tests', () => {
       PermitAppInfo.PermitDateFormat.toString(),
     );
     // Set conditionalLicensingFee to farm
-    permit.permitData.conditionalLicensingFee = 'farm';
+    permit.permitData.conditionalLicensingFee = 'farm-vehicle';
+    // Set netWeight to 24400, deleting loadedGVW property
+    delete permit.permitData.vehicleConfiguration.loadedGVW;
+    permit.permitData.vehicleConfiguration.netWeight = 24400;
+
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.cost).not.toHaveLength(0);
+    const initialValue: number = 0;
+    const cost = validationResult.cost.reduce(
+      (prev: any, curr: any) => prev + curr.cost,
+      initialValue,
+    );
+    expect(cost).toBe(109);
+  });
+
+  it('should calculate NRSCV farm tractor cost correctly', async () => {
+    const permit = JSON.parse(JSON.stringify(validNrscv));
+    // Set startDate to today
+    permit.permitData.startDate = dayjs().format(
+      PermitAppInfo.PermitDateFormat.toString(),
+    );
+    // Set conditionalLicensingFee to farm
+    permit.permitData.conditionalLicensingFee = 'farm-tractor';
     // Set loadedGVW to 24400
     permit.permitData.vehicleConfiguration.loadedGVW = 24400;
 
@@ -361,6 +383,6 @@ describe('Non-Resident Single Trip Validation Tests', () => {
       (prev: any, curr: any) => prev + curr.cost,
       initialValue,
     );
-    expect(cost).toBe(109);
+    expect(cost).toBe(33);
   });
 });

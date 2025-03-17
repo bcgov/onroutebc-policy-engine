@@ -2624,6 +2624,14 @@
           }
         },
         {
+          "fact": "conditionalFixedCost",
+          "params": {
+            "cost": 33,
+            "fact": "conditionalLicensingFee",
+            "value": "farm-tractor"
+          }
+        },
+        {
           "fact": "rangeMatrixCostLookup",
           "params": {
             "divisor": 12,
@@ -2635,14 +2643,24 @@
               {
                 "key": "x-plated",
                 "value": "annualFeeIndustrial"
-              },
-              {
-                "key": "farm",
-                "value": "annualFeeFarm"
               }
             ],
             "rangeLookupKey": "conditionalLicensingFee",
             "matrixFactValue": "vehicleConfiguration.loadedGVW"
+          }
+        },
+        {
+          "fact": "rangeMatrixCostLookup",
+          "params": {
+            "divisor": 12,
+            "matrixMap": [
+              {
+                "key": "farm-vehicle",
+                "value": "annualFeeFarm"
+              }
+            ],
+            "rangeLookupKey": "conditionalLicensingFee",
+            "matrixFactValue": "vehicleConfiguration.netWeight"
           }
         }
       ]
@@ -2838,6 +2856,14 @@
           }
         },
         {
+          "fact": "conditionalFixedCost",
+          "params": {
+            "cost": 33,
+            "fact": "conditionalLicensingFee",
+            "value": "farm-tractor"
+          }
+        },
+        {
           "fact": "rangeMatrixCostLookup",
           "params": {
             "divisor": 4,
@@ -2849,14 +2875,24 @@
               {
                 "key": "x-plated",
                 "value": "annualFeeIndustrial"
-              },
-              {
-                "key": "farm",
-                "value": "annualFeeFarm"
               }
             ],
             "rangeLookupKey": "conditionalLicensingFee",
             "matrixFactValue": "vehicleConfiguration.loadedGVW"
+          }
+        },
+        {
+          "fact": "rangeMatrixCostLookup",
+          "params": {
+            "divisor": 4,
+            "matrixMap": [
+              {
+                "key": "farm-vehicle",
+                "value": "annualFeeFarm"
+              }
+            ],
+            "rangeLookupKey": "conditionalLicensingFee",
+            "matrixFactValue": "vehicleConfiguration.netWeight"
           }
         }
       ]
