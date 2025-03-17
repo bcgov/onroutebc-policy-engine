@@ -79,6 +79,7 @@ type VehicleConfiguration = {
   rearProjection?: number;
   trailers?: Array<VehicleInConfiguration> | null;
   loadedGVW?: number;
+  netWeight?: number;
 };
 
 type PermittedRoute = {

@@ -372,6 +372,31 @@ describe('Non-Resident Quarterly Validation Tests', () => {
     expect(cost).toBe(28);
   });
 
+  it('should calculate NRQCV farm tractor cost correctly', async () => {
+    const permit = JSON.parse(JSON.stringify(validNrqcv));
+    // Set startDate to today, end date to the end of the quarter
+    const dateFrom = dayjs();
+    permit.permitData.startDate = dateFrom.format(
+      PermitAppInfo.PermitDateFormat.toString(),
+    );
+    permit.permitData.expiryDate = dateFrom
+      .endOf('quarter')
+      .format(PermitAppInfo.PermitDateFormat.toString());
+    // Set conditionalLicensingFee to farm
+    permit.permitData.conditionalLicensingFee = 'farm-tractor';
+    // Set loadedGVW to 24400
+    permit.permitData.vehicleConfiguration.loadedGVW = 24400;
+
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.cost).not.toHaveLength(0);
+    const initialValue: number = 0;
+    const cost = validationResult.cost.reduce(
+      (prev: any, curr: any) => prev + curr.cost,
+      initialValue,
+    );
+    expect(cost).toBe(33);
+  });
+
   it('should calculate NRQCV farm vehicle cost correctly', async () => {
     const permit = JSON.parse(JSON.stringify(validNrqcv));
     // Set startDate to today, end date to the end of the quarter
@@ -383,9 +408,10 @@ describe('Non-Resident Quarterly Validation Tests', () => {
       .endOf('quarter')
       .format(PermitAppInfo.PermitDateFormat.toString());
     // Set conditionalLicensingFee to farm
-    permit.permitData.conditionalLicensingFee = 'farm';
-    // Set loadedGVW to 24400
-    permit.permitData.vehicleConfiguration.loadedGVW = 24400;
+    permit.permitData.conditionalLicensingFee = 'farm-vehicle';
+    // Set netWeight to 24400, deleting loadedGVW property
+    delete permit.permitData.vehicleConfiguration.loadedGVW;
+    permit.permitData.vehicleConfiguration.netWeight = 24400;
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.cost).not.toHaveLength(0);
