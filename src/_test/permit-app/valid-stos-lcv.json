@@ -40,7 +40,7 @@
       "postalCode": "V8B1A2"
     },
     "permittedCommodity": {
-      "commodityType": "NONEXXX",
+      "commodityType": "XXXXXXX",
       "loadDescription": "empty"
     },
     "vehicleConfiguration": {

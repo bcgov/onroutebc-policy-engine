@@ -3,8 +3,30 @@ import completePolicyConfig from '../_test/policy-config/_current-config.json';
 
 function start() {
   const policy: Policy = new Policy(completePolicyConfig);
-  console.log(JSON.stringify(policy.policyDefinition));
+  //console.log(JSON.stringify(policy.policyDefinition));
+
+  const allVehicles = policy.getPermittableVehicleTypes('QRFR');
+  const powerUnits: any = allVehicles.get('powerUnits');
+  const trailers: any = allVehicles.get('trailers');
+  console.log('***POWER UNIT TYPES FOR QRFR***');
+  console.log(JSON.stringify(Array.from(powerUnits.entries()), null, '   '));
+  console.log('***TRAILER TYPES FOR QRFR***');
+  console.log(JSON.stringify(Array.from(trailers.entries()), null, '   '));
+
   /*
+  console.log('***ALL POWER UNIT TYPES***');
+  const allPowerUnits = policy.getPowerUnitTypes();
+  const puArray = Array.from(allPowerUnits.entries());
+  puArray.sort((a: any, b: any) => a[0] - b[0]);
+  console.log(
+    JSON.stringify((puArray), null, '   '),
+  );
+
+  console.log('***ALL TRAILER TYPES***');
+  const allTrailers = policy.getTrailerTypes();
+  console.log(
+    JSON.stringify(Array.from(allTrailers.entries()), null, '   '),
+  );
 
   console.log('***ALL COMMODITIES***');
   const allCommodities = policy.getCommodities();
