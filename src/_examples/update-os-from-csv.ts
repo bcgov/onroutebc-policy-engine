@@ -19,9 +19,9 @@ enum ColumnNumbers {
   AllowJeep = 4,
   AllowBooster = 5,
   FirstWidth = 6,
-  DefaultWidth = 15,
-  FrontProjection = 18,
-  RearProjection = 19,
+  DefaultWidth = 18,
+  FrontProjection = 21,
+  RearProjection = 22,
 }
 
 function csvRowToObject(
@@ -78,7 +78,7 @@ function csvRowToObject(
     if (!isNaN(bcHeight)) sizeDimension.h = bcHeight;
     if (!isNaN(bcLength)) sizeDimension.l = bcLength;
 
-    const regionIds: Array<string> = ['LMN', 'KTN', 'PCE'];
+    const regionIds: Array<string> = ['LMN', 'ELK', 'YHO', 'PCE'];
     // Populate the 3 region dimensions
     for (let i = 0; i < regionIds.length; i++) {
       const w = parseFloat(row[ColumnNumbers.FirstWidth + i * 3]);
