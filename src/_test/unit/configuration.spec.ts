@@ -26,7 +26,7 @@ describe('Policy Engine Oversize Configuration Functions', () => {
   });
 
   it('should return only non-lcv power unit types if not authorized for lcv', async () => {
-    const puTypes = policy.getPermittablePowerUnitTypes('STOS', 'NONEXXX');
+    const puTypes = policy.getPermittablePowerUnitTypes('STOS', 'XXXXXXX');
     const nonLcvPULength = puTypes.size;
 
     expect(puTypes.keys()).not.toContain('LCVRMDB');
@@ -34,7 +34,7 @@ describe('Policy Engine Oversize Configuration Functions', () => {
 
     const lcvPuTypes = lcvPolicy.getPermittablePowerUnitTypes(
       'STOS',
-      'NONEXXX',
+      'XXXXXXX',
     );
     // There are 2 permittable LCV types
     expect(lcvPuTypes.size - nonLcvPULength).toBe(2);
@@ -54,7 +54,7 @@ describe('Policy Engine Get Next Permittable Vehicles', () => {
   });
 
   it('should return only non-lcv permittable power units with empty current configuration', async () => {
-    const vehicles = policy.getNextPermittableVehicles('STOS', 'NONEXXX', []);
+    const vehicles = policy.getNextPermittableVehicles('STOS', 'XXXXXXX', []);
     expect(vehicles.keys()).not.toContain('LCVRMDB');
     expect(vehicles.keys()).not.toContain('LCVTPDB');
   });
@@ -62,7 +62,7 @@ describe('Policy Engine Get Next Permittable Vehicles', () => {
   it('should return lcv permittable power units with empty current configuration and lcv auth', async () => {
     const vehicles = lcvPolicy.getNextPermittableVehicles(
       'STOS',
-      'NONEXXX',
+      'XXXXXXX',
       [],
     );
     expect(vehicles.keys()).toContain('LCVRMDB');
@@ -70,14 +70,14 @@ describe('Policy Engine Get Next Permittable Vehicles', () => {
   });
 
   it('should return no next vehicles with lcv pu and no lcv auth', async () => {
-    const vehicles = policy.getNextPermittableVehicles('STOS', 'NONEXXX', [
+    const vehicles = policy.getNextPermittableVehicles('STOS', 'XXXXXXX', [
       'LCVRMDB',
     ]);
     expect(vehicles.size).toBe(0);
   });
 
   it('should return one semi-trailer with lcv pu and lcv auth', async () => {
-    const vehicles = lcvPolicy.getNextPermittableVehicles('STOS', 'NONEXXX', [
+    const vehicles = lcvPolicy.getNextPermittableVehicles('STOS', 'XXXXXXX', [
       'LCVRMDB',
     ]);
     expect(vehicles.size).toBe(1);

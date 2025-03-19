@@ -1485,9 +1485,10 @@
         "LOGOFFH",
         "LCVTPDB",
         "LCVRMDB",
-        "MUNIFTR",
+        "MUNFITR",
         "OGBEDTK",
         "OGOILSW",
+        "OGSERVC",
         "PICKRTT",
         "PICKRTR",
         "RBTRLDR",
@@ -1499,7 +1500,7 @@
         "PLOWBLD",
         "DOLLIES",
         "EXPANDO",
-        "FECVYER",
+        "FECVYRX",
         "FEDRMMX",
         "FEPNYTR",
         "FEBGHSE",
@@ -1529,7 +1530,6 @@
         "STNTSHC",
         "STSDBDK",
         "STSTNGR",
-        "STCHIPS",
         "STWHELR",
         "STWIDWH",
         "STCRANE",
@@ -1648,18 +1648,18 @@
         "CRANEAT",
         "CRANEMB",
         "GRADERS",
-        "MUNIFTR",
+        "MUNFITR",
         "LCVTPDB",
         "LCVRMDB",
         "OGOILSW",
         "OGSERVC",
-        "OGSRRAH",
         "PICKRTT",
         "PICKRTR",
         "RBTRLDR",
         "TLSCONV",
+        "TOWVEHC",
         "TRKTRAC",
-        "FECVYER",
+        "FECVYRX",
         "FEDRMMX",
         "FEBGHSE",
         "FESEMTR",
@@ -1880,10 +1880,9 @@
         "BUSCRUM",
         "BUSTRLR",
         "CONCRET",
-        "CRAFTAT",
-        "CRAFTMB",
+        "CRANEAT",
+        "CRANEMB",
         "DDCKBUS",
-        "FARMVEH",
         "GRADERS",
         "LCVRMDB",
         "LCVTPDB",
@@ -2068,10 +2067,9 @@
         "BUSCRUM",
         "BUSTRLR",
         "CONCRET",
-        "CRAFTAT",
-        "CRAFTMB",
+        "CRANEAT",
+        "CRANEMB",
         "DDCKBUS",
-        "FARMVEH",
         "GRADERS",
         "LCVRMDB",
         "LCVTPDB",
@@ -2246,8 +2244,8 @@
         "BUSCRUM",
         "BUSTRLR",
         "CONCRET",
-        "CRAFTAT",
-        "CRAFTMB",
+        "CRANEAT",
+        "CRANEMB",
         "DDCKBUS",
         "GRADERS",
         "LCVRMDB",
@@ -2431,10 +2429,10 @@
         "BUSCRUM",
         "BUSTRLR",
         "CONCRET",
-        "CRAFTAT",
-        "CRAFTMB",
+        "CRANEAT",
+        "CRANEMB",
         "DDCKBUS",
-        "FARMVEH",
+        "FARMTRC",
         "GRADERS",
         "LCVRMDB",
         "LCVTPDB",
@@ -2671,10 +2669,10 @@
         "BUSCRUM",
         "BUSTRLR",
         "CONCRET",
-        "CRAFTAT",
-        "CRAFTMB",
+        "CRANEAT",
+        "CRANEMB",
         "DDCKBUS",
-        "FARMVEH",
+        "FARMTRC",
         "GRADERS",
         "LCVRMDB",
         "LCVTPDB",
@@ -3116,16 +3114,6 @@
         "category": "trailer"
       },
       {
-        "id": "FECVYER",
-        "name": "Fixed Equipment - Conveyors (Semi-Trailers)",
-        "category": "trailer"
-      },
-      {
-        "id": "FECVYPT",
-        "name": "Fixed Equipment - Conveyors (Pony Trailers)",
-        "category": "trailer"
-      },
-      {
         "id": "FEDRMMX",
         "name": "Fixed Equipment - Counter Flow Asphalt Drum Mixers",
         "category": "trailer"
@@ -3361,7 +3349,7 @@
         "category": "trailer"
       },
       {
-        "id": "NONEXXX",
+        "id": "XXXXXXX",
         "name": "None",
         "category": "pseudo"
       }
@@ -3369,7 +3357,7 @@
   },
   "commodities": [
     {
-      "id": "NONEXXX",
+      "id": "XXXXXXX",
       "name": "None",
       "size": {
         "powerUnits": [
@@ -3604,7 +3592,7 @@
                 ]
               },
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": false,
@@ -3657,7 +3645,7 @@
                 ]
               },
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": true,
@@ -3738,7 +3726,7 @@
                 ]
               },
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": true,
@@ -3845,7 +3833,7 @@
                 ]
               },
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": true,
@@ -3928,7 +3916,7 @@
             "type": "TLSCONV",
             "trailers": [
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": true,
                 "selfIssue": true,
@@ -3948,7 +3936,7 @@
             "type": "CONCRET",
             "trailers": [
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": true,
                 "selfIssue": true,
@@ -3968,7 +3956,7 @@
             "type": "DDCKBUS",
             "trailers": [
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": true,
@@ -4006,7 +3994,7 @@
             "type": "PICKRTT",
             "trailers": [
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": true,
@@ -4083,7 +4071,7 @@
             "type": "SCRAPER",
             "trailers": [
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": true,
@@ -4103,7 +4091,7 @@
             "type": "PLOWBLD",
             "trailers": [
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": true,
@@ -4217,7 +4205,7 @@
             "type": "TRKTRAC",
             "trailers": [
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": true,
@@ -4245,7 +4233,7 @@
             "type": "GRADERS",
             "trailers": [
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": true,
@@ -4301,7 +4289,7 @@
             "type": "REGTRCK",
             "trailers": [
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": true,
@@ -5343,7 +5331,7 @@
                 ]
               },
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": true,
@@ -5583,7 +5571,7 @@
                 ]
               },
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": true,
@@ -5618,7 +5606,7 @@
             "type": "OGOILSW",
             "trailers": [
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": true,
@@ -5653,7 +5641,7 @@
             "type": "OGSERVC",
             "trailers": [
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": true,
@@ -5688,7 +5676,7 @@
             "type": "OGSRRAH",
             "trailers": [
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": false,
@@ -5751,7 +5739,7 @@
             "type": "TRKTRAC",
             "trailers": [
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": true,
@@ -5771,7 +5759,7 @@
             "type": "REGTRCK",
             "trailers": [
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": true,
@@ -5799,7 +5787,7 @@
             "type": "TOWVEHC",
             "trailers": [
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": true,
@@ -5827,7 +5815,7 @@
             "type": "TRKTRAC",
             "trailers": [
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": true,
@@ -5847,7 +5835,7 @@
             "type": "REGTRCK",
             "trailers": [
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": true,
@@ -6192,7 +6180,7 @@
                 ]
               },
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": true,
@@ -6299,7 +6287,7 @@
                 ]
               },
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": true,
@@ -6481,7 +6469,7 @@
                 ]
               },
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": true,
@@ -6676,7 +6664,7 @@
                 ]
               },
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": true,
@@ -6926,7 +6914,7 @@
                 ]
               },
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": true,
@@ -7601,7 +7589,7 @@
             "type": "REGTRCK",
             "trailers": [
               {
-                "type": "NONEXXX",
+                "type": "XXXXXXX",
                 "jeep": false,
                 "booster": false,
                 "selfIssue": true,
