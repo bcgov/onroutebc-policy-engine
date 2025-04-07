@@ -133,7 +133,35 @@ export class Policy {
           new ValidationResult(
             ValidationResultType.Information,
             ValidationResultCode.IsLcvCarrier,
-            `Policy validation allowing long combination vahicle permitting for client '${this.specialAuthorizations.companyId}'`,
+            `Policy validation allowing long combination vehicle permitting for client '${this.specialAuthorizations.companyId}'`,
+          ),
+        );
+      }
+
+      // Include an informational message and adjust the cost if the client
+      // has a no fee flag set.
+      if (this.specialAuthorizations?.noFeeType) {
+        const originalPermitCost = validationResults?.cost.reduce(
+          (accumulator, { cost }) => accumulator + (cost ?? 0),
+          0,
+        );
+
+        // Clear the cost array and replace with zero cost
+        validationResults.cost.length = 0;
+        const newPermitCostResult = new ValidationResult(
+          ValidationResultType.Cost,
+          ValidationResultCode.CostValue,
+          'Calculated permit cost',
+        );
+        newPermitCostResult.cost = 0;
+        validationResults.cost.push(newPermitCostResult);
+
+        // Add an informational message to the results
+        validationResults.information.push(
+          new ValidationResult(
+            ValidationResultType.Information,
+            ValidationResultCode.NoFeeClient,
+            `Client '${this.specialAuthorizations.companyId}' has no fee flag, original permit cost would otherwise be '${originalPermitCost}'`,
           ),
         );
       }

@@ -5,4 +5,5 @@ export enum ValidationResultCode {
   GeneralResult = 'general-result',
   CostValue = 'cost-value',
   IsLcvCarrier = 'lcv-carrier',
+  NoFeeClient = 'no-fee-client',
 }

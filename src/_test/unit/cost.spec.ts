@@ -5,7 +5,9 @@ import validTros30Day from '../permit-app/valid-tros-30day.json';
 import validTrow120Day from '../permit-app/valid-trow-120day.json';
 import testStos from '../permit-app/test-stos.json';
 import dayjs from 'dayjs';
+import specialAuthNoFee from '../policy-config/special-auth-nofee.sample.json';
 import { PermitAppInfo } from '../../enum/permit-app-info';
+import { ValidationResultCode } from '../../enum';
 
 describe('Policy Engine Cost Calculator', () => {
   const policy: Policy = new Policy(currentConfig);
@@ -21,6 +23,23 @@ describe('Policy Engine Cost Calculator', () => {
     const validationResult = await policy.validate(permit);
     expect(validationResult.cost).toHaveLength(1);
     expect(validationResult.cost[0].cost).toBe(30);
+  });
+
+  it('should respect the no fee flag', async () => {
+    const noFeePolicy = new Policy(currentConfig, specialAuthNoFee);
+    const permit = JSON.parse(JSON.stringify(validTros30Day));
+    // Set startDate to today
+    permit.permitData.startDate = dayjs().format(
+      PermitAppInfo.PermitDateFormat.toString(),
+    );
+
+    const validationResult = await noFeePolicy.validate(permit);
+    expect(validationResult.cost).toHaveLength(1);
+    expect(validationResult.cost[0].cost).toBe(0);
+    expect(validationResult.information).toHaveLength(1);
+    expect(validationResult.information[0].code).toBe(
+      ValidationResultCode.NoFeeClient,
+    );
   });
 
   it('should calculate 31 day TROS cost as 2 months', async () => {
