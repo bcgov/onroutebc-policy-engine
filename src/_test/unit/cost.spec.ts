@@ -4,6 +4,7 @@ import multipleCostRules from '../policy-config/tros-multiple-cost-rules.sample.
 import validTros30Day from '../permit-app/valid-tros-30day.json';
 import validTrow120Day from '../permit-app/valid-trow-120day.json';
 import testStos from '../permit-app/test-stos.json';
+import invalidStos from '../permit-app/invalid-stos.json';
 import dayjs from 'dayjs';
 import specialAuthNoFee from '../policy-config/special-auth-nofee.sample.json';
 import { PermitAppInfo } from '../../enum/permit-app-info';
@@ -91,6 +92,17 @@ describe('Policy Engine Cost Calculator', () => {
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.cost).toHaveLength(1);
+    expect(validationResult.cost[0].cost).toBe(15);
+  });
+
+  it('should not throw error when validating STOS', async () => {
+    const permit = JSON.parse(JSON.stringify(invalidStos));
+    // Set startDate to today
+    permit.permitData.startDate = dayjs().format(
+      PermitAppInfo.PermitDateFormat.toString(),
+    );
     const validationResult = await policy.validate(permit);
     expect(validationResult.cost).toHaveLength(1);
     expect(validationResult.cost[0].cost).toBe(15);

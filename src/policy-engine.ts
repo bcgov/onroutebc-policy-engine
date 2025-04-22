@@ -489,7 +489,19 @@ export class Policy {
       const powerUnit = commodity.size?.powerUnits?.find(
         (p) => p.type == currentConfiguration[0],
       );
-      const trailerIds = powerUnit?.trailers.map((t) => t.type);
+
+      let validTrailers;
+      // ORV2-3953
+      // If a jeep has been added, only add trailers that
+      // permit jeeps from the trailer list
+      if (currentConfiguration.includes(AccessoryVehicleType.Jeep)) {
+        validTrailers = powerUnit?.trailers.filter((t) => t.jeep);
+      } else {
+        validTrailers = powerUnit?.trailers;
+      }
+
+      const trailerIds = validTrailers?.map((t) => t.type);
+
       if (currentConfiguration.length == 1) {
         // Just a power unit, return the list of trailerIds for the
         // power unit, plus jeep if any of the trailer Ids allow
