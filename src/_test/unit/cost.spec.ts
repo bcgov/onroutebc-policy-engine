@@ -7,6 +7,7 @@ import testStos from '../permit-app/test-stos.json';
 import invalidStos from '../permit-app/invalid-stos.json';
 import dayjs from 'dayjs';
 import specialAuthNoFee from '../policy-config/special-auth-nofee.sample.json';
+import specialAuthLcv from '../policy-config/special-auth-lcv.sample.json';
 import { PermitAppInfo } from '../../enum/permit-app-info';
 import { ValidationResultCode } from '../../enum';
 
@@ -104,6 +105,18 @@ describe('Policy Engine Cost Calculator', () => {
       PermitAppInfo.PermitDateFormat.toString(),
     );
     const validationResult = await policy.validate(permit);
+    expect(validationResult.cost).toHaveLength(1);
+    expect(validationResult.cost[0].cost).toBe(15);
+  });
+
+  it('should not throw error when validating STOS (with LCV auth)', async () => {
+    const lcvPolicy = new Policy(currentConfig, specialAuthLcv);
+    const permit = JSON.parse(JSON.stringify(invalidStos));
+    // Set startDate to today
+    permit.permitData.startDate = dayjs().format(
+      PermitAppInfo.PermitDateFormat.toString(),
+    );
+    const validationResult = await lcvPolicy.validate(permit);
     expect(validationResult.cost).toHaveLength(1);
     expect(validationResult.cost[0].cost).toBe(15);
   });
