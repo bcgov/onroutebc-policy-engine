@@ -68,32 +68,33 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
   engine.addFact(
     PolicyFacts.ConfigurationIsValid.toString(),
     async function (params, almanac) {
-      const powerUnit: string = await almanac.factValue(
-        PermitAppInfo.PermitData,
-        {},
-        PermitAppInfo.PowerUnitType,
-      );
-      const trailerList: Array<any> = await almanac.factValue(
-        PermitAppInfo.PermitData,
-        {},
-        PermitAppInfo.TrailerList,
-      );
-      let fullVehicleConfiguration = [];
-      fullVehicleConfiguration.push(powerUnit);
-      fullVehicleConfiguration = fullVehicleConfiguration.concat(
-        trailerList.map((t) => t.vehicleSubType),
-      );
-
-      const permitType: string = await almanac.factValue(
-        PermitAppInfo.PermitType,
-      );
-      const commodity: string = await almanac.factValue(
-        PermitAppInfo.PermitData,
-        {},
-        PermitAppInfo.Commodity,
-      );
       let isValid: boolean;
       try {
+        const powerUnit: string = await almanac.factValue(
+          PermitAppInfo.PermitData,
+          {},
+          PermitAppInfo.PowerUnitType,
+        );
+        const trailerList: Array<any> = await almanac.factValue(
+          PermitAppInfo.PermitData,
+          {},
+          PermitAppInfo.TrailerList,
+        );
+        let fullVehicleConfiguration = [];
+        fullVehicleConfiguration.push(powerUnit);
+        fullVehicleConfiguration = fullVehicleConfiguration.concat(
+          trailerList.map((t) => t.vehicleSubType),
+        );
+
+        const permitType: string = await almanac.factValue(
+          PermitAppInfo.PermitType,
+        );
+        const commodity: string = await almanac.factValue(
+          PermitAppInfo.PermitData,
+          {},
+          PermitAppInfo.Commodity,
+        );
+
         isValid = policy.isConfigurationValid(
           permitType,
           commodity,

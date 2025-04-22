@@ -84,6 +84,16 @@ describe('Policy Engine Get Next Permittable Vehicles', () => {
     expect(vehicles.keys()).toContain('SEMITRL');
   });
 
+  // ORV2-3953
+  it('should not return invalid trailers after jeep selected', async () => {
+    const vehicles = policy.getNextPermittableVehicles('STOS', 'BRSHCUT', [
+      'TRKTRAC',
+      'JEEPSRG',
+    ]);
+    expect(vehicles.size).toBe(2);
+    expect(vehicles.keys()).not.toContain('SEMITRL');
+  });
+
   it('should return jeep and a trailer when current config is just power unit', async () => {
     const vehicles = policy.getNextPermittableVehicles('STOS', 'LAMBEAM', [
       'TRKTRAC',
