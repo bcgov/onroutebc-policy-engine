@@ -2508,7 +2508,7 @@
             "params": {
               "message": "Loaded GVW must be greater than zero for the selected conditional license fee type",
               "code": "field-validation-error",
-              "fieldReference": "permitData.vehicleDetails.loadedGVW"
+              "fieldReference": "permitData.vehicleConfiguration.loadedGVW"
             }
           }
         },
@@ -2536,7 +2536,7 @@
             "params": {
               "message": "Net weight must be greater than zero for a farm vehicle",
               "code": "field-validation-error",
-              "fieldReference": "permitData.vehicleDetails.netWeight"
+              "fieldReference": "permitData.vehicleConfiguration.netWeight"
             }
           }
         },
@@ -2563,7 +2563,7 @@
             "params": {
               "message": "Net weight may not exceed 24,400 kg for a farm vehicle",
               "code": "field-validation-error",
-              "fieldReference": "permitData.vehicleDetails.netWeight"
+              "fieldReference": "permitData.vehicleConfiguration.netWeight"
             }
           }
         },
@@ -2589,7 +2589,7 @@
             "params": {
               "message": "Loaded GVW may not exceed 63,500 kg",
               "code": "field-validation-error",
-              "fieldReference": "permitData.vehicleDetails.loadedGVW"
+              "fieldReference": "permitData.vehicleConfiguration.loadedGVW"
             }
           }
         },
@@ -2798,7 +2798,7 @@
             "params": {
               "message": "Loaded GVW must be greater than zero for the selected conditional license fee type",
               "code": "field-validation-error",
-              "fieldReference": "permitData.vehicleDetails.loadedGVW"
+              "fieldReference": "permitData.vehicleConfiguration.loadedGVW"
             }
           }
         },
@@ -2826,7 +2826,7 @@
             "params": {
               "message": "Net weight must be greater than zero for a farm vehicle",
               "code": "field-validation-error",
-              "fieldReference": "permitData.vehicleDetails.netWeight"
+              "fieldReference": "permitData.vehicleConfiguration.netWeight"
             }
           }
         },
@@ -2852,7 +2852,7 @@
             "params": {
               "message": "Net weight may not exceed 24,400 kg for a farm vehicle",
               "code": "field-validation-error",
-              "fieldReference": "permitData.vehicleDetails.netWeight"
+              "fieldReference": "permitData.vehicleConfiguration.netWeight"
             }
           }
         },
@@ -2878,7 +2878,7 @@
             "params": {
               "message": "Loaded GVW may not exceed 63,500 kg",
               "code": "field-validation-error",
-              "fieldReference": "permitData.vehicleDetails.loadedGVW"
+              "fieldReference": "permitData.vehicleConfiguration.loadedGVW"
             }
           }
         },
