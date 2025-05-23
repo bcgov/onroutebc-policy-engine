@@ -191,7 +191,7 @@ describe('Motive Fuel User Permit (MFP) Validator', () => {
       (prev: any, curr: any) => prev + curr.cost,
       initialValue,
     );
-    expect(cost).toBe(22);
+    expect(cost).toBe(14);
   });
 
   it('should calculate MFP cost correctly under minimum value', async () => {
@@ -201,7 +201,7 @@ describe('Motive Fuel User Permit (MFP) Validator', () => {
       PermitAppInfo.PermitDateFormat.toString(),
     );
     // Set distance to 180
-    permit.permitData.permittedRoute.manualRoute.totalDistance = 180;
+    permit.permitData.permittedRoute.manualRoute.totalDistance = 100;
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.cost).not.toHaveLength(0);
@@ -210,6 +210,25 @@ describe('Motive Fuel User Permit (MFP) Validator', () => {
       (prev: any, curr: any) => prev + curr.cost,
       initialValue,
     );
-    expect(cost).toBe(20);
+    expect(cost).toBe(10);
+  });
+
+  it('should calculate MFP cost correctly over maximum value', async () => {
+    const permit = JSON.parse(JSON.stringify(validMFP));
+    // Set startDate to today
+    permit.permitData.startDate = dayjs().format(
+      PermitAppInfo.PermitDateFormat.toString(),
+    );
+    // Set distance to 2500
+    permit.permitData.permittedRoute.manualRoute.totalDistance = 2500;
+
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.cost).not.toHaveLength(0);
+    const initialValue: number = 0;
+    const cost = validationResult.cost.reduce(
+      (prev: any, curr: any) => prev + curr.cost,
+      initialValue,
+    );
+    expect(cost).toBe(140);
   });
 });
