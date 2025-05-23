@@ -224,8 +224,11 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
       if (typeof params.minValue === 'number') {
         cost = Math.max(cost, params.minValue);
       }
+      if (typeof params.maxValue === 'number') {
+        cost = Math.min(cost, params.maxValue);
+      }
 
-      return cost;
+      return Math.round(cost);
     },
   );
 
