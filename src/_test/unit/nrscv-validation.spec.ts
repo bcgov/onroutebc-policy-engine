@@ -104,18 +104,18 @@ describe('Non-Resident Single Trip Validation Tests', () => {
     expect(validationResult.violations).toHaveLength(1);
   });
 
-  it('should fail validation for NRSCV with loadedGVW of a farm vehicle greater than 24,400', async () => {
+  it('should fail validation for NRSCV with netWeight of a farm vehicle greater than 24,400', async () => {
     const permit = JSON.parse(JSON.stringify(validNrscv));
     // Set startDate to today
     permit.permitData.startDate = dayjs().format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
-    // Set loadedGVW to 24401
-    permit.permitData.vehicleConfiguration.loadedGVW = 24401;
+    // Set netWeight to 24401
+    permit.permitData.vehicleConfiguration.netWeight = 24401;
 
     // Set conditionalLicensingFee to farm
-    permit.permitData.conditionalLicensingFee = 'farm';
+    permit.permitData.conditionalLicensingFee = 'farm-vehicle';
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
@@ -205,7 +205,7 @@ describe('Non-Resident Single Trip Validation Tests', () => {
     expect(validationResult.violations).toHaveLength(0);
   });
 
-  it('should pass validation for NRSCV with conditional licensing fee farm', async () => {
+  it('should pass validation for NRSCV with conditional licensing fee farm-vehicle', async () => {
     const permit = JSON.parse(JSON.stringify(validNrscv));
     // Set startDate to today
     permit.permitData.startDate = dayjs().format(
@@ -213,7 +213,23 @@ describe('Non-Resident Single Trip Validation Tests', () => {
     );
 
     // Set conditionalLicensingFee to farm
-    permit.permitData.conditionalLicensingFee = 'farm';
+    permit.permitData.conditionalLicensingFee = 'farm-vehicle';
+    // Farm vehicles require netWeight, not loadedGVW
+    permit.permitData.vehicleConfiguration.netWeight = 10000;
+
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.violations).toHaveLength(0);
+  });
+
+  it('should pass validation for NRSCV with conditional licensing fee farm-tractor', async () => {
+    const permit = JSON.parse(JSON.stringify(validNrscv));
+    // Set startDate to today
+    permit.permitData.startDate = dayjs().format(
+      PermitAppInfo.PermitDateFormat.toString(),
+    );
+
+    // Set conditionalLicensingFee to farm
+    permit.permitData.conditionalLicensingFee = 'farm-tractor';
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(0);

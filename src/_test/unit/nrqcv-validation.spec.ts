@@ -73,7 +73,7 @@ describe('Non-Resident Quarterly Validation Tests', () => {
     expect(validationResult.violations).toHaveLength(1);
   });
 
-  it('should fail validation for NRQCV with loadedGVW of a farm vehicle greater than 24,400', async () => {
+  it('should fail validation for NRQCV with netWeight of a farm vehicle greater than 24,400', async () => {
     const permit = JSON.parse(JSON.stringify(validNrqcv));
     // Set startDate to today, end date to the end of the quarter
     const dateFrom = dayjs();
@@ -87,8 +87,8 @@ describe('Non-Resident Quarterly Validation Tests', () => {
     // Set loadedGVW to 24401
     permit.permitData.vehicleConfiguration.loadedGVW = 24401;
 
-    // Set conditionalLicensingFee to farm
-    permit.permitData.conditionalLicensingFee = 'farm';
+    // Set conditionalLicensingFee to farm-vehicle
+    permit.permitData.conditionalLicensingFee = 'farm-vehicle';
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
@@ -202,7 +202,7 @@ describe('Non-Resident Quarterly Validation Tests', () => {
     expect(validationResult.violations).toHaveLength(0);
   });
 
-  it('should pass validation for NRQCV with conditional licensing fee farm', async () => {
+  it('should pass validation for NRQCV with conditional licensing fee farm-vehicle', async () => {
     const permit = JSON.parse(JSON.stringify(validNrqcv));
     // Set startDate to today, end date to the end of the quarter
     const dateFrom = dayjs();
@@ -213,8 +213,28 @@ describe('Non-Resident Quarterly Validation Tests', () => {
       .endOf('quarter')
       .format(PermitAppInfo.PermitDateFormat.toString());
 
-    // Set conditionalLicensingFee to farm
-    permit.permitData.conditionalLicensingFee = 'farm';
+    // Set conditionalLicensingFee to farm-vehicle
+    permit.permitData.conditionalLicensingFee = 'farm-vehicle';
+    // Farm vehicles require netWeight, not loadedGVW
+    permit.permitData.vehicleConfiguration.netWeight = 1000;
+
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.violations).toHaveLength(0);
+  });
+
+  it('should pass validation for NRQCV with conditional licensing fee farm-tractor', async () => {
+    const permit = JSON.parse(JSON.stringify(validNrqcv));
+    // Set startDate to today, end date to the end of the quarter
+    const dateFrom = dayjs();
+    permit.permitData.startDate = dateFrom.format(
+      PermitAppInfo.PermitDateFormat.toString(),
+    );
+    permit.permitData.expiryDate = dateFrom
+      .endOf('quarter')
+      .format(PermitAppInfo.PermitDateFormat.toString());
+
+    // Set conditionalLicensingFee to farm-tractor
+    permit.permitData.conditionalLicensingFee = 'farm-tractor';
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(0);

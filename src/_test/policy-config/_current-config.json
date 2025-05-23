@@ -2485,17 +2485,27 @@
         },
         {
           "conditions": {
-            "not": {
-              "fact": "permitData",
-              "path": "vehicleConfiguration.loadedGVW",
-              "operator": "greaterThan",
-              "value": 0
-            }
+            "all": [ 
+              { 
+                "not": {
+                  "fact": "permitData",
+                  "path": "vehicleConfiguration.loadedGVW",
+                  "operator": "greaterThan",
+                  "value": 0
+                }
+              },
+              {
+                "fact": "permitData",
+                "path": "conditionalLicensingFee",
+                "operator": "in",
+                "value": ["conditional", "none", "x-plated"]
+              }
+            ]
           },
           "event": {
             "type": "violation",
             "params": {
-              "message": "Loaded GVW must be greater than zero",
+              "message": "Loaded GVW must be greater than zero for the selected conditional license fee type",
               "code": "field-validation-error",
               "fieldReference": "permitData.vehicleDetails.licensedGVW"
             }
@@ -2503,7 +2513,62 @@
         },
         {
           "conditions": {
-            "any": [
+            "all": [
+              {
+                "not": {
+                  "fact": "permitData",
+                  "path": "vehicleConfiguration.netWeight",
+                  "operator": "greaterThan",
+                  "value": 0
+                }
+              },
+              {
+                "fact": "permitData",
+                "path": "conditionalLicensingFee",
+                "operator": "equal",
+                "value": "farm-vehicle"
+              }
+            ]
+          },
+          "event": {
+            "type": "violation",
+            "params": {
+              "message": "Net weight must be greater than zero for a farm vehicle",
+              "code": "field-validation-error",
+              "fieldReference": "permitData.vehicleDetails.licensedGVW"
+            }
+          }
+        },
+        {
+          "conditions": {
+            "all": 
+            [
+              {
+                "fact": "permitData",
+                "path": "vehicleConfiguration.netWeight",
+                "operator": "greaterThan",
+                "value": 24400
+              },
+              {
+                "fact": "permitData",
+                "path": "conditionalLicensingFee",
+                "operator": "equal",
+                "value": "farm-vehicle"
+              }
+            ]
+          },
+          "event": {
+            "type": "violation",
+            "params": {
+              "message": "Net weight may not exceed 24,400 kg for a farm vehicle",
+              "code": "field-validation-error",
+              "fieldReference": "permitData.vehicleDetails.licensedGVW"
+            }
+          }
+        },
+        {
+          "conditions": {
+            "all": [
               {
                 "fact": "permitData",
                 "path": "vehicleConfiguration.loadedGVW",
@@ -2511,27 +2576,17 @@
                 "value": 63500
               },
               {
-                "all": [
-                  {
-                    "fact": "permitData",
-                    "path": "vehicleConfiguration.loadedGVW",
-                    "operator": "greaterThan",
-                    "value": 24400
-                  },
-                  {
-                    "fact": "permitData",
-                    "path": "conditionalLicensingFee",
-                    "operator": "equal",
-                    "value": "farm"
-                  }
-                ]
+                "fact": "permitData",
+                "path": "conditionalLicensingFee",
+                "operator": "notEqual",
+                "value": "farm-vehicle"
               }
             ]
           },
           "event": {
             "type": "violation",
             "params": {
-              "message": "Loaded GVW may not exceed 63,500 kg, or 24,400 for a farm vehicle",
+              "message": "Loaded GVW may not exceed 63,500 kg",
               "code": "field-validation-error",
               "fieldReference": "permitData.vehicleDetails.licensedGVW"
             }
@@ -2593,7 +2648,8 @@
                 "none",
                 "conditional",
                 "x-plated",
-                "farm"
+                "farm-vehicle",
+                "farm-tractor"
               ]
             }
           },
@@ -2715,45 +2771,23 @@
         },
         {
           "conditions": {
-            "not": {
-              "fact": "permitData",
-              "path": "vehicleConfiguration.loadedGVW",
-              "operator": "greaterThan",
-              "value": 0
-            }
-          },
-          "event": {
-            "type": "violation",
-            "params": {
-              "message": "Loaded GVW must be greater than zero",
-              "code": "field-validation-error",
-              "fieldReference": "permitData.vehicleConfiguration.loadedGVW"
-            }
-          }
-        },
-        {
-          "conditions": {
-            "any": [
+            "all": [
               {
-                "fact": "permitData",
-                "path": "vehicleConfiguration.loadedGVW",
-                "operator": "greaterThan",
-                "value": 63500
+                "not": {
+                  "fact": "permitData",
+                  "path": "vehicleConfiguration.loadedGVW",
+                  "operator": "greaterThan",
+                  "value": 0
+                }
               },
               {
-                "all": [
-                  {
-                    "fact": "permitData",
-                    "path": "vehicleConfiguration.loadedGVW",
-                    "operator": "greaterThan",
-                    "value": 24400
-                  },
-                  {
-                    "fact": "permitData",
-                    "path": "conditionalLicensingFee",
-                    "operator": "equal",
-                    "value": "farm"
-                  }
+                "fact": "permitData",
+                "path": "conditionalLicensingFee",
+                "operator": "in",
+                "value": [
+                  "conditional",
+                  "none",
+                  "x-plated"
                 ]
               }
             ]
@@ -2761,7 +2795,87 @@
           "event": {
             "type": "violation",
             "params": {
-              "message": "Loaded GVW may not exceed 63,500 kg, or 24,400 for a farm vehicle",
+              "message": "Loaded GVW must be greater than zero for the selected conditional license fee type",
+              "code": "field-validation-error",
+              "fieldReference": "permitData.vehicleDetails.licensedGVW"
+            }
+          }
+        },
+        {
+          "conditions": {
+            "all": [
+              {
+                "not": {
+                  "fact": "permitData",
+                  "path": "vehicleConfiguration.netWeight",
+                  "operator": "greaterThan",
+                  "value": 0
+                }
+              },
+              {
+                "fact": "permitData",
+                "path": "conditionalLicensingFee",
+                "operator": "equal",
+                "value": "farm-vehicle"
+              }
+            ]
+          },
+          "event": {
+            "type": "violation",
+            "params": {
+              "message": "Net weight must be greater than zero for a farm vehicle",
+              "code": "field-validation-error",
+              "fieldReference": "permitData.vehicleDetails.licensedGVW"
+            }
+          }
+        },
+        {
+          "conditions": {
+            "all": [
+              {
+                "fact": "permitData",
+                "path": "vehicleConfiguration.netWeight",
+                "operator": "greaterThan",
+                "value": 24400
+              },
+              {
+                "fact": "permitData",
+                "path": "conditionalLicensingFee",
+                "operator": "equal",
+                "value": "farm-vehicle"
+              }
+            ]
+          },
+          "event": {
+            "type": "violation",
+            "params": {
+              "message": "Net weight may not exceed 24,400 kg for a farm vehicle",
+              "code": "field-validation-error",
+              "fieldReference": "permitData.vehicleDetails.licensedGVW"
+            }
+          }
+        },
+        {
+          "conditions": {
+            "all": [
+              {
+                "fact": "permitData",
+                "path": "vehicleConfiguration.loadedGVW",
+                "operator": "greaterThan",
+                "value": 63500
+              },
+              {
+                "fact": "permitData",
+                "path": "conditionalLicensingFee",
+                "operator": "notEqual",
+                "value": "farm-vehicle"
+              }
+            ]
+          },
+          "event": {
+            "type": "violation",
+            "params": {
+              "message": "Loaded GVW may not exceed 63,500 kg",
               "code": "field-validation-error",
               "fieldReference": "permitData.vehicleDetails.licensedGVW"
             }
@@ -2823,14 +2937,15 @@
                 "none",
                 "conditional",
                 "x-plated",
-                "farm"
+                "farm-vehicle",
+                "farm-tractor"
               ]
             }
           },
           "event": {
             "type": "violation",
             "params": {
-              "message": "Conditional licensing fee is invalid",
+              "message": "Conditional licensing selection is invalid",
               "code": "field-validation-error",
               "fieldReference": "permitData.conditionalLicensingFee"
             }
