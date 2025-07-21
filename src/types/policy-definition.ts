@@ -9,6 +9,7 @@ import {
   RangeMatrix,
   BridgeCalculationConstants,
   PermitConditionDefinition,
+  StandardTireSize,
 } from 'onroute-policy-engine/types';
 import { RuleProperties } from 'json-rules-engine';
 
@@ -25,4 +26,5 @@ export type PolicyDefinition = {
   rangeMatrices?: Array<RangeMatrix>;
   bridgeCalculationConstants: BridgeCalculationConstants;
   conditions?: Array<PermitConditionDefinition>;
+  standardTireSizes?: Array<StandardTireSize>;
 };

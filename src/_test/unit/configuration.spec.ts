@@ -202,4 +202,18 @@ describe('Policy Engine Configuration Validation', () => {
       policy.isConfigurationValid('TROS', 'LAMBEAM', ['TRKTRAC']);
     }).toThrow();
   });
+
+  it('should return all standard tire sizes', async () => {
+    const tireSizes = policy.getStandardTireSizes();
+    expect(tireSizes).toHaveLength(26);
+  });
+
+  it('should return all standard tire sizes', async () => {
+    const policyAlt: Policy = new Policy(currentPolicyConfig);
+    delete policyAlt.policyDefinition.standardTireSizes;
+
+    const tireSizes = policyAlt.getStandardTireSizes();
+    expect(tireSizes).toBeTruthy();
+    expect(tireSizes).toHaveLength(0);
+  });
 });
