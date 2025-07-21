@@ -194,6 +194,25 @@ describe('Motive Fuel User Permit (MFP) Validator', () => {
     expect(cost).toBe(14);
   });
 
+  it('should calculate MFP cost correctly with fractional dollar amount', async () => {
+    const permit = JSON.parse(JSON.stringify(validMFP));
+    // Set startDate to today
+    permit.permitData.startDate = dayjs().format(
+      PermitAppInfo.PermitDateFormat.toString(),
+    );
+    // Set distance to 750
+    permit.permitData.permittedRoute.manualRoute.totalDistance = 750;
+
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.cost).not.toHaveLength(0);
+    const initialValue: number = 0;
+    const cost = validationResult.cost.reduce(
+      (prev: any, curr: any) => prev + curr.cost,
+      initialValue,
+    );
+    expect(cost).toBe(53);
+  });
+
   it('should calculate MFP cost correctly under minimum value', async () => {
     const permit = JSON.parse(JSON.stringify(validMFP));
     // Set startDate to today

@@ -1,8 +1,13 @@
 import { DimensionModifier, SelfIssuable } from 'onroute-policy-engine/types';
 
+export type SingleAxleDimension = {
+  legal?: number;
+  permittable?: number;
+};
+
 export type WeightDimension = SelfIssuable & {
   axles: number;
-  modifiers?: Array<DimensionModifier>;
+  modifier?: DimensionModifier;
 };
 
 export type PowerUnitWeightDimension = WeightDimension & {
@@ -12,10 +17,7 @@ export type PowerUnitWeightDimension = WeightDimension & {
   daPermittable?: number;
 };
 
-export type TrailerWeightDimension = WeightDimension & {
-  legal?: number;
-  permittable?: number;
-};
+export type TrailerWeightDimension = WeightDimension & SingleAxleDimension;
 
 export type DefaultWeightDimensions = {
   powerUnits: Array<PowerUnitWeightDimension>;
