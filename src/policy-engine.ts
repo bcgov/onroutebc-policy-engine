@@ -13,6 +13,7 @@ import {
   PowerUnitWeightDimension,
   WeightDimension,
   SingleAxleDimension,
+  StandardTireSize,
 } from 'onroute-policy-engine/types';
 import {
   extractIdentifiedObjects,
@@ -964,5 +965,19 @@ export class Policy {
       axleConfiguration,
       axleIndex,
     );
+  }
+
+  /**
+   * Get the list of known standard tire sizes, used to populate
+   * dropdown lists in front-end interfaces.
+   * @returns List of known standard tire sizes, or empty array if
+   * none are configured
+   */
+  getStandardTireSizes(): Array<StandardTireSize> {
+    if (this.policyDefinition.standardTireSizes) {
+      return this.policyDefinition.standardTireSizes;
+    } else {
+      return new Array<StandardTireSize>();
+    }
   }
 }

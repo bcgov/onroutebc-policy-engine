@@ -32,6 +32,7 @@ export { RegionSizeOverride } from './region-size-override';
 export { SelfIssuable } from './self-issuable';
 export { SizeDimension } from './size-dimension';
 export { SpecialAuthorizations } from './special-authorizations';
+export { StandardTireSize } from './standard-tire-size';
 export {
   VehicleCategory,
   PowerUnitCategory,
