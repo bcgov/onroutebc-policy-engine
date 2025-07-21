@@ -58,8 +58,10 @@ export function runBridgeFormula(
       let totalWeight: number = axle.axleUnitWeight;
 
       // Spread may be zero or undefined if the axle unit
-      // is a single axle. Spacing to next will be zero or
-      // undefined for the final axle unit in the configuration.
+      // is a single axle. Interaxle spacing will be zero or
+      // undefined for the first axle unit in the configuration
+      // since it describes the spacing from the previous axle
+      // unit in the configuration.
       if (axle.numberOfAxles > 1 && (!axle.axleSpread || axle.axleSpread < 0)) {
         throw new Error(
           `Invalid or missing axle spread for axle unit number ${firstAxle}`,

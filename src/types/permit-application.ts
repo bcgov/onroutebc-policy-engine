@@ -1,4 +1,6 @@
-type PermitMailingAddress = {
+import { AxleConfiguration } from 'onroute-policy-engine/types';
+
+export type PermitMailingAddress = {
   addressLine1: string;
   addressLine2?: string | null;
   city: string;
@@ -7,7 +9,7 @@ type PermitMailingAddress = {
   postalCode: string;
 };
 
-type PermitContactDetails = {
+export type PermitContactDetails = {
   firstName: string;
   lastName: string;
   phone1: string;
@@ -19,7 +21,7 @@ type PermitContactDetails = {
   fax?: string | null;
 };
 
-type PermitVehicleDetails = {
+export type PermitVehicleDetails = {
   vehicleId?: string | null;
   unitNumber?: string | null;
   vin: string;
@@ -34,7 +36,7 @@ type PermitVehicleDetails = {
   saveVehicle?: boolean | null;
 };
 
-type PermitCommodity = {
+export type PermitCommodity = {
   description: string;
   condition: string;
   conditionLink: string;
@@ -42,7 +44,7 @@ type PermitCommodity = {
   disabled: boolean;
 };
 
-type PermitData = {
+export type PermitData = {
   companyName: string;
   doingBusinessAs?: string;
   clientNumber: string;
@@ -62,16 +64,16 @@ type PermitData = {
   conditionalLicensingFee?: string | null;
 };
 
-type PermittedCommodity = {
+export type PermittedCommodity = {
   commodityType: string;
   loadDescription: string;
 };
 
-type VehicleInConfiguration = {
+export type VehicleInConfiguration = {
   vehicleSubType: string;
 };
 
-type VehicleConfiguration = {
+export type VehicleConfiguration = {
   overallLength?: number;
   overallWidth?: number;
   overallHeight?: number;
@@ -80,14 +82,15 @@ type VehicleConfiguration = {
   trailers?: Array<VehicleInConfiguration> | null;
   loadedGVW?: number;
   netWeight?: number;
+  axleConfiguration?: Array<AxleConfiguration>;
 };
 
-type PermittedRoute = {
+export type PermittedRoute = {
   manualRoute?: ManualRoute | null;
   routeDetails?: string | null;
 };
 
-type ManualRoute = {
+export type ManualRoute = {
   highwaySequence: Array<string>;
   origin: string;
   destination: string;
@@ -95,9 +98,7 @@ type ManualRoute = {
   totalDistance?: number;
 };
 
-type PermitApplication = {
+export type PermitApplication = {
   permitData: PermitData;
   permitType: string;
 };
-
-export default PermitApplication;

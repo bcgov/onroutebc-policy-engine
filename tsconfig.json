@@ -14,6 +14,6 @@
   },
   "include": [
     "src/**/*",
-    "**/*.spec.ts",
-    "src/_test/permit-app/permit-application.type.ts"  ]
+    "**/*.spec.ts"
+  ]
 }

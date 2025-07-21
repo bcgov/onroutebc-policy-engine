@@ -3,10 +3,23 @@ export { BridgeCalculationConstants } from './bridge-calculation-constants';
 export { BridgeCalculationResult } from './bridge-calculation-result';
 export { Commodity, CommoditySize, CommodityWeight } from './commodity';
 export { CostRule } from './cost-rule';
-export { DimensionModifier } from './dimension-modifier';
+export { DimensionModifier, VehicleRelatives } from './dimension-modifier';
 export { PermitFacts } from './facts';
 export { GeographicRegion } from './geographic-region';
 export { IdentifiedObject } from './identified-object';
+export {
+  PermitMailingAddress,
+  PermitContactDetails,
+  PermitVehicleDetails,
+  PermitCommodity,
+  PermitData,
+  PermittedCommodity,
+  VehicleInConfiguration,
+  VehicleConfiguration,
+  PermittedRoute,
+  ManualRoute,
+  PermitApplication,
+} from './permit-application';
 export {
   PermitConditionDefinition,
   ConditionRequirement,
@@ -43,4 +56,5 @@ export {
   PowerUnitWeightDimension,
   TrailerWeightDimension,
   DefaultWeightDimensions,
+  SingleAxleDimension,
 } from './weight-dimension';

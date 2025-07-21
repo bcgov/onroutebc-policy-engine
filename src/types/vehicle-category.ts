@@ -3,10 +3,12 @@ import {
   SizeDimension,
   PowerUnitWeightDimension,
   TrailerWeightDimension,
+  WeightDimension,
 } from 'onroute-policy-engine/types';
 
 export type VehicleCategory = IdentifiedObject & {
   defaultSizeDimensions?: SizeDimension;
+  defaultWeightDimensions?: Array<WeightDimension>;
 };
 
 export type PowerUnitCategory = VehicleCategory & {

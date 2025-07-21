@@ -4,11 +4,15 @@ import {
   Commodity,
   VehicleType,
   SizeDimension,
-  RegionSizeOverride,
-  TrailerSize,
   AxleConfiguration,
   BridgeCalculationResult,
   ConditionForPermit,
+  TrailerType,
+  PowerUnitType,
+  TrailerWeightDimension,
+  PowerUnitWeightDimension,
+  WeightDimension,
+  SingleAxleDimension,
 } from 'onroute-policy-engine/types';
 import {
   extractIdentifiedObjects,
@@ -23,7 +27,6 @@ import {
   AccessoryVehicleType,
   ValidationResultType,
   ValidationResultCode,
-  RelativePosition,
   VehicleTypes,
   VehicleCategory,
 } from 'onroute-policy-engine/enum';
@@ -35,6 +38,14 @@ import semverMajor from 'semver/functions/major';
 import { SpecialAuthorizations } from './types/special-authorizations';
 import { filterOutLcv, filterVehiclesByType } from './helper/vehicles.helper';
 import { getConditionsForPermitHelper } from './helper/conditions.helper';
+import {
+  getSizeDimensionHelper,
+  selectCorrectWeightDimensionHelper,
+} from './helper/dimensions.helper';
+import {
+  getDefaultPowerUnitWeightHelper,
+  getDefaultTrailerWeightHelper,
+} from './helper/dimensions.helper';
 
 /** Class representing commercial vehicle policy. */
 export class Policy {
@@ -556,19 +567,17 @@ export class Policy {
 
   /**
    * Returns whether the supplied configuration is valid for the given permit type
-   * and commodity. If the permit type does not require a commodity, this method
-   * will return false. This will not validate incomplete configurations - if the
-   * current configuration has only a power unit this will return false even if the
-   * power unit is acceptable because there is no trailer which is mandatory.
-   * If this is called for a permit type that does not require commodity, or with
-   * a commodity not permitted for the permit type, it will return false.
+   * and commodity. If the permit type does not require a commodity, or if this
+   * method is called with a commodity not permitted for the permit type, this method
+   * will return false.
    * @param permitTypeId ID of the permit type to validate the configuration against
    * @param commodityId ID of the commodity used for the configuration
    * @param currentConfiguration Current vehicle configuration to validate
    * @param validatePartial Whether to validate a partial configuration (e.g. one
    * that does not include a trailer). This will just return whether or not there
    * are any invalid vehicles in the configuration. If true, an empty current
-   * configuration will return true from this method.
+   * configuration will return true from this method provided the commodity is
+   * allowable for the permit type.
    */
   isConfigurationValid(
     permitTypeId: string,
@@ -676,15 +685,10 @@ export class Policy {
 
   /**
    * Gets the maximum size dimensions for a given permit type, commodity,
-   * and vehicle configuration. A vehicle configuration's size dimension is
-   * dictated by the configuration on the trailer. For configurations that
-   * are just a power unit, a pseudo trailer type 'NONE' is used and the
-   * size dimension is configured on that. Accessory category trailers
-   * (e.g. jeeps and boosters) are not used for configuration since they
-   * do not impact the size dimension in policy.
+   * and vehicle configuration. Delegates to helper method.
    * @param permitTypeId ID of the permit type to get size dimension for
    * @param commodityId ID of the commodity to get size dimension for
-   * @param currentConfiguration Current vehicle configuration to get size dimension for
+   * @param configuration Current vehicle configuration to get size dimension for
    * @param regions List of regions the vehicle will be traveling in. If not
    * supplied this defaults to the most restrictive size dimension (if multiple
    * are configured).
@@ -696,206 +700,13 @@ export class Policy {
     configuration: Array<string>,
     regions?: Array<string>,
   ): SizeDimension | null {
-    // Initialize the sizeDimension with global defaults
-    let sizeDimension: SizeDimension | null = null;
-
-    // Validate that the configuration is permittable
-    if (this.isConfigurationValid(permitTypeId, commodityId, configuration)) {
-      // Get the power unit that has the size configuration
-      const commodity = this.getCommodityDefinition(commodityId);
-      const powerUnit = commodity?.size?.powerUnits?.find(
-        (pu) => pu.type == configuration[0],
-      );
-      if (!powerUnit) {
-        throw new Error(
-          `Configuration error: could not find power unit '${configuration[0]}'`,
-        );
-      }
-
-      // Get the last trailer in the configuration that can be used for size calculations
-      const sizeTrailer: string | undefined = Array.from(configuration)
-        .reverse()
-        .find((vehicleId) => {
-          const trailerType =
-            this.policyDefinition.vehicleTypes.trailerTypes?.find(
-              (v) => v.id == vehicleId,
-            );
-          return !trailerType?.ignoreForSizeDimensions;
-        });
-
-      if (sizeTrailer) {
-        // Get the trailer size dimension array for the commodity
-        const trailer: TrailerSize | undefined = powerUnit.trailers?.find(
-          (t) => t.type == sizeTrailer,
-        );
-
-        let sizeDimensions: Array<SizeDimension>;
-
-        if (
-          trailer &&
-          trailer.sizeDimensions &&
-          trailer.sizeDimensions.length > 0
-        ) {
-          sizeDimensions = trailer.sizeDimensions;
-        } else {
-          sizeDimensions = new Array<SizeDimension>();
-        }
-
-        const sizeDimensionConfigured = this.selectCorrectSizeDimension(
-          sizeDimensions,
-          configuration,
-          sizeTrailer,
-        );
-
-        if (sizeDimensionConfigured) {
-          // Adjust the size dimensions for the regions travelled, if needed
-          if (!regions) {
-            // If we are not provided a list of regions, assume we are
-            // traveling through all regions (will take the most restrictive
-            // of all dimensions in all cases).
-            console.log('Assuming all regions for size dimension lookup');
-            regions = this.policyDefinition.geographicRegions.map((g) => g.id);
-          } else {
-            console.log(`Using '${regions}' as regions for size lookup`);
-          }
-          const valueOverrides: Array<RegionSizeOverride> = [];
-          regions?.forEach((r) => {
-            let valueOverride: RegionSizeOverride;
-            // Check to see if this region has specific size dimensions
-            const regionOverride = sizeDimensionConfigured.regions?.find(
-              (cr) => cr.region == r,
-            );
-            if (!regionOverride) {
-              // The region travelled does not have an override, so it assumes
-              // the dimensions of the bc default.
-              valueOverride = {
-                region: r,
-                h: sizeDimensionConfigured.h,
-                w: sizeDimensionConfigured.w,
-                l: sizeDimensionConfigured.l,
-              };
-            } else {
-              // There is a region override with one or more dimensions. Use this
-              // value preferentially, using default dimension if not supplied
-              valueOverride = {
-                region: r,
-                h: regionOverride.h ?? sizeDimensionConfigured.h,
-                w: regionOverride.w ?? sizeDimensionConfigured.w,
-                l: regionOverride.l ?? sizeDimensionConfigured.l,
-              };
-            }
-            valueOverrides.push(valueOverride);
-          });
-
-          // At this point we have a complete set of size dimensions for each of
-          // the regions that will be traversed. Take the minimum value of each
-          // dimension for the final value.
-          const minimumOverrides = valueOverrides.reduce(
-            (accumulator, currentValue) => {
-              if (typeof currentValue.h !== 'undefined') {
-                if (typeof accumulator.h === 'undefined') {
-                  accumulator.h = currentValue.h;
-                } else {
-                  accumulator.h = Math.min(accumulator.h, currentValue.h);
-                }
-              }
-              if (typeof currentValue.w !== 'undefined') {
-                if (typeof accumulator.w === 'undefined') {
-                  accumulator.w = currentValue.w;
-                } else {
-                  accumulator.w = Math.min(accumulator.w, currentValue.w);
-                }
-              }
-              if (typeof currentValue.l !== 'undefined') {
-                if (typeof accumulator.l === 'undefined') {
-                  accumulator.l = currentValue.l;
-                } else {
-                  accumulator.l = Math.min(accumulator.l, currentValue.l);
-                }
-              }
-              return accumulator;
-            },
-            { region: '' },
-          );
-
-          sizeDimension = {
-            rp: sizeDimensionConfigured.rp,
-            fp: sizeDimensionConfigured.fp,
-            h: minimumOverrides.h,
-            w: minimumOverrides.w,
-            l: minimumOverrides.l,
-          };
-        } else {
-          console.log('Size dimension not configured for trailer');
-        }
-      } else {
-        console.log('Could not locate trailer to use for size dimension');
-      }
-    } else {
-      console.log('Configuration is invalid, returning null size dimension');
-    }
-
-    return sizeDimension;
-  }
-
-  /**
-   * Selects the correct size dimension from a list of potential candidates, based
-   * on the modifier of each dimension. If none of the modifiers match, returns
-   * null.
-   * @param sizeDimensions Size dimension options to choose from
-   * @param currentConfiguration The full vehicle configuration
-   */
-  selectCorrectSizeDimension(
-    sizeDimensions: Array<SizeDimension>,
-    configuration: Array<string>,
-    sizeTrailer: string,
-  ): SizeDimension | null {
-    let matchingDimension: SizeDimension | null = null;
-
-    if (sizeDimensions?.length > 0 && configuration?.length > 0) {
-      for (const sizeDimension of sizeDimensions) {
-        if (!sizeDimension.modifiers) {
-          // This dimension has no modifiers, so it is the default if none of
-          // the other specific modifiers match.
-          matchingDimension = sizeDimension;
-          console.log('Using default size dimension, no modifiers specified');
-        } else {
-          const sizeTrailerIndex = configuration.findIndex(
-            (c) => sizeTrailer == c,
-          );
-          const isMatch: boolean | undefined = sizeDimension.modifiers?.every(
-            (m) => {
-              if (!m.type) {
-                return false;
-              }
-              switch (m.position) {
-                case RelativePosition.First.toString():
-                  return configuration[0] == m.type;
-                case RelativePosition.Last.toString():
-                  return configuration[configuration.length - 1] == m.type;
-                case RelativePosition.Before.toString():
-                  return configuration[sizeTrailerIndex - 1] == m.type;
-                case RelativePosition.After.toString():
-                  return configuration[sizeTrailerIndex + 1] == m.type;
-                default:
-                  return false;
-              }
-            },
-          );
-          // As soon as we find a dimension with matching modifiers,
-          // set it and return it.
-          if (isMatch) {
-            matchingDimension = sizeDimension;
-            break;
-          }
-        }
-      }
-    } else {
-      console.log(
-        'Either size dimensions or configuration array is null, no matching dimension returned',
-      );
-    }
-    return matchingDimension;
+    return getSizeDimensionHelper(
+      this,
+      permitTypeId,
+      commodityId,
+      configuration,
+      regions,
+    );
   }
 
   /**
@@ -945,20 +756,40 @@ export class Policy {
    * @returns Vehicle Type (trailer or power unit), or null if none found
    */
   getVehicleDefinition(subType?: string): VehicleType | null {
-    if (this.policyDefinition.vehicleTypes) {
-      const puType = this.policyDefinition.vehicleTypes.powerUnitTypes?.find(
-        (pu) => pu.id == subType,
-      );
-      if (puType) {
-        return puType;
-      }
+    return (
+      this.getPowerUnitDefinition(subType) ??
+      this.getTrailerDefinition(subType) ??
+      null
+    );
+  }
 
-      const trType = this.policyDefinition.vehicleTypes.trailerTypes?.find(
-        (tr) => tr.id == subType,
-      );
-      if (trType) {
-        return trType;
-      }
+  /**
+   * Gets a full PowerUnitType definition by subtype
+   * @param subType string subtype of the power unit to return
+   * @returns PowerUnitType for the supplied subtype
+   */
+  getPowerUnitDefinition(subType?: string): PowerUnitType | null {
+    const puType = this.policyDefinition.vehicleTypes?.powerUnitTypes?.find(
+      (pu) => pu.id == subType,
+    );
+    if (puType) {
+      return puType;
+    }
+
+    return null;
+  }
+
+  /**
+   * Gets a full TrailerType definition by subtype
+   * @param subType string subtype of the trailer to return
+   * @returns TrailerType for the supplied subtype
+   */
+  getTrailerDefinition(subType?: string): TrailerType | null {
+    const trType = this.policyDefinition.vehicleTypes?.trailerTypes?.find(
+      (tr) => tr.id == subType,
+    );
+    if (trType) {
+      return trType;
     }
 
     return null;
@@ -1054,5 +885,84 @@ export class Policy {
       ),
     );
     return allowedVehicleMap;
+  }
+
+  /**
+   * Gets the default legal and permittable weights for a
+   * given trailer type and number of axles in the trailer axle
+   * unit.
+   * @param subType Trailer subtype
+   * @param axles Number of axles in the trailer axle unit
+   * @returns Array of trailer weights. Multiple trailer
+   * weights may be returned if there are different weights
+   * depending on prior / subsequent vehicles in the
+   * configuration (weight modifiers). Will return an empty array
+   * if the number of axles is not configured in policy.
+   */
+  getDefaultTrailerWeight(
+    subType: string,
+    axles: number,
+  ): Array<TrailerWeightDimension> {
+    return getDefaultTrailerWeightHelper(
+      this,
+      subType,
+      axles,
+    ) as Array<TrailerWeightDimension>;
+  }
+
+  /**
+   * Gets the default legal and permittable weights for a
+   * given power unit type and number of axles. The number of
+   * axles is supplied as a 2-digit number, with the most
+   * significant digit representing the steer axle unit and the
+   * least significant digit representing the drive axle unit.
+   * @param subType Power unit subtype
+   * @param axles Number of axles in the power unit axle units
+   * @returns Array of power unit weights. Multiple power unit
+   * weights may be returned if there are different weights
+   * depending on prior / subsequent vehicles in the
+   * configuration (weight modifiers). Will return an empty array
+   * if the number of axles is not configured in policy.
+   */
+  getDefaultPowerUnitWeight(
+    subType: string,
+    axles: number,
+  ): Array<PowerUnitWeightDimension> {
+    return getDefaultPowerUnitWeightHelper(
+      this,
+      subType,
+      axles,
+    ) as Array<PowerUnitWeightDimension>;
+  }
+
+  /**
+   * Given a list of default weight dimensions and a vehicle
+   * configuration, select the correct weight dimensions for
+   * the axle unit at the supplied axleIndex. The weight dimensions
+   * may have modifiers (e.g. if a tandem booster follows a tridem
+   * semi trailer) - this method will select the correct weights
+   * to be used for policy checks.
+   * @param weightDimensions Default weight dimensions for the vehicle
+   * at the index indicated by axleIndex
+   * @param configuration Full vehicle configuration
+   * @param axleConfiguration Full axle weights of the vehicle configuration
+   * @param axleIndex Index of the axle unit for which weights are
+   * to be returned.
+   * @returns Single axle dimension representing the legal and permittable
+   * weights for the axle unit at the supplied axleIndex.
+   */
+  selectCorrectWeightDimension(
+    weightDimensions: Array<WeightDimension>,
+    configuration: Array<string>,
+    axleConfiguration: Array<AxleConfiguration>,
+    axleIndex: number,
+  ): SingleAxleDimension | null {
+    return selectCorrectWeightDimensionHelper(
+      this,
+      weightDimensions,
+      configuration,
+      axleConfiguration,
+      axleIndex,
+    );
   }
 }
