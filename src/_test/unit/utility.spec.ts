@@ -1,6 +1,7 @@
 import { PermitType } from 'onroute-policy-engine/types';
 import { Policy } from 'onroute-policy-engine';
 import fiveTypes from '../policy-config/five-types.sample.json';
+import weightSample from '../policy-config/weight-dimensions.sample.json';
 import trosOnly from '../policy-config/tros-only.sample.json';
 import specialAuth from '../policy-config/special-auth-lcv.sample.json';
 
@@ -21,6 +22,14 @@ describe('Permit Engine Utility Functions', () => {
   it('should return the correct number of commodities', async () => {
     const commodities: Map<string, string> = policy.getCommodities();
     expect(commodities.size).toBe(5);
+  });
+
+  it('should return the correct number of commodities for overweight', async () => {
+    const policyAlt = new Policy(weightSample);
+    const commodities: Map<string, string> = policyAlt.getCommodities('STOW');
+    expect(commodities.size).toBe(2);
+    expect(commodities.get('XXXXXXX')).toBeTruthy();
+    expect(commodities.get('REDUCBL')).toBeTruthy();
   });
 
   it('should return the correct number of power unit types', async () => {
