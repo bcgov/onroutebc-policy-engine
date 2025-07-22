@@ -94,7 +94,7 @@ export class Policy {
     }
 
     this.policyDefinition = definition;
-    this.specialAuthorizations = authorizations;
+    this.setSpecialAuthorizations(authorizations);
 
     this.rulesEngines = getRulesEngines(this);
   }
@@ -104,7 +104,7 @@ export class Policy {
    * and permittable vehicles for permit types.
    * @param authorizations Special authorizations for a client
    */
-  setSpecialAuthorizations(authorizations: SpecialAuthorizations | null) {
+  setSpecialAuthorizations(authorizations?: SpecialAuthorizations | null) {
     this.specialAuthorizations = authorizations;
   }
 
@@ -258,8 +258,20 @@ export class Policy {
         }),
       );
 
-      // TODO when implementing overweight. Stub for now.
-      const commoditiesForOW: Map<string, string> = new Map<string, string>();
+      // Commodities for overweight permits are those which have at least one
+      // power unit defined in the weight dimension object of the commodity.
+      const commoditiesForOW = extractIdentifiedObjects(
+        this.policyDefinition.commodities.filter((c) => {
+          if (c.weight) {
+            if (c.weight.powerUnits) {
+              if (c.weight.powerUnits.length > 0) {
+                return true;
+              }
+            }
+          }
+          return false;
+        }),
+      );
 
       if (
         permitType.sizeDimensionRequired &&

@@ -296,6 +296,89 @@
           }
         }
       ]
+    },
+    {
+      "id": "STOW",
+      "name": "Single Trip Overweight",
+      "routingRequired": true,
+      "weightDimensionRequired": true,
+      "sizeDimensionRequired": false,
+      "commodityRequired": true,
+      "rules": [
+        {
+          "conditions": {
+            "any": [
+              {
+                "not": {
+                  "fact": "permitData",
+                  "path": "permitDuration",
+                  "operator": "lessThanInclusive",
+                  "value": 7
+                }
+              },
+              {
+                "not": {
+                  "fact": "permitData",
+                  "path": "permitDuration",
+                  "operator": "greaterThan",
+                  "value": 0
+                }
+              }
+            ]
+          },
+          "event": {
+            "type": "violation",
+            "params": {
+              "message": "Duration must be 7 days or less",
+              "code": "field-validation-error",
+              "fieldReference": "permitData.permitDuration"
+            }
+          }
+        },
+        {
+          "conditions": {
+            "not": {
+              "fact": "configurationIsValid",
+              "operator": "equal",
+              "value": true
+            }
+          },
+          "event": {
+            "type": "violation",
+            "params": {
+              "message": "Vehicle configuration is not permittable for this commodity",
+              "code": "field-validation-error",
+              "fieldReference": "permitData.vehicleConfiguration.trailers"
+            }
+          }
+        },
+        {
+          "conditions": {
+            "not": {
+              "fact": "permitData",
+              "path": "permittedCommodity.loadDescription",
+              "operator": "stringMinimumLength",
+              "value": 1
+            }
+          },
+          "event": {
+            "type": "violation",
+            "params": {
+              "message": "Commodity load description is required",
+              "code": "field-validation-error",
+              "fieldReference": "permitData.permittedCommodity.loadDescription"
+            }
+          }
+        }
+      ],
+      "costRules": [
+        {
+          "fact": "fixedCost",
+          "params": {
+            "cost": 15
+          }
+        }
+      ]
     }
   ],
   "globalWeightDefaults": {
@@ -3279,6 +3362,160 @@
                     ]
                   }
                 ]
+              }
+            ]
+          }
+        ]
+      },
+      "weight": {
+        "powerUnits": [
+          {
+            "type": "CONCRET",
+            "trailers": [
+              {
+                "type": "XXXXXXX",
+                "jeep": false,
+                "booster": false
+              }
+            ]
+          },
+          {
+            "type": "CRANEAT",
+            "trailers": [
+              {
+                "type": "XXXXXXX",
+                "jeep": false,
+                "booster": false
+              },
+              {
+                "type": "DOLLIES",
+                "jeep": false,
+                "booster": false
+              }
+            ]
+          },
+          {
+            "type": "CRANEMB",
+            "trailers": [
+              {
+                "type": "XXXXXXX",
+                "jeep": false,
+                "booster": false
+              },
+              {
+                "type": "DOLLIES",
+                "jeep": false,
+                "booster": false
+              }
+            ]
+          },
+          {
+            "type": "GRADERS",
+            "trailers": [
+              {
+                "type": "XXXXXXX",
+                "jeep": false,
+                "booster": false
+              },
+              {
+                "type": "FEPNYTR",
+                "jeep": false,
+                "booster": false
+              }
+            ]
+          },
+          {
+            "type": "PICKRTT",
+            "trailers": [
+              {
+                "type": "XXXXXXX",
+                "jeep": false,
+                "booster": false
+              },
+              {
+                "type": "STROPRT",
+                "jeep": true,
+                "booster": false
+              },
+              {
+                "type": "STRSELF",
+                "jeep": true,
+                "booster": false
+              }
+            ]
+          },
+          {
+            "type": "SCRAPER",
+            "trailers": [
+              {
+                "type": "XXXXXXX",
+                "jeep": false,
+                "booster": false
+              }
+            ]
+          },
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "FECVYRX",
+                "jeep": true,
+                "booster": false
+              },
+              {
+                "type": "FEDRMMX",
+                "jeep": true,
+                "booster": true
+              },
+              {
+                "type": "FEBGHSE",
+                "jeep": true,
+                "booster": true
+              },
+              {
+                "type": "FESEMTR",
+                "jeep": true,
+                "booster": true
+              },
+              {
+                "type": "FEWHELR",
+                "jeep": true,
+                "booster": true
+              },
+              {
+                "type": "REDIMIX",
+                "jeep": true,
+                "booster": true
+              },
+              {
+                "type": "STROPRT",
+                "jeep": true,
+                "booster": false
+              },
+              {
+                "type": "STRSELF",
+                "jeep": true,
+                "booster": false
+              }
+            ]
+          },
+          {
+            "type": "REGTRCK",
+            "trailers": [
+              {
+                "type": "XXXXXXX",
+                "jeep": false,
+                "booster": false
+              },
+              {
+                "type": "FEPNYTR",
+                "jeep": false,
+                "booster": false
+              },
+              {
+                "type": "MHMBSHG",
+                "jeep": true,
+                "booster": false
               }
             ]
           }
