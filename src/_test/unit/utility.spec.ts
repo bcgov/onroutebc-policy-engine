@@ -39,7 +39,12 @@ describe('Permit Engine Utility Functions', () => {
 
   it('should return the correct number of trailer types', async () => {
     const trailerTypes: Map<string, string> = policy.getTrailerTypes();
-    expect(trailerTypes.size).toBe(51);
+    expect(trailerTypes.size).toBe(50);
+  });
+
+  it('should return the correct number of trailer types (complete)', async () => {
+    const trailerTypes: Map<string, string> = policy.getTrailerTypes(true);
+    expect(trailerTypes.size).toBe(53);
   });
 
   it('should return a TROS permit type', async () => {

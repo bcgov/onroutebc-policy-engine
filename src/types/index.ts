@@ -48,8 +48,8 @@ export {
 export {
   Vehicle,
   VehicleSizeConfiguration,
+  VehicleWeightConfiguration,
   TrailerSize,
-  PowerUnitWeight,
   TrailerWeight,
 } from './vehicle';
 export {

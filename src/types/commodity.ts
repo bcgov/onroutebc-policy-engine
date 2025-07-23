@@ -1,8 +1,7 @@
 import {
   IdentifiedObject,
   VehicleSizeConfiguration,
-  PowerUnitWeight,
-  TrailerWeight,
+  VehicleWeightConfiguration,
 } from 'onroute-policy-engine/types';
 
 export type Commodity = IdentifiedObject & {
@@ -15,6 +14,5 @@ export type CommoditySize = {
 };
 
 export type CommodityWeight = {
-  powerUnits?: Array<PowerUnitWeight>;
-  trailers?: Array<TrailerWeight>;
+  powerUnits?: Array<VehicleWeightConfiguration>;
 };

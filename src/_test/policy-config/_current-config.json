@@ -3073,7 +3073,7 @@
       },
       {
         "id": "pseudo",
-        "name": "Placeholder for a trailer in a combination with no trailer (such as when a brushcutter is permitted with no trailer)."
+        "name": "Placeholder for a trailer that is not technically a separate trailer, such as 'none' to represent no trailer in a combination, or an extra axle."
       },
       {
         "id": "semi",
@@ -3378,6 +3378,16 @@
       }
     ],
     "trailerTypes": [
+      {
+        "id": "PFMAXLE",
+        "name": "Additional Axle Unit for Platform Trailer",
+        "category": "pseudo"
+      },
+      {
+        "id": "ATCAXLE",
+        "name": "Additional Axle Unit for All-Terrain Crane",
+        "category": "pseudo"
+      },
       {
         "id": "BOOSTER",
         "name": "Boosters",
@@ -4513,6 +4523,7 @@
           },
           {
             "type": "CRANEAT",
+            "additionalAxleSubType": "ATCAXLE",
             "trailers": [
               {
                 "type": "XXXXXXX",
@@ -6608,6 +6619,21 @@
                     "l": 23
                   }
                 ]
+              }
+            ]
+          }
+        ]
+      },
+      "weight": {
+        "powerUnits": [
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "PLATFRM",
+                "additionalAxleSubType": "PFMAXLE",
+                "jeep": true,
+                "booster": true
               }
             ]
           }
