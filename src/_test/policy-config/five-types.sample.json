@@ -521,6 +521,16 @@
     ],
     "trailerTypes": [
       {
+        "id": "PFMAXLE",
+        "name": "Additional Axle Unit for Platform Trailer",
+        "category": "pseudo"
+      },
+      {
+        "id": "ATCAXLE",
+        "name": "Additional Axle Unit for All-Terrain Crane",
+        "category": "pseudo"
+      },
+      {
         "id": "BOOSTER",
         "name": "Boosters",
         "category": "accessory"

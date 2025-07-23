@@ -737,11 +737,14 @@ export class Policy {
    * Gets a list of all configured trailer types in the policy definition.
    * @returns Map of trailer type IDs to trailer type names.
    */
-  getTrailerTypes(): Map<string, string> {
-    const trailerTypes = extractIdentifiedObjects(
-      this.policyDefinition.vehicleTypes.trailerTypes,
-    );
-    return trailerTypes;
+  getTrailerTypes(includePseudo?: boolean): Map<string, string> {
+    let allTypes = this.policyDefinition.vehicleTypes.trailerTypes;
+    if (!includePseudo) {
+      allTypes = allTypes.filter(
+        (t) => t.category !== VehicleCategory.Pseudo.toString(),
+      );
+    }
+    return extractIdentifiedObjects(allTypes);
   }
 
   /**
