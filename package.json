@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "dayjs": "^1.11.13",
-    "json-rules-engine": "^7.2.1",
+    "json-rules-engine": "^7.3.1",
     "semver": "^7.6.3"
   },
   "jest": {
