@@ -293,7 +293,7 @@ describe('Non-Resident Single Trip Validation Tests', () => {
       (prev: any, curr: any) => prev + curr.cost,
       initialValue,
     );
-    expect(cost).toBe(1);
+    expect(cost).toBe(12);
   });
 
   it('should calculate NRSCV cv (none) vehicle cost correctly for 6000kg', async () => {

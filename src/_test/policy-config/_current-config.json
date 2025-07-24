@@ -2668,7 +2668,7 @@
         {
           "fact": "conditionalFixedCost",
           "params": {
-            "cost": 1,
+            "cost": 12,
             "fact": "conditionalLicensingFee",
             "value": "conditional"
           }
@@ -2957,7 +2957,7 @@
         {
           "fact": "conditionalFixedCost",
           "params": {
-            "cost": 3,
+            "cost": 12,
             "fact": "conditionalLicensingFee",
             "value": "conditional"
           }
@@ -3073,7 +3073,7 @@
       },
       {
         "id": "pseudo",
-        "name": "Placeholder for a trailer that is not technically a separate trailer, such as 'none' to represent no trailer in a combination, or an extra axle."
+        "name": "Placeholder for a trailer that is not technically a separate trailer, such as (None) to represent no trailer in a combination, or an extra axle."
       },
       {
         "id": "semi",

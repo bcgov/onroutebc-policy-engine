@@ -314,7 +314,7 @@ describe('Non-Resident Quarterly Validation Tests', () => {
       (prev: any, curr: any) => prev + curr.cost,
       initialValue,
     );
-    expect(cost).toBe(3);
+    expect(cost).toBe(12);
   });
 
   it('should calculate NRQCV cv (none) vehicle cost correctly for 6000kg', async () => {
