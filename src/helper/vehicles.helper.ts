@@ -1,5 +1,5 @@
-import { VehicleCategory } from '../enum';
-import { VehicleType, VehicleTypes } from '../types';
+import { VehicleCategory } from 'onroute-policy-engine/enum';
+import { VehicleType, VehicleTypes } from 'onroute-policy-engine/types';
 
 /**
  * Filters out all LCV vehicles from a supplied list of vehicle IDs.

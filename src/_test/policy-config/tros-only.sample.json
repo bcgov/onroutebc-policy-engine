@@ -1,5 +1,5 @@
 {
-  "minPEVersion": "1.0.0",
+  "minPEVersion": "2.0.0",
   "geographicRegions": [],
   "bridgeCalculationConstants": {
     "minWeight": 18000,
@@ -59,6 +59,34 @@
         "type": "violation",
         "params": {
           "message": "Permit start date cannot be in the past",
+          "code": "field-validation-error",
+          "fieldReference": "permitData.startDate"
+        }
+      }
+    },
+    {
+      "conditions": {
+        "any": [
+          {
+            "fact": "daysBetween",
+            "operator": "greaterThan",
+            "value": 14,
+            "params": {
+              "dateFrom": {
+                "fact": "validationDate"
+              },
+              "dateTo": {
+                "fact": "permitData",
+                "path": "$.startDate"
+              }
+            }
+          }
+        ]
+      },
+      "event": {
+        "type": "violation",
+        "params": {
+          "message": "Permit start date cannot be more than 14 days in the future",
           "code": "field-validation-error",
           "fieldReference": "permitData.startDate"
         }

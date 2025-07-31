@@ -1,10 +1,10 @@
 import {
+  ConditionRequirement,
   IdentifiedObject,
   SizeDimension,
   PowerUnitWeightDimension,
   TrailerWeightDimension,
 } from 'onroute-policy-engine/types';
-import { ConditionRequirement } from './permit-condition';
 
 export type VehicleType = IdentifiedObject & {
   category: string;
@@ -12,6 +12,7 @@ export type VehicleType = IdentifiedObject & {
   ignoreForSizeDimensions?: boolean;
   isLcv?: boolean;
   conditions?: Array<ConditionRequirement>;
+  additionalAxleSubType?: string;
 };
 
 export type PowerUnitType = VehicleType & {

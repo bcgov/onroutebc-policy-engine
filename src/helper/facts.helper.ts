@@ -6,8 +6,8 @@ import {
   PolicyFacts,
   CostFacts,
 } from 'onroute-policy-engine/enum';
-import { Policy } from '../policy-engine';
-import { PermitType, RangeMatrix } from '../types';
+import { Policy } from 'onroute-policy-engine';
+import { PermitType, RangeMatrix } from 'onroute-policy-engine/types';
 
 dayjs.extend(quarterOfYear);
 
@@ -140,6 +140,34 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
       }
 
       return allowedVehicles;
+    },
+  );
+
+  /**
+   * Add runtime fact to calculate the number of days between a from
+   * and to date supplied in parameters. Will be positive for a dateTo
+   * in the future with respect to dateFrom, negative otherwise.
+   */
+  engine.addFact(
+    PolicyFacts.DaysBetween.toString(),
+    async function (params, almanac) {
+      const dateFromStr: string = await almanac.factValue(
+        params.dateFrom.fact,
+        {},
+        params.dateFrom.path,
+      );
+      const dateToStr: string = await almanac.factValue(
+        params.dateTo.fact,
+        {},
+        params.dateTo.path,
+      );
+      const dateFrom = dayjs(dateFromStr, PermitAppInfo.PermitDateFormat);
+      const dateTo = dayjs(dateToStr, PermitAppInfo.PermitDateFormat);
+      const daysBetween = dateTo.diff(dateFrom, 'day');
+      console.log(
+        `Calculated daysBetween '${dateFromStr}' and '${dateToStr}' as '${daysBetween}'`,
+      );
+      return daysBetween;
     },
   );
 

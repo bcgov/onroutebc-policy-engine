@@ -1,5 +1,5 @@
 {
-  "minPEVersion": "1.0.0",
+  "minPEVersion": "2.0.0",
   "geographicRegions": [],
   "bridgeCalculationConstants": {
     "minWeight": 18000,

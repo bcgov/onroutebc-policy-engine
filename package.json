@@ -58,6 +58,7 @@
     "semver": "^7.6.3"
   },
   "jest": {
+    "verbose": true,
     "moduleFileExtensions": [
       "js",
       "json",

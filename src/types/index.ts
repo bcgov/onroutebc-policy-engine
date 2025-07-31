@@ -1,7 +1,7 @@
 export { AxleConfiguration } from './axle-configuration';
 export { BridgeCalculationConstants } from './bridge-calculation-constants';
 export { BridgeCalculationResult } from './bridge-calculation-result';
-export { Commodity, CommoditySize, CommodityWeight } from './commodity';
+export { Commodity } from './commodity';
 export { CostRule } from './cost-rule';
 export { DimensionModifier, VehicleRelatives } from './dimension-modifier';
 export { PermitFacts } from './facts';
@@ -45,13 +45,7 @@ export {
   TrailerType,
   VehicleTypes,
 } from './vehicle-type';
-export {
-  Vehicle,
-  VehicleSizeConfiguration,
-  VehicleWeightConfiguration,
-  TrailerSize,
-  TrailerWeight,
-} from './vehicle';
+export { TrailerDimensions, Vehicle, VehicleDimensions } from './vehicle';
 export {
   WeightDimension,
   PowerUnitWeightDimension,

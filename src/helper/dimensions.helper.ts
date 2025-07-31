@@ -1,16 +1,17 @@
-import { RelativePosition } from '../enum';
-import { Policy } from '../policy-engine';
+import { RelativePosition, VehicleCategory } from 'onroute-policy-engine/enum';
+import { Policy } from 'onroute-policy-engine';
 import {
   AxleConfiguration,
   PowerUnitWeightDimension,
   RegionSizeOverride,
+  SingleAxleDimension,
   SizeDimension,
-  TrailerSize,
+  TrailerDimensions,
   TrailerWeightDimension,
   VehicleRelatives,
+  VehicleType,
   WeightDimension,
-} from '../types';
-import { SingleAxleDimension } from '../types/weight-dimension';
+} from 'onroute-policy-engine/types';
 
 /**
  * Gets the maximum size dimensions for a given permit type, commodity,
@@ -42,7 +43,7 @@ export function getSizeDimensionHelper(
   if (policy.isConfigurationValid(permitTypeId, commodityId, configuration)) {
     // Get the power unit that has the size configuration
     const commodity = policy.getCommodityDefinition(commodityId);
-    const powerUnit = commodity?.size?.powerUnits?.find(
+    const powerUnit = commodity?.powerUnits.find(
       (pu) => pu.type == configuration[0],
     );
     if (!powerUnit) {
@@ -64,11 +65,11 @@ export function getSizeDimensionHelper(
 
     if (sizeTrailer) {
       // Get the trailer size dimension array for the commodity
-      const trailer: TrailerSize | undefined = powerUnit.trailers?.find(
+      const trailer: TrailerDimensions | undefined = powerUnit.trailers?.find(
         (t) => t.type == sizeTrailer,
       );
 
-      let sizeDimensions: Array<SizeDimension>;
+      let sizeDimensions: Array<SizeDimension> = [];
 
       if (
         trailer &&
@@ -76,8 +77,6 @@ export function getSizeDimensionHelper(
         trailer.sizeDimensions.length > 0
       ) {
         sizeDimensions = trailer.sizeDimensions;
-      } else {
-        sizeDimensions = new Array<SizeDimension>();
       }
 
       const sizeDimensionConfigured = selectCorrectSizeDimension(
@@ -524,8 +523,8 @@ export function selectCorrectWeightDimensionHelper(
 /**
  * Convenience method to get the vehicles in the configuration relative
  * to the axle unit at the indicated axleIndex, to be used when
- * evaluating weight modifiers.
- * @param policy The instantiated policy object with weight config
+ * evaluating dimension modifiers.
+ * @param policy The instantiated policy object with dimension config
  * @param configuration Full vehicle configuration
  * @param axleIndex Index of the axle unit for which relatives are
  * to be returned.
@@ -536,10 +535,14 @@ export function getVehicleRelatives(
   configuration: Array<string>,
   axleIndex: number,
 ): VehicleRelatives {
+  if (!configuration || configuration.length === 0) {
+    throw new Error('Cannot get relatives with an empty configuration');
+  }
+
   const firstType = configuration[0];
-  const lastType = configuration[configuration.length - 1];
   const firstVehicle = policy.getVehicleDefinition(firstType);
-  const lastVehicle = policy.getVehicleDefinition(lastType);
+  const lastVehicle = walk(policy, configuration, configuration.length - 1, -1);
+  const lastType = lastVehicle?.id;
 
   // Get relevant nearby vehicle types for the target axle
   const vehicleRelatives: VehicleRelatives = {
@@ -556,8 +559,11 @@ export function getVehicleRelatives(
     vehicleRelatives.prevCategory = null;
   } else {
     // Subtract 2 from the configuration index to account for
-    // the fact that the power unit has two axles.
-    vehicleRelatives.prevType = configuration[axleIndex - 2];
+    // the fact that the power unit has two axles. We walk the
+    // configuration here to jump over any pseudo vehicles like
+    // additional axle units.
+    const prevVehicleType = walk(policy, configuration, axleIndex - 2, -1);
+    vehicleRelatives.prevType = prevVehicleType?.id;
     vehicleRelatives.prevCategory = policy.getVehicleDefinition(
       vehicleRelatives.prevType,
     )?.category;
@@ -569,11 +575,49 @@ export function getVehicleRelatives(
     vehicleRelatives.nextType = null;
     vehicleRelatives.nextCategory = null;
   } else {
-    vehicleRelatives.nextType = configuration[axleIndex];
+    // Walk the configuration towards the rear, to jump over any
+    // pseudo vehicle in the line.
+    const nextVehicleType = walk(policy, configuration, axleIndex, 1);
+    vehicleRelatives.nextType = nextVehicleType?.id;
     vehicleRelatives.nextCategory = policy.getVehicleDefinition(
       vehicleRelatives.nextType,
     )?.category;
   }
 
   return vehicleRelatives;
+}
+
+/**
+ * Walks along the vehicle configuration from the start index
+ * in the direction indicated by increment, which will typically
+ * be either 1 (towards the rear of the vehicle) or -1 (towards
+ * the front of the vehicle), and returns the first non-pseudo
+ * vehicle encountered. If no non-pseudo vehicles are encountered,
+ * returns null.
+ * @param policy The instantiated policy object with dimension config
+ * @param configuration Full vehicle configuration
+ * @param startIndex Index at which to begin search (will return
+ * the vehicle at startIndex if that vehicle is non-pseudo)
+ * @param increment Direction of travel, either 1 (towards the rear
+ * of the vehicle) or -1 (towards the front of the vehicle)
+ * @returns First non-pseudo vehicle encountered in the direction
+ * of travel
+ */
+function walk(
+  policy: Policy,
+  configuration: Array<string>,
+  startIndex: number,
+  increment: number,
+): VehicleType | null {
+  let i = startIndex;
+  let vehicleType: VehicleType | null = null;
+  while (i >= 0 && i < configuration.length) {
+    const nextType = policy.getVehicleDefinition(configuration[i]);
+    if (nextType && nextType.category !== VehicleCategory.Pseudo) {
+      vehicleType = nextType;
+      break;
+    }
+    i = i + increment;
+  }
+  return vehicleType;
 }

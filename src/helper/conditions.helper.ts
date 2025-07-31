@@ -1,10 +1,10 @@
-import { Policy } from '../policy-engine';
+import { Policy } from 'onroute-policy-engine';
 import {
   ConditionForPermit,
   ConditionRequirement,
   PermitConditionDefinition,
   VehicleType,
-} from '../types';
+} from 'onroute-policy-engine/types';
 
 /**
  * Gets a list of conditions that are applicable for the supplied permit

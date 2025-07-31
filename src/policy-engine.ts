@@ -14,6 +14,7 @@ import {
   WeightDimension,
   SingleAxleDimension,
   StandardTireSize,
+  TrailerDimensions,
 } from 'onroute-policy-engine/types';
 import {
   extractIdentifiedObjects,
@@ -243,33 +244,23 @@ export class Policy {
     } else if (!permitType.commodityRequired) {
       return new Map<string, string>();
     } else {
-      // Commodities for oversize permits are those which have at least one
-      // power unit defined in the size dimension object of the commodity.
       const commoditiesForOS = extractIdentifiedObjects(
         this.policyDefinition.commodities.filter((c) => {
-          if (c.size) {
-            if (c.size.powerUnits) {
-              if (c.size.powerUnits.length > 0) {
-                return true;
-              }
-            }
-          }
-          return false;
+          // Return true if any of the power units has any size
+          // permittable trailers
+          return c.powerUnits.some((p) =>
+            p.trailers.some((t) => t.sizePermittable),
+          );
         }),
       );
 
-      // Commodities for overweight permits are those which have at least one
-      // power unit defined in the weight dimension object of the commodity.
       const commoditiesForOW = extractIdentifiedObjects(
         this.policyDefinition.commodities.filter((c) => {
-          if (c.weight) {
-            if (c.weight.powerUnits) {
-              if (c.weight.powerUnits.length > 0) {
-                return true;
-              }
-            }
-          }
-          return false;
+          // Return true if any of the power units has any size
+          // permittable trailers
+          return c.powerUnits.some((p) =>
+            p.trailers.some((t) => t.weightPermittable),
+          );
         }),
       );
 
@@ -344,78 +335,56 @@ export class Policy {
         );
       }
 
-      let puTypeIdsOS: Array<string> | undefined =
-        commodity.size?.powerUnits?.map((p) => p.type);
-      let trTypeIdsOS: Array<string> | undefined = [];
-      commodity.size?.powerUnits?.forEach((pu) => {
-        const trForPu = pu.trailers.map((t) => t.type);
-        if (trForPu) trTypeIdsOS?.concat(trForPu);
+      // Extract the permittable power unit and trailer IDs. If the permit
+      // type requires both size and weight dimension, only extract the
+      // power units that have at least one trailer that is both size and
+      // weight permittable.
+      const permittablePowerUnits = commodity.powerUnits.filter((p) => {
+        return p.trailers.some((t) => {
+          return this.isTrailerPermittable(permitType, t);
+        });
       });
-
-      // TODO: implement along with overweight permits. Stub for now.
-      let puTypeIdsOW: Array<string> = [];
-      let trTypeIdsOW: Array<string> = [];
+      let puTypeIds = permittablePowerUnits.map((p) => p.type);
+      let trTypeIds: Array<string> = [];
+      permittablePowerUnits.forEach((pu) => {
+        trTypeIds = trTypeIds.concat(
+          pu.trailers
+            .filter((t) => {
+              return this.isTrailerPermittable(permitType, t);
+            })
+            .map((t) => t.type),
+        );
+      });
+      // Remove duplicate trailer IDs
+      trTypeIds = [...new Set(trTypeIds)];
 
       // Remove long combination vehicles if needed
       if (!this.specialAuthorizations?.isLcvAllowed) {
-        if (puTypeIdsOS) {
-          puTypeIdsOS = this.filterOutLongCombinationVehicles(puTypeIdsOS);
-        }
-        if (trTypeIdsOS) {
-          trTypeIdsOS = this.filterOutLongCombinationVehicles(trTypeIdsOS);
-        }
-
-        if (puTypeIdsOW) {
-          puTypeIdsOW = this.filterOutLongCombinationVehicles(puTypeIdsOW);
-        }
-        if (trTypeIdsOW) {
-          trTypeIdsOW = this.filterOutLongCombinationVehicles(trTypeIdsOW);
-        }
+        puTypeIds = this.filterOutLongCombinationVehicles(puTypeIds);
+        trTypeIds = this.filterOutLongCombinationVehicles(trTypeIds);
       }
 
-      const puTypesOS = extractIdentifiedObjects(
-        this.policyDefinition.vehicleTypes.powerUnitTypes,
-        puTypeIdsOS,
-      );
-      const trTypesOS = extractIdentifiedObjects(
-        this.policyDefinition.vehicleTypes.trailerTypes,
-        trTypeIdsOS,
-      );
-      const puTypesOW = extractIdentifiedObjects(
-        this.policyDefinition.vehicleTypes.powerUnitTypes,
-        puTypeIdsOW,
-      );
-      const trTypesOW = extractIdentifiedObjects(
-        this.policyDefinition.vehicleTypes.trailerTypes,
-        trTypeIdsOW,
-      );
-
       if (
-        permitType.sizeDimensionRequired &&
-        permitType.weightDimensionRequired
+        !(
+          permitType.sizeDimensionRequired || permitType.weightDimensionRequired
+        )
       ) {
-        puTypes = intersectIdMaps(puTypesOS, puTypesOW);
-        trTypes = intersectIdMaps(trTypesOS, trTypesOW);
-      } else if (permitType.sizeDimensionRequired) {
-        puTypes = puTypesOS;
-        trTypes = trTypesOS;
-      } else if (permitType.weightDimensionRequired) {
-        puTypes = puTypesOW;
-        trTypes = trTypesOW;
-      } else {
         // This permit type requires commodity selection, but does not
         // require size or weight dimensions. For these permit types, the
         // allowedVehicles must be configured in policy. Return all power
         // units and trailers from this list.
-        puTypes = extractIdentifiedObjects(
-          this.policyDefinition.vehicleTypes.powerUnitTypes,
-          permitType.allowedVehicles,
-        );
-        trTypes = extractIdentifiedObjects(
-          this.policyDefinition.vehicleTypes.trailerTypes,
-          permitType.allowedVehicles,
-        );
+        puTypeIds = permitType.allowedVehicles || [];
+        trTypeIds = permitType.allowedVehicles || [];
       }
+
+      puTypes = extractIdentifiedObjects(
+        this.policyDefinition.vehicleTypes.powerUnitTypes,
+        puTypeIds,
+      );
+      trTypes = extractIdentifiedObjects(
+        this.policyDefinition.vehicleTypes.trailerTypes,
+        trTypeIds,
+      );
     }
 
     const vehicleTypes = new Map<string, Map<string, string>>();
@@ -423,6 +392,30 @@ export class Policy {
     vehicleTypes.set(VehicleTypes.Trailers, trTypes);
 
     return vehicleTypes;
+  }
+
+  /**
+   * Given a trailer dimensions object from the commodities
+   * configuration and a permit type, return whether or not the
+   * trailer is permittable - this will depend on whether the trailer
+   * is size and/or weight permittable, and whether the permit
+   * type requires size and/or weight dimensions.
+   * @param permitType The permit type object
+   * @param trailer The trailer dimensions object for a specific commodity
+   * @returns true if the trailer is permittable, false otherwise
+   */
+  isTrailerPermittable(permitType: PermitType, trailer: TrailerDimensions) {
+    if (
+      permitType.sizeDimensionRequired &&
+      permitType.weightDimensionRequired
+    ) {
+      return trailer.sizePermittable && trailer.weightPermittable;
+    } else {
+      return (
+        (trailer.sizePermittable && permitType.sizeDimensionRequired) ||
+        (trailer.weightPermittable && permitType.weightDimensionRequired)
+      );
+    }
   }
 
   /**
@@ -508,9 +501,11 @@ export class Policy {
     if (currentConfiguration.length == 0) {
       // The current configuration is empty, so return only the
       // allowable power units.
-      vehicleTypeIds = commodity.size?.powerUnits?.map((p) => p.type);
+      vehicleTypeIds = Array.from(
+        this.getPermittablePowerUnitTypes(permitTypeId, commodityId).keys(),
+      );
     } else {
-      const powerUnit = commodity.size?.powerUnits?.find(
+      const powerUnit = commodity.powerUnits.find(
         (p) => p.type == currentConfiguration[0],
       );
 
@@ -524,10 +519,23 @@ export class Policy {
         validTrailers = powerUnit?.trailers;
       }
 
-      const trailerIds = validTrailers?.map((t) => t.type);
+      // Filter trailer list down to those permittable for the permit
+      // type (size and/or weight dimensions required)
+      validTrailers = validTrailers?.filter((t) =>
+        this.isTrailerPermittable(permitType, t),
+      );
 
-      if (currentConfiguration.length == 1) {
-        // Just a power unit, return the list of trailerIds for the
+      const trailerIds = validTrailers?.map((t) => t.type);
+      const lastVehicleId =
+        currentConfiguration[currentConfiguration.length - 1];
+
+      const powerUnitType = this.getPowerUnitDefinition(powerUnit?.type);
+      if (
+        currentConfiguration.length == 1 ||
+        lastVehicleId === powerUnitType?.additionalAxleSubType
+      ) {
+        // Just a power unit, optionally with one or more additional
+        // axles. Return the list of trailerIds for the
         // power unit, plus jeep if any of the trailer Ids allow
         // a jeep.
         if (
@@ -538,8 +546,6 @@ export class Policy {
         }
         vehicleTypeIds = trailerIds;
       } else {
-        const lastVehicleId =
-          currentConfiguration[currentConfiguration.length - 1];
         switch (lastVehicleId) {
           case AccessoryVehicleType.Jeep:
             // If there is one jeep, there can be more
@@ -552,12 +558,35 @@ export class Policy {
             break;
           default:
             {
-              const trailer = powerUnit?.trailers.find(
+              // The last vehicle is either a trailer, or an
+              // additional axle on the trailer. We need to
+              // identify the actual trailer type to determine
+              // if a booster is allowed.
+              let trailer = powerUnit?.trailers.find(
                 (t) => t.type == lastVehicleId,
               );
+              if (!trailer) {
+                // The last vehicle is not a trailer or a booster,
+                // so must be an additional axle of the trailer since
+                // we know this is a valid configuration at this point.
+                // Work our way backwards through the configuration
+                // to find the trailer.
+                let i = currentConfiguration.length - 1;
+                while (!trailer && i > 0) {
+                  const prevVehicleId = currentConfiguration[--i];
+                  trailer = powerUnit?.trailers.find(
+                    (t) => t.type == prevVehicleId,
+                  );
+                }
+              }
+
               if (trailer && trailer.booster) {
                 vehicleTypeIds = [AccessoryVehicleType.Booster];
               } else {
+                // Either the trailer does not permit a booster, or
+                // we did not find the trailer which would be
+                // unexpected. Either way, no more vehicles are
+                // permittable.
                 vehicleTypeIds = new Array<string>();
               }
             }
@@ -642,18 +671,28 @@ export class Policy {
       }
     }
 
-    const powerUnit = commodity.size?.powerUnits?.find(
-      (p) => p.type == currentConfiguration[0],
+    const permittablePowerUnits = this.getPermittablePowerUnitTypes(
+      permitTypeId,
+      commodityId,
     );
-    if (!powerUnit) {
-      // The power unit is not allowed for the commodity
+    if (!permittablePowerUnits.has(currentConfiguration[0])) {
+      // The power unit is not permitted
       return false;
     }
+    const powerUnit = commodity.powerUnits.find(
+      (p) => p.type === currentConfiguration[0],
+    );
 
-    let trailerIds = powerUnit.trailers.map((t) => t.type);
+    let trailerIds: Array<string> =
+      powerUnit?.trailers
+        .filter((t) => this.isTrailerPermittable(permitType, t))
+        .map((t) => t.type) || [];
+
     let jeepAllowed: boolean = true;
     let trailerAllowed: boolean = true;
     let boosterAllowed: boolean = false;
+    const powerUnitType = this.getPowerUnitDefinition(powerUnit?.type);
+    let additionalAxleType: string = powerUnitType?.additionalAxleSubType || '';
 
     for (let i = 1; i < currentConfiguration.length; i++) {
       switch (currentConfiguration[i]) {
@@ -662,30 +701,57 @@ export class Policy {
             return false;
           }
           // Filter allowed trailers to only those that allow jeeps
-          trailerIds = powerUnit.trailers
-            .filter((t) => t.jeep)
-            .map((t) => t.type);
+          trailerIds =
+            powerUnit?.trailers
+              .filter((t) => this.isTrailerPermittable(permitType, t))
+              .filter((t) => t.jeep)
+              .map((t) => t.type) || [];
+
+          if (trailerIds.length === 0) {
+            // The configuration has a jeep, but no trailers allow jeeps
+            // for this power unit and commodity. Return false.
+            return false;
+          }
+          additionalAxleType = '';
           break;
         case AccessoryVehicleType.Booster:
           if (!boosterAllowed) {
             return false;
           }
+          additionalAxleType = '';
           break;
         default:
+          // This is a trailer (not a booster or jeep).
+          // Check to see if it is an additional axle pseudo trailer
+          // which is valid for the previous vehicle and let it
+          // pass if so.
+          if (currentConfiguration[i] === additionalAxleType) {
+            break;
+          }
+
           if (!trailerAllowed) {
             return false;
           }
+
+          if (!trailerIds.includes(currentConfiguration[i])) {
+            // Trailer not in our list of permittable trailers
+            return false;
+          }
+
+          jeepAllowed = false;
+          trailerAllowed = false;
           {
-            const trailer = powerUnit.trailers.find(
-              (t) => t.type == currentConfiguration[i],
+            const trailer = powerUnit?.trailers.find(
+              (t) => t.type === currentConfiguration[i],
             );
-            if (!trailer || !trailerIds.includes(currentConfiguration[i])) {
-              // This trailer is not permitted for this power unit
-              return false;
-            }
-            jeepAllowed = false;
-            trailerAllowed = false;
-            boosterAllowed = trailer.booster;
+            // This is a trailer, set the additional axle type so it can be
+            // checked on the next vehicle in the configuration
+            const trailerType = this.getTrailerDefinition(trailer?.type);
+            additionalAxleType = trailerType?.additionalAxleSubType || '';
+
+            // Set the boosterAllowed flag based on whether the trailer allows
+            // a booster for the commodity in the configuration
+            boosterAllowed = trailer?.booster || false;
           }
           break;
       }
