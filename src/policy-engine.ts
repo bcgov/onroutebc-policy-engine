@@ -75,8 +75,9 @@ export class Policy {
     definition: PolicyDefinition,
     authorizations?: SpecialAuthorizations,
   ) {
+    const cleanVersion = semverValid(version);
     // Check compatibility of the policy engine with the policy config
-    if (!semverValid(version)) {
+    if (!cleanVersion) {
       throw new Error(
         `Cannot determine the version of the policy engine for compatibility: invalid semver: ${version}`,
       );
@@ -84,13 +85,13 @@ export class Policy {
       throw new Error(
         `Cannot determine the minimum PE version for the configuration: invalid semver: ${definition.minPEVersion}`,
       );
-    } else if (semverLt(version, definition.minPEVersion)) {
+    } else if (semverLt(cleanVersion, definition.minPEVersion)) {
       throw new Error(
-        `Current policy engine version is less than minimum version required for policy config: ${version} > ${definition.minPEVersion}`,
+        `Current policy engine version is less than minimum version required for policy config: ${cleanVersion} > ${definition.minPEVersion}`,
       );
-    } else if (semverMajor(version) > semverMajor(definition.minPEVersion)) {
+    } else if (semverMajor(cleanVersion) > semverMajor(definition.minPEVersion)) {
       throw new Error(
-        `Current policy config minimum version is at least one major version behind policy engine: major(${definition.minPEVersion}) < major(${version}))`,
+        `Current policy config minimum version is at least one major version behind policy engine: major(${definition.minPEVersion}) < major(${cleanVersion}))`,
       );
     }
 
