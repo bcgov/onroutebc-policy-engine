@@ -21,15 +21,16 @@ describe('Permit Engine Utility Functions', () => {
 
   it('should return the correct number of commodities', async () => {
     const commodities: Map<string, string> = policy.getCommodities();
-    expect(commodities.size).toBe(5);
+    expect(commodities.size).toBe(31);
   });
 
   it('should return the correct number of commodities for overweight', async () => {
     const policyAlt = new Policy(weightSample);
     const commodities: Map<string, string> = policyAlt.getCommodities('STOW');
-    expect(commodities.size).toBe(2);
+    expect(commodities.size).toBe(3);
     expect(commodities.get('XXXXXXX')).toBeTruthy();
     expect(commodities.get('REDUCBL')).toBeTruthy();
+    expect(commodities.get('EMPTYXX')).toBeTruthy();
   });
 
   it('should return the correct number of power unit types', async () => {

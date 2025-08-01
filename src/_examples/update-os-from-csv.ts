@@ -3,12 +3,12 @@ import { parse } from 'csv-parse';
 import completePolicyConfig from '../_test/policy-config/_current-config.json';
 import { Policy } from '../policy-engine';
 import { getIdFromName } from '../helper/lists.helper';
-import { RegionSizeOverride, SizeDimension, TrailerSize } from '../types';
+import { RegionSizeOverride, SizeDimension, TrailerDimensions } from '../types';
 
 type DimensionEntry = {
   commodity: string;
   powerUnit: string;
-  trailer: TrailerSize;
+  trailer: TrailerDimensions;
 };
 
 enum ColumnNumbers {
@@ -119,12 +119,6 @@ function csvRowToObject(
 }
 
 const policy = new Policy(completePolicyConfig);
-policy.policyDefinition.commodities.forEach((c) => {
-  // Remove each size property from the commodity, will
-  // be replaced wholesale with the new size. If the configuration
-  // is not present in the new input, it should be deleted.
-  if (c.size) delete c.size;
-});
 
 function processCsvRow(row: any) {
   const dimensionEntry = csvRowToObject(row, policy);
@@ -132,12 +126,12 @@ function processCsvRow(row: any) {
     const commodity = policy.getCommodityDefinition(dimensionEntry.commodity);
     if (commodity) {
       // Update the list of power units
-      if (!commodity.size) {
-        commodity.size = { powerUnits: [] };
+      if (!commodity.powerUnits) {
+        commodity.powerUnits = [];
       }
 
       // Get or create power unit entry
-      let powerUnit = commodity.size.powerUnits?.find(
+      let powerUnit = commodity.powerUnits?.find(
         (pu) => pu.type == dimensionEntry.powerUnit,
       );
       if (!powerUnit) {
@@ -146,7 +140,7 @@ function processCsvRow(row: any) {
           type: dimensionEntry.powerUnit,
           trailers: [],
         };
-        commodity.size.powerUnits?.push(powerUnit);
+        commodity.powerUnits?.push(powerUnit);
       }
 
       const trailer = powerUnit.trailers.find(

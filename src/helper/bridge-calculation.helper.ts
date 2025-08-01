@@ -2,7 +2,7 @@ import {
   BridgeCalculationResult,
   AxleConfiguration,
 } from 'onroute-policy-engine/types';
-import { Policy } from '../policy-engine';
+import { Policy } from 'onroute-policy-engine';
 
 /**
  * Runs the bridge formula against the supplied vehicle axle configuration.

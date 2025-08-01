@@ -11,7 +11,7 @@ export type DimensionModifier = SelfIssuable & {
 
 export type VehicleRelatives = {
   firstType: string;
-  lastType: string;
+  lastType?: string;
   nextType?: string | null;
   prevType?: string | null;
   firstCategory?: string | null;

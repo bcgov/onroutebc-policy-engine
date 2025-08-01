@@ -14,6 +14,21 @@ describe('Policy Engine Oversize Configuration Functions', () => {
     expect(puTypes.keys()).toContain('PICKRTR');
   });
 
+  it('should retrieve valid power unit types for STOW', async () => {
+    const puTypesNone = policy.getPermittablePowerUnitTypes('STOW', 'XXXXXXX');
+    expect(puTypesNone.keys()).toContain('TRKTRAC');
+    expect(puTypesNone.keys()).toContain('CRANEAT');
+    expect(puTypesNone.keys()).not.toContain('MUNFITR');
+
+    const puTypesNonredu = policy.getPermittablePowerUnitTypes(
+      'STOW',
+      'NONREDU',
+    );
+    expect(puTypesNonredu.keys()).toContain('REGTRCK');
+    expect(puTypesNonredu.keys()).toContain('PICKRTT');
+    expect(puTypesNonredu.keys()).not.toContain('STINGER');
+  });
+
   it('should throw an error for invalid permit type', async () => {
     expect(() => {
       policy.getPermittablePowerUnitTypes('_INVALID', 'EMPTYXX');
@@ -47,8 +62,14 @@ describe('Policy Engine Get Next Permittable Vehicles', () => {
   const policy: Policy = new Policy(currentPolicyConfig);
   const lcvPolicy: Policy = new Policy(currentPolicyConfig, specialAuth);
 
-  it('should return permittable power units with empty current configuration', async () => {
+  it('should return permittable power units for STOS with empty current configuration', async () => {
     const vehicles = policy.getNextPermittableVehicles('STOS', 'LAMBEAM', []);
+    expect(vehicles.size).toBe(1);
+    expect(vehicles.keys()).toContain('TRKTRAC');
+  });
+
+  it('should return permittable power units for STOW with empty current configuration', async () => {
+    const vehicles = policy.getNextPermittableVehicles('STOW', 'LAMBEAM', []);
     expect(vehicles.size).toBe(1);
     expect(vehicles.keys()).toContain('TRKTRAC');
   });
@@ -85,7 +106,7 @@ describe('Policy Engine Get Next Permittable Vehicles', () => {
   });
 
   // ORV2-3953
-  it('should not return invalid trailers after jeep selected', async () => {
+  it('should not return invalid trailers after jeep selected (STOS)', async () => {
     const vehicles = policy.getNextPermittableVehicles('STOS', 'BRSHCUT', [
       'TRKTRAC',
       'JEEPSRG',
@@ -94,8 +115,27 @@ describe('Policy Engine Get Next Permittable Vehicles', () => {
     expect(vehicles.keys()).not.toContain('SEMITRL');
   });
 
-  it('should return jeep and a trailer when current config is just power unit', async () => {
+  it('should not return invalid trailers after jeep selected (STOW)', async () => {
+    const vehicles = policy.getNextPermittableVehicles('STOW', 'OILFILD', [
+      'OGBEDTK',
+      'JEEPSRG',
+    ]);
+    expect(vehicles.size).toBe(2);
+    expect(vehicles.keys()).not.toContain('EXPANDO');
+  });
+
+  it('should return jeep and trailer when current config is just power unit (STOS)', async () => {
     const vehicles = policy.getNextPermittableVehicles('STOS', 'LAMBEAM', [
+      'TRKTRAC',
+    ]);
+    expect(vehicles.size).toBe(3);
+    expect(vehicles.keys()).toContain('JEEPSRG');
+    expect(vehicles.keys()).toContain('POLETRL');
+    expect(vehicles.keys()).toContain('HIBOEXP');
+  });
+
+  it('should return jeep and trailer when current config is just power unit (STOW)', async () => {
+    const vehicles = policy.getNextPermittableVehicles('STOW', 'LAMBEAM', [
       'TRKTRAC',
     ]);
     expect(vehicles.size).toBe(3);
@@ -131,12 +171,21 @@ describe('Policy Engine Get Next Permittable Vehicles', () => {
     ]);
     expect(vehicles.size).toBe(0);
   });
+
+  it('should not return additional axle for STOW and CRANEAT', async () => {
+    const vehicles = policy.getNextPermittableVehicles('STOW', 'XXXXXXX', [
+      'CRANEAT',
+    ]);
+    expect(vehicles.size).toBe(2);
+    expect(vehicles.keys()).toContain('DOLLIES');
+    expect(vehicles.keys()).toContain('XXXXXXX');
+  });
 });
 
 describe('Policy Engine Configuration Validation', () => {
   const policy: Policy = new Policy(currentPolicyConfig);
 
-  it('should return true for a valid configuration with power unit and trailer', async () => {
+  it('should return true for a valid STOS configuration with power unit and trailer', async () => {
     const isValid = policy.isConfigurationValid('STOS', 'LAMBEAM', [
       'TRKTRAC',
       'POLETRL',
@@ -144,7 +193,15 @@ describe('Policy Engine Configuration Validation', () => {
     expect(isValid).toBe(true);
   });
 
-  it('should return true for a valid configuration with power unit and trailer and jeep and booster', async () => {
+  it('should return true for a valid STOW configuration with power unit and trailer', async () => {
+    const isValid = policy.isConfigurationValid('STOW', 'LAMBEAM', [
+      'TRKTRAC',
+      'POLETRL',
+    ]);
+    expect(isValid).toBe(true);
+  });
+
+  it('should return true for a valid STOS configuration with power unit and trailer and jeep and booster', async () => {
     const isValid = policy.isConfigurationValid('STOS', 'LAMBEAM', [
       'TRKTRAC',
       'JEEPSRG',
@@ -154,8 +211,28 @@ describe('Policy Engine Configuration Validation', () => {
     expect(isValid).toBe(true);
   });
 
-  it('should return false for a configuration out of order', async () => {
+  it('should return true for a valid STOW configuration with power unit and trailer and jeep and booster', async () => {
+    const isValid = policy.isConfigurationValid('STOW', 'LAMBEAM', [
+      'TRKTRAC',
+      'JEEPSRG',
+      'POLETRL',
+      'BOOSTER',
+    ]);
+    expect(isValid).toBe(true);
+  });
+
+  it('should return false for a STOS configuration out of order', async () => {
     const isValid = policy.isConfigurationValid('STOS', 'LAMBEAM', [
+      'TRKTRAC',
+      'POLETRL',
+      'JEEPSRG',
+      'BOOSTER',
+    ]);
+    expect(isValid).toBe(false);
+  });
+
+  it('should return false for a STOW configuration out of order', async () => {
+    const isValid = policy.isConfigurationValid('STOW', 'LAMBEAM', [
       'TRKTRAC',
       'POLETRL',
       'JEEPSRG',
@@ -173,13 +250,19 @@ describe('Policy Engine Configuration Validation', () => {
     }).toThrow();
   });
 
-  it('should throw an error for an invalid commodity', async () => {
+  it('should throw an error for an invalid STOS commodity', async () => {
     expect(() => {
       policy.isConfigurationValid('STOS', '_INVALID', ['TRKTRAC', 'POLETRL']);
     }).toThrow();
   });
 
-  it('should return false for a configuration missing a trailer', async () => {
+  it('should throw an error for an invalid STOW commodity', async () => {
+    expect(() => {
+      policy.isConfigurationValid('STOW', '_INVALID', ['TRKTRAC', 'POLETRL']);
+    }).toThrow();
+  });
+
+  it('should return false for a STOS configuration missing a trailer', async () => {
     const isValid = policy.isConfigurationValid('STOS', 'LAMBEAM', [
       'TRKTRAC',
       'JEEPSRG',
@@ -187,13 +270,105 @@ describe('Policy Engine Configuration Validation', () => {
     expect(isValid).toBe(false);
   });
 
-  it('should return true for a partial configuration missing a trailer', async () => {
+  it('should return false for a STOW configuration missing a trailer', async () => {
+    const isValid = policy.isConfigurationValid('STOW', 'LAMBEAM', [
+      'TRKTRAC',
+      'JEEPSRG',
+    ]);
+    expect(isValid).toBe(false);
+  });
+
+  it('should return true for a partial STOS configuration missing a trailer', async () => {
     const isValid = policy.isConfigurationValid(
       'STOS',
       'LAMBEAM',
       ['TRKTRAC', 'JEEPSRG'],
       true,
     );
+    expect(isValid).toBe(true);
+  });
+
+  it('should return true for a partial STOW configuration missing a trailer', async () => {
+    const isValid = policy.isConfigurationValid(
+      'STOW',
+      'LAMBEAM',
+      ['TRKTRAC', 'JEEPSRG'],
+      true,
+    );
+    expect(isValid).toBe(true);
+  });
+
+  it('should return true for a valid STOW configuration with one additional crane axle', async () => {
+    const isValid = policy.isConfigurationValid('STOW', 'XXXXXXX', [
+      'CRANEAT',
+      'ATCAXLE',
+      'XXXXXXX',
+    ]);
+    expect(isValid).toBe(true);
+  });
+
+  it('should return true for a valid STOW configuration with multiple additional crane axles', async () => {
+    const isValid = policy.isConfigurationValid('STOW', 'XXXXXXX', [
+      'CRANEAT',
+      'ATCAXLE',
+      'ATCAXLE',
+      'ATCAXLE',
+      'XXXXXXX',
+    ]);
+    expect(isValid).toBe(true);
+  });
+
+  it('should return true for a valid STOW configuration with additional crane axle and trailer', async () => {
+    const isValid = policy.isConfigurationValid('STOW', 'XXXXXXX', [
+      'CRANEAT',
+      'ATCAXLE',
+      'DOLLIES',
+    ]);
+    expect(isValid).toBe(true);
+  });
+
+  it('should return false for a STOW configuration with additional axle out of order', async () => {
+    const isValid = policy.isConfigurationValid('STOW', 'XXXXXXX', [
+      'CRANEAT',
+      'XXXXXXX',
+      'ATCAXLE',
+    ]);
+    expect(isValid).toBe(false);
+  });
+
+  it('should return true for a valid STOW simple configuration with additional platform trailer axle', async () => {
+    const isValid = policy.isConfigurationValid('STOW', 'NONREDU', [
+      'TRKTRAC',
+      'PLATFRM',
+      'PFMAXLE',
+    ]);
+    expect(isValid).toBe(true);
+  });
+
+  it('should return true for a valid STOW simple configuration with multiple additional platform trailer axles', async () => {
+    const isValid = policy.isConfigurationValid('STOW', 'NONREDU', [
+      'TRKTRAC',
+      'PLATFRM',
+      'PFMAXLE',
+      'PFMAXLE',
+      'PFMAXLE',
+    ]);
+    expect(isValid).toBe(true);
+  });
+
+  it('should return true for a valid STOW complex configuration with multiple additional platform trailer axles', async () => {
+    const isValid = policy.isConfigurationValid('STOW', 'NONREDU', [
+      'TRKTRAC',
+      'JEEPSRG',
+      'JEEPSRG',
+      'JEEPSRG',
+      'PLATFRM',
+      'PFMAXLE',
+      'PFMAXLE',
+      'PFMAXLE',
+      'BOOSTER',
+      'BOOSTER',
+    ]);
     expect(isValid).toBe(true);
   });
 

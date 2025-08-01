@@ -9,25 +9,16 @@ export type Vehicle = SelfIssuable & {
   type: string;
 };
 
-export type VehicleSizeConfiguration = Vehicle & {
-  trailers: Array<TrailerSize>;
-};
-
-export type VehicleWeightConfiguration = Vehicle & {
+export type VehicleDimensions = Vehicle & {
+  trailers: Array<TrailerDimensions>;
   weightDimensions?: Array<PowerUnitWeightDimension>;
-  additionalAxleSubType?: string;
-  trailers: Array<TrailerWeight>;
 };
 
-export type TrailerSize = Vehicle & {
+export type TrailerDimensions = Vehicle & {
+  booster: boolean;
+  jeep: boolean;
   sizeDimensions?: Array<SizeDimension>;
-  jeep: boolean;
-  booster: boolean;
-};
-
-export type TrailerWeight = Vehicle & {
+  sizePermittable?: boolean;
   weightDimensions?: Array<TrailerWeightDimension>;
-  additionalAxleSubType?: string;
-  jeep: boolean;
-  booster: boolean;
+  weightPermittable?: boolean;
 };

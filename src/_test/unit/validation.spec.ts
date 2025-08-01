@@ -64,6 +64,28 @@ describe('Policy Engine Validator', () => {
     expect(validationResult.violations).toHaveLength(1);
   });
 
+  it('should raise violation for start date more than 14 days in future', async () => {
+    const permit = JSON.parse(JSON.stringify(validTros30Day));
+    // Set startDate to more than 14 days in the future
+    permit.permitData.startDate = dayjs()
+      .add(15, 'day')
+      .format(PermitAppInfo.PermitDateFormat.toString());
+
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.violations).toHaveLength(1);
+  });
+
+  it('should validate correctly for start date exactly 14 days in future', async () => {
+    const permit = JSON.parse(JSON.stringify(validTros30Day));
+    // Set startDate to yesterday
+    permit.permitData.startDate = dayjs()
+      .add(14, 'day')
+      .format(PermitAppInfo.PermitDateFormat.toString());
+
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.violations).toHaveLength(0);
+  });
+
   it('should raise violation for invalid permit type', async () => {
     const permit = JSON.parse(JSON.stringify(validTros30Day));
     // Set startDate to today

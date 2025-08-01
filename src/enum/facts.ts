@@ -4,6 +4,7 @@ export enum PolicyFacts {
   EndOfPermitQuarter = 'endOfPermitQuarter',
   ValidationDate = 'validationDate',
   ConfigurationIsValid = 'configurationIsValid',
+  DaysBetween = 'daysBetween',
 }
 
 export enum CostFacts {

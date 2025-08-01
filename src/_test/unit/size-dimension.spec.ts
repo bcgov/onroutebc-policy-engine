@@ -14,8 +14,8 @@ describe('Permit Engine Size Dimension Functions', () => {
     expect(sizeDimension?.fp).toBe(3);
     expect(sizeDimension?.rp).toBe(6.5);
     expect(sizeDimension?.l).toBe(31);
-    expect(sizeDimension?.h).toBeUndefined();
-    expect(sizeDimension?.w).toBeUndefined();
+    expect(sizeDimension?.h).toBe(4.15);
+    expect(sizeDimension?.w).toBe(2.6);
   });
 
   it('should retrieve correct values for a single specified region', async () => {
@@ -25,8 +25,8 @@ describe('Permit Engine Size Dimension Functions', () => {
       ['TRKTRAC', 'JEEPSRG', 'PLATFRM'],
       ['PCE'],
     );
-    expect(sizeDimension?.fp).toBeUndefined();
-    expect(sizeDimension?.rp).toBeUndefined();
+    expect(sizeDimension?.fp).toBe(3);
+    expect(sizeDimension?.rp).toBe(6.5);
     expect(sizeDimension?.l).toBe(27.5);
     expect(sizeDimension?.h).toBe(5.33);
     expect(sizeDimension?.w).toBe(3.2);

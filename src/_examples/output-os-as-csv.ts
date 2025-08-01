@@ -1,6 +1,6 @@
 import completePolicyConfig from '../_test/policy-config/_current-config.json';
 import { Policy } from '../policy-engine';
-import { TrailerSize } from '../types';
+import { TrailerDimensions } from '../types';
 import { toCsv } from '@iwsio/json-csv-core';
 
 // json-csv-core options object
@@ -56,42 +56,46 @@ function sizeDimensionSestToCsv(pol: Policy): string | null {
 
   pol.policyDefinition.commodities.forEach((commodity) => {
     const commodityName = commodity.name;
-    commodity.size?.powerUnits?.forEach((powerUnit) => {
-      const powerUnitName = pol.getPowerUnitTypes().get(powerUnit.type);
-      powerUnit.trailers.forEach((trailer) => {
-        const trailerName = pol.getTrailerTypes().get(trailer.type);
+    commodity.powerUnits
+      .filter((p) => {
+        p.trailers.some((t) => t.sizePermittable);
+      })
+      .forEach((powerUnit) => {
+        const powerUnitName = pol.getPowerUnitTypes().get(powerUnit.type);
+        powerUnit.trailers.forEach((trailer) => {
+          const trailerName = pol.getTrailerTypes().get(trailer.type);
 
-        let bcDefaultDimensions;
-        if (trailer.sizeDimensions && trailer.sizeDimensions.length > 0) {
-          const dim = trailer.sizeDimensions[0];
-          bcDefaultDimensions = {
-            bcd: {
-              width: dim.w,
-              height: dim.h,
-              length: dim.l,
-            },
-            fp: dim.fp,
-            rp: dim.rp,
+          let bcDefaultDimensions;
+          if (trailer.sizeDimensions && trailer.sizeDimensions.length > 0) {
+            const dim = trailer.sizeDimensions[0];
+            bcDefaultDimensions = {
+              bcd: {
+                width: dim.w,
+                height: dim.h,
+                length: dim.l,
+              },
+              fp: dim.fp,
+              rp: dim.rp,
+            };
+          }
+
+          const dimensionSetEntry = {
+            noSelfIssue: !trailer.selfIssue,
+            commodity: commodityName,
+            powerUnit: powerUnitName,
+            trailer: trailerName,
+            jeep: trailer.jeep,
+            booster: trailer.booster,
+            lmn: getDimensionsForRegion(trailer, 'LMN'),
+            elk: getDimensionsForRegion(trailer, 'ELK'),
+            yho: getDimensionsForRegion(trailer, 'YHO'),
+            pce: getDimensionsForRegion(trailer, 'PCE'),
+            ...bcDefaultDimensions,
           };
-        }
 
-        const dimensionSetEntry = {
-          noSelfIssue: !trailer.selfIssue,
-          commodity: commodityName,
-          powerUnit: powerUnitName,
-          trailer: trailerName,
-          jeep: trailer.jeep,
-          booster: trailer.booster,
-          lmn: getDimensionsForRegion(trailer, 'LMN'),
-          elk: getDimensionsForRegion(trailer, 'ELK'),
-          yho: getDimensionsForRegion(trailer, 'YHO'),
-          pce: getDimensionsForRegion(trailer, 'PCE'),
-          ...bcDefaultDimensions,
-        };
-
-        sizeDimensionSet.push(dimensionSetEntry);
+          sizeDimensionSet.push(dimensionSetEntry);
+        });
       });
-    });
   });
 
   const csvString = toCsv(sizeDimensionSet, options);
@@ -108,7 +112,10 @@ function sizeDimensionSestToCsv(pol: Policy): string | null {
  * region. Defaults to width, height, and length for bc default if no specific
  * region values are configured for the trailer.
  */
-function getDimensionsForRegion(trailer: TrailerSize, dimRegion: string): any {
+function getDimensionsForRegion(
+  trailer: TrailerDimensions,
+  dimRegion: string,
+): any {
   if (trailer.sizeDimensions && trailer.sizeDimensions.length > 0) {
     const dim = trailer.sizeDimensions[0];
     if (dim.regions && dim.regions.length > 0) {
