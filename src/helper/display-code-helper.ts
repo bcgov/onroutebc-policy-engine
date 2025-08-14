@@ -69,7 +69,7 @@ export function getVehicleDisplayCodeHelper(
         displayCodeTokens.push((currentAxleIndex + 1).toString());
         // Add the padding if necessary. Padding is added once for
         // every axle above 1 in the drive axle unit.
-        if (axleConfiguration.length > (currentAxleIndex + 1)) {
+        if (axleConfiguration.length > currentAxleIndex + 1) {
           displayCodeTokens.push(
             defs.paddingStandard.repeat(
               axleConfiguration[currentAxleIndex].numberOfAxles - 1,
@@ -110,9 +110,15 @@ export function getUniversalDisplayCode(
     if (currentAxleIndex > 0) {
       // Add the universal spacing glyph, e.g. 'MU' , if this is
       // not the first axle unit
-      if (a.interaxleSpacing && a.interaxleSpacing <= defs.spacingUniversalSmallMax) {
+      if (
+        a.interaxleSpacing &&
+        a.interaxleSpacing <= defs.spacingUniversalSmallMax
+      ) {
         displayCodeTokens.push(defs.spacingUniversalSmall);
-      } else if (a.interaxleSpacing && a.interaxleSpacing >= defs.spacingUniversalLargeMin) {
+      } else if (
+        a.interaxleSpacing &&
+        a.interaxleSpacing >= defs.spacingUniversalLargeMin
+      ) {
         displayCodeTokens.push(defs.spacingUniversalLarge);
       } else {
         displayCodeTokens.push(defs.spacingUniversalDefault);
@@ -134,12 +140,10 @@ export function getUniversalDisplayCode(
         displayCodeTokens.push(defs.multiDigitPrefix);
       }
       displayCodeTokens.push((currentAxleIndex + 1).toString());
-      // Add the padding. Padding is added once for every axle 
+      // Add the padding. Padding is added once for every axle
       // above 1, up to the universal threshold.
       displayCodeTokens.push(
-        defs.paddingUniversal.repeat(
-          defs.thresholdAxlesUniversal - 1,
-        ),
+        defs.paddingUniversal.repeat(defs.thresholdAxlesUniversal - 1),
       );
       // Add the extra axle unit glyps, e.g. 'XU', for
       // each axle unit above the universal threshold
@@ -162,7 +166,7 @@ export function getUniversalDisplayCode(
       displayCodeTokens.push((currentAxleIndex + 1).toString());
       // Add the padding if necessary. Padding is added once for
       // every axle above 1 in the axle unit.
-      if (axleConfiguration.length > (currentAxleIndex + 1)) {
+      if (axleConfiguration.length > currentAxleIndex + 1) {
         displayCodeTokens.push(
           defs.paddingUniversal.repeat(
             axleConfiguration[currentAxleIndex].numberOfAxles - 1,

@@ -43,10 +43,16 @@ const axleConfig44 = [
   { numberOfAxles: 4, axleUnitWeight: 0 },
 ];
 const axleConfig1 = [{ numberOfAxles: 1, axleUnitWeight: 0 }];
-const axleConfig1s = [{ numberOfAxles: 1, axleUnitWeight: 0, interaxleSpacing: 1.5 }];
-const axleConfig1l = [{ numberOfAxles: 1, axleUnitWeight: 0, interaxleSpacing: 6 }];
+const axleConfig1s = [
+  { numberOfAxles: 1, axleUnitWeight: 0, interaxleSpacing: 1.5 },
+];
+const axleConfig1l = [
+  { numberOfAxles: 1, axleUnitWeight: 0, interaxleSpacing: 6 },
+];
 const axleConfig2 = [{ numberOfAxles: 2, axleUnitWeight: 0 }];
-const axleConfig2m = [{ numberOfAxles: 2, axleUnitWeight: 0, interaxleSpacing: 4 }];
+const axleConfig2m = [
+  { numberOfAxles: 2, axleUnitWeight: 0, interaxleSpacing: 4 },
+];
 const axleConfig3 = [{ numberOfAxles: 3, axleUnitWeight: 0 }];
 const axleConfig4 = [{ numberOfAxles: 4, axleUnitWeight: 0 }];
 const axleConfig5 = [{ numberOfAxles: 5, axleUnitWeight: 0 }];
@@ -156,7 +162,19 @@ describe('Simple power unit vehicle display code tests', () => {
   });
 
   it('should generate a correct display code for configuration with more than 9 axle units', async () => {
-    const configuration = ['TRKTRAC', 'JEEPSRG', 'JEEPSRG', 'JEEPSRG', 'JEEPSRG', 'JEEPSRG', 'JEEPSRG', 'JEEPSRG', 'JEEPSRG', 'SEMITRL', 'BOOSTER'];
+    const configuration = [
+      'TRKTRAC',
+      'JEEPSRG',
+      'JEEPSRG',
+      'JEEPSRG',
+      'JEEPSRG',
+      'JEEPSRG',
+      'JEEPSRG',
+      'JEEPSRG',
+      'JEEPSRG',
+      'SEMITRL',
+      'BOOSTER',
+    ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig12,
       ...axleConfig1,
@@ -534,7 +552,19 @@ describe('Universal display code tests', () => {
   });
 
   it('should generate a correct universal display code for configuration with more than 9 axle units', async () => {
-    const configuration = ['TRKTRAC', 'JEEPSRG', 'JEEPSRG', 'JEEPSRG', 'JEEPSRG', 'JEEPSRG', 'JEEPSRG', 'JEEPSRG', 'JEEPSRG', 'SEMITRL', 'BOOSTER'];
+    const configuration = [
+      'TRKTRAC',
+      'JEEPSRG',
+      'JEEPSRG',
+      'JEEPSRG',
+      'JEEPSRG',
+      'JEEPSRG',
+      'JEEPSRG',
+      'JEEPSRG',
+      'JEEPSRG',
+      'SEMITRL',
+      'BOOSTER',
+    ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig12,
       ...axleConfig1,
@@ -548,7 +578,9 @@ describe('Universal display code tests', () => {
       ...axleConfig1,
       ...axleConfig5,
     ]);
-    expect(displayCode).toBe('=1U1MU2U2=MU1U3MU1U4MU1U5MU1U6MU1U7MU1U8MU1U9MU1U.10MU1U.11MU4+U.12===EU');
+    expect(displayCode).toBe(
+      '=1U1MU2U2=MU1U3MU1U4MU1U5MU1U6MU1U7MU1U8MU1U9MU1U.10MU1U.11MU4+U.12===EU',
+    );
   });
 
   it('should generate a universal display code with varying spacing widths', async () => {
