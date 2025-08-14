@@ -10,6 +10,7 @@ import {
   BridgeCalculationConstants,
   PermitConditionDefinition,
   StandardTireSize,
+  VehicleDisplayCodeDefaults,
 } from 'onroute-policy-engine/types';
 import { RuleProperties } from 'json-rules-engine';
 
@@ -27,4 +28,5 @@ export type PolicyDefinition = {
   bridgeCalculationConstants: BridgeCalculationConstants;
   conditions?: Array<PermitConditionDefinition>;
   standardTireSizes?: Array<StandardTireSize>;
+  vehicleDisplayCodeDefaults?: VehicleDisplayCodeDefaults;
 };

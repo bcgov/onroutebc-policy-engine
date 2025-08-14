@@ -4,6 +4,7 @@ export { BridgeCalculationResult } from './bridge-calculation-result';
 export { Commodity } from './commodity';
 export { CostRule } from './cost-rule';
 export { DimensionModifier, VehicleRelatives } from './dimension-modifier';
+export { VehicleDisplayCodeDefaults } from './display-code-defaults';
 export { PermitFacts } from './facts';
 export { GeographicRegion } from './geographic-region';
 export { IdentifiedObject } from './identified-object';

@@ -48,6 +48,7 @@ import {
   getDefaultPowerUnitWeightHelper,
   getDefaultTrailerWeightHelper,
 } from './helper/dimensions.helper';
+import { getVehicleDisplayCodeHelper } from './helper/display-code-helper';
 
 /** Class representing commercial vehicle policy. */
 export class Policy {
@@ -89,7 +90,9 @@ export class Policy {
       throw new Error(
         `Current policy engine version is less than minimum version required for policy config: ${cleanVersion} > ${definition.minPEVersion}`,
       );
-    } else if (semverMajor(cleanVersion) > semverMajor(definition.minPEVersion)) {
+    } else if (
+      semverMajor(cleanVersion) > semverMajor(definition.minPEVersion)
+    ) {
       throw new Error(
         `Current policy config minimum version is at least one major version behind policy engine: major(${definition.minPEVersion}) < major(${cleanVersion}))`,
       );
@@ -1061,5 +1064,12 @@ export class Policy {
     } else {
       return new Array<StandardTireSize>();
     }
+  }
+
+  getVehicleDisplayCode(
+    configuration: Array<string>,
+    axleConfiguration: Array<AxleConfiguration>,
+  ): string {
+    return getVehicleDisplayCodeHelper(this, configuration, axleConfiguration);
   }
 }

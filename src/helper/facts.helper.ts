@@ -164,9 +164,6 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
       const dateFrom = dayjs(dateFromStr, PermitAppInfo.PermitDateFormat);
       const dateTo = dayjs(dateToStr, PermitAppInfo.PermitDateFormat);
       const daysBetween = dateTo.diff(dateFrom, 'day');
-      console.log(
-        `Calculated daysBetween '${dateFromStr}' and '${dateToStr}' as '${daysBetween}'`,
-      );
       return daysBetween;
     },
   );
