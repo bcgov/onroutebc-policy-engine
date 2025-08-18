@@ -1,0 +1,207 @@
+@font-face {
+  font-family: 'onRouteBC_Configurations';
+  src: url('/fonts/onRouteBC_Configurations.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.vehicle-font-test {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 2rem;
+  font-family: sans-serif;
+  font-size: 2rem;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  display: flex;
+  gap: 2rem;
+}
+
+.left-column {
+  flex: 0 0 450px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.right-column {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+}
+
+.vehicle-font-test h3 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.preview-box {
+  font-size: 256pt;
+  border: 1px solid black;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  position: relative;
+  width: 100%;
+}
+
+.woff2 {
+  font-family: 'onRouteBC_Configurations', sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+.vehicle-font-test input {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.vehicle-font-test label {
+  font-size: 1rem;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.button-group button {
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.button-group button:hover {
+  background: #f8f9fa;
+}
+
+.custom-config-section {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background: #f8f9fa;
+}
+
+.custom-config-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  flex-direction: row;
+}
+
+.power-unit-dropdown {
+  width: 300px;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 1rem;
+  height: 40px;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.power-unit-dropdown option {
+  width: auto;
+  min-width: 300px;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.trailer-dropdown {
+  width: 300px;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 1rem;
+  height: 40px;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trailer-dropdown option {
+  width: auto;
+  min-width: 300px;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.remove-trailer-btn {
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  background: #d4a5a5;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+  margin-top: 5px;
+}
+
+.remove-trailer-btn:hover {
+  background: #b89494;
+}
+
+.number-input {
+  width: 40px !important;
+  padding: 0 !important;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 0.7rem !important;
+  text-align: center;
+  height: 40px;
+  box-sizing: border-box;
+}
+
+.floating-font-controls {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.font-control-btn {
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.font-control-btn:hover {
+  background: #f8f9fa;
+}
+
+.preview-output {
+  font-family: 'onRouteBC_Configurations', sans-serif;
+  text-rendering: optimizeLegibility;
+}

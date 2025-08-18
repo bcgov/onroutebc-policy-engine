@@ -124,7 +124,7 @@ export function getUniversalDisplayCode(
         displayCodeTokens.push(defs.spacingUniversalDefault);
       }
     }
-    if (a.numberOfAxles >= defs.thresholdAxlesUniversal) {
+    if (a.numberOfAxles > defs.thresholdAxlesUniversal) {
       // The number of axles in this axle unit is above the threshold
       // for the number of axles that can be represented by the simple
       // universal formula
