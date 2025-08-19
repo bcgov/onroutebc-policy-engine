@@ -3,6 +3,7 @@ import { Policy } from 'onroute-policy-engine'
 import { ValidationResults, ValidationResult } from 'onroute-policy-engine'
 import { PermitAppInfo } from 'onroute-policy-engine/enum'
 import dayjs from 'dayjs'
+import PageHeader from './components/PageHeader'
 import PermitForm from './components/PermitForm'
 import VehicleFontTest from './components/VehicleFontTest'
 import './App.css'
@@ -56,8 +57,6 @@ function App() {
     }
   }
 
-
-
   // Helper function to remove null and empty string properties recursively
   const removeEmptyProperties = (obj: any): any => {
     if (obj === null || obj === undefined) {
@@ -87,11 +86,9 @@ function App() {
     return obj
   }
 
-  const handleLocalValidation = async (permitData: any) => {
-    if (!policy) return
-
-    // Structure the data according to PermitApplication type
-    const permitApplication = {
+  // Common function to structure permit data according to PermitApplication type
+  const buildPermitApplication = (permitData: any) => {
+    return {
       permitType: permitData.permitType,
       permitData: removeEmptyProperties({
         // Company Information
@@ -197,6 +194,13 @@ function App() {
         } : null
       })
     }
+  }
+
+  const handleLocalValidation = async (permitData: any) => {
+    if (!policy) return
+
+    // Use common function to structure the data
+    const permitApplication = buildPermitApplication(permitData)
 
     try {
       const results = await policy.validate(permitApplication)
@@ -214,113 +218,8 @@ function App() {
 
   const handleApiValidation = async (permitData: any) => {
     console.debug('🚀 handleApiValidation called')
-    // Structure the data according to PermitApplication type (same as local validation)
-    const permitApplication = {
-      permitType: permitData.permitType,
-      permitData: removeEmptyProperties({
-        // Company Information
-        companyName: permitData.companyName,
-        doingBusinessAs: permitData.doingBusinessAs || null,
-        clientNumber: permitData.clientNumber,
-        permitDuration: permitData.permitDuration,
-        
-        // Contact Details
-        contactDetails: {
-          firstName: permitData.firstName,
-          lastName: permitData.lastName,
-          phone1: permitData.phone1,
-          phone1Extension: permitData.phone1Extension || null,
-          phone2: permitData.phone2 || null,
-          phone2Extension: permitData.phone2Extension || null,
-          email: permitData.email,
-          additionalEmail: permitData.additionalEmail || null,
-          fax: permitData.fax || null
-        },
-        
-        // Mailing Address
-        mailingAddress: {
-          addressLine1: permitData.addressLine1,
-          addressLine2: permitData.addressLine2 || null,
-          city: permitData.city,
-          provinceCode: permitData.provinceCode,
-          countryCode: permitData.countryCode,
-          postalCode: permitData.postalCode
-        },
-        
-        // Vehicle Details
-        vehicleDetails: {
-          vehicleId: permitData.vehicleId || null,
-          unitNumber: permitData.unitNumber || null,
-          vin: permitData.vin,
-          plate: permitData.plate,
-          make: permitData.make || null,
-          year: permitData.year ? parseInt(permitData.year) : null,
-          countryCode: permitData.vehicleCountryCode || 'CA',
-          provinceCode: permitData.vehicleProvinceCode || 'BC',
-          vehicleType: permitData.vehicleType,
-          vehicleSubType: permitData.vehicleSubType,
-          licensedGVW: permitData.licensedGVW ? parseInt(permitData.licensedGVW) : null,
-          saveVehicle: permitData.saveVehicle || null
-        },
-        
-        // Dates
-        startDate: permitData.startDate || dayjs().format(PermitAppInfo.PermitDateFormat.toString()),
-        expiryDate: permitData.expiryDate || null,
-        
-        // Additional fields
-        applicationNotes: permitData.applicationNotes || null,
-        thirdPartyLiability: permitData.thirdPartyLiability || null,
-        conditionalLicensingFee: permitData.conditionalLicensingFee || null,
-        
-        // Permitted Route
-        permittedRoute: {
-          manualRoute: {
-            highwaySequence: permitData.highwaySequence 
-              ? permitData.highwaySequence.split(',').map((h: string) => h.trim()).filter((h: string) => h.length > 0)
-              : [],
-            origin: permitData.routeOrigin,
-            destination: permitData.routeDestination,
-            exitPoint: permitData.routeExitPoint || null,
-            totalDistance: permitData.routeTotalDistance ? parseFloat(permitData.routeTotalDistance) : null
-          },
-          routeDetails: null
-        },
-        
-        // Vehicle Configuration
-        vehicleConfiguration: {
-          overallLength: permitData.overallLength ? parseFloat(permitData.overallLength) : null,
-          overallWidth: permitData.overallWidth ? parseFloat(permitData.overallWidth) : null,
-          overallHeight: permitData.overallHeight ? parseFloat(permitData.overallHeight) : null,
-          frontProjection: permitData.frontProjection ? parseFloat(permitData.frontProjection) : null,
-          rearProjection: permitData.rearProjection ? parseFloat(permitData.rearProjection) : null,
-          loadedGVW: permitData.loadedGVW ? parseFloat(permitData.loadedGVW) : null,
-          netWeight: permitData.netWeight ? parseFloat(permitData.netWeight) : null,
-          axleConfiguration: permitData.axleConfigurations ? permitData.axleConfigurations
-            .map((axleConfig: any) => ({
-              numberOfAxles: axleConfig.numberOfAxles ? parseInt(axleConfig.numberOfAxles) : null,
-              axleSpread: axleConfig.axleSpread ? parseFloat(axleConfig.axleSpread) : null,
-              interaxleSpacing: axleConfig.interaxleSpacing ? parseFloat(axleConfig.interaxleSpacing) : null,
-              axleUnitWeight: axleConfig.axleUnitWeight ? parseFloat(axleConfig.axleUnitWeight) : null,
-              numberOfTires: axleConfig.numberOfTires ? parseInt(axleConfig.numberOfTires) : null,
-              tireSize: axleConfig.tireSize ? parseFloat(axleConfig.tireSize) : null
-            }))
-            .filter((axleConfig: any) => axleConfig.numberOfAxles !== null) : [],
-          trailers: permitData.selectedTrailers ? permitData.selectedTrailers
-            .filter((trailer: string) => trailer && trailer.trim() !== '')
-            .map((trailerType: string) => ({
-              vehicleSubType: trailerType
-            })) : []
-        },
-        
-        // Legacy fields (keeping for backward compatibility)
-        commodities: [], // Empty array for now
-        feeSummary: null,
-        permittedCommodity: permitData.commodityType || permitData.loadDescription ? {
-          commodityType: permitData.commodityType || null,
-          loadDescription: permitData.loadDescription || null
-        } : null
-      })
-    }
+    // Use common function to structure the data
+    const permitApplication = buildPermitApplication(permitData)
 
     // Let the wrapper handle all errors and return proper ValidationResults
     console.debug('📤 About to call validateWithApi with permitApplication:', permitApplication)
@@ -381,23 +280,10 @@ function App() {
 
   return (
     <div className="app">
-      <header className="app-header">
-        <h1>onRouteBC Policy Engine - React Example</h1>
-        <nav className="nav-tabs">
-          <button 
-            className={activeTab === 'form' ? 'active' : ''} 
-            onClick={() => setActiveTab('form')}
-          >
-            Permit Application
-          </button>
-          <button 
-            className={activeTab === 'font-test' ? 'active' : ''} 
-            onClick={() => setActiveTab('font-test')}
-          >
-            Vehicle Font Test
-          </button>
-        </nav>
-      </header>
+      <PageHeader 
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      />
 
       <main className="app-main">
         {activeTab === 'form' ? (
@@ -425,12 +311,12 @@ function App() {
               </label>
             </div>
             
-                         <PermitForm 
-               onSubmit={handleValidation} 
-               validationResults={validationResults} 
-               policy={policy}
-               permitApplication={permitApplication}
-             />
+            <PermitForm 
+              onSubmit={handleValidation} 
+              validationResults={validationResults} 
+              policy={policy}
+              permitApplication={permitApplication}
+            />
           </div>
         ) : (
           <div className="font-test-container">

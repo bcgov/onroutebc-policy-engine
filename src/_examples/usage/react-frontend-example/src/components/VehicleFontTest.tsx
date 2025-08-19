@@ -149,7 +149,6 @@ const VehicleFontTest: React.FC<VehicleFontTestProps> = ({ policy }) => {
   }
 
 
-
   return (
     <div className="vehicle-font-test">
       <div className="left-column">
@@ -206,44 +205,44 @@ const VehicleFontTest: React.FC<VehicleFontTestProps> = ({ policy }) => {
             </div>
             
                          {selectedPowerUnit && trailerRows.map((row, index) => (
-               <div key={row.id} className="custom-config-row">
-                 <select 
-                   className="trailer-dropdown"
-                   value={row.selectedTrailer}
-                   onChange={(e) => {
-                     updateTrailerSelection(row.id, e.target.value)
-                     // Add a new row if this is the last row and a trailer is selected
-                     if (index === trailerRows.length - 1 && e.target.value) {
-                       addTrailerRow()
-                     }
-                   }}
-                 >
-                   <option value="" disabled>Choose a Trailer...</option>
-                   {trailerTypes.map(([id, name]) => (
-                     <option key={id} value={id}>
-                       {name}
-                     </option>
-                   ))}
-                 </select>
-                                   <input 
-                    type="number" 
-                    className="number-input" 
-                    min="1" 
-                    value={trailerAxles.find(axle => axle.id === row.id)?.numberOfAxles || 1}
-                    onChange={(e) => updateTrailerAxles(row.id, parseInt(e.target.value) || 1)}
-                    disabled={!row.selectedTrailer}
-                  />
-                                   {trailerRows.length > 1 && row.selectedTrailer && (
-                    <button 
-                      className="remove-trailer-btn"
-                      onClick={() => removeTrailerRow(row.id)}
-                      title="Remove trailer"
-                    >
-                      ×
-                    </button>
-                  )}
-               </div>
-             ))}
+              <div key={row.id} className="custom-config-row">
+                <select 
+                  className="trailer-dropdown"
+                  value={row.selectedTrailer}
+                  onChange={(e) => {
+                    updateTrailerSelection(row.id, e.target.value)
+                    // Add a new row if this is the last row and a trailer is selected
+                    if (index === trailerRows.length - 1 && e.target.value) {
+                      addTrailerRow()
+                    }
+                  }}
+                >
+                  <option value="" disabled>Choose a Trailer...</option>
+                  {trailerTypes.map(([id, name]) => (
+                    <option key={id} value={id}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
+                                  <input 
+                   type="number" 
+                   className="number-input" 
+                   min="1" 
+                   value={trailerAxles.find(axle => axle.id === row.id)?.numberOfAxles || 1}
+                   onChange={(e) => updateTrailerAxles(row.id, parseInt(e.target.value) || 1)}
+                   disabled={!row.selectedTrailer}
+                 />
+                                  {trailerRows.length > 1 && row.selectedTrailer && (
+                   <button 
+                     className="remove-trailer-btn"
+                     onClick={() => removeTrailerRow(row.id)}
+                     title="Remove trailer"
+                   >
+                     ×
+                   </button>
+                 )}
+              </div>
+            ))}
           </div>
         )}
       </div>
