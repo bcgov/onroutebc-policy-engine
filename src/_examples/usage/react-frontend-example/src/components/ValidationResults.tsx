@@ -31,18 +31,6 @@ const ValidationResultsDisplay: React.FC<ValidationResultsDisplayProps> = ({ res
   const togglePermitTypeExpanded = () => {
     setPermitTypeExpanded(!permitTypeExpanded)
   }
-  const getResultIcon = (type: string) => {
-    switch (type) {
-      case ValidationResultType.Violation:
-        return '❌'
-      case ValidationResultType.Warning:
-        return '⚠️'
-      case ValidationResultType.Information:
-        return 'ℹ️'
-      default:
-        return '✅'
-    }
-  }
 
   const getResultClass = (type: string) => {
     switch (type) {
@@ -57,19 +45,6 @@ const ValidationResultsDisplay: React.FC<ValidationResultsDisplayProps> = ({ res
     }
   }
 
-  const getResultTitle = (type: string) => {
-    switch (type) {
-      case ValidationResultType.Violation:
-        return 'Error'
-      case ValidationResultType.Warning:
-        return 'Warning'
-      case ValidationResultType.Information:
-        return 'Information'
-      default:
-        return 'Success'
-    }
-  }
-
   const formatCost = (cost: number) => {
     return new Intl.NumberFormat('en-CA', {
       style: 'currency',
@@ -78,17 +53,25 @@ const ValidationResultsDisplay: React.FC<ValidationResultsDisplayProps> = ({ res
   }
 
   // Calculate total cost from cost array
-  const totalCost = results.cost.reduce((total, costResult) => {
+  const totalCost = results.cost ? results.cost.reduce((total, costResult) => {
     return total + (costResult.cost || 0)
-  }, 0)
+  }, 0) : 0
 
   // Combine all validation results
+  console.debug('🔍 ValidationResults component - results structure:', results)
+  console.debug('🔍 ValidationResults component - violations:', results.violations)
+  console.debug('🔍 ValidationResults component - requirements:', results.requirements)
+  console.debug('🔍 ValidationResults component - warnings:', results.warnings)
+  console.debug('🔍 ValidationResults component - information:', results.information)
+  
   const allValidationResults = [
-    ...results.violations,
-    ...results.requirements,
-    ...results.warnings,
-    ...results.information
+    ...(results.violations || []),
+    ...(results.requirements || []),
+    ...(results.warnings || []),
+    ...(results.information || [])
   ]
+  
+  console.debug('🔍 ValidationResults component - allValidationResults:', allValidationResults)
 
   return (
     <div className="validation-results">
@@ -147,7 +130,7 @@ const ValidationResultsDisplay: React.FC<ValidationResultsDisplayProps> = ({ res
                   className={`message-item ${getResultClass(result.type)}`}
                 >
                   <div className="message-content">
-                    {result.message}
+                    {typeof result.message === 'string' ? result.message : JSON.stringify(result.message)}
                   </div>
                   <div 
                     className={`message-arrow ${expandedItems.has(index) ? 'expanded' : ''}`}

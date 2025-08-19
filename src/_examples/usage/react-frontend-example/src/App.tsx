@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Policy } from 'onroute-policy-engine'
-import { ValidationResults } from 'onroute-policy-engine'
+import { ValidationResults, ValidationResult } from 'onroute-policy-engine'
 import { PermitAppInfo } from 'onroute-policy-engine/enum'
 import dayjs from 'dayjs'
 import PermitForm from './components/PermitForm'
-import ValidationResultsDisplay from './components/ValidationResults'
 import VehicleFontTest from './components/VehicleFontTest'
 import './App.css'
 
@@ -15,7 +14,6 @@ function App() {
   const [validationResults, setValidationResults] = useState<ValidationResults | null>(null)
   const [permitApplication, setPermitApplication] = useState<any>(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<'form' | 'font-test'>('form')
   const [validationMethod, setValidationMethod] = useState<'local' | 'api'>('local')
 
@@ -37,7 +35,8 @@ function App() {
         setPolicy(policyInstance)
         setLoading(false)
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to initialize policy')
+        // Don't set error state, just log it and set loading to false
+        console.error('Failed to initialize policy:', err)
         setLoading(false)
       }
     }
@@ -46,9 +45,12 @@ function App() {
   }, [])
 
   const handleValidation = async (permitData: any) => {
+    console.debug('🔍 handleValidation called with validationMethod:', validationMethod)
     if (validationMethod === 'local') {
+      console.debug('📋 Using local validation')
       await handleLocalValidation(permitData)
     } else {
+      console.debug('🌐 Using API validation')
       await handleApiValidation(permitData)
     }
   }
@@ -84,233 +86,250 @@ function App() {
   const handleLocalValidation = async (permitData: any) => {
     if (!policy) return
 
-    try {
-      // Structure the data according to PermitApplication type
-      const permitApplication = {
-        permitType: permitData.permitType,
-        permitData: removeEmptyProperties({
-          // Company Information
-          companyName: permitData.companyName,
-          doingBusinessAs: permitData.doingBusinessAs || null,
-          clientNumber: permitData.clientNumber,
-          permitDuration: permitData.permitDuration,
-          
-          // Contact Details
-          contactDetails: {
-            firstName: permitData.firstName,
-            lastName: permitData.lastName,
-            phone1: permitData.phone1,
-            phone1Extension: permitData.phone1Extension || null,
-            phone2: permitData.phone2 || null,
-            phone2Extension: permitData.phone2Extension || null,
-            email: permitData.email,
-            additionalEmail: permitData.additionalEmail || null,
-            fax: permitData.fax || null
+    // Structure the data according to PermitApplication type
+    const permitApplication = {
+      permitType: permitData.permitType,
+      permitData: removeEmptyProperties({
+        // Company Information
+        companyName: permitData.companyName,
+        doingBusinessAs: permitData.doingBusinessAs || null,
+        clientNumber: permitData.clientNumber,
+        permitDuration: permitData.permitDuration,
+        
+        // Contact Details
+        contactDetails: {
+          firstName: permitData.firstName,
+          lastName: permitData.lastName,
+          phone1: permitData.phone1,
+          phone1Extension: permitData.phone1Extension || null,
+          phone2: permitData.phone2 || null,
+          phone2Extension: permitData.phone2Extension || null,
+          email: permitData.email,
+          additionalEmail: permitData.additionalEmail || null,
+          fax: permitData.fax || null
+        },
+        
+        // Mailing Address
+        mailingAddress: {
+          addressLine1: permitData.addressLine1,
+          addressLine2: permitData.addressLine2 || null,
+          city: permitData.city,
+          provinceCode: permitData.provinceCode,
+          countryCode: permitData.countryCode,
+          postalCode: permitData.postalCode
+        },
+        
+        // Vehicle Details
+        vehicleDetails: {
+          vehicleId: permitData.vehicleId || null,
+          unitNumber: permitData.unitNumber || null,
+          vin: permitData.vin,
+          plate: permitData.plate,
+          make: permitData.make || null,
+          year: permitData.year ? parseInt(permitData.year) : null,
+          countryCode: permitData.vehicleCountryCode || 'CA',
+          provinceCode: permitData.vehicleProvinceCode || 'BC',
+          vehicleType: permitData.vehicleType,
+          vehicleSubType: permitData.vehicleSubType,
+          licensedGVW: permitData.licensedGVW ? parseInt(permitData.licensedGVW) : null,
+          saveVehicle: permitData.saveVehicle || null
+        },
+        
+        // Dates
+        startDate: permitData.startDate || dayjs().format(PermitAppInfo.PermitDateFormat.toString()),
+        expiryDate: permitData.expiryDate || null,
+        
+        // Additional fields
+        applicationNotes: permitData.applicationNotes || null,
+        thirdPartyLiability: permitData.thirdPartyLiability || null,
+        conditionalLicensingFee: permitData.conditionalLicensingFee || null,
+        
+        // Permitted Route
+        permittedRoute: {
+          manualRoute: {
+            highwaySequence: permitData.highwaySequence 
+              ? permitData.highwaySequence.split(',').map((h: string) => h.trim()).filter((h: string) => h.length > 0)
+              : [],
+            origin: permitData.routeOrigin,
+            destination: permitData.routeDestination,
+            exitPoint: permitData.routeExitPoint || null,
+            totalDistance: permitData.routeTotalDistance ? parseFloat(permitData.routeTotalDistance) : null
           },
-          
-          // Mailing Address
-          mailingAddress: {
-            addressLine1: permitData.addressLine1,
-            addressLine2: permitData.addressLine2 || null,
-            city: permitData.city,
-            provinceCode: permitData.provinceCode,
-            countryCode: permitData.countryCode,
-            postalCode: permitData.postalCode
-          },
-          
-          // Vehicle Details
-          vehicleDetails: {
-            vehicleId: permitData.vehicleId || null,
-            unitNumber: permitData.unitNumber || null,
-            vin: permitData.vin,
-            plate: permitData.plate,
-            make: permitData.make || null,
-            year: permitData.year ? parseInt(permitData.year) : null,
-            countryCode: permitData.countryCode || 'CA',
-            provinceCode: permitData.provinceCode || 'BC',
-            vehicleType: permitData.vehicleType,
-            vehicleSubType: permitData.vehicleSubType,
-            licensedGVW: permitData.licensedGVW ? parseInt(permitData.licensedGVW) : null,
-            saveVehicle: permitData.saveVehicle || null
-          },
-          
-          // Dates
-          startDate: permitData.startDate || dayjs().format(PermitAppInfo.PermitDateFormat.toString()),
-          expiryDate: permitData.expiryDate || null,
-          
-          // Additional fields
-          applicationNotes: permitData.applicationNotes || null,
-          thirdPartyLiability: permitData.thirdPartyLiability || null,
-          conditionalLicensingFee: permitData.conditionalLicensingFee || null,
-          
-          // Permitted Route
-          permittedRoute: {
-            manualRoute: {
-              highwaySequence: permitData.highwaySequence 
-                ? permitData.highwaySequence.split(',').map((h: string) => h.trim()).filter((h: string) => h.length > 0)
-                : [],
-              origin: permitData.routeOrigin,
-              destination: permitData.routeDestination,
-              exitPoint: permitData.routeExitPoint || null,
-              totalDistance: permitData.routeTotalDistance ? parseFloat(permitData.routeTotalDistance) : null
-            },
-            routeDetails: null
-          },
-          
-          // Vehicle Configuration
-          vehicleConfiguration: {
-            overallLength: permitData.overallLength ? parseFloat(permitData.overallLength) : null,
-            overallWidth: permitData.overallWidth ? parseFloat(permitData.overallWidth) : null,
-            overallHeight: permitData.overallHeight ? parseFloat(permitData.overallHeight) : null,
-            frontProjection: permitData.frontProjection ? parseFloat(permitData.frontProjection) : null,
-            rearProjection: permitData.rearProjection ? parseFloat(permitData.rearProjection) : null,
-            loadedGVW: permitData.loadedGVW ? parseFloat(permitData.loadedGVW) : null,
-            netWeight: permitData.netWeight ? parseFloat(permitData.netWeight) : null,
-            axleConfiguration: permitData.axleConfigurations ? permitData.axleConfigurations
-              .map((axleConfig: any) => ({
-                numberOfAxles: axleConfig.numberOfAxles ? parseInt(axleConfig.numberOfAxles) : null,
-                axleSpread: axleConfig.axleSpread ? parseFloat(axleConfig.axleSpread) : null,
-                interaxleSpacing: axleConfig.interaxleSpacing ? parseFloat(axleConfig.interaxleSpacing) : null,
-                axleUnitWeight: axleConfig.axleUnitWeight ? parseFloat(axleConfig.axleUnitWeight) : null,
-                numberOfTires: axleConfig.numberOfTires ? parseInt(axleConfig.numberOfTires) : null,
-                tireSize: axleConfig.tireSize ? parseFloat(axleConfig.tireSize) : null
-              }))
-              .filter((axleConfig: any) => axleConfig.numberOfAxles !== null) : [],
-            trailers: permitData.selectedTrailers ? permitData.selectedTrailers
-              .filter((trailer: string) => trailer && trailer.trim() !== '')
-              .map((trailerType: string) => ({
-                vehicleSubType: trailerType
-              })) : []
-          },
-          
-                     // Legacy fields (keeping for backward compatibility)
-           commodities: [], // Empty array for now
-           feeSummary: null,
-           permittedCommodity: permitData.commodityType || permitData.loadDescription ? {
-             commodityType: permitData.commodityType || null,
-             loadDescription: permitData.loadDescription || null
-           } : null
-        })
-      }
+          routeDetails: null
+        },
+        
+        // Vehicle Configuration
+        vehicleConfiguration: {
+          overallLength: permitData.overallLength ? parseFloat(permitData.overallLength) : null,
+          overallWidth: permitData.overallWidth ? parseFloat(permitData.overallWidth) : null,
+          overallHeight: permitData.overallHeight ? parseFloat(permitData.overallHeight) : null,
+          frontProjection: permitData.frontProjection ? parseFloat(permitData.frontProjection) : null,
+          rearProjection: permitData.rearProjection ? parseFloat(permitData.rearProjection) : null,
+          loadedGVW: permitData.loadedGVW ? parseFloat(permitData.loadedGVW) : null,
+          netWeight: permitData.netWeight ? parseFloat(permitData.netWeight) : null,
+          axleConfiguration: permitData.axleConfigurations ? permitData.axleConfigurations
+            .map((axleConfig: any) => ({
+              numberOfAxles: axleConfig.numberOfAxles ? parseInt(axleConfig.numberOfAxles) : null,
+              axleSpread: axleConfig.axleSpread ? parseFloat(axleConfig.axleSpread) : null,
+              interaxleSpacing: axleConfig.interaxleSpacing ? parseFloat(axleConfig.interaxleSpacing) : null,
+              axleUnitWeight: axleConfig.axleUnitWeight ? parseFloat(axleConfig.axleUnitWeight) : null,
+              numberOfTires: axleConfig.numberOfTires ? parseInt(axleConfig.numberOfTires) : null,
+              tireSize: axleConfig.tireSize ? parseFloat(axleConfig.tireSize) : null
+            }))
+            .filter((axleConfig: any) => axleConfig.numberOfAxles !== null) : [],
+          trailers: permitData.selectedTrailers ? permitData.selectedTrailers
+            .filter((trailer: string) => trailer && trailer.trim() !== '')
+            .map((trailerType: string) => ({
+              vehicleSubType: trailerType
+            })) : []
+        },
+        
+        // Legacy fields (keeping for backward compatibility)
+        commodities: [], // Empty array for now
+        feeSummary: null,
+        permittedCommodity: permitData.commodityType || permitData.loadDescription ? {
+          commodityType: permitData.commodityType || null,
+          loadDescription: permitData.loadDescription || null
+        } : null
+      })
+    }
 
+    try {
       const results = await policy.validate(permitApplication)
       setValidationResults(results)
       setPermitApplication(permitApplication)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Local validation failed')
+      // Create a validation results object with an error message
+      const errorMessage = err instanceof Error ? err.message : 'Local validation failed'
+      const errorResults = new ValidationResults()
+      errorResults.violations.push(new ValidationResult('violation', 'LOCAL_VALIDATION_ERROR', errorMessage))
+      setValidationResults(errorResults)
+      setPermitApplication(permitApplication)
     }
   }
 
   const handleApiValidation = async (permitData: any) => {
-    try {
-      // Structure the data according to PermitApplication type (same as local validation)
-      const permitApplication = {
-        permitType: permitData.permitType,
-        permitData: removeEmptyProperties({
-          // Company Information
-          companyName: permitData.companyName,
-          doingBusinessAs: permitData.doingBusinessAs || null,
-          clientNumber: permitData.clientNumber,
-          permitDuration: permitData.permitDuration,
-          
-          // Contact Details
-          contactDetails: {
-            firstName: permitData.firstName,
-            lastName: permitData.lastName,
-            phone1: permitData.phone1,
-            phone1Extension: permitData.phone1Extension || null,
-            phone2: permitData.phone2 || null,
-            phone2Extension: permitData.phone2Extension || null,
-            email: permitData.email,
-            additionalEmail: permitData.additionalEmail || null,
-            fax: permitData.fax || null
+    console.debug('🚀 handleApiValidation called')
+    // Structure the data according to PermitApplication type (same as local validation)
+    const permitApplication = {
+      permitType: permitData.permitType,
+      permitData: removeEmptyProperties({
+        // Company Information
+        companyName: permitData.companyName,
+        doingBusinessAs: permitData.doingBusinessAs || null,
+        clientNumber: permitData.clientNumber,
+        permitDuration: permitData.permitDuration,
+        
+        // Contact Details
+        contactDetails: {
+          firstName: permitData.firstName,
+          lastName: permitData.lastName,
+          phone1: permitData.phone1,
+          phone1Extension: permitData.phone1Extension || null,
+          phone2: permitData.phone2 || null,
+          phone2Extension: permitData.phone2Extension || null,
+          email: permitData.email,
+          additionalEmail: permitData.additionalEmail || null,
+          fax: permitData.fax || null
+        },
+        
+        // Mailing Address
+        mailingAddress: {
+          addressLine1: permitData.addressLine1,
+          addressLine2: permitData.addressLine2 || null,
+          city: permitData.city,
+          provinceCode: permitData.provinceCode,
+          countryCode: permitData.countryCode,
+          postalCode: permitData.postalCode
+        },
+        
+        // Vehicle Details
+        vehicleDetails: {
+          vehicleId: permitData.vehicleId || null,
+          unitNumber: permitData.unitNumber || null,
+          vin: permitData.vin,
+          plate: permitData.plate,
+          make: permitData.make || null,
+          year: permitData.year ? parseInt(permitData.year) : null,
+          countryCode: permitData.vehicleCountryCode || 'CA',
+          provinceCode: permitData.vehicleProvinceCode || 'BC',
+          vehicleType: permitData.vehicleType,
+          vehicleSubType: permitData.vehicleSubType,
+          licensedGVW: permitData.licensedGVW ? parseInt(permitData.licensedGVW) : null,
+          saveVehicle: permitData.saveVehicle || null
+        },
+        
+        // Dates
+        startDate: permitData.startDate || dayjs().format(PermitAppInfo.PermitDateFormat.toString()),
+        expiryDate: permitData.expiryDate || null,
+        
+        // Additional fields
+        applicationNotes: permitData.applicationNotes || null,
+        thirdPartyLiability: permitData.thirdPartyLiability || null,
+        conditionalLicensingFee: permitData.conditionalLicensingFee || null,
+        
+        // Permitted Route
+        permittedRoute: {
+          manualRoute: {
+            highwaySequence: permitData.highwaySequence 
+              ? permitData.highwaySequence.split(',').map((h: string) => h.trim()).filter((h: string) => h.length > 0)
+              : [],
+            origin: permitData.routeOrigin,
+            destination: permitData.routeDestination,
+            exitPoint: permitData.routeExitPoint || null,
+            totalDistance: permitData.routeTotalDistance ? parseFloat(permitData.routeTotalDistance) : null
           },
-          
-          // Mailing Address
-          mailingAddress: {
-            addressLine1: permitData.addressLine1,
-            addressLine2: permitData.addressLine2 || null,
-            city: permitData.city,
-            provinceCode: permitData.provinceCode,
-            countryCode: permitData.countryCode,
-            postalCode: permitData.postalCode
-          },
-          
-          // Vehicle Details
-          vehicleDetails: {
-            vehicleId: permitData.vehicleId || null,
-            unitNumber: permitData.unitNumber || null,
-            vin: permitData.vin,
-            plate: permitData.plate,
-            make: permitData.make || null,
-            year: permitData.year ? parseInt(permitData.year) : null,
-            countryCode: permitData.vehicleCountryCode || 'CA',
-            provinceCode: permitData.vehicleProvinceCode || 'BC',
-            vehicleType: permitData.vehicleType,
-            vehicleSubType: permitData.vehicleSubType,
-            licensedGVW: permitData.licensedGVW ? parseInt(permitData.licensedGVW) : null,
-            saveVehicle: permitData.saveVehicle || null
-          },
-          
-          // Dates
-          startDate: permitData.startDate || dayjs().format(PermitAppInfo.PermitDateFormat.toString()),
-          expiryDate: permitData.expiryDate || null,
-          
-          // Additional fields
-          applicationNotes: permitData.applicationNotes || null,
-          thirdPartyLiability: permitData.thirdPartyLiability || null,
-          conditionalLicensingFee: permitData.conditionalLicensingFee || null,
-          
-          // Permitted Route
-          permittedRoute: {
-            manualRoute: {
-              highwaySequence: permitData.highwaySequence 
-                ? permitData.highwaySequence.split(',').map((h: string) => h.trim()).filter((h: string) => h.length > 0)
-                : [],
-              origin: permitData.routeOrigin,
-              destination: permitData.routeDestination,
-              exitPoint: permitData.routeExitPoint || null,
-              totalDistance: permitData.routeTotalDistance ? parseFloat(permitData.routeTotalDistance) : null
-            },
-            routeDetails: null
-          },
-          
-          // Vehicle Configuration
-          vehicleConfiguration: {
-            overallLength: permitData.overallLength ? parseFloat(permitData.overallLength) : null,
-            overallWidth: permitData.overallWidth ? parseFloat(permitData.overallWidth) : null,
-            overallHeight: permitData.overallHeight ? parseFloat(permitData.overallHeight) : null,
-            frontProjection: permitData.frontProjection ? parseFloat(permitData.frontProjection) : null,
-            rearProjection: permitData.rearProjection ? parseFloat(permitData.rearProjection) : null,
-            loadedGVW: permitData.loadedGVW ? parseFloat(permitData.loadedGVW) : null,
-            netWeight: permitData.netWeight ? parseFloat(permitData.netWeight) : null,
-            axleConfiguration: permitData.axleConfigurations ? permitData.axleConfigurations
-              .map((axleConfig: any) => ({
-                numberOfAxles: axleConfig.numberOfAxles ? parseInt(axleConfig.numberOfAxles) : null,
-                axleSpread: axleConfig.axleSpread ? parseFloat(axleConfig.axleSpread) : null,
-                interaxleSpacing: axleConfig.interaxleSpacing ? parseFloat(axleConfig.interaxleSpacing) : null,
-                axleUnitWeight: axleConfig.axleUnitWeight ? parseFloat(axleConfig.axleUnitWeight) : null,
-                numberOfTires: axleConfig.numberOfTires ? parseInt(axleConfig.numberOfTires) : null,
-                tireSize: axleConfig.tireSize ? parseFloat(axleConfig.tireSize) : null
-              }))
-              .filter((axleConfig: any) => axleConfig.numberOfAxles !== null) : [],
-            trailers: permitData.selectedTrailers ? permitData.selectedTrailers
-              .filter((trailer: string) => trailer && trailer.trim() !== '')
-              .map((trailerType: string) => ({
-                vehicleSubType: trailerType
-              })) : []
-          },
-          
-          // Legacy fields (keeping for backward compatibility)
-          commodities: [], // Empty array for now
-          feeSummary: null,
-          permittedCommodity: permitData.commodityType || permitData.loadDescription ? {
-            commodityType: permitData.commodityType || null,
-            loadDescription: permitData.loadDescription || null
-          } : null
-        })
-      }
+          routeDetails: null
+        },
+        
+        // Vehicle Configuration
+        vehicleConfiguration: {
+          overallLength: permitData.overallLength ? parseFloat(permitData.overallLength) : null,
+          overallWidth: permitData.overallWidth ? parseFloat(permitData.overallWidth) : null,
+          overallHeight: permitData.overallHeight ? parseFloat(permitData.overallHeight) : null,
+          frontProjection: permitData.frontProjection ? parseFloat(permitData.frontProjection) : null,
+          rearProjection: permitData.rearProjection ? parseFloat(permitData.rearProjection) : null,
+          loadedGVW: permitData.loadedGVW ? parseFloat(permitData.loadedGVW) : null,
+          netWeight: permitData.netWeight ? parseFloat(permitData.netWeight) : null,
+          axleConfiguration: permitData.axleConfigurations ? permitData.axleConfigurations
+            .map((axleConfig: any) => ({
+              numberOfAxles: axleConfig.numberOfAxles ? parseInt(axleConfig.numberOfAxles) : null,
+              axleSpread: axleConfig.axleSpread ? parseFloat(axleConfig.axleSpread) : null,
+              interaxleSpacing: axleConfig.interaxleSpacing ? parseFloat(axleConfig.interaxleSpacing) : null,
+              axleUnitWeight: axleConfig.axleUnitWeight ? parseFloat(axleConfig.axleUnitWeight) : null,
+              numberOfTires: axleConfig.numberOfTires ? parseInt(axleConfig.numberOfTires) : null,
+              tireSize: axleConfig.tireSize ? parseFloat(axleConfig.tireSize) : null
+            }))
+            .filter((axleConfig: any) => axleConfig.numberOfAxles !== null) : [],
+          trailers: permitData.selectedTrailers ? permitData.selectedTrailers
+            .filter((trailer: string) => trailer && trailer.trim() !== '')
+            .map((trailerType: string) => ({
+              vehicleSubType: trailerType
+            })) : []
+        },
+        
+        // Legacy fields (keeping for backward compatibility)
+        commodities: [], // Empty array for now
+        feeSummary: null,
+        permittedCommodity: permitData.commodityType || permitData.loadDescription ? {
+          commodityType: permitData.commodityType || null,
+          loadDescription: permitData.loadDescription || null
+        } : null
+      })
+    }
 
+    // Let the wrapper handle all errors and return proper ValidationResults
+    console.debug('📤 About to call validateWithApi with permitApplication:', permitApplication)
+    const results = await validateWithApi(permitApplication)
+    console.debug('📥 validateWithApi returned results:', results)
+    setValidationResults(results)
+    setPermitApplication(permitApplication)
+  }
+
+  // Wrapper method for API validation that handles errors consistently
+  const validateWithApi = async (permitApplication: any): Promise<ValidationResults> => {
+    console.debug('🔗 validateWithApi called - making API request to:', `${API_BASE_URL}/validate`)
+    try {
       const response = await fetch(`${API_BASE_URL}/validate`, {
         method: 'POST',
         headers: {
@@ -319,28 +338,41 @@ function App() {
         body: JSON.stringify(permitApplication)
       })
 
-      if (!response.ok) {
-        throw new Error(`API validation failed: ${response.status}`)
-      }
-
       const result = await response.json()
-      if (!result.success) {
-        throw new Error('API validation returned an error')
+      console.debug('📡 API Response status:', response.status, 'Response body:', result)
+      
+      if (!response.ok) {
+        // Handle HTTP error responses
+        console.debug('❌ HTTP Error - Status:', response.status, 'Error:', result.error)
+        const errorMessage = result.error || `API validation failed: ${response.status}`
+        const errorResults = new ValidationResults()
+        errorResults.violations.push(new ValidationResult('violation', 'API_ERROR', errorMessage))
+        return errorResults
       }
 
-      setValidationResults(result.data)
-      setPermitApplication(permitApplication)
+      if (!result.success) {
+        // Handle API error responses (success: false)
+        console.debug('❌ API Error - success: false, Error:', result.error)
+        const errorMessage = result.error || 'API validation returned an error'
+        const errorResults = new ValidationResults()
+        errorResults.violations.push(new ValidationResult('violation', 'API_ERROR', errorMessage))
+        return errorResults
+      }
+
+      console.debug('✅ API Success - returning result.data')
+      return result.data
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'API validation failed')
+      // Handle network or parsing errors
+      console.debug('💥 Network/parsing error:', err)
+      const errorMessage = err instanceof Error ? err.message : 'API validation failed'
+      const errorResults = new ValidationResults()
+      errorResults.violations.push(new ValidationResult('violation', 'API_ERROR', errorMessage))
+      return errorResults
     }
   }
 
   if (loading) {
     return <div className="loading">Loading policy engine...</div>
-  }
-
-  if (error) {
-    return <div className="error">Error: {error}</div>
   }
 
   return (
@@ -389,12 +421,12 @@ function App() {
               </label>
             </div>
             
-                         <PermitForm 
-               onSubmit={handleValidation} 
-               validationResults={validationResults} 
-               policy={policy}
-               permitApplication={permitApplication}
-             />
+            <PermitForm 
+              onSubmit={handleValidation} 
+              validationResults={validationResults} 
+              policy={policy}
+              permitApplication={permitApplication}
+            />
           </div>
         ) : (
           <div className="font-test-container">
