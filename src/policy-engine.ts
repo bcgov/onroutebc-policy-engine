@@ -1066,6 +1066,31 @@ export class Policy {
     }
   }
 
+  /**
+   * Generates a vehicle display code based on the vehicle configuration and axle configuration.
+   * 
+   * The display code is a string representation that describes the vehicle configuration
+   * in a standardized format. It can generate either a standard display code (for known
+   * vehicle types with configured display codes) or a universal display code (for complex
+   * or unknown configurations).
+   * 
+   * @param configuration Array of vehicle type identifiers representing the vehicle configuration.
+   *                      The first element should be a power unit type, followed by trailer types.
+   * @param axleConfiguration Array of axle configurations corresponding to each vehicle in the configuration.
+   *                          Each axle configuration contains details like number of axles, spacing, etc.
+   * @returns A string representing the vehicle display code, or an empty string if the configuration is empty.
+   * 
+   * @example
+   * // For a truck-tractor with 2-axle steer, 3-axle drive, and a 3-axle semi-trailer
+   * const code = policy.getVehicleDisplayCode(['TRKTRAC'], [
+   *   { numberOfAxles: 2, axleSpread: 1.8, ... },
+   *   { numberOfAxles: 3, axleSpread: 4.2, ... },
+   *   { numberOfAxles: 3, axleSpread: 3.0, ... }
+   * ]);
+   * // Returns something like "TT2S13D23T3"
+   * 
+   * @throws {Error} If vehicleDisplayCodeDefaults is not configured in the policy definition.
+   */
   getVehicleDisplayCode(
     configuration: Array<string>,
     axleConfiguration: Array<AxleConfiguration>,
