@@ -24,19 +24,5 @@ export const validatePermitRequest = (
     return next(createError('permitData must be an object', 400))
   }
   
-  // Basic validation for required permit data fields
-  const requiredFields = ['companyName', 'clientNumber', 'vehicleConfiguration']
-  for (const field of requiredFields) {
-    if (!permitData[field]) {
-      return next(createError(`${field} is required in permitData`, 400))
-    }
-  }
-  
-  // Validate vehicle configuration
-  const { vehicleConfiguration } = permitData
-  if (!vehicleConfiguration.overallLength || !vehicleConfiguration.overallWidth) {
-    return next(createError('Vehicle dimensions are required', 400))
-  }
-  
   next()
 }
