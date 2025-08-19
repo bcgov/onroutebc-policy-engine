@@ -92,16 +92,6 @@ const ValidationResultsDisplay: React.FC<ValidationResultsDisplayProps> = ({ res
 
   return (
     <div className="validation-results">
-      {/* Test content to trigger scrolling */}
-      <div style={{ padding: '20px', background: '#f0f0f0', marginBottom: '20px' }}>
-        <h3>Test Content for Scrolling</h3>
-        {Array.from({ length: 20 }, (_, i) => (
-          <div key={i} style={{ padding: '10px', margin: '5px 0', background: 'white', border: '1px solid #ddd' }}>
-            Test validation message {i + 1} - This is a long message to test scrolling functionality
-          </div>
-        ))}
-      </div>
-      
       {/* Permit Type */}
       {permitType && (
         <div className="permit-type-container">

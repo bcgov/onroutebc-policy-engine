@@ -12,8 +12,7 @@
   overflow-x: hidden;
   display: flex;
   gap: 2rem;
-  flex: 1;
-  min-height: 0;
+  height: calc(100vh - 300px);
 }
 
 .permit-form .left-column {
@@ -23,7 +22,7 @@
   width: 50%;
   min-width: 0;
   max-width: 50%;
-  min-height: 0;
+  height: 100%;
   position: relative;
 }
 
@@ -62,11 +61,10 @@
   width: 50%;
   min-width: 0;
   max-width: 50%;
-  min-height: 0;
+  height: 100%;
   overflow-y: auto;
   padding-right: 1rem;
   position: relative;
-  border: 2px solid red;
 }
 
 .permit-form h2 {
