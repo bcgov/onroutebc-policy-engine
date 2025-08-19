@@ -25,8 +25,8 @@
 }
 
 .cost-summary {
-  background: #e8f5e8;
-  border: 2px solid #28a745;
+  background: #e6f3ff;
+  border: 2px solid #007bff;
   border-radius: 8px;
   padding: 8px 12px;
   display: flex;
@@ -36,14 +36,14 @@
 
 .cost-label {
   font-size: 14px;
-  color: #155724;
+  color: #004085;
   font-weight: 500;
 }
 
 .cost-amount {
   font-size: 14px;
   font-weight: bold;
-  color: #155724;
+  color: #004085;
   flex: 1;
 }
 
@@ -67,7 +67,7 @@
   border-top: none;
   border-radius: 0 0 8px 8px;
   padding: 12px;
-  margin-top: -1px;
+  margin-top: 4px;
 }
 
 .conditions-section {
@@ -223,7 +223,7 @@
   border-top: none;
   border-radius: 0 0 6px 6px;
   padding: 12px;
-  margin-top: -1px;
+  margin-top: 4px;
 }
 
 .json-display {
