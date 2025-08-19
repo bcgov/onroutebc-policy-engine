@@ -16,7 +16,7 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'form' | 'font-test'>('form')
   const [validationMethod, setValidationMethod] = useState<'local' | 'api'>('local')
-  const [vehicleConfigVisible, setVehicleConfigVisible] = useState(false)
+
 
   useEffect(() => {
     const initializePolicy = async () => {
@@ -56,37 +56,7 @@ function App() {
     }
   }
 
-  // Helper function to build vehicle configuration data conditionally
-  const buildVehicleConfiguration = (permitData: any) => {
-    if (!vehicleConfigVisible) {
-      return null
-    }
-    
-    return {
-      overallLength: permitData.overallLength ? parseFloat(permitData.overallLength) : null,
-      overallWidth: permitData.overallWidth ? parseFloat(permitData.overallWidth) : null,
-      overallHeight: permitData.overallHeight ? parseFloat(permitData.overallHeight) : null,
-      frontProjection: permitData.frontProjection ? parseFloat(permitData.frontProjection) : null,
-      rearProjection: permitData.rearProjection ? parseFloat(permitData.rearProjection) : null,
-      loadedGVW: permitData.loadedGVW ? parseFloat(permitData.loadedGVW) : null,
-      netWeight: permitData.netWeight ? parseFloat(permitData.netWeight) : null,
-      axleConfiguration: permitData.axleConfigurations ? permitData.axleConfigurations
-        .map((axleConfig: any) => ({
-          numberOfAxles: axleConfig.numberOfAxles ? parseInt(axleConfig.numberOfAxles) : null,
-          axleSpread: axleConfig.axleSpread ? parseFloat(axleConfig.axleSpread) : null,
-          interaxleSpacing: axleConfig.interaxleSpacing ? parseFloat(axleConfig.interaxleSpacing) : null,
-          axleUnitWeight: axleConfig.axleUnitWeight ? parseFloat(axleConfig.axleUnitWeight) : null,
-          numberOfTires: axleConfig.numberOfTires ? parseInt(axleConfig.numberOfTires) : null,
-          tireSize: axleConfig.tireSize ? parseFloat(axleConfig.tireSize) : null
-        }))
-        .filter((axleConfig: any) => axleConfig.numberOfAxles !== null) : [],
-      trailers: permitData.selectedTrailers ? permitData.selectedTrailers
-        .filter((trailer: string) => trailer && trailer.trim() !== '')
-        .map((trailerType: string) => ({
-          vehicleSubType: trailerType
-        })) : []
-    }
-  }
+
 
   // Helper function to remove null and empty string properties recursively
   const removeEmptyProperties = (obj: any): any => {
@@ -99,7 +69,8 @@ function App() {
     }
     
     if (Array.isArray(obj)) {
-      return obj.map(removeEmptyProperties).filter(item => item !== undefined)
+      const cleanedArray = obj.map(removeEmptyProperties).filter(item => item !== undefined)
+      return cleanedArray.length > 0 ? cleanedArray : undefined
     }
     
     if (typeof obj === 'object') {
@@ -192,7 +163,30 @@ function App() {
         },
         
         // Vehicle Configuration
-        vehicleConfiguration: buildVehicleConfiguration(permitData),
+        vehicleConfiguration: {
+          overallLength: permitData.overallLength ? parseFloat(permitData.overallLength) : null,
+          overallWidth: permitData.overallWidth ? parseFloat(permitData.overallWidth) : null,
+          overallHeight: permitData.overallHeight ? parseFloat(permitData.overallHeight) : null,
+          frontProjection: permitData.frontProjection ? parseFloat(permitData.frontProjection) : null,
+          rearProjection: permitData.rearProjection ? parseFloat(permitData.rearProjection) : null,
+          loadedGVW: permitData.loadedGVW ? parseFloat(permitData.loadedGVW) : null,
+          netWeight: permitData.netWeight ? parseFloat(permitData.netWeight) : null,
+          axleConfiguration: permitData.axleConfigurations ? permitData.axleConfigurations
+            .map((axleConfig: any) => ({
+              numberOfAxles: axleConfig.numberOfAxles ? parseInt(axleConfig.numberOfAxles) : null,
+              axleSpread: axleConfig.axleSpread ? parseFloat(axleConfig.axleSpread) : null,
+              interaxleSpacing: axleConfig.interaxleSpacing ? parseFloat(axleConfig.interaxleSpacing) : null,
+              axleUnitWeight: axleConfig.axleUnitWeight ? parseFloat(axleConfig.axleUnitWeight) : null,
+              numberOfTires: axleConfig.numberOfTires ? parseInt(axleConfig.numberOfTires) : null,
+              tireSize: axleConfig.tireSize ? parseFloat(axleConfig.tireSize) : null
+            }))
+            .filter((axleConfig: any) => axleConfig.numberOfAxles !== null) : [],
+          trailers: permitData.selectedTrailers ? permitData.selectedTrailers
+            .filter((trailer: string) => trailer && trailer.trim() !== '')
+            .map((trailerType: string) => ({
+              vehicleSubType: trailerType
+            })) : []
+        },
         
         // Legacy fields (keeping for backward compatibility)
         commodities: [], // Empty array for now
@@ -293,7 +287,30 @@ function App() {
         },
         
         // Vehicle Configuration
-        vehicleConfiguration: buildVehicleConfiguration(permitData),
+        vehicleConfiguration: {
+          overallLength: permitData.overallLength ? parseFloat(permitData.overallLength) : null,
+          overallWidth: permitData.overallWidth ? parseFloat(permitData.overallWidth) : null,
+          overallHeight: permitData.overallHeight ? parseFloat(permitData.overallHeight) : null,
+          frontProjection: permitData.frontProjection ? parseFloat(permitData.frontProjection) : null,
+          rearProjection: permitData.rearProjection ? parseFloat(permitData.rearProjection) : null,
+          loadedGVW: permitData.loadedGVW ? parseFloat(permitData.loadedGVW) : null,
+          netWeight: permitData.netWeight ? parseFloat(permitData.netWeight) : null,
+          axleConfiguration: permitData.axleConfigurations ? permitData.axleConfigurations
+            .map((axleConfig: any) => ({
+              numberOfAxles: axleConfig.numberOfAxles ? parseInt(axleConfig.numberOfAxles) : null,
+              axleSpread: axleConfig.axleSpread ? parseFloat(axleConfig.axleSpread) : null,
+              interaxleSpacing: axleConfig.interaxleSpacing ? parseFloat(axleConfig.interaxleSpacing) : null,
+              axleUnitWeight: axleConfig.axleUnitWeight ? parseFloat(axleConfig.axleUnitWeight) : null,
+              numberOfTires: axleConfig.numberOfTires ? parseInt(axleConfig.numberOfTires) : null,
+              tireSize: axleConfig.tireSize ? parseFloat(axleConfig.tireSize) : null
+            }))
+            .filter((axleConfig: any) => axleConfig.numberOfAxles !== null) : [],
+          trailers: permitData.selectedTrailers ? permitData.selectedTrailers
+            .filter((trailer: string) => trailer && trailer.trim() !== '')
+            .map((trailerType: string) => ({
+              vehicleSubType: trailerType
+            })) : []
+        },
         
         // Legacy fields (keeping for backward compatibility)
         commodities: [], // Empty array for now
@@ -413,7 +430,6 @@ function App() {
                validationResults={validationResults} 
                policy={policy}
                permitApplication={permitApplication}
-               onVehicleConfigVisibilityChange={setVehicleConfigVisible}
              />
           </div>
         ) : (

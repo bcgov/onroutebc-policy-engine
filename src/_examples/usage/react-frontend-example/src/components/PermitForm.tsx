@@ -8,10 +8,9 @@ interface PermitFormProps {
   validationResults?: ValidationResults | null
   policy?: Policy | null
   permitApplication?: any
-  onVehicleConfigVisibilityChange?: (isVisible: boolean) => void
 }
 
-const PermitForm: React.FC<PermitFormProps> = ({ onSubmit, validationResults, policy, permitApplication, onVehicleConfigVisibilityChange }) => {
+const PermitForm: React.FC<PermitFormProps> = ({ onSubmit, validationResults, policy, permitApplication }) => {
   const [permitTypes, setPermitTypes] = useState<Array<[string, string]>>([])
   const [vehicleSubTypes, setVehicleSubTypes] = useState<Array<[string, string]>>([])
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set(['company', 'contact', 'mailing', 'trip', 'vehicle', 'route', 'vehicleConfig']))
@@ -129,12 +128,7 @@ const PermitForm: React.FC<PermitFormProps> = ({ onSubmit, validationResults, po
     }
   }, [policy])
 
-  // Notify parent component when vehicle configuration visibility changes
-  useEffect(() => {
-    if (onVehicleConfigVisibilityChange) {
-      onVehicleConfigVisibilityChange(showVehicleConfig)
-    }
-  }, [showVehicleConfig, onVehicleConfigVisibilityChange])
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -1091,46 +1085,74 @@ const PermitForm: React.FC<PermitFormProps> = ({ onSubmit, validationResults, po
                   />
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="licensedGVW">Licensed GVW:</label>
-                  <input
-                    type="number"
-                    id="licensedGVW"
-                    name="licensedGVW"
-                    value={formData.licensedGVW}
-                    onChange={handleChange}
-                    placeholder="Enter licensed GVW (optional)"
-                  />
-                </div>
+                                 <div className="form-group">
+                   <label htmlFor="licensedGVW">Licensed GVW:</label>
+                   <input
+                     type="number"
+                     id="licensedGVW"
+                     name="licensedGVW"
+                     value={formData.licensedGVW}
+                     onChange={handleChange}
+                     placeholder="Enter licensed GVW (optional)"
+                   />
+                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="vehicleCountryCode">Country of Registration:</label>
-                  <select
-                    id="vehicleCountryCode"
-                    name="vehicleCountryCode"
-                    value={formData.vehicleCountryCode}
-                    onChange={handleChange}
-                  >
-                    <option value="CA">Canada</option>
-                    <option value="US">United States</option>
-                    <option value="MX">Mexico</option>
-                    <option value="XX">Other</option>
-                  </select>
-                </div>
+                 <div className="form-group">
+                   <label htmlFor="loadedGVW">Loaded GVW (kg):</label>
+                   <input
+                     type="number"
+                     id="loadedGVW"
+                     name="loadedGVW"
+                     value={formData.loadedGVW}
+                     onChange={handleChange}
+                     placeholder="Enter loaded GVW in kilograms"
+                     min="0"
+                     step="0.01"
+                   />
+                 </div>
 
-                {formData.vehicleCountryCode !== 'MX' && formData.vehicleCountryCode !== 'XX' && (
-                  <div className="form-group">
-                    <label htmlFor="vehicleProvinceCode">Province / State of Registration:</label>
-                    <input
-                      type="text"
-                      id="vehicleProvinceCode"
-                      name="vehicleProvinceCode"
-                      value={formData.vehicleProvinceCode}
-                      onChange={handleChange}
-                      placeholder="Enter province or state"
-                    />
-                  </div>
-                )}
+                 <div className="form-group">
+                   <label htmlFor="netWeight">Net Weight (kg):</label>
+                   <input
+                     type="number"
+                     id="netWeight"
+                     name="netWeight"
+                     value={formData.netWeight}
+                     onChange={handleChange}
+                     placeholder="Enter net weight in kilograms"
+                     min="0"
+                     step="0.01"
+                   />
+                 </div>
+
+                 <div className="form-group">
+                   <label htmlFor="vehicleCountryCode">Country of Registration:</label>
+                   <select
+                     id="vehicleCountryCode"
+                     name="vehicleCountryCode"
+                     value={formData.vehicleCountryCode}
+                     onChange={handleChange}
+                   >
+                     <option value="CA">Canada</option>
+                     <option value="US">United States</option>
+                     <option value="MX">Mexico</option>
+                     <option value="XX">Other</option>
+                   </select>
+                 </div>
+
+                 {formData.vehicleCountryCode !== 'MX' && formData.vehicleCountryCode !== 'XX' && (
+                   <div className="form-group">
+                     <label htmlFor="vehicleProvinceCode">Province / State of Registration:</label>
+                     <input
+                       type="text"
+                       id="vehicleProvinceCode"
+                       name="vehicleProvinceCode"
+                       value={formData.vehicleProvinceCode}
+                       onChange={handleChange}
+                       placeholder="Enter province or state"
+                     />
+                   </div>
+                 )}
               </>
             )}
           </div>
@@ -1390,38 +1412,7 @@ const PermitForm: React.FC<PermitFormProps> = ({ onSubmit, validationResults, po
                       </>
                     )}
 
-                                         {/* Weight Dimensions */}
-                     {showWeightDimensions && (
-                       <>
-                         <div className="form-group">
-                           <label htmlFor="loadedGVW">Loaded GVW (kg):</label>
-                           <input
-                             type="number"
-                             id="loadedGVW"
-                             name="loadedGVW"
-                             value={formData.loadedGVW}
-                             onChange={handleChange}
-                             placeholder="Enter loaded GVW in kilograms"
-                             min="0"
-                             step="0.01"
-                           />
-                         </div>
-
-                         <div className="form-group">
-                           <label htmlFor="netWeight">Net Weight (kg):</label>
-                           <input
-                             type="number"
-                             id="netWeight"
-                             name="netWeight"
-                             value={formData.netWeight}
-                             onChange={handleChange}
-                             placeholder="Enter net weight in kilograms"
-                             min="0"
-                             step="0.01"
-                           />
-                         </div>
-                       </>
-                     )}
+                                         
 
                      {/* Axle Configuration Sub-section */}
                      {showWeightDimensions && (
