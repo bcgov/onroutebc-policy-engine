@@ -8,9 +8,10 @@ interface PermitFormProps {
   validationResults?: ValidationResults | null
   policy?: Policy | null
   permitApplication?: any
+  onVehicleConfigVisibilityChange?: (isVisible: boolean) => void
 }
 
-const PermitForm: React.FC<PermitFormProps> = ({ onSubmit, validationResults, policy, permitApplication }) => {
+const PermitForm: React.FC<PermitFormProps> = ({ onSubmit, validationResults, policy, permitApplication, onVehicleConfigVisibilityChange }) => {
   const [permitTypes, setPermitTypes] = useState<Array<[string, string]>>([])
   const [vehicleSubTypes, setVehicleSubTypes] = useState<Array<[string, string]>>([])
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set(['company', 'contact', 'mailing', 'trip', 'vehicle', 'route', 'vehicleConfig']))
@@ -128,6 +129,13 @@ const PermitForm: React.FC<PermitFormProps> = ({ onSubmit, validationResults, po
     }
   }, [policy])
 
+  // Notify parent component when vehicle configuration visibility changes
+  useEffect(() => {
+    if (onVehicleConfigVisibilityChange) {
+      onVehicleConfigVisibilityChange(showVehicleConfig)
+    }
+  }, [showVehicleConfig, onVehicleConfigVisibilityChange])
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     onSubmit({
@@ -138,6 +146,84 @@ const PermitForm: React.FC<PermitFormProps> = ({ onSubmit, validationResults, po
   }
 
     const loadSampleData = async (permitType: string) => {
+    // First, reset all form fields to their default values
+    const defaultFormData = {
+      permitType: permitType, // Keep the selected permit type
+      companyName: '',
+      doingBusinessAs: '',
+      clientNumber: '',
+      permitDuration: 1,
+      startDate: '',
+      expiryDate: '',
+      applicationNotes: '',
+      thirdPartyLiability: '',
+      conditionalLicensingFee: '',
+      // Contact Details
+      firstName: '',
+      lastName: '',
+      phone1: '',
+      phone1Extension: '',
+      phone2: '',
+      phone2Extension: '',
+      email: '',
+      additionalEmail: '',
+      fax: '',
+      // Mailing Address
+      addressLine1: '',
+      addressLine2: '',
+      city: '',
+      provinceCode: '',
+      countryCode: '',
+      postalCode: '',
+      // Vehicle Details
+      vehicleId: '',
+      unitNumber: '',
+      vin: '',
+      plate: '',
+      make: '',
+      year: '',
+      vehicleType: '',
+      vehicleSubType: '',
+      licensedGVW: '',
+      vehicleCountryCode: 'CA',
+      vehicleProvinceCode: '',
+      saveVehicle: false,
+      // Permitted Route
+      highwaySequence: '',
+      routeOrigin: '',
+      routeDestination: '',
+      routeExitPoint: '',
+      routeTotalDistance: '',
+      // Vehicle Configuration
+      overallLength: '',
+      overallWidth: '',
+      overallHeight: '',
+      frontProjection: '',
+      rearProjection: '',
+      loadedGVW: '',
+      netWeight: '',
+      commodityType: '',
+      loadDescription: '',
+      // Legacy fields (keeping for backward compatibility)
+      origin: '',
+      destination: '',
+      commodity: 'EMPTYXX',
+      powerUnitType: 'TRKTRAC',
+      trailerType: 'PLATFRM',
+      description: ''
+    }
+
+    // Reset form data to defaults first
+    setFormData(defaultFormData)
+    
+    // Reset other state variables
+    setSelectedTrailers([])
+    setAxleConfigurations([
+      { numberOfAxles: '', axleSpread: '', interaxleSpacing: '', axleUnitWeight: '', numberOfTires: '', tireSize: '' },
+      { numberOfAxles: '', axleSpread: '', interaxleSpacing: '', axleUnitWeight: '', numberOfTires: '', tireSize: '' }
+    ])
+    setVehicleSubTypes([])
+
     try {
       const response = await fetch(`/sample-applications/${permitType}.json`)
       if (!response.ok) {
@@ -148,15 +234,14 @@ const PermitForm: React.FC<PermitFormProps> = ({ onSubmit, validationResults, po
       const sampleData = await response.json()
       const permitData = sampleData.permitData
       
-             // Map sample data to form fields
-       const newFormData = {
-         ...formData,
-         permitType: permitType, // Keep the selected permit type, don't override with sample data
-         // Company Information
-         companyName: permitData.companyName || '',
-         doingBusinessAs: permitData.doingBusinessAs || '',
-         clientNumber: permitData.clientNumber || '',
-         permitDuration: permitData.permitDuration || 1,
+      // Map sample data to form fields, starting from the default values
+      const newFormData = {
+        ...defaultFormData,
+        // Company Information
+        companyName: permitData.companyName || '',
+        doingBusinessAs: permitData.doingBusinessAs || '',
+        clientNumber: permitData.clientNumber || '',
+        permitDuration: permitData.permitDuration || 1,
         
         // Contact Details
         firstName: permitData.contactDetails?.firstName || '',
@@ -190,9 +275,9 @@ const PermitForm: React.FC<PermitFormProps> = ({ onSubmit, validationResults, po
         vehicleCountryCode: permitData.vehicleDetails?.countryCode || 'CA',
         vehicleProvinceCode: permitData.vehicleDetails?.provinceCode || '',
         
-                 // Dates
-         startDate: permitData.startDate ? new Date().toISOString().split('T')[0] : '',
-         expiryDate: permitData.expiryDate || '',
+        // Dates
+        startDate: permitData.startDate ? new Date().toISOString().split('T')[0] : '',
+        expiryDate: permitData.expiryDate || '',
         
         // Additional fields
         applicationNotes: permitData.applicationNotes || '',

@@ -16,6 +16,7 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'form' | 'font-test'>('form')
   const [validationMethod, setValidationMethod] = useState<'local' | 'api'>('local')
+  const [vehicleConfigVisible, setVehicleConfigVisible] = useState(false)
 
   useEffect(() => {
     const initializePolicy = async () => {
@@ -52,6 +53,38 @@ function App() {
     } else {
       console.debug('🌐 Using API validation')
       await handleApiValidation(permitData)
+    }
+  }
+
+  // Helper function to build vehicle configuration data conditionally
+  const buildVehicleConfiguration = (permitData: any) => {
+    if (!vehicleConfigVisible) {
+      return null
+    }
+    
+    return {
+      overallLength: permitData.overallLength ? parseFloat(permitData.overallLength) : null,
+      overallWidth: permitData.overallWidth ? parseFloat(permitData.overallWidth) : null,
+      overallHeight: permitData.overallHeight ? parseFloat(permitData.overallHeight) : null,
+      frontProjection: permitData.frontProjection ? parseFloat(permitData.frontProjection) : null,
+      rearProjection: permitData.rearProjection ? parseFloat(permitData.rearProjection) : null,
+      loadedGVW: permitData.loadedGVW ? parseFloat(permitData.loadedGVW) : null,
+      netWeight: permitData.netWeight ? parseFloat(permitData.netWeight) : null,
+      axleConfiguration: permitData.axleConfigurations ? permitData.axleConfigurations
+        .map((axleConfig: any) => ({
+          numberOfAxles: axleConfig.numberOfAxles ? parseInt(axleConfig.numberOfAxles) : null,
+          axleSpread: axleConfig.axleSpread ? parseFloat(axleConfig.axleSpread) : null,
+          interaxleSpacing: axleConfig.interaxleSpacing ? parseFloat(axleConfig.interaxleSpacing) : null,
+          axleUnitWeight: axleConfig.axleUnitWeight ? parseFloat(axleConfig.axleUnitWeight) : null,
+          numberOfTires: axleConfig.numberOfTires ? parseInt(axleConfig.numberOfTires) : null,
+          tireSize: axleConfig.tireSize ? parseFloat(axleConfig.tireSize) : null
+        }))
+        .filter((axleConfig: any) => axleConfig.numberOfAxles !== null) : [],
+      trailers: permitData.selectedTrailers ? permitData.selectedTrailers
+        .filter((trailer: string) => trailer && trailer.trim() !== '')
+        .map((trailerType: string) => ({
+          vehicleSubType: trailerType
+        })) : []
     }
   }
 
@@ -159,30 +192,7 @@ function App() {
         },
         
         // Vehicle Configuration
-        vehicleConfiguration: {
-          overallLength: permitData.overallLength ? parseFloat(permitData.overallLength) : null,
-          overallWidth: permitData.overallWidth ? parseFloat(permitData.overallWidth) : null,
-          overallHeight: permitData.overallHeight ? parseFloat(permitData.overallHeight) : null,
-          frontProjection: permitData.frontProjection ? parseFloat(permitData.frontProjection) : null,
-          rearProjection: permitData.rearProjection ? parseFloat(permitData.rearProjection) : null,
-          loadedGVW: permitData.loadedGVW ? parseFloat(permitData.loadedGVW) : null,
-          netWeight: permitData.netWeight ? parseFloat(permitData.netWeight) : null,
-          axleConfiguration: permitData.axleConfigurations ? permitData.axleConfigurations
-            .map((axleConfig: any) => ({
-              numberOfAxles: axleConfig.numberOfAxles ? parseInt(axleConfig.numberOfAxles) : null,
-              axleSpread: axleConfig.axleSpread ? parseFloat(axleConfig.axleSpread) : null,
-              interaxleSpacing: axleConfig.interaxleSpacing ? parseFloat(axleConfig.interaxleSpacing) : null,
-              axleUnitWeight: axleConfig.axleUnitWeight ? parseFloat(axleConfig.axleUnitWeight) : null,
-              numberOfTires: axleConfig.numberOfTires ? parseInt(axleConfig.numberOfTires) : null,
-              tireSize: axleConfig.tireSize ? parseFloat(axleConfig.tireSize) : null
-            }))
-            .filter((axleConfig: any) => axleConfig.numberOfAxles !== null) : [],
-          trailers: permitData.selectedTrailers ? permitData.selectedTrailers
-            .filter((trailer: string) => trailer && trailer.trim() !== '')
-            .map((trailerType: string) => ({
-              vehicleSubType: trailerType
-            })) : []
-        },
+        vehicleConfiguration: buildVehicleConfiguration(permitData),
         
         // Legacy fields (keeping for backward compatibility)
         commodities: [], // Empty array for now
@@ -283,30 +293,7 @@ function App() {
         },
         
         // Vehicle Configuration
-        vehicleConfiguration: {
-          overallLength: permitData.overallLength ? parseFloat(permitData.overallLength) : null,
-          overallWidth: permitData.overallWidth ? parseFloat(permitData.overallWidth) : null,
-          overallHeight: permitData.overallHeight ? parseFloat(permitData.overallHeight) : null,
-          frontProjection: permitData.frontProjection ? parseFloat(permitData.frontProjection) : null,
-          rearProjection: permitData.rearProjection ? parseFloat(permitData.rearProjection) : null,
-          loadedGVW: permitData.loadedGVW ? parseFloat(permitData.loadedGVW) : null,
-          netWeight: permitData.netWeight ? parseFloat(permitData.netWeight) : null,
-          axleConfiguration: permitData.axleConfigurations ? permitData.axleConfigurations
-            .map((axleConfig: any) => ({
-              numberOfAxles: axleConfig.numberOfAxles ? parseInt(axleConfig.numberOfAxles) : null,
-              axleSpread: axleConfig.axleSpread ? parseFloat(axleConfig.axleSpread) : null,
-              interaxleSpacing: axleConfig.interaxleSpacing ? parseFloat(axleConfig.interaxleSpacing) : null,
-              axleUnitWeight: axleConfig.axleUnitWeight ? parseFloat(axleConfig.axleUnitWeight) : null,
-              numberOfTires: axleConfig.numberOfTires ? parseInt(axleConfig.numberOfTires) : null,
-              tireSize: axleConfig.tireSize ? parseFloat(axleConfig.tireSize) : null
-            }))
-            .filter((axleConfig: any) => axleConfig.numberOfAxles !== null) : [],
-          trailers: permitData.selectedTrailers ? permitData.selectedTrailers
-            .filter((trailer: string) => trailer && trailer.trim() !== '')
-            .map((trailerType: string) => ({
-              vehicleSubType: trailerType
-            })) : []
-        },
+        vehicleConfiguration: buildVehicleConfiguration(permitData),
         
         // Legacy fields (keeping for backward compatibility)
         commodities: [], // Empty array for now
@@ -421,12 +408,13 @@ function App() {
               </label>
             </div>
             
-            <PermitForm 
-              onSubmit={handleValidation} 
-              validationResults={validationResults} 
-              policy={policy}
-              permitApplication={permitApplication}
-            />
+                         <PermitForm 
+               onSubmit={handleValidation} 
+               validationResults={validationResults} 
+               policy={policy}
+               permitApplication={permitApplication}
+               onVehicleConfigVisibilityChange={setVehicleConfigVisible}
+             />
           </div>
         ) : (
           <div className="font-test-container">
