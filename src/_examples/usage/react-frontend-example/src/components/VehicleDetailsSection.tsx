@@ -2,6 +2,7 @@ import React from 'react'
 import { useWatch } from 'react-hook-form'
 import FormInput from './FormInput'
 import FormSelect from './FormSelect'
+import { COUNTRY_OPTIONS, PROVINCE_OPTIONS, US_STATE_OPTIONS, VEHICLE_TYPE_OPTIONS } from '../constants'
 
 interface VehicleDetailsSectionProps {
   isCollapsed: boolean
@@ -20,33 +21,22 @@ const VehicleDetailsSection: React.FC<VehicleDetailsSectionProps> = ({
     name: 'vehicleCountryCode'
   })
 
-  const vehicleTypeOptions: Array<[string, string]> = [
-    ['powerUnit', 'Power Unit'],
-    ['trailer', 'Trailer']
-  ]
+  // Get appropriate state/province options based on country
+  const getVehicleStateProvinceOptions = (countryCode: string) => {
+    switch (countryCode) {
+      case 'CA':
+        return PROVINCE_OPTIONS
+      case 'US':
+        return US_STATE_OPTIONS
+      default:
+        return []
+    }
+  }
 
-  const vehicleCountryOptions: Array<[string, string]> = [
-    ['CA', 'Canada'],
-    ['US', 'United States'],
-    ['MX', 'Mexico'],
-    ['XX', 'Other']
-  ]
-
-  const vehicleProvinceOptions: Array<[string, string]> = [
-    ['BC', 'British Columbia'],
-    ['AB', 'Alberta'],
-    ['SK', 'Saskatchewan'],
-    ['MB', 'Manitoba'],
-    ['ON', 'Ontario'],
-    ['QC', 'Quebec'],
-    ['NB', 'New Brunswick'],
-    ['NS', 'Nova Scotia'],
-    ['PE', 'Prince Edward Island'],
-    ['NL', 'Newfoundland and Labrador'],
-    ['NT', 'Northwest Territories'],
-    ['NU', 'Nunavut'],
-    ['YT', 'Yukon']
-  ]
+  const vehicleStateProvinceOptions = getVehicleStateProvinceOptions(watchedVehicleCountryCode)
+  const vehicleStateProvinceLabel = watchedVehicleCountryCode === 'CA' ? 'Vehicle Province' : 
+                                   watchedVehicleCountryCode === 'US' ? 'Vehicle State' : 
+                                   'Vehicle Province or State'
 
   return (
     <div className="form-section">
@@ -64,7 +54,7 @@ const VehicleDetailsSection: React.FC<VehicleDetailsSectionProps> = ({
           <FormSelect
             name="vehicleType"
             label="Vehicle Type"
-            options={vehicleTypeOptions}
+            options={VEHICLE_TYPE_OPTIONS}
             placeholder="Select a vehicle type..."
             required
           />
@@ -98,19 +88,19 @@ const VehicleDetailsSection: React.FC<VehicleDetailsSectionProps> = ({
           <FormInput
             name="make"
             label="Make"
-            placeholder="Enter vehicle make (optional)"
+            placeholder="Enter make (optional)"
           />
 
           <FormInput
             name="year"
             label="Year"
             type="number"
-            placeholder="Enter vehicle year (optional)"
+            placeholder="Enter year (optional)"
           />
 
           <FormInput
             name="licensedGVW"
-            label="Licensed GVW"
+            label="Licensed GVW (kg)"
             type="number"
             placeholder="Enter licensed GVW (optional)"
           />
@@ -118,30 +108,30 @@ const VehicleDetailsSection: React.FC<VehicleDetailsSectionProps> = ({
           <FormSelect
             name="vehicleCountryCode"
             label="Vehicle Country"
-            options={vehicleCountryOptions}
+            options={COUNTRY_OPTIONS}
             placeholder="Select a country..."
             required
           />
 
-          {watchedVehicleCountryCode && watchedVehicleCountryCode !== 'MX' && watchedVehicleCountryCode !== 'XX' && (
+          {watchedVehicleCountryCode && watchedVehicleCountryCode !== 'MX' && watchedVehicleCountryCode !== 'XX' && vehicleStateProvinceOptions.length > 0 && (
             <FormSelect
               name="vehicleProvinceCode"
-              label="Vehicle Province"
-              options={vehicleProvinceOptions}
-              placeholder="Select a province..."
+              label={vehicleStateProvinceLabel}
+              options={vehicleStateProvinceOptions}
+              placeholder={`Select a ${vehicleStateProvinceLabel.toLowerCase().replace('vehicle ', '')}...`}
             />
           )}
 
           <FormInput
             name="loadedGVW"
-            label="Loaded GVW"
+            label="Loaded GVW (kg)"
             type="number"
             placeholder="Enter loaded GVW (optional)"
           />
 
           <FormInput
             name="netWeight"
-            label="Net Weight"
+            label="Net Weight (kg)"
             type="number"
             placeholder="Enter net weight (optional)"
           />

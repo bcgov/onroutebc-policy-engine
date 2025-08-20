@@ -2,6 +2,7 @@ import React from 'react'
 import { useWatch } from 'react-hook-form'
 import FormInput from './FormInput'
 import FormSelect from './FormSelect'
+import { COUNTRY_OPTIONS, PROVINCE_OPTIONS, US_STATE_OPTIONS } from '../constants'
 
 interface MailingAddressSectionProps {
   isCollapsed: boolean
@@ -18,28 +19,22 @@ const MailingAddressSection: React.FC<MailingAddressSectionProps> = ({
     name: 'countryCode'
   })
 
-  const countryOptions: Array<[string, string]> = [
-    ['CA', 'Canada'],
-    ['US', 'United States'],
-    ['MX', 'Mexico'],
-    ['XX', 'Other']
-  ]
+  // Get appropriate state/province options based on country
+  const getStateProvinceOptions = (countryCode: string) => {
+    switch (countryCode) {
+      case 'CA':
+        return PROVINCE_OPTIONS
+      case 'US':
+        return US_STATE_OPTIONS
+      default:
+        return []
+    }
+  }
 
-  const provinceOptions: Array<[string, string]> = [
-    ['BC', 'British Columbia'],
-    ['AB', 'Alberta'],
-    ['SK', 'Saskatchewan'],
-    ['MB', 'Manitoba'],
-    ['ON', 'Ontario'],
-    ['QC', 'Quebec'],
-    ['NB', 'New Brunswick'],
-    ['NS', 'Nova Scotia'],
-    ['PE', 'Prince Edward Island'],
-    ['NL', 'Newfoundland and Labrador'],
-    ['NT', 'Northwest Territories'],
-    ['NU', 'Nunavut'],
-    ['YT', 'Yukon']
-  ]
+  const stateProvinceOptions = getStateProvinceOptions(watchedCountryCode)
+  const stateProvinceLabel = watchedCountryCode === 'CA' ? 'Province' : 
+                            watchedCountryCode === 'US' ? 'State' : 
+                            'Province or State'
 
   return (
     <div className="form-section">
@@ -77,17 +72,17 @@ const MailingAddressSection: React.FC<MailingAddressSectionProps> = ({
           <FormSelect
             name="countryCode"
             label="Country"
-            options={countryOptions}
+            options={COUNTRY_OPTIONS}
             placeholder="Select a country..."
             required
           />
 
-          {watchedCountryCode && watchedCountryCode !== 'MX' && watchedCountryCode !== 'XX' && (
+          {watchedCountryCode && watchedCountryCode !== 'MX' && watchedCountryCode !== 'XX' && stateProvinceOptions.length > 0 && (
             <FormSelect
               name="provinceCode"
-              label="Province or State"
-              options={provinceOptions}
-              placeholder="Select a province..."
+              label={stateProvinceLabel}
+              options={stateProvinceOptions}
+              placeholder={`Select a ${stateProvinceLabel.toLowerCase()}...`}
               required
             />
           )}
