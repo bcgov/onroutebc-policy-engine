@@ -1,35 +1,15 @@
 import React from 'react'
-
-interface TripDetailsData {
-  permitDuration: number
-  startDate: string
-  expiryDate: string
-  origin: string
-  destination: string
-  commodity: string
-  description: string
-  applicationNotes: string
-  thirdPartyLiability: string
-  conditionalLicensingFee: string
-}
+import FormInput from './FormInput'
 
 interface TripDetailsSectionProps {
-  data: TripDetailsData
-  onChange: (name: string, value: string) => void
   isCollapsed: boolean
   onToggleCollapse: () => void
 }
 
 const TripDetailsSection: React.FC<TripDetailsSectionProps> = ({
-  data,
-  onChange,
   isCollapsed,
   onToggleCollapse
 }) => {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    onChange(e.target.name, e.target.value)
-  }
-
   return (
     <div className="form-section">
       <h3 
@@ -43,127 +23,62 @@ const TripDetailsSection: React.FC<TripDetailsSectionProps> = ({
       </h3>
       {!isCollapsed && (
         <>
-          <div className="form-group">
-            <label htmlFor="permitDuration">Permit Duration (days):</label>
-            <input
-              type="number"
-              id="permitDuration"
-              name="permitDuration"
-              value={data.permitDuration}
-              onChange={handleChange}
-              min="1"
-            />
-          </div>
+          <FormInput
+            name="permitDuration"
+            label="Permit Duration (days)"
+            type="number"
+            required
+          />
 
-          <div className="form-group">
-            <label htmlFor="startDate">Start Date:</label>
-            <input
-              type="date"
-              id="startDate"
-              name="startDate"
-              value={data.startDate}
-              onChange={handleChange}
-            />
-          </div>
+          <FormInput
+            name="startDate"
+            label="Start Date"
+            type="date"
+            required
+          />
 
-          <div className="form-group">
-            <label htmlFor="expiryDate">Expiry Date:</label>
-            <input
-              type="date"
-              id="expiryDate"
-              name="expiryDate"
-              value={data.expiryDate}
-              onChange={handleChange}
-            />
-          </div>
+          <FormInput
+            name="expiryDate"
+            label="Expiry Date"
+            type="date"
+            required
+          />
 
-          <div className="form-group">
-            <label htmlFor="origin">Origin:</label>
-            <input
-              type="text"
-              id="origin"
-              name="origin"
-              value={data.origin}
-              onChange={handleChange}
-              placeholder="Enter origin location"
-            />
-          </div>
+          <FormInput
+            name="origin"
+            label="Origin"
+            placeholder="Enter origin location"
+          />
 
-          <div className="form-group">
-            <label htmlFor="destination">Destination:</label>
-            <input
-              type="text"
-              id="destination"
-              name="destination"
-              value={data.destination}
-              onChange={handleChange}
-              placeholder="Enter destination location"
-            />
-          </div>
+          <FormInput
+            name="destination"
+            label="Destination"
+            placeholder="Enter destination location"
+          />
 
-          <div className="form-group">
-            <label htmlFor="commodity">Commodity:</label>
-            <select
-              id="commodity"
-              name="commodity"
-              value={data.commodity}
-              onChange={handleChange}
-            >
-              <option value="EMPTYXX">Empty</option>
-              <option value="GENERAL">General Freight</option>
-              <option value="HEAVY">Heavy Equipment</option>
-            </select>
-          </div>
+          <FormInput
+            name="description"
+            label="Description"
+            placeholder="Enter description (optional)"
+          />
 
-          <div className="form-group">
-            <label htmlFor="description">Description:</label>
-            <textarea
-              id="description"
-              name="description"
-              value={data.description}
-              onChange={handleChange}
-              placeholder="Describe the load being transported"
-              rows={3}
-            />
-          </div>
+          <FormInput
+            name="applicationNotes"
+            label="Application Notes"
+            placeholder="Enter application notes (optional)"
+          />
 
-          <div className="form-group">
-            <label htmlFor="applicationNotes">Application Notes:</label>
-            <textarea
-              id="applicationNotes"
-              name="applicationNotes"
-              value={data.applicationNotes}
-              onChange={handleChange}
-              placeholder="Enter application notes"
-              rows={3}
-            />
-          </div>
+          <FormInput
+            name="thirdPartyLiability"
+            label="Third Party Liability"
+            placeholder="Enter third party liability (optional)"
+          />
 
-          <div className="form-group">
-            <label htmlFor="thirdPartyLiability">Third Party Liability:</label>
-            <select
-              id="thirdPartyLiability"
-              name="thirdPartyLiability"
-              value={data.thirdPartyLiability}
-              onChange={handleChange}
-            >
-              <option value="">Select a third party liability option...</option>
-              <option value="GENERAL_GOODS">General Goods</option>
-              <option value="DANGEROUS_GOODS">Dangerous Goods</option>
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="conditionalLicensingFee">Conditional Licensing Fee:</label>
-            <input
-              type="text"
-              id="conditionalLicensingFee"
-              name="conditionalLicensingFee"
-              value={data.conditionalLicensingFee}
-              onChange={handleChange}
-              placeholder="Enter conditional licensing fee"
-            />
-          </div>
+          <FormInput
+            name="conditionalLicensingFee"
+            label="Conditional Licensing Fee"
+            placeholder="Enter conditional licensing fee (optional)"
+          />
         </>
       )}
     </div>
@@ -171,4 +86,3 @@ const TripDetailsSection: React.FC<TripDetailsSectionProps> = ({
 }
 
 export default TripDetailsSection
-export type { TripDetailsData }

@@ -1,28 +1,15 @@
 import React from 'react'
-
-interface CompanyInformationData {
-  companyName: string
-  doingBusinessAs: string
-  clientNumber: string
-}
+import FormInput from './FormInput'
 
 interface CompanyInformationSectionProps {
-  data: CompanyInformationData
-  onChange: (name: string, value: string) => void
   isCollapsed: boolean
   onToggleCollapse: () => void
 }
 
 const CompanyInformationSection: React.FC<CompanyInformationSectionProps> = ({
-  data,
-  onChange,
   isCollapsed,
   onToggleCollapse
 }) => {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.name, e.target.value)
-  }
-
   return (
     <div className="form-section">
       <h3 
@@ -36,41 +23,25 @@ const CompanyInformationSection: React.FC<CompanyInformationSectionProps> = ({
       </h3>
       {!isCollapsed && (
         <>
-          <div className="form-group">
-            <label htmlFor="companyName">Company Name:</label>
-            <input
-              type="text"
-              id="companyName"
-              name="companyName"
-              value={data.companyName}
-              onChange={handleChange}
-              placeholder="Enter company name"
-            />
-          </div>
+          <FormInput
+            name="companyName"
+            label="Company Name"
+            placeholder="Enter company name"
+            required
+          />
 
-          <div className="form-group">
-            <label htmlFor="doingBusinessAs">Doing Business As:</label>
-            <input
-              type="text"
-              id="doingBusinessAs"
-              name="doingBusinessAs"
-              value={data.doingBusinessAs}
-              onChange={handleChange}
-              placeholder="Enter DBA name (optional)"
-            />
-          </div>
+          <FormInput
+            name="doingBusinessAs"
+            label="Doing Business As"
+            placeholder="Enter DBA name (optional)"
+          />
 
-          <div className="form-group">
-            <label htmlFor="clientNumber">Client Number:</label>
-            <input
-              type="text"
-              id="clientNumber"
-              name="clientNumber"
-              value={data.clientNumber}
-              onChange={handleChange}
-              placeholder="Enter client number"
-            />
-          </div>
+          <FormInput
+            name="clientNumber"
+            label="Client Number"
+            placeholder="Enter client number"
+            required
+          />
         </>
       )}
     </div>
@@ -78,4 +49,3 @@ const CompanyInformationSection: React.FC<CompanyInformationSectionProps> = ({
 }
 
 export default CompanyInformationSection
-export type { CompanyInformationData }

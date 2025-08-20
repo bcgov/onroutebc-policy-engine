@@ -1,30 +1,45 @@
 import React from 'react'
-
-interface MailingAddressData {
-  addressLine1: string
-  addressLine2: string
-  city: string
-  provinceCode: string
-  countryCode: string
-  postalCode: string
-}
+import { useWatch } from 'react-hook-form'
+import FormInput from './FormInput'
+import FormSelect from './FormSelect'
 
 interface MailingAddressSectionProps {
-  data: MailingAddressData
-  onChange: (name: string, value: string) => void
   isCollapsed: boolean
   onToggleCollapse: () => void
 }
 
 const MailingAddressSection: React.FC<MailingAddressSectionProps> = ({
-  data,
-  onChange,
   isCollapsed,
   onToggleCollapse
 }) => {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    onChange(e.target.name, e.target.value)
-  }
+  const { control } = useWatch()
+  const watchedCountryCode = useWatch({
+    control,
+    name: 'countryCode'
+  })
+
+  const countryOptions: Array<[string, string]> = [
+    ['CA', 'Canada'],
+    ['US', 'United States'],
+    ['MX', 'Mexico'],
+    ['XX', 'Other']
+  ]
+
+  const provinceOptions: Array<[string, string]> = [
+    ['BC', 'British Columbia'],
+    ['AB', 'Alberta'],
+    ['SK', 'Saskatchewan'],
+    ['MB', 'Manitoba'],
+    ['ON', 'Ontario'],
+    ['QC', 'Quebec'],
+    ['NB', 'New Brunswick'],
+    ['NS', 'Nova Scotia'],
+    ['PE', 'Prince Edward Island'],
+    ['NL', 'Newfoundland and Labrador'],
+    ['NT', 'Northwest Territories'],
+    ['NU', 'Nunavut'],
+    ['YT', 'Yukon']
+  ]
 
   return (
     <div className="form-section">
@@ -39,83 +54,50 @@ const MailingAddressSection: React.FC<MailingAddressSectionProps> = ({
       </h3>
       {!isCollapsed && (
         <>
-          <div className="form-group">
-            <label htmlFor="addressLine1">Address Line 1:</label>
-            <input
-              type="text"
-              id="addressLine1"
-              name="addressLine1"
-              value={data.addressLine1}
-              onChange={handleChange}
-              placeholder="Enter address line 1"
+          <FormInput
+            name="addressLine1"
+            label="Address Line 1"
+            placeholder="Enter address line 1"
+            required
+          />
+
+          <FormInput
+            name="addressLine2"
+            label="Address Line 2"
+            placeholder="Enter address line 2 (optional)"
+          />
+
+          <FormInput
+            name="city"
+            label="City"
+            placeholder="Enter city"
+            required
+          />
+
+          <FormSelect
+            name="countryCode"
+            label="Country"
+            options={countryOptions}
+            placeholder="Select a country..."
+            required
+          />
+
+          {watchedCountryCode && watchedCountryCode !== 'MX' && watchedCountryCode !== 'XX' && (
+            <FormSelect
+              name="provinceCode"
+              label="Province or State"
+              options={provinceOptions}
+              placeholder="Select a province..."
+              required
             />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="addressLine2">Address Line 2:</label>
-            <input
-              type="text"
-              id="addressLine2"
-              name="addressLine2"
-              value={data.addressLine2}
-              onChange={handleChange}
-              placeholder="Enter address line 2 (optional)"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="city">City:</label>
-            <input
-              type="text"
-              id="city"
-              name="city"
-              value={data.city}
-              onChange={handleChange}
-              placeholder="Enter city"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="countryCode">Country:</label>
-            <select
-              id="countryCode"
-              name="countryCode"
-              value={data.countryCode}
-              onChange={handleChange}
-            >
-              <option value="">Select a country...</option>
-              <option value="CA">Canada</option>
-              <option value="US">United States</option>
-              <option value="MX">Mexico</option>
-              <option value="XX">Other</option>
-            </select>
-          </div>
-
-          {data.countryCode !== 'MX' && data.countryCode !== 'XX' && (
-            <div className="form-group">
-              <label htmlFor="provinceCode">Province or State:</label>
-              <input
-                type="text"
-                id="provinceCode"
-                name="provinceCode"
-                value={data.provinceCode}
-                onChange={handleChange}
-                placeholder="Enter province or state"
-              />
-            </div>
           )}
 
-          <div className="form-group">
-            <label htmlFor="postalCode">Postal Code:</label>
-            <input
-              type="text"
-              id="postalCode"
-              name="postalCode"
-              value={data.postalCode}
-              onChange={handleChange}
-              placeholder="Enter postal code"
-            />
-          </div>
+          <FormInput
+            name="postalCode"
+            label="Postal Code"
+            placeholder="Enter postal code"
+            required
+          />
         </>
       )}
     </div>
@@ -123,4 +105,3 @@ const MailingAddressSection: React.FC<MailingAddressSectionProps> = ({
 }
 
 export default MailingAddressSection
-export type { MailingAddressData }

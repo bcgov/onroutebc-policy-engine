@@ -1,38 +1,52 @@
 import React from 'react'
-
-interface VehicleDetailsData {
-  vehicleType: string
-  vehicleSubType: string
-  unitNumber: string
-  vin: string
-  plate: string
-  make: string
-  year: string
-  licensedGVW: string
-  vehicleCountryCode: string
-  vehicleProvinceCode: string
-  loadedGVW: string
-  netWeight: string
-}
+import { useWatch } from 'react-hook-form'
+import FormInput from './FormInput'
+import FormSelect from './FormSelect'
 
 interface VehicleDetailsSectionProps {
-  data: VehicleDetailsData
-  onChange: (name: string, value: string) => void
   isCollapsed: boolean
   onToggleCollapse: () => void
   vehicleSubTypes: Array<[string, string]>
 }
 
 const VehicleDetailsSection: React.FC<VehicleDetailsSectionProps> = ({
-  data,
-  onChange,
   isCollapsed,
   onToggleCollapse,
   vehicleSubTypes
 }) => {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    onChange(e.target.name, e.target.value)
-  }
+  const { control } = useWatch()
+  const watchedVehicleCountryCode = useWatch({
+    control,
+    name: 'vehicleCountryCode'
+  })
+
+  const vehicleTypeOptions: Array<[string, string]> = [
+    ['powerUnit', 'Power Unit'],
+    ['trailer', 'Trailer']
+  ]
+
+  const vehicleCountryOptions: Array<[string, string]> = [
+    ['CA', 'Canada'],
+    ['US', 'United States'],
+    ['MX', 'Mexico'],
+    ['XX', 'Other']
+  ]
+
+  const vehicleProvinceOptions: Array<[string, string]> = [
+    ['BC', 'British Columbia'],
+    ['AB', 'Alberta'],
+    ['SK', 'Saskatchewan'],
+    ['MB', 'Manitoba'],
+    ['ON', 'Ontario'],
+    ['QC', 'Quebec'],
+    ['NB', 'New Brunswick'],
+    ['NS', 'Nova Scotia'],
+    ['PE', 'Prince Edward Island'],
+    ['NL', 'Newfoundland and Labrador'],
+    ['NT', 'Northwest Territories'],
+    ['NU', 'Nunavut'],
+    ['YT', 'Yukon']
+  ]
 
   return (
     <div className="form-section">
@@ -47,165 +61,90 @@ const VehicleDetailsSection: React.FC<VehicleDetailsSectionProps> = ({
       </h3>
       {!isCollapsed && (
         <>
-          <div className="form-group">
-            <label htmlFor="vehicleType">Vehicle Type:</label>
-            <select
-              id="vehicleType"
-              name="vehicleType"
-              value={data.vehicleType}
-              onChange={handleChange}
-            >
-              <option value="">Select a vehicle type...</option>
-              <option value="powerUnit">Power Unit</option>
-              <option value="trailer">Trailer</option>
-            </select>
-          </div>
+          <FormSelect
+            name="vehicleType"
+            label="Vehicle Type"
+            options={vehicleTypeOptions}
+            placeholder="Select a vehicle type..."
+            required
+          />
 
-          <div className="form-group">
-            <label htmlFor="vehicleSubType">Vehicle Sub-Type:</label>
-            <select
-              id="vehicleSubType"
-              name="vehicleSubType"
-              value={data.vehicleSubType}
-              onChange={handleChange}
-            >
-              <option value="">Select a vehicle sub-type...</option>
-              {vehicleSubTypes.map(([id, name]) => (
-                <option key={id} value={id}>
-                  {name}
-                </option>
-              ))}
-            </select>
-          </div>
+          <FormSelect
+            name="vehicleSubType"
+            label="Vehicle Sub-Type"
+            options={vehicleSubTypes}
+            placeholder="Select a vehicle sub-type..."
+            required
+          />
 
-          <div className="form-group">
-            <label htmlFor="unitNumber">Unit Number:</label>
-            <input
-              type="text"
-              id="unitNumber"
-              name="unitNumber"
-              value={data.unitNumber}
-              onChange={handleChange}
-              placeholder="Enter unit number (optional)"
+          <FormInput
+            name="unitNumber"
+            label="Unit Number"
+            placeholder="Enter unit number (optional)"
+          />
+
+          <FormInput
+            name="vin"
+            label="VIN"
+            placeholder="Enter VIN (optional)"
+          />
+
+          <FormInput
+            name="plate"
+            label="Plate"
+            placeholder="Enter plate number (optional)"
+          />
+
+          <FormInput
+            name="make"
+            label="Make"
+            placeholder="Enter vehicle make (optional)"
+          />
+
+          <FormInput
+            name="year"
+            label="Year"
+            type="number"
+            placeholder="Enter vehicle year (optional)"
+          />
+
+          <FormInput
+            name="licensedGVW"
+            label="Licensed GVW"
+            type="number"
+            placeholder="Enter licensed GVW (optional)"
+          />
+
+          <FormSelect
+            name="vehicleCountryCode"
+            label="Vehicle Country"
+            options={vehicleCountryOptions}
+            placeholder="Select a country..."
+            required
+          />
+
+          {watchedVehicleCountryCode && watchedVehicleCountryCode !== 'MX' && watchedVehicleCountryCode !== 'XX' && (
+            <FormSelect
+              name="vehicleProvinceCode"
+              label="Vehicle Province"
+              options={vehicleProvinceOptions}
+              placeholder="Select a province..."
             />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="vin">VIN:</label>
-            <input
-              type="text"
-              id="vin"
-              name="vin"
-              value={data.vin}
-              onChange={handleChange}
-              placeholder="Enter VIN"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="plate">License Plate:</label>
-            <input
-              type="text"
-              id="plate"
-              name="plate"
-              value={data.plate}
-              onChange={handleChange}
-              placeholder="Enter license plate"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="make">Make:</label>
-            <input
-              type="text"
-              id="make"
-              name="make"
-              value={data.make}
-              onChange={handleChange}
-              placeholder="Enter vehicle make (optional)"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="year">Year:</label>
-            <input
-              type="number"
-              id="year"
-              name="year"
-              value={data.year}
-              onChange={handleChange}
-              placeholder="Enter vehicle year (optional)"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="licensedGVW">Licensed GVW:</label>
-            <input
-              type="number"
-              id="licensedGVW"
-              name="licensedGVW"
-              value={data.licensedGVW}
-              onChange={handleChange}
-              placeholder="Enter licensed GVW (optional)"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="loadedGVW">Loaded GVW (kg):</label>
-            <input
-              type="number"
-              id="loadedGVW"
-              name="loadedGVW"
-              value={data.loadedGVW}
-              onChange={handleChange}
-              placeholder="Enter loaded GVW in kilograms"
-              min="0"
-              step="0.01"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="netWeight">Net Weight (kg):</label>
-            <input
-              type="number"
-              id="netWeight"
-              name="netWeight"
-              value={data.netWeight}
-              onChange={handleChange}
-              placeholder="Enter net weight in kilograms"
-              min="0"
-              step="0.01"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="vehicleCountryCode">Country of Registration:</label>
-            <select
-              id="vehicleCountryCode"
-              name="vehicleCountryCode"
-              value={data.vehicleCountryCode}
-              onChange={handleChange}
-            >
-              <option value="CA">Canada</option>
-              <option value="US">United States</option>
-              <option value="MX">Mexico</option>
-              <option value="XX">Other</option>
-            </select>
-          </div>
-
-          {data.vehicleCountryCode !== 'MX' && data.vehicleCountryCode !== 'XX' && (
-            <div className="form-group">
-              <label htmlFor="vehicleProvinceCode">Province / State of Registration:</label>
-              <input
-                type="text"
-                id="vehicleProvinceCode"
-                name="vehicleProvinceCode"
-                value={data.vehicleProvinceCode}
-                onChange={handleChange}
-                placeholder="Enter province or state"
-              />
-            </div>
           )}
+
+          <FormInput
+            name="loadedGVW"
+            label="Loaded GVW"
+            type="number"
+            placeholder="Enter loaded GVW (optional)"
+          />
+
+          <FormInput
+            name="netWeight"
+            label="Net Weight"
+            type="number"
+            placeholder="Enter net weight (optional)"
+          />
         </>
       )}
     </div>
@@ -213,4 +152,3 @@ const VehicleDetailsSection: React.FC<VehicleDetailsSectionProps> = ({
 }
 
 export default VehicleDetailsSection
-export type { VehicleDetailsData }
