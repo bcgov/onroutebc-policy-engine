@@ -1,6 +1,6 @@
 # Form Hooks Architecture
 
-This directory contains the refactored form hooks that have been split from the original monolithic `usePermitForm` hook into smaller, focused hooks for better maintainability and separation of concerns.
+This directory contains focused form hooks for maintainability and separation of concerns.
 
 ## Hook Structure
 
@@ -86,20 +86,3 @@ const MyComponent = () => {
   )
 }
 ```
-
-## Migration from Original Hook
-
-The original `usePermitForm` hook was 677 lines long and handled multiple responsibilities. The new structure:
-
-- **Reduced complexity**: Each hook is focused on a single concern
-- **Improved readability**: Easier to understand what each hook does
-- **Better error handling**: Isolated error handling per hook
-- **Enhanced debugging**: Easier to trace issues to specific hooks
-
-## Future Improvements
-
-1. **Add memoization**: Use `useMemo` and `useCallback` for expensive operations
-2. **Error boundaries**: Add error boundaries for each hook
-3. **Loading states**: Add loading states for async operations
-4. **Caching**: Implement caching for policy data
-5. **Validation**: Add more granular validation hooks

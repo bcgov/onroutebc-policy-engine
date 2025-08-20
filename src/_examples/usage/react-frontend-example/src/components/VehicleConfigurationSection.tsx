@@ -21,6 +21,7 @@ const VehicleConfigurationSection: React.FC<VehicleConfigurationSectionProps> = 
   isCollapsed,
   onToggleCollapse,
   showSizeDimensions,
+  showWeightDimensions,
   selectedTrailers,
   onTrailerChange,
   onRemoveTrailer,
@@ -164,17 +165,19 @@ const VehicleConfigurationSection: React.FC<VehicleConfigurationSectionProps> = 
           </div>
 
           {/* Axle Configuration Sub-section */}
-          <div style={{ marginBottom: '1rem', padding: '1rem', backgroundColor: '#f8f9fa', borderRadius: '4px', border: '1px solid #e9ecef' }}>
-            <h4 style={{ margin: '0 0 1rem 0', fontSize: '14px', fontWeight: '600', color: '#495057' }}>Axle Configuration</h4>
-            {axleConfigurations.map((axleConfiguration, axleIndex) => (
-              <AxleGroup
-                key={axleIndex}
-                axleIndex={axleIndex}
-                axleConfiguration={axleConfiguration}
-                onAxleConfigurationChange={onAxleConfigurationChange}
-              />
-            ))}
-          </div>
+          {showWeightDimensions && (
+            <div style={{ marginBottom: '1rem', padding: '1rem', backgroundColor: '#f8f9fa', borderRadius: '4px', border: '1px solid #e9ecef' }}>
+              <h4 style={{ margin: '0 0 1rem 0', fontSize: '14px', fontWeight: '600', color: '#495057' }}>Axle Configuration</h4>
+              {axleConfigurations.map((axleConfiguration, axleIndex) => (
+                <AxleGroup
+                  key={axleIndex}
+                  axleIndex={axleIndex}
+                  axleConfiguration={axleConfiguration}
+                  onAxleConfigurationChange={onAxleConfigurationChange}
+                />
+              ))}
+            </div>
+          )}
         </>
       )}
     </div>
