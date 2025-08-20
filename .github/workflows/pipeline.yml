@@ -30,6 +30,7 @@ jobs:
           token: ${{ github.token }}
           branch: main
           noNewCommitBehavior: warn
+          noVersionBumpBehavior: warn
 
       - name: Skip Deploy if No Version Bump
         if: ${{ steps.semver.outputs.next == '' }}
