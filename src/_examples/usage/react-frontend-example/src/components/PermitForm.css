@@ -1,0 +1,238 @@
+.permit-form {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: sans-serif;
+  font-size: 14px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: calc(100vh - 110px);
+  height: calc(100vh - 110px);
+}
+
+.permit-form .form-content-wrapper {
+  display: flex;
+  gap: 2rem;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Validation method selector styling within PermitForm */
+.permit-form .validation-method-selector {
+  background: #f8f9fa;
+  padding: 15px 20px;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.permit-form .validation-method-selector label {
+  margin: 0 10px;
+  font-size: 14px;
+  color: #495057;
+}
+
+.permit-form .left-column {
+  flex: 1 1 50%;
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  min-width: 0;
+  max-width: 50%;
+  height: 100%;
+  position: relative;
+}
+
+.permit-form .left-column form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+.permit-form .form-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 1rem;
+  padding-bottom: 80px; /* Space for the fixed button */
+}
+
+.permit-form .form-actions {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 1rem;
+  background: white;
+  padding: 1rem 0;
+  border-top: 3px solid #007bff;
+  text-align: center;
+  z-index: 10;
+}
+
+.permit-form .right-column {
+  flex: 1 1 50%;
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  min-width: 0;
+  max-width: 50%;
+  height: 100%;
+  overflow-y: auto;
+  padding-right: 1rem;
+  position: relative;
+}
+
+.permit-form h2 {
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
+  font-size: 2rem;
+}
+
+/* Form validation styles */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-group label .required {
+  color: #dc3545;
+  margin-left: 0.25rem;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.form-group input.error,
+.form-group select.error {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
+}
+
+.error-message {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: #dc3545;
+}
+
+/* Form actions */
+.form-actions {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.submit-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.submit-btn:hover {
+  background-color: #0056b3;
+}
+
+.submit-btn:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Section styles */
+.form-section {
+  margin-bottom: 0.5rem;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.section-header {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  margin: 0;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.2s ease;
+}
+
+.section-header:hover {
+  background-color: #e9ecef;
+}
+
+.section-header.expanded {
+  background-color: #e9ecef;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.section-arrow {
+  transition: transform 0.2s ease;
+}
+
+.section-arrow.collapsed {
+  transform: rotate(-90deg);
+}
+
+.section-arrow.expanded {
+  transform: rotate(0deg);
+}
+
+.form-content {
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .permit-form {
+    flex-direction: column;
+  }
+  
+  .left-column,
+  .right-column {
+    width: 100%;
+  }
+  
+  .form-content {
+    padding: 1rem;
+  }
+}

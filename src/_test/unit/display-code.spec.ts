@@ -540,6 +540,17 @@ describe('Universal display code tests', () => {
     expect(displayCode).toBe('=2U1=MU3U2==MU2U3=MU4+U4===EUMU2U5');
   });
 
+  it('should generate a universal display code for configuration with at least one axle unit exactly 4 axles', async () => {
+    const configuration = ['__INVALID', 'JEEPSRG', 'SEMITRL', 'BOOSTER'];
+    const displayCode = policy.getVehicleDisplayCode(configuration, [
+      ...axleConfig23,
+      ...axleConfig2,
+      ...axleConfig4,
+      ...axleConfig2,
+    ]);
+    expect(displayCode).toBe('=2U1=MU3U2==MU2U3=MU4U4===MU2U5');
+  });
+
   it('should generate a universal display code for axle unit with 7 axles', async () => {
     const configuration = ['TRKTRAC', 'JEEPSRG', 'SEMITRL', 'BOOSTER'];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
