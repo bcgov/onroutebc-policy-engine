@@ -33,11 +33,11 @@ jobs:
           noVersionBumpBehavior: warn
 
       - name: Skip Deploy if No Version Bump
-        if: ${{ steps.semver.outputs.next == '' }}
+        if: ${{ !steps.semver.outputs.next }}
         run: echo "No version bump detected. Skipping deploy."
 
       - name: Injecting Semver Into Package.json
-        if: ${{ steps.semver.outputs.next != '' }}
+        if: ${{ steps.semver.outputs.next }}
         run:  |
           cat package.json | jq '. + { "version": "${{ steps.semver.outputs.next }}" }' | tee package.json
 
@@ -53,13 +53,13 @@ jobs:
       - run: npm test
       
       - name: Publish Package
-        if: ${{ steps.semver.outputs.next != '' }}
+        if: ${{ steps.semver.outputs.next }}
         run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create Release 
-        if: ${{ steps.semver.outputs.next != '' }}
+        if: ${{ steps.semver.outputs.next }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
