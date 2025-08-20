@@ -1,13 +1,13 @@
-import * as yup from 'yup'
+import * as yup from 'yup';
 
 export const permitFormSchema = yup.object({
   permitType: yup.string().required('Permit type is required'),
-  
+
   // Company Information
   companyName: yup.string().required('Company name is required'),
   doingBusinessAs: yup.string().optional().default(''),
   clientNumber: yup.string().required('Client number is required'),
-  
+
   // Contact Details
   firstName: yup.string().required('First name is required'),
   lastName: yup.string().required('Last name is required'),
@@ -15,10 +15,17 @@ export const permitFormSchema = yup.object({
   phone1Extension: yup.string().optional().default(''),
   phone2: yup.string().optional().default(''),
   phone2Extension: yup.string().optional().default(''),
-  email: yup.string().email('Invalid email format').required('Email is required'),
-  additionalEmail: yup.string().email('Invalid email format').optional().default(''),
+  email: yup
+    .string()
+    .email('Invalid email format')
+    .required('Email is required'),
+  additionalEmail: yup
+    .string()
+    .email('Invalid email format')
+    .optional()
+    .default(''),
   fax: yup.string().optional().default(''),
-  
+
   // Mailing Address
   addressLine1: yup.string().required('Address line 1 is required'),
   addressLine2: yup.string().optional().default(''),
@@ -26,7 +33,7 @@ export const permitFormSchema = yup.object({
   provinceCode: yup.string().required('Province is required'),
   countryCode: yup.string().required('Country is required'),
   postalCode: yup.string().required('Postal code is required'),
-  
+
   // Vehicle Details
   vehicleType: yup.string().required('Vehicle type is required'),
   vehicleSubType: yup.string().required('Vehicle sub-type is required'),
@@ -40,9 +47,12 @@ export const permitFormSchema = yup.object({
   vehicleProvinceCode: yup.string().optional().default(''),
   loadedGVW: yup.string().optional().default(''),
   netWeight: yup.string().optional().default(''),
-  
+
   // Trip Details
-  permitDuration: yup.number().min(1, 'Duration must be at least 1').required('Permit duration is required'),
+  permitDuration: yup
+    .number()
+    .min(1, 'Duration must be at least 1')
+    .required('Permit duration is required'),
   startDate: yup.string().required('Start date is required'),
   expiryDate: yup.string().required('Expiry date is required'),
   origin: yup.string().optional().default(''),
@@ -51,14 +61,14 @@ export const permitFormSchema = yup.object({
   applicationNotes: yup.string().optional().default(''),
   thirdPartyLiability: yup.string().optional().default(''),
   conditionalLicensingFee: yup.string().optional().default(''),
-  
+
   // Permitted Route
   highwaySequence: yup.string().optional().default(''),
   routeOrigin: yup.string().optional().default(''),
   routeDestination: yup.string().optional().default(''),
   routeExitPoint: yup.string().optional().default(''),
   routeTotalDistance: yup.string().optional().default(''),
-  
+
   // Vehicle Configuration
   overallLength: yup.string().optional().default(''),
   overallWidth: yup.string().optional().default(''),
@@ -67,23 +77,27 @@ export const permitFormSchema = yup.object({
   rearProjection: yup.string().optional().default(''),
   commodityType: yup.string().optional().default(''),
   loadDescription: yup.string().optional().default(''),
-  
+
   // Legacy fields
   vehicleId: yup.string().optional().default(''),
   saveVehicle: yup.boolean().optional().default(false),
-  
+
   // Additional fields for form submission
   selectedTrailers: yup.array().of(yup.string()).optional().default([]),
-  axleConfigurations: yup.array().of(
-    yup.object({
-      numberOfAxles: yup.string().optional().default(''),
-      axleSpread: yup.string().optional().default(''),
-      interaxleSpacing: yup.string().optional().default(''),
-      axleUnitWeight: yup.string().optional().default(''),
-      numberOfTires: yup.string().optional().default(''),
-      tireSize: yup.string().optional().default('')
-    })
-  ).optional().default([])
-})
+  axleConfigurations: yup
+    .array()
+    .of(
+      yup.object({
+        numberOfAxles: yup.string().optional().default(''),
+        axleSpread: yup.string().optional().default(''),
+        interaxleSpacing: yup.string().optional().default(''),
+        axleUnitWeight: yup.string().optional().default(''),
+        numberOfTires: yup.string().optional().default(''),
+        tireSize: yup.string().optional().default(''),
+      }),
+    )
+    .optional()
+    .default([]),
+});
 
-export type PermitFormSchema = yup.InferType<typeof permitFormSchema>
+export type PermitFormSchema = yup.InferType<typeof permitFormSchema>;

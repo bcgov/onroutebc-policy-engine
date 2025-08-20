@@ -1,27 +1,36 @@
-import { useState } from 'react'
-import { Policy } from 'onroute-policy-engine'
-import { useFormCore } from './useFormCore'
-import { usePolicyData } from './usePolicyData'
-import { useFormSections } from './useFormSections'
-import { useVehicleConfiguration } from './useVehicleConfiguration'
-import { useFormWatchers } from './useFormWatchers'
-import { useSampleData } from './useSampleData'
+import { useState } from 'react';
+import { Policy } from 'onroute-policy-engine';
+import { useFormCore } from './useFormCore';
+import { usePolicyData } from './usePolicyData';
+import { useFormSections } from './useFormSections';
+import { useVehicleConfiguration } from './useVehicleConfiguration';
+import { useFormWatchers } from './useFormWatchers';
+import { useSampleData } from './useSampleData';
 
 interface UsePermitFormProps {
-  policy?: Policy | null
-  onSubmit: (permitData: any) => void
+  policy?: Policy | null;
+  onSubmit: (permitData: any) => void;
 }
 
 export const usePermitForm = ({ policy, onSubmit }: UsePermitFormProps) => {
   // State for UI visibility
-  const [showVehicleConfig, setShowVehicleConfig] = useState(false)
-  const [showSizeDimensions, setShowSizeDimensions] = useState(false)
-  const [showWeightDimensions, setShowWeightDimensions] = useState(false)
-  const [vehicleSubTypes, setVehicleSubTypes] = useState<Array<[string, string]>>([])
+  const [showVehicleConfig, setShowVehicleConfig] = useState(false);
+  const [showSizeDimensions, setShowSizeDimensions] = useState(false);
+  const [showWeightDimensions, setShowWeightDimensions] = useState(false);
+  const [vehicleSubTypes, setVehicleSubTypes] = useState<
+    Array<[string, string]>
+  >([]);
 
   // Initialize hooks
-  const { permitTypes, trailerTypes, commodityTypes, getPermitTypeDefinition, getVehicleSubTypes } = usePolicyData({ policy })
-  const { collapsedSections, setCollapsedSections, toggleSection } = useFormSections()
+  const {
+    permitTypes,
+    trailerTypes,
+    commodityTypes,
+    getPermitTypeDefinition,
+    getVehicleSubTypes,
+  } = usePolicyData({ policy });
+  const { collapsedSections, setCollapsedSections, toggleSection } =
+    useFormSections();
   const {
     selectedTrailers,
     axleConfigurations,
@@ -30,15 +39,15 @@ export const usePermitForm = ({ policy, onSubmit }: UsePermitFormProps) => {
     handleAxleConfigurationChange,
     setTrailersFromData,
     setAxleConfigurationsFromData,
-    resetVehicleConfiguration
-  } = useVehicleConfiguration()
+    resetVehicleConfiguration,
+  } = useVehicleConfiguration();
 
   // Initialize form core
   const { form, expandSectionsWithErrors } = useFormCore({
     onSubmit,
     selectedTrailers,
-    axleConfigurations
-  })
+    axleConfigurations,
+  });
 
   // Initialize sample data loading
   const { loadSampleData } = useSampleData({
@@ -48,8 +57,8 @@ export const usePermitForm = ({ policy, onSubmit }: UsePermitFormProps) => {
     setVehicleSubTypes,
     setTrailersFromData,
     setAxleConfigurationsFromData,
-    resetVehicleConfiguration
-  })
+    resetVehicleConfiguration,
+  });
 
   // Initialize form watchers
   useFormWatchers({
@@ -61,8 +70,8 @@ export const usePermitForm = ({ policy, onSubmit }: UsePermitFormProps) => {
     setShowVehicleConfig,
     setShowSizeDimensions,
     setShowWeightDimensions,
-    loadSampleData
-  })
+    loadSampleData,
+  });
 
   // Override handleSubmit to include error expansion
   const handleFormSubmit = form.handleSubmit(
@@ -70,16 +79,18 @@ export const usePermitForm = ({ policy, onSubmit }: UsePermitFormProps) => {
     (data) => {
       onSubmit({
         ...data,
-        selectedTrailers: selectedTrailers.filter(trailer => trailer && trailer.trim() !== ''),
-        axleConfigurations: axleConfigurations
-      })
+        selectedTrailers: selectedTrailers.filter(
+          (trailer) => trailer && trailer.trim() !== '',
+        ),
+        axleConfigurations: axleConfigurations,
+      });
     },
     // Error callback
     (errors) => {
-      console.log('Form validation errors:', errors)
-      expandSectionsWithErrors(errors, setCollapsedSections)
-    }
-  )
+      console.log('Form validation errors:', errors);
+      expandSectionsWithErrors(errors, setCollapsedSections);
+    },
+  );
 
   return {
     form,
@@ -98,6 +109,6 @@ export const usePermitForm = ({ policy, onSubmit }: UsePermitFormProps) => {
     handleTrailerChange,
     removeTrailer,
     handleAxleConfigurationChange,
-    loadSampleData
-  }
-}
+    loadSampleData,
+  };
+};

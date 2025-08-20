@@ -4,8 +4,8 @@ export const COUNTRY_OPTIONS: Array<[string, string]> = [
   ['CA', 'Canada'],
   ['US', 'United States'],
   ['MX', 'Mexico'],
-  ['XX', 'Other']
-]
+  ['XX', 'Other'],
+];
 
 export const PROVINCE_OPTIONS: Array<[string, string]> = [
   ['BC', 'British Columbia'],
@@ -20,8 +20,8 @@ export const PROVINCE_OPTIONS: Array<[string, string]> = [
   ['NL', 'Newfoundland and Labrador'],
   ['NT', 'Northwest Territories'],
   ['NU', 'Nunavut'],
-  ['YT', 'Yukon']
-]
+  ['YT', 'Yukon'],
+];
 
 export const US_STATE_OPTIONS: Array<[string, string]> = [
   ['AL', 'Alabama'],
@@ -79,23 +79,23 @@ export const US_STATE_OPTIONS: Array<[string, string]> = [
   ['GU', 'Guam'],
   ['MP', 'Northern Mariana Islands'],
   ['PR', 'Puerto Rico'],
-  ['VI', 'U.S. Virgin Islands']
-]
+  ['VI', 'U.S. Virgin Islands'],
+];
 
 export const VEHICLE_TYPE_OPTIONS: Array<[string, string]> = [
   ['powerUnit', 'Power Unit'],
-  ['trailer', 'Trailer']
-]
+  ['trailer', 'Trailer'],
+];
 
 export const THIRD_PARTY_LIABILITY_OPTIONS: Array<[string, string]> = [
   ['GENERAL_GOODS', 'General Goods'],
-  ['DANGEROUS_GOODS', 'Dangerous Goods']
-]
+  ['DANGEROUS_GOODS', 'Dangerous Goods'],
+];
 
 export const CONDITIONAL_LICENSING_FEE_OPTIONS: Array<[string, string]> = [
   ['none', 'None'],
   ['conditional', 'Conditional'],
   ['x-plated', 'Industrial (X-plated)'],
   ['farm-vehicle', 'Farm Vehicle'],
-  ['farm-tractor', 'Farm Tractor']
-]
+  ['farm-tractor', 'Farm Tractor'],
+];
