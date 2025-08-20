@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react'
 import { AxleConfigurationData } from '../components/AxleGroup'
 
 export const useVehicleConfiguration = () => {
-  const [selectedTrailers, setSelectedTrailers] = useState<string[]>([])
+  const [selectedTrailers, setSelectedTrailers] = useState<string[]>([''])
   const [axleConfigurations, setAxleConfigurations] = useState<AxleConfigurationData[]>([
     { numberOfAxles: '', axleSpread: '', interaxleSpacing: '', axleUnitWeight: '', numberOfTires: '', tireSize: '' },
     { numberOfAxles: '', axleSpread: '', interaxleSpacing: '', axleUnitWeight: '', numberOfTires: '', tireSize: '' }
@@ -100,7 +100,7 @@ export const useVehicleConfiguration = () => {
   }, [])
 
   const resetVehicleConfiguration = useCallback(() => {
-    setSelectedTrailers([])
+    setSelectedTrailers([''])
     setAxleConfigurations([
       { numberOfAxles: '', axleSpread: '', interaxleSpacing: '', axleUnitWeight: '', numberOfTires: '', tireSize: '' },
       { numberOfAxles: '', axleSpread: '', interaxleSpacing: '', axleUnitWeight: '', numberOfTires: '', tireSize: '' }

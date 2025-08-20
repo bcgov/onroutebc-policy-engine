@@ -25,6 +25,7 @@ const PermitForm: React.FC<PermitFormProps> = ({ onSubmit, validationResults, po
   const [validationMethod, setValidationMethod] = useState<'local' | 'api'>('local')
   const {
     form,
+    handleSubmit,
     permitTypes,
     vehicleSubTypes,
     collapsedSections,
@@ -43,14 +44,6 @@ const PermitForm: React.FC<PermitFormProps> = ({ onSubmit, validationResults, po
     policy, 
     onSubmit: (permitData: any) => onSubmit(permitData, validationMethod) 
   })
-
-  // Create a new handleSubmit that includes the validation method
-  const handleSubmit = form.handleSubmit(
-    (data) => onSubmit(data, validationMethod),
-    (errors) => {
-      console.log('Form validation errors:', errors)
-    }
-  )
 
   return (
     <div className="permit-form">
@@ -128,13 +121,7 @@ const PermitForm: React.FC<PermitFormProps> = ({ onSubmit, validationResults, po
               <button type="submit" className="submit-btn">
                 Validate Permit
               </button>
-              </div>
-
-              <div className="form-actions">
-                <button type="submit" className="submit-btn">
-                  Validate Permit
-                </button>
-              </div>
+            </div>
             </form>
           </FormProvider>
         </div>
