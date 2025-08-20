@@ -59,7 +59,7 @@ const MailingAddressSection: React.FC<MailingAddressSectionProps> = ({
           <FormInput
             name="addressLine2"
             label="Address Line 2"
-            placeholder="Enter address line 2 (optional)"
+            placeholder="Enter address line 2"
           />
 
           <FormInput

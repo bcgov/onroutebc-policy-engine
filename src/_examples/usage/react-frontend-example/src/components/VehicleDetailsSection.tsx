@@ -70,39 +70,39 @@ const VehicleDetailsSection: React.FC<VehicleDetailsSectionProps> = ({
           <FormInput
             name="unitNumber"
             label="Unit Number"
-            placeholder="Enter unit number (optional)"
+            placeholder="Enter unit number"
           />
 
           <FormInput
             name="vin"
             label="VIN"
-            placeholder="Enter VIN (optional)"
+            placeholder="Enter VIN"
           />
 
           <FormInput
             name="plate"
             label="Plate"
-            placeholder="Enter plate number (optional)"
+            placeholder="Enter plate number"
           />
 
           <FormInput
             name="make"
             label="Make"
-            placeholder="Enter make (optional)"
+            placeholder="Enter make"
           />
 
           <FormInput
             name="year"
             label="Year"
             type="number"
-            placeholder="Enter year (optional)"
+            placeholder="Enter year"
           />
 
           <FormInput
             name="licensedGVW"
             label="Licensed GVW (kg)"
             type="number"
-            placeholder="Enter licensed GVW (optional)"
+            placeholder="Enter licensed GVW"
           />
 
           <FormSelect
@@ -126,14 +126,14 @@ const VehicleDetailsSection: React.FC<VehicleDetailsSectionProps> = ({
             name="loadedGVW"
             label="Loaded GVW (kg)"
             type="number"
-            placeholder="Enter loaded GVW (optional)"
+            placeholder="Enter loaded GVW"
           />
 
           <FormInput
             name="netWeight"
             label="Net Weight (kg)"
             type="number"
-            placeholder="Enter net weight (optional)"
+            placeholder="Enter net weight"
           />
         </>
       )}

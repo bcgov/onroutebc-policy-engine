@@ -44,7 +44,7 @@ const PermittedRouteSection: React.FC<PermittedRouteSectionProps> = ({
           <FormInput
             name="routeExitPoint"
             label="Exit Point"
-            placeholder="Enter exit point (optional)"
+            placeholder="Enter exit point"
           />
 
           <FormInput

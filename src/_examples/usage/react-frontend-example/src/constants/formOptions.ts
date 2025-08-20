@@ -86,3 +86,16 @@ export const VEHICLE_TYPE_OPTIONS: Array<[string, string]> = [
   ['powerUnit', 'Power Unit'],
   ['trailer', 'Trailer']
 ]
+
+export const THIRD_PARTY_LIABILITY_OPTIONS: Array<[string, string]> = [
+  ['GENERAL_GOODS', 'General Goods'],
+  ['DANGEROUS_GOODS', 'Dangerous Goods']
+]
+
+export const CONDITIONAL_LICENSING_FEE_OPTIONS: Array<[string, string]> = [
+  ['none', 'None'],
+  ['conditional', 'Conditional'],
+  ['x-plated', 'Industrial (X-plated)'],
+  ['farm-vehicle', 'Farm Vehicle'],
+  ['farm-tractor', 'Farm Tractor']
+]

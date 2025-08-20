@@ -48,20 +48,20 @@ const ContactDetailsSection: React.FC<ContactDetailsSectionProps> = ({
           <FormInput
             name="phone1Extension"
             label="Phone 1 Extension"
-            placeholder="Enter extension (optional)"
+            placeholder="Enter extension"
           />
 
           <FormInput
             name="phone2"
             label="Phone 2"
             type="tel"
-            placeholder="Enter secondary phone number (optional)"
+            placeholder="Enter secondary phone number"
           />
 
           <FormInput
             name="phone2Extension"
             label="Phone 2 Extension"
-            placeholder="Enter extension (optional)"
+            placeholder="Enter extension"
           />
 
           <FormInput
@@ -76,14 +76,14 @@ const ContactDetailsSection: React.FC<ContactDetailsSectionProps> = ({
             name="additionalEmail"
             label="Additional Email"
             type="email"
-            placeholder="Enter additional email (optional)"
+            placeholder="Enter additional email"
           />
 
           <FormInput
             name="fax"
             label="Fax"
             type="tel"
-            placeholder="Enter fax number (optional)"
+            placeholder="Enter fax number"
           />
         </>
       )}

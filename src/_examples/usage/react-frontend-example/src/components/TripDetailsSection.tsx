@@ -1,5 +1,7 @@
 import React from 'react'
 import FormInput from './FormInput'
+import FormSelect from './FormSelect'
+import { THIRD_PARTY_LIABILITY_OPTIONS, CONDITIONAL_LICENSING_FEE_OPTIONS } from '../constants'
 
 interface TripDetailsSectionProps {
   isCollapsed: boolean
@@ -59,25 +61,27 @@ const TripDetailsSection: React.FC<TripDetailsSectionProps> = ({
           <FormInput
             name="description"
             label="Description"
-            placeholder="Enter description (optional)"
+            placeholder="Enter description"
           />
 
           <FormInput
             name="applicationNotes"
             label="Application Notes"
-            placeholder="Enter application notes (optional)"
+            placeholder="Enter application notes"
           />
 
-          <FormInput
+          <FormSelect
             name="thirdPartyLiability"
             label="Third Party Liability"
-            placeholder="Enter third party liability (optional)"
+            options={THIRD_PARTY_LIABILITY_OPTIONS}
+            placeholder="Select third party liability type"
           />
 
-          <FormInput
+          <FormSelect
             name="conditionalLicensingFee"
             label="Conditional Licensing Fee"
-            placeholder="Enter conditional licensing fee (optional)"
+            options={CONDITIONAL_LICENSING_FEE_OPTIONS}
+            placeholder="Select conditional licensing fee type"
           />
         </>
       )}

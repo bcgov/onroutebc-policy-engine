@@ -9,6 +9,7 @@ interface UseSampleDataProps {
   setVehicleSubTypes: (types: Array<[string, string]>) => void
   setTrailersFromData: (trailers: any[]) => void
   setAxleConfigurationsFromData: (axleConfigs: any[]) => void
+  resetVehicleConfiguration: () => void
 }
 
 export const useSampleData = ({
@@ -17,7 +18,8 @@ export const useSampleData = ({
   getVehicleSubTypes,
   setVehicleSubTypes,
   setTrailersFromData,
-  setAxleConfigurationsFromData
+  setAxleConfigurationsFromData,
+  resetVehicleConfiguration
 }: UseSampleDataProps) => {
   const loadSampleData = useCallback(async (permitType: string) => {
     // Reset form to default values first
@@ -139,8 +141,8 @@ export const useSampleData = ({
         licensedGVW: permitData.vehicleDetails?.licensedGVW?.toString() || '',
         vehicleCountryCode: permitData.vehicleDetails?.countryCode || 'CA',
         vehicleProvinceCode: permitData.vehicleDetails?.provinceCode || '',
-        loadedGVW: permitData.vehicleDetails?.loadedGVW?.toString() || '',
-        netWeight: permitData.vehicleDetails?.netWeight?.toString() || '',
+        loadedGVW: permitData.vehicleConfiguration?.loadedGVW?.toString() || '',
+        netWeight: permitData.vehicleConfiguration?.netWeight?.toString() || '',
         
         // Dates
         startDate: permitData.startDate ? new Date().toISOString().split('T')[0] : '',
@@ -189,6 +191,9 @@ export const useSampleData = ({
         }
       }
       
+      // Always reset vehicle configuration first
+      resetVehicleConfiguration()
+      
       // Update trailers if present
       if (permitData.vehicleConfiguration?.trailers) {
         setTrailersFromData(permitData.vehicleConfiguration.trailers)
@@ -202,7 +207,7 @@ export const useSampleData = ({
     } catch (error) {
       console.error('Failed to load sample data:', error)
     }
-  }, [form, policy, getVehicleSubTypes, setVehicleSubTypes, setTrailersFromData, setAxleConfigurationsFromData])
+  }, [form, policy, getVehicleSubTypes, setVehicleSubTypes, setTrailersFromData, setAxleConfigurationsFromData, resetVehicleConfiguration])
 
   return {
     loadSampleData

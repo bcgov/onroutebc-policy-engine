@@ -33,7 +33,7 @@ const CompanyInformationSection: React.FC<CompanyInformationSectionProps> = ({
           <FormInput
             name="doingBusinessAs"
             label="Doing Business As"
-            placeholder="Enter DBA name (optional)"
+            placeholder="Enter DBA name"
           />
 
           <FormInput

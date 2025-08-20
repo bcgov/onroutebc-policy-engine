@@ -29,7 +29,8 @@ export const usePermitForm = ({ policy, onSubmit }: UsePermitFormProps) => {
     removeTrailer,
     handleAxleConfigurationChange,
     setTrailersFromData,
-    setAxleConfigurationsFromData
+    setAxleConfigurationsFromData,
+    resetVehicleConfiguration
   } = useVehicleConfiguration()
 
   // Initialize form core
@@ -46,7 +47,8 @@ export const usePermitForm = ({ policy, onSubmit }: UsePermitFormProps) => {
     getVehicleSubTypes,
     setVehicleSubTypes,
     setTrailersFromData,
-    setAxleConfigurationsFromData
+    setAxleConfigurationsFromData,
+    resetVehicleConfiguration
   })
 
   // Initialize form watchers
