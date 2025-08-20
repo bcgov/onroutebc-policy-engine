@@ -12,10 +12,11 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v4
-  deploy:
+  semver:
     runs-on: ubuntu-24.04
+    outputs: 
+      next-version: ${{ steps.semver.outputs.next }}
     permissions:
-      id-token: write # needed for provenance data generation
       contents: write
       packages: write
 
@@ -32,14 +33,25 @@ jobs:
           noNewCommitBehavior: warn
           noVersionBumpBehavior: warn
 
-      - name: Skip Deploy if No Version Bump
+      - name: Log if No Version Bump
         if: ${{ !steps.semver.outputs.next }}
         run: echo "No version bump detected. Skipping deploy."
+  deploy:
+    needs: semver
+    if: ${{ needs.semver.outputs.next-version }}
+    runs-on: ubuntu-24.04
+    permissions:
+      id-token: write # needed for provenance data generation
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
       - name: Injecting Semver Into Package.json
-        if: ${{ steps.semver.outputs.next }}
         run:  |
-          cat package.json | jq '. + { "version": "${{ steps.semver.outputs.next }}" }' | tee package.json
+          cat package.json | jq '. + { "version": "${{ needs.semver.outputs.next-version }}" }' | tee package.json
 
       - uses: actions/setup-node@v4
         with:
@@ -53,17 +65,15 @@ jobs:
       - run: npm test
       
       - name: Publish Package
-        if: ${{ steps.semver.outputs.next }}
         run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create Release 
-        if: ${{ steps.semver.outputs.next }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "${{ steps.semver.outputs.next }}" \
+          gh release create "${{ needs.semver.outputs.next-version }}" \
           --repo="${{ github.repository }}" \
-          --title="${{ steps.semver.outputs.next }}" \
+          --title="${{ needs.semver.outputs.next-version }}" \
           --generate-notes
