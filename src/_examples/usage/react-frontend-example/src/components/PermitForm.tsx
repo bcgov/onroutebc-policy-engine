@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FormProvider } from 'react-hook-form'
 import { ValidationResults, Policy } from 'onroute-policy-engine'
 import ValidationResultsDisplay from './ValidationResults'
+import ValidationMethodSelector from './ValidationMethodSelector'
 import CompanyInformationSection from './CompanyInformationSection'
 import ContactDetailsSection from './ContactDetailsSection'
 import MailingAddressSection from './MailingAddressSection'
@@ -14,16 +15,16 @@ import { usePermitForm } from '../hooks/usePermitForm'
 import './PermitForm.css'
 
 interface PermitFormProps {
-  onSubmit: (permitData: any) => void
+  onSubmit: (permitData: any, validationMethod: 'local' | 'api') => void
   validationResults?: ValidationResults | null
   policy?: Policy | null
   permitApplication?: any
 }
 
 const PermitForm: React.FC<PermitFormProps> = ({ onSubmit, validationResults, policy, permitApplication }) => {
+  const [validationMethod, setValidationMethod] = useState<'local' | 'api'>('local')
   const {
     form,
-    handleSubmit,
     permitTypes,
     vehicleSubTypes,
     collapsedSections,
@@ -38,14 +39,30 @@ const PermitForm: React.FC<PermitFormProps> = ({ onSubmit, validationResults, po
     handleTrailerChange,
     removeTrailer,
     handleAxleConfigurationChange
-  } = usePermitForm({ policy, onSubmit })
+  } = usePermitForm({ 
+    policy, 
+    onSubmit: (permitData: any) => onSubmit(permitData, validationMethod) 
+  })
+
+  // Create a new handleSubmit that includes the validation method
+  const handleSubmit = form.handleSubmit(
+    (data) => onSubmit(data, validationMethod),
+    (errors) => {
+      console.log('Form validation errors:', errors)
+    }
+  )
 
   return (
     <div className="permit-form">
-      <div className="left-column">
-        <FormProvider {...form}>
-          <form onSubmit={handleSubmit}>
-            <div className="form-content">
+      <ValidationMethodSelector
+        validationMethod={validationMethod}
+        onValidationMethodChange={setValidationMethod}
+      />
+      <div className="form-content-wrapper">
+        <div className="left-column">
+          <FormProvider {...form}>
+            <form onSubmit={handleSubmit}>
+              <div className="form-content">
               <div className="form-group">
                 <FormSelect
                   name="permitType"
@@ -111,19 +128,26 @@ const PermitForm: React.FC<PermitFormProps> = ({ onSubmit, validationResults, po
               <button type="submit" className="submit-btn">
                 Validate Permit
               </button>
-            </div>
-          </form>
-        </FormProvider>
-      </div>
+              </div>
 
-      <div className="right-column">
-        {validationResults && (
-          <ValidationResultsDisplay 
-            results={validationResults} 
-            permitType={form.watch('permitType')} 
-            permitApplication={permitApplication || form.getValues()}
-          />
-        )}
+              <div className="form-actions">
+                <button type="submit" className="submit-btn">
+                  Validate Permit
+                </button>
+              </div>
+            </form>
+          </FormProvider>
+        </div>
+
+        <div className="right-column">
+          {validationResults && (
+            <ValidationResultsDisplay 
+              results={validationResults} 
+              permitType={form.watch('permitType')} 
+              permitApplication={permitApplication || form.getValues()}
+            />
+          )}
+        </div>
       </div>
     </div>
   )

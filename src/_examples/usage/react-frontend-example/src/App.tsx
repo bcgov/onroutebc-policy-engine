@@ -16,7 +16,7 @@ function App() {
   const [permitApplication, setPermitApplication] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'form' | 'font-test'>('form')
-  const [validationMethod, setValidationMethod] = useState<'local' | 'api'>('local')
+
 
 
   useEffect(() => {
@@ -46,7 +46,7 @@ function App() {
     initializePolicy()
   }, [])
 
-  const handleValidation = async (permitData: any) => {
+  const handleValidation = async (permitData: any, validationMethod: 'local' | 'api') => {
     console.debug('🔍 handleValidation called with validationMethod:', validationMethod)
     if (validationMethod === 'local') {
       console.debug('📋 Using local validation')
@@ -288,29 +288,6 @@ function App() {
       <main className="app-main">
         {activeTab === 'form' ? (
           <div className="form-container">
-            <div className="validation-method-selector">
-              <label>
-                <input
-                  type="radio"
-                  name="validationMethod"
-                  value="local"
-                  checked={validationMethod === 'local'}
-                  onChange={(e) => setValidationMethod(e.target.value as 'local' | 'api')}
-                />
-                Local Validation (Policy Engine)
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="validationMethod"
-                  value="api"
-                  checked={validationMethod === 'api'}
-                  onChange={(e) => setValidationMethod(e.target.value as 'local' | 'api')}
-                />
-                API Validation (Backend)
-              </label>
-            </div>
-            
             <PermitForm 
               onSubmit={handleValidation} 
               validationResults={validationResults} 
