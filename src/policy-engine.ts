@@ -15,6 +15,7 @@ import {
   SingleAxleDimension,
   StandardTireSize,
   TrailerDimensions,
+  AxleCalcResults,
 } from 'onroute-policy-engine/types';
 import {
   extractIdentifiedObjects,
@@ -49,6 +50,7 @@ import {
   getDefaultTrailerWeightHelper,
 } from './helper/dimensions.helper';
 import { getVehicleDisplayCodeHelper } from './helper/display-code-helper';
+import { policyCheckMap } from './helper/policy-check.helper';
 
 /** Class representing commercial vehicle policy. */
 export class Policy {
@@ -917,6 +919,17 @@ export class Policy {
       throw e;
     }
     return bridgeResults;
+  }
+
+  runAxleCalculation(
+    vehicleConfiguration: Array<string>,
+    axleConfiguration: Array<AxleConfiguration>
+  ): AxleCalcResults {
+    const axleCalcResults: AxleCalcResults = { results: [], totalOverload: 0 };
+    for (const [, func] of policyCheckMap) {
+      axleCalcResults.results.push(...func(this, vehicleConfiguration, axleConfiguration));
+    }
+    return axleCalcResults;
   }
 
   /**

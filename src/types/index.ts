@@ -1,3 +1,4 @@
+export { AxleCalcResults, PolicyCheckResult, AxleUnitPolicyCheckResult, AxleGroupPolicyCheckResult } from './axle-calculation-results';
 export { AxleConfiguration } from './axle-configuration';
 export { BridgeCalculationConstants } from './bridge-calculation-constants';
 export { BridgeCalculationResult } from './bridge-calculation-result';

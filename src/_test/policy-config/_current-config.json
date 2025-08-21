@@ -1939,6 +1939,25 @@
               "fieldReference": "permitData.permittedCommodity.loadDescription"
             }
           }
+        },
+        {
+          "conditions": {
+            "not": {
+              "fact": "policyCheckPassed",
+              "params": {
+                "policyId": "bridge-formula"
+              },
+              "operator": "equal",
+              "value": true
+            }
+          },
+          "event": {
+            "type": "violation",
+            "params": {
+              "message": "Vehicle configuration failed bridge formula",
+              "code": "policy-validation-error"
+            }
+          }
         }
       ],
       "costRules": [

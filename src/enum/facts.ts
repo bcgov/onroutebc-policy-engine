@@ -5,6 +5,8 @@ export enum PolicyFacts {
   ValidationDate = 'validationDate',
   ConfigurationIsValid = 'configurationIsValid',
   DaysBetween = 'daysBetween',
+  VehicleConfiguration = 'vehicleConfiguration',
+  PolicyCheckPassed = 'policyCheckPassed',
 }
 
 export enum CostFacts {
