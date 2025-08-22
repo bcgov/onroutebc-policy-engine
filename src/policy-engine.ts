@@ -16,6 +16,8 @@ import {
   StandardTireSize,
   TrailerDimensions,
   AxleCalcResults,
+  PermitVehicleDetails,
+  VehicleConfiguration,
 } from 'onroute-policy-engine/types';
 import {
   extractIdentifiedObjects,
@@ -39,7 +41,11 @@ import semverValid from 'semver/functions/valid';
 import semverLt from 'semver/functions/lt';
 import semverMajor from 'semver/functions/major';
 import { SpecialAuthorizations } from './types/special-authorizations';
-import { filterOutLcv, filterVehiclesByType } from './helper/vehicles.helper';
+import {
+  filterOutLcv,
+  filterVehiclesByType,
+  getSimplifiedVehicleConfigurationHelper,
+} from './helper/vehicles.helper';
 import { getConditionsForPermitHelper } from './helper/conditions.helper';
 import {
   getSizeDimensionHelper,
@@ -1146,5 +1152,15 @@ export class Policy {
     axleConfiguration: Array<AxleConfiguration>,
   ): string {
     return getVehicleDisplayCodeHelper(this, configuration, axleConfiguration);
+  }
+
+  getSimplifiedVehicleConfiguration(
+    vehicleDetails: PermitVehicleDetails,
+    vehicleConfiguration: VehicleConfiguration,
+  ) {
+    return getSimplifiedVehicleConfigurationHelper(
+      vehicleDetails,
+      vehicleConfiguration,
+    );
   }
 }

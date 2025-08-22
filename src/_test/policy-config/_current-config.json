@@ -1958,6 +1958,25 @@
               "code": "policy-validation-error"
             }
           }
+        },
+        {
+          "conditions": {
+            "not": {
+              "fact": "policyCheckPassed",
+              "params": {
+                "policyId": "number-of-wheels"
+              },
+              "operator": "equal",
+              "value": true
+            }
+          },
+          "event": {
+            "type": "violation",
+            "params": {
+              "message": "One or more axle units has an invalid number of wheels",
+              "code": "policy-validation-error"
+            }
+          }
         }
       ],
       "costRules": [

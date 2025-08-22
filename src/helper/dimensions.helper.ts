@@ -396,13 +396,18 @@ export function selectCorrectWeightDimensionHelper(
     throw new Error('Missing axle configuration');
   }
 
-  if (axleIndex > configuration.length) {
+  if (axleIndex >= axleConfiguration.length) {
     throw new Error('Invalid axle index value');
   }
 
-  if (configuration.length !== axleConfiguration.length - 1) {
+  const realVehicleConfig = configuration.filter((v) => {
+    const vehicleDef = policy.getVehicleDefinition(v);
+    return !vehicleDef?.ignoreForAxleCalculation;
+  });
+
+  if (realVehicleConfig.length !== axleConfiguration.length - 1) {
     // We expect the axle configuration array length to be one more
-    // than the configuration length because the power unit has two
+    // than the real configuration length because the power unit has two
     // axle units.
     throw new Error(
       'Wrong number of axles configured for vehicle configuration',

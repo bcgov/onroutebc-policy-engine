@@ -84,6 +84,7 @@
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "/src/_test/",
+      "/src/_examples/",
       ".enum.ts",
       ".interface.ts",
       "index.ts"

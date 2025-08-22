@@ -1,5 +1,11 @@
 import { VehicleCategory } from 'onroute-policy-engine/enum';
-import { VehicleType, VehicleTypes } from 'onroute-policy-engine/types';
+import {
+  PermitVehicleDetails,
+  VehicleConfiguration,
+  VehicleInConfiguration,
+  VehicleType,
+  VehicleTypes,
+} from 'onroute-policy-engine/types';
 
 /**
  * Filters out all LCV vehicles from a supplied list of vehicle IDs.
@@ -66,4 +72,26 @@ export function filterVehiclesByType(
   });
 
   return filteredVehicles;
+}
+
+export function getSimplifiedVehicleConfigurationHelper(
+  vehicleDetails: PermitVehicleDetails,
+  vehicleConfiguration: VehicleConfiguration,
+) {
+  // Retrieve the power unit type from vehicle details
+  const powerUnitType: string = vehicleDetails.vehicleSubType;
+  // Retrieve the list of trailers from configuration
+  const trailerList: Array<VehicleInConfiguration> =
+    vehicleConfiguration.trailers || [];
+  // If no power unit type is found, return empty array
+  if (!powerUnitType) {
+    return [];
+  }
+  // Start with the power unit type as the base configuration
+  const fullVehicleConfiguration = [powerUnitType];
+  // Add any attached trailers to the configuration
+  if (trailerList) {
+    fullVehicleConfiguration.push(...trailerList.map((t) => t.vehicleSubType));
+  }
+  return fullVehicleConfiguration;
 }

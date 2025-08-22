@@ -15,4 +15,6 @@ export enum PermitAppInfo {
   Commodity = '$.permittedCommodity.commodityType',
   TotalDistance = '$.permittedRoute.manualRoute.totalDistance',
   AxleConfiguration = '$.vehicleConfiguration.axleConfiguration',
+  VehicleDetails = '$.vehicleDetails',
+  VehicleConfiguration = '$.vehicleConfiguration',
 }
