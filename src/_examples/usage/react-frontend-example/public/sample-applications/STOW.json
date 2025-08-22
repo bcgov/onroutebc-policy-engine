@@ -40,7 +40,7 @@
       "postalCode": "V8B1A2"
     },
     "permittedCommodity": {
-      "commodityType": "EMPTYXX",
+      "commodityType": "XXXXXXX",
       "loadDescription": "empty"
     },
     "vehicleConfiguration": {
@@ -49,7 +49,7 @@
           "vehicleSubType": "JEEPSRG"
         },
         {
-          "vehicleSubType": "PLATFRM"
+          "vehicleSubType": "FEDRMMX"
         },
         {
           "vehicleSubType": "BOOSTER"
@@ -58,30 +58,35 @@
       "axleConfiguration": [
         {
           "numberOfAxles": 1,
-          "axleUnitWeight": 6700
+          "axleUnitWeight": 6700,
+          "numberOfTires": 2
         },
         {
           "numberOfAxles": 2,
           "axleSpread": 160,
           "interaxleSpacing": 350,
-          "axleUnitWeight": 12000
+          "axleUnitWeight": 12000,
+          "numberOfTires": 4
         },
         {
           "numberOfAxles": 1,
           "interaxleSpacing": 300,
-          "axleUnitWeight": 12000
+          "axleUnitWeight": 11000,
+          "numberOfTires": 2
         },
         {
           "numberOfAxles": 3,
           "axleSpread": 220,
           "interaxleSpacing": 700,
-          "axleUnitWeight": 22000
+          "axleUnitWeight": 22000,
+          "numberOfTires": 12
         },
         {
           "numberOfAxles": 2,
           "axleSpread": 160,
           "interaxleSpacing": 350,
-          "axleUnitWeight": 12000
+          "axleUnitWeight": 12000,
+          "numberOfTires": 4
         }
       ]
     },
