@@ -1,35 +1,44 @@
-import { PolicyCheckResult, AxleConfiguration, AxleUnitPolicyCheckResult, AxleGroupPolicyCheckResult } from "onroute-policy-engine/types";
-import { Policy } from "onroute-policy-engine";
-import { PolicyCheckId, PolicyCheckResultType } from "../enum";
+import {
+  PolicyCheckResult,
+  AxleConfiguration,
+  AxleUnitPolicyCheckResult,
+  AxleGroupPolicyCheckResult,
+} from 'onroute-policy-engine/types';
+import { Policy } from 'onroute-policy-engine';
+import { PolicyCheckId, PolicyCheckResultType } from '../enum';
 
 /**
  * Type definition for policy check functions.
- * 
+ *
  * Each policy check function takes a policy instance, vehicle configuration,
  * and axle configuration, then returns an array of policy check results.
  * These functions are used by the runAxleCalculation method to perform
  * various validation checks on vehicle configurations.
- * 
+ *
  * @param policy - The policy instance containing configuration and validation rules
  * @param vehicleConfiguration - Array of vehicle type identifiers representing the vehicle configuration
  * @param axleConfiguration - Array of axle configurations corresponding to each vehicle
  * @returns Array of PolicyCheckResult objects representing the outcomes of the policy check
  */
-type PolicyCheck = (policy: Policy, vehicleConfiguration: Array<string>, axleConfiguration: Array<AxleConfiguration>) => Array<PolicyCheckResult>;
+type PolicyCheck = (
+  policy: Policy,
+  vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+) => Array<PolicyCheckResult>;
 
 /**
  * Performs bridge formula calculations on axle groups and returns policy check results.
- * 
+ *
  * This function calculates the bridge formula for each axle group in the vehicle configuration
  * and determines whether each group passes or fails the bridge formula requirements. The bridge
  * formula is a provincial regulation that limits the weight that can be carried on a group of axles
  * based on the distance between the first and last axles in the group.
- * 
+ *
  * @param policy - The policy instance containing bridge calculation configuration
  * @param _vehicleConfiguration - Vehicle configuration (unused in this check, but required by PolicyCheck type)
  * @param axleConfiguration - Array of axle configurations containing spacing and weight information
  * @returns Array of AxleGroupPolicyCheckResult objects, one for each axle group tested
- * 
+ *
  * @example
  * // For a vehicle with 3 axle groups
  * const results = CheckBridgeFormula(policy, ['TRKTRAC', 'SEMITRL'], [
@@ -37,22 +46,28 @@ type PolicyCheck = (policy: Policy, vehicleConfiguration: Array<string>, axleCon
  *   { numberOfAxles: 3, axleSpread: 4.2, weight: 34000 },
  *   { numberOfAxles: 3, axleSpread: 3.0, weight: 34000 }
  * ]);
- * // Returns results for each axle group (e.g., axles 1-2, 1-5, 3-5)
- * 
+ * // Returns results for each axle group (e.g., axles 1-2, 1-3, 2-3)
+ *
  * @see PolicyCheck
  * @see AxleGroupPolicyCheckResult
  * @see BridgeCalculationResult
  */
-export function CheckBridgeFormula(policy: Policy, _vehicleConfiguration: Array<string>, axleConfiguration: Array<AxleConfiguration>): Array<PolicyCheckResult> {
+export function CheckBridgeFormula(
+  policy: Policy,
+  _vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+): Array<PolicyCheckResult> {
   const policyCheckResults = new Array<AxleGroupPolicyCheckResult>();
   const policyId = PolicyCheckId.BridgeFormula;
   const bridgeCalcResults = policy.calculateBridge(axleConfiguration);
-  bridgeCalcResults.forEach(br => {
+  bridgeCalcResults.forEach((br) => {
     const message = `Axle group ${br.startAxleUnit} to ${br.endAxleUnit} ${br.success ? 'passes' : 'does not pass'} bridge formula.`;
     policyCheckResults.push({
       id: policyId,
       message: message,
-      result: br.success ? PolicyCheckResultType.Pass : PolicyCheckResultType.Fail,
+      result: br.success
+        ? PolicyCheckResultType.Pass
+        : PolicyCheckResultType.Fail,
       startAxleUnit: br.startAxleUnit,
       endAxleUnit: br.endAxleUnit,
     });
@@ -62,41 +77,45 @@ export function CheckBridgeFormula(policy: Policy, _vehicleConfiguration: Array<
 
 /**
  * Validates the number of tires per axle unit against regulatory requirements.
- * 
+ *
  * This function checks that each axle unit has a valid number of tires based on
  * the number of axles in that unit. The validation allows for 2, 4, or 8 tires
  * per axle (2, 4, or 8 * number of axles). This ensures compliance with tire
  * count regulations for commercial vehicles.
- * 
+ *
  * @param _policy - The policy instance (unused in this check, but required by PolicyCheck type)
  * @param _vehicleConfiguration - Vehicle configuration (unused in this check, but required by PolicyCheck type)
  * @param axleConfiguration - Array of axle configurations containing tire count and axle count information
  * @returns Array of AxleUnitPolicyCheckResult objects, one for each axle unit tested
- * 
+ *
  * @example
  * // For a vehicle with 2 axle units
- * const results = CheckNumTiresPerAxle(policy, ['TRKTRAC', 'SEMITRL'], [
+ * const results = CheckNumTiresPerAxle(policy, ['TRKTRAC'], [
  *   { numberOfAxles: 2, numberOfTires: 4 },  // 2 axles × 2 tires = 4 (valid)
  *   { numberOfAxles: 3, numberOfTires: 12 }  // 3 axles × 4 tires = 12 (valid)
  * ]);
  * // Returns pass results for both axle units
- * 
+ *
  * @example
  * // Invalid tire count example
  * const results = CheckNumTiresPerAxle(policy, ['TRKTRAC'], [
  *   { numberOfAxles: 2, numberOfTires: 6 }  // 2 axles × 3 tires = 6 (invalid - not 2, 4, or 8 per axle)
  * ]);
  * // Returns fail result for the axle unit
- * 
+ *
  * @see PolicyCheck
  * @see AxleUnitPolicyCheckResult
  * @see AxleConfiguration
  */
-export function CheckNumTiresPerAxle(_policy: Policy, _vehicleConfiguration: Array<string>, axleConfiguration: Array<AxleConfiguration>): Array<PolicyCheckResult> {
+export function CheckNumTiresPerAxle(
+  _policy: Policy,
+  _vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+): Array<PolicyCheckResult> {
   const policyCheckResults = new Array<AxleUnitPolicyCheckResult>();
   const policyId = PolicyCheckId.NumberOfWheelsPerAxle;
   let axleNum = 1;
-  axleConfiguration.forEach(ac => {
+  axleConfiguration.forEach((ac) => {
     const numTires = ac.numberOfTires || 0;
     const numAxles = ac.numberOfAxles;
     // Default result to fail, set to pass explicitly if valid
@@ -106,7 +125,9 @@ export function CheckNumTiresPerAxle(_policy: Policy, _vehicleConfiguration: Arr
       // Invalid number of axles, cannot calculate
       message = `Number of axles for axle unit ${axleNum} is not permittable.`;
     } else {
-      const checkResult = [numAxles * 2, numAxles * 4, numAxles * 8].includes(numTires);
+      const checkResult = [numAxles * 2, numAxles * 4, numAxles * 8].includes(
+        numTires,
+      );
       message = `Number of wheels for axle unit ${axleNum} is ${checkResult ? '' : 'not '}permittable.`;
       if (checkResult) result = PolicyCheckResultType.Pass;
     }
@@ -114,7 +135,7 @@ export function CheckNumTiresPerAxle(_policy: Policy, _vehicleConfiguration: Arr
       id: policyId,
       message: message,
       result: result,
-      axleUnit: axleNum
+      axleUnit: axleNum,
     });
     axleNum++;
   });
@@ -123,21 +144,21 @@ export function CheckNumTiresPerAxle(_policy: Policy, _vehicleConfiguration: Arr
 
 /**
  * Map of policy check functions keyed by their corresponding PolicyCheckId.
- * 
+ *
  * This map contains all the registered policy check functions that are executed
  * by the runAxleCalculation method. Each entry maps a PolicyCheckId to its
  * corresponding validation function. New policy checks can be added by extending
  * this map with additional entries.
- * 
+ *
  * Currently includes:
  * - BridgeFormula: Validates axle groups against bridge formula requirements
  * - NumberOfWheelsPerAxle: Validates tire count per axle unit
- * 
+ *
  * @see PolicyCheck
  * @see PolicyCheckId
  * @see runAxleCalculation
  */
 export const policyCheckMap = new Map<string, PolicyCheck>([
   [PolicyCheckId.BridgeFormula, CheckBridgeFormula],
-  [PolicyCheckId.NumberOfWheelsPerAxle, CheckNumTiresPerAxle]
+  [PolicyCheckId.NumberOfWheelsPerAxle, CheckNumTiresPerAxle],
 ]);

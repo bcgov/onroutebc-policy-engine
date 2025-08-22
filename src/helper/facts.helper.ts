@@ -8,7 +8,12 @@ import {
   PolicyCheckResultType,
 } from 'onroute-policy-engine/enum';
 import { Policy } from 'onroute-policy-engine';
-import { AxleConfiguration, PermitType, RangeMatrix, VehicleInConfiguration } from 'onroute-policy-engine/types';
+import {
+  AxleConfiguration,
+  PermitType,
+  RangeMatrix,
+  VehicleInConfiguration,
+} from 'onroute-policy-engine/types';
 import { policyCheckMap } from './policy-check.helper';
 
 dayjs.extend(quarterOfYear);
@@ -153,17 +158,18 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
         {},
         PermitAppInfo.PowerUnitType,
       );
-      const trailerList: Array<VehicleInConfiguration> = await almanac.factValue(
-        PermitAppInfo.PermitData,
-        {},
-        PermitAppInfo.TrailerList,
-      );
+      const trailerList: Array<VehicleInConfiguration> =
+        await almanac.factValue(
+          PermitAppInfo.PermitData,
+          {},
+          PermitAppInfo.TrailerList,
+        );
       if (!powerUnitType) {
         return [];
       }
       const vehicleConfiguration = [powerUnitType];
       if (trailerList) {
-        vehicleConfiguration.push(...trailerList.map(t => t.vehicleSubType));
+        vehicleConfiguration.push(...trailerList.map((t) => t.vehicleSubType));
       }
       return vehicleConfiguration;
     },
@@ -173,28 +179,35 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
     PolicyFacts.PolicyCheckPassed.toString(),
     async function (params, almanac) {
       const vehicleConfiguration: Array<string> = await almanac.factValue(
-        PolicyFacts.VehicleConfiguration
+        PolicyFacts.VehicleConfiguration,
       );
-      const axleConfiguration: Array<AxleConfiguration> = await almanac.factValue(
-        PermitAppInfo.PermitData,
-        {},
-        PermitAppInfo.AxleConfiguration,
-      );
+      const axleConfiguration: Array<AxleConfiguration> =
+        await almanac.factValue(
+          PermitAppInfo.PermitData,
+          {},
+          PermitAppInfo.AxleConfiguration,
+        );
       const policyCheckId = params.policyId;
 
       const func = policyCheckMap.get(policyCheckId);
       if (!func) {
         return false;
       }
-      const policyCheckResults = func(policy, vehicleConfiguration, axleConfiguration);
+      const policyCheckResults = func(
+        policy,
+        vehicleConfiguration,
+        axleConfiguration,
+      );
       if (!policyCheckResults || policyCheckResults.length === 0) {
         // We did not get any policy check results returned which is an error
         // condition - all policy checks must return at least one result
         return false;
       }
-      return policyCheckResults.every((r) => r.result === PolicyCheckResultType.Pass)
-    }
-  )
+      return policyCheckResults.every(
+        (r) => r.result === PolicyCheckResultType.Pass,
+      );
+    },
+  );
 
   /**
    * Add runtime fact to calculate the number of days between a from

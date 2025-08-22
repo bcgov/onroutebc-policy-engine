@@ -1,4 +1,4 @@
-import { PolicyCheckResultType } from "onroute-policy-engine/enum";
+import { PolicyCheckResultType } from 'onroute-policy-engine/enum';
 
 export type AxleCalcResults = {
   results: Array<PolicyCheckResult>;
