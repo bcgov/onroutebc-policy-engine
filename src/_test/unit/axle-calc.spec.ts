@@ -71,7 +71,9 @@ describe('Axle Calculation Functions', () => {
       (r) => r.id === PolicyCheckId.CheckPermittableWeight,
     );
     expect(
-      permittableWeightResults.every((r) => r.result === PolicyCheckResultType.Pass),
+      permittableWeightResults.every(
+        (r) => r.result === PolicyCheckResultType.Pass,
+      ),
     ).toBe(false);
   });
 
@@ -87,7 +89,9 @@ describe('Axle Calculation Functions', () => {
       (r) => r.id === PolicyCheckId.CheckPermittableWeight,
     );
     expect(
-      permittableWeightResults.every((r) => r.result === PolicyCheckResultType.Pass),
+      permittableWeightResults.every(
+        (r) => r.result === PolicyCheckResultType.Pass,
+      ),
     ).toBe(true);
   });
 });
