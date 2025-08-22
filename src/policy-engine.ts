@@ -1154,6 +1154,38 @@ export class Policy {
     return getVehicleDisplayCodeHelper(this, configuration, axleConfiguration);
   }
 
+  /**
+   * Converts detailed vehicle information into a simplified vehicle configuration array.
+   * 
+   * This method takes the vehicle details (which contain the power unit information) and
+   * the vehicle configuration (which contains trailer information) and combines them into
+   * a single array of vehicle type identifiers. The resulting array represents the complete
+   * vehicle configuration in the order: [powerUnit, trailer1, trailer2, ...].
+   * 
+   * @param vehicleDetails - The vehicle details containing power unit information including
+   *                        the vehicle subtype (e.g., 'TRKTRAC' for truck-tractor)
+   * @param vehicleConfiguration - The vehicle configuration containing trailer information
+   *                              and other vehicle configuration details
+   * @returns An array of vehicle type identifiers representing the complete vehicle configuration.
+   *          The first element is always the power unit type, followed by any attached trailer types.
+   *          Returns an empty array if no power unit type is found in vehicle details.
+   * 
+   * @example
+   * // For a truck-tractor with a semi-trailer
+   * const config = policy.getSimplifiedVehicleConfiguration(
+   *   { vehicleSubType: 'TRKTRAC', ... },
+   *   { trailers: [{ vehicleSubType: 'SEMITRL' }] }
+   * );
+   * // Returns: ['TRKTRAC', 'SEMITRL']
+   * 
+   * @example
+   * // For a single power unit with no trailers
+   * const config = policy.getSimplifiedVehicleConfiguration(
+   *   { vehicleSubType: 'TRKTRAC', ... },
+   *   { trailers: [] }
+   * );
+   * // Returns: ['TRKTRAC']
+   */
   getSimplifiedVehicleConfiguration(
     vehicleDetails: PermitVehicleDetails,
     vehicleConfiguration: VehicleConfiguration,

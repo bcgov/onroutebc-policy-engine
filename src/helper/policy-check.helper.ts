@@ -144,6 +144,45 @@ export function CheckNumTiresPerAxle(
   return policyCheckResults;
 }
 
+/**
+ * Validates that each axle unit's weight does not exceed the permittable weight limits.
+ *
+ * This function performs weight validation for each axle unit in a vehicle configuration.
+ * It retrieves the default weight dimensions for power units and trailers based on their
+ * vehicle types and axle counts, then compares the actual axle unit weights against the
+ * permittable weight limits. The function handles both power units (with steer and drive
+ * axles) and trailers, ensuring compliance with weight regulations.
+ *
+ * @param policy - The policy instance containing weight dimension configurations and validation rules
+ * @param vehicleConfiguration - Array of vehicle type identifiers representing the vehicle configuration.
+ *                              The first element should be a power unit type, followed by trailer types.
+ * @param axleConfiguration - Array of axle configurations containing weight and axle count information.
+ *                           For power units, this includes both steer and drive axle configurations.
+ * @returns Array of AxleUnitPolicyCheckResult objects, one for each axle unit tested.
+ *          Each result indicates whether the axle unit's weight is within permittable limits.
+ *
+ * @example
+ * // For a truck-tractor with 2-axle steer, 3-axle drive, and a 3-axle semi-trailer
+ * const results = CheckPermittableWeight(policy, ['TRKTRAC', 'SEMITRL'], [
+ *   { numberOfAxles: 2, axleUnitWeight: 12000 },  // Steer axle unit
+ *   { numberOfAxles: 3, axleUnitWeight: 34000 },  // Drive axle unit
+ *   { numberOfAxles: 3, axleUnitWeight: 34000 }   // Trailer axle unit
+ * ]);
+ * // Returns results for each axle unit indicating pass/fail status
+ *
+ * @example
+ * // For a single power unit with no trailers
+ * const results = CheckPermittableWeight(policy, ['TRKTRAC'], [
+ *   { numberOfAxles: 2, axleUnitWeight: 12000 },  // Steer axle unit
+ *   { numberOfAxles: 3, axleUnitWeight: 34000 }   // Drive axle unit
+ * ]);
+ * // Returns results for steer and drive axle units only
+ *
+ * @see PolicyCheck
+ * @see AxleUnitPolicyCheckResult
+ * @see WeightDimension
+ * @see SingleAxleDimension
+ */
 export function CheckPermittableWeight(
   policy: Policy,
   vehicleConfiguration: Array<string>,

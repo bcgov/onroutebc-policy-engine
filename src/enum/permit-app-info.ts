@@ -4,17 +4,17 @@
  * referenced from within source code.
  */
 export enum PermitAppInfo {
-  PermitType = 'permitType',
-  PermitData = 'permitData',
-  PermitStartDate = '$.startDate',
-  PermitDateFormat = 'YYYY-MM-DD',
-  CompanyName = '$.companyName',
-  PermitDuration = '$.permitDuration',
-  PowerUnitType = '$.vehicleDetails.vehicleSubType',
-  TrailerList = '$.vehicleConfiguration.trailers',
-  Commodity = '$.permittedCommodity.commodityType',
-  TotalDistance = '$.permittedRoute.manualRoute.totalDistance',
   AxleConfiguration = '$.vehicleConfiguration.axleConfiguration',
-  VehicleDetails = '$.vehicleDetails',
+  CompanyName = '$.companyName',
+  Commodity = '$.permittedCommodity.commodityType',
+  PermitData = 'permitData',
+  PermitDateFormat = 'YYYY-MM-DD',
+  PermitDuration = '$.permitDuration',
+  PermitStartDate = '$.startDate',
+  PermitType = 'permitType',
+  PowerUnitType = '$.vehicleDetails.vehicleSubType',
+  TotalDistance = '$.permittedRoute.manualRoute.totalDistance',
+  TrailerList = '$.vehicleConfiguration.trailers',
   VehicleConfiguration = '$.vehicleConfiguration',
+  VehicleDetails = '$.vehicleDetails',
 }

@@ -5,6 +5,6 @@ export enum PolicyCheckResultType {
 
 export enum PolicyCheckId {
   BridgeFormula = 'bridge-formula',
-  NumberOfWheelsPerAxle = 'number-of-wheels',
   CheckPermittableWeight = 'check-permittable-weight',
+  NumberOfWheelsPerAxle = 'number-of-wheels',
 }
