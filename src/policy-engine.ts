@@ -921,6 +921,40 @@ export class Policy {
     return bridgeResults;
   }
 
+  /**
+   * Runs all configured axle calculation policy checks against a vehicle configuration.
+   * 
+   * This method iterates through all registered policy check functions (such as bridge formula
+   * calculations and tire count validations) and applies them to the provided vehicle and axle
+   * configurations. The results are aggregated into a single AxleCalcResults object containing
+   * all policy check outcomes and a total overload calculation.
+   * 
+   * @param vehicleConfiguration Array of vehicle type identifiers representing the vehicle configuration.
+   *                            The first element should be a power unit type, followed by trailer types.
+   *                            Example: ['TRKTRAC', 'SEMITRL'] for a truck-tractor with semi-trailer.
+   * @param axleConfiguration Array of axle configurations corresponding to each vehicle in the configuration.
+   *                          Each axle configuration contains details like number of axles, spacing, tire count, etc.
+   *                          The length should match the vehicleConfiguration array.
+   * @returns AxleCalcResults object containing:
+   *          - results: Array of PolicyCheckResult objects, each representing the outcome of a specific policy check
+   *          - totalOverload: Numeric value representing the total overload across all axle calculations
+   * 
+   * @example
+   * // For a truck-tractor with 2-axle steer, 3-axle drive, and a 3-axle semi-trailer
+   * const results = policy.runAxleCalculation(
+   *   ['TRKTRAC', 'SEMITRL'],
+   *   [
+   *     { numberOfAxles: 2, axleSpread: 1.8, numberOfTires: 4 },
+   *     { numberOfAxles: 3, axleSpread: 4.2, numberOfTires: 12 },
+   *     { numberOfAxles: 3, axleSpread: 3.0, numberOfTires: 12 }
+   *   ]
+   * );
+   * // Returns results with bridge formula checks, tire count validations, etc.
+   * 
+   * @see AxleCalcResults
+   * @see PolicyCheckResult
+   * @see AxleConfiguration
+   */
   runAxleCalculation(
     vehicleConfiguration: Array<string>,
     axleConfiguration: Array<AxleConfiguration>
