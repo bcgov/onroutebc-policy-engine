@@ -22,4 +22,5 @@ export class ValidationResult {
   message: string;
   fieldReference?: string;
   cost?: number;
+  details?: Array<string>;
 }

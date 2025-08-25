@@ -1,5 +1,5 @@
 import { Operator } from 'json-rules-engine';
-import { PermitAppInfo } from 'onroute-policy-engine/enum';
+import { CustomOperator, PermitAppInfo } from 'onroute-policy-engine/enum';
 import dayjs from 'dayjs';
 
 function stringValidator(a: any): boolean {
@@ -11,11 +11,15 @@ function dateStringValidator(a: any): boolean {
   return d.isValid();
 }
 
+function arrayValidator(a: any): boolean {
+  return Array.isArray(a);
+}
+
 const CustomOperators: Array<Operator> = [];
 
 CustomOperators.push(
   new Operator(
-    'stringMinimumLength',
+    CustomOperator.StringMinimumLength,
     (a: string, b: number) => {
       if (!a) return false;
 
@@ -27,7 +31,7 @@ CustomOperators.push(
 
 CustomOperators.push(
   new Operator(
-    'dateLessThan',
+    CustomOperator.DateLessThan,
     (a: string, b: string) => {
       const firstDate = dayjs(a, PermitAppInfo.PermitDateFormat.toString());
       const secondDate = dayjs(b, PermitAppInfo.PermitDateFormat.toString());
@@ -39,9 +43,17 @@ CustomOperators.push(
 
 CustomOperators.push(
   new Operator(
-    'regex',
+    CustomOperator.Regex,
     (a: string, b: string) => RegExp(b).exec(a) !== null,
     stringValidator,
+  ),
+);
+
+CustomOperators.push(
+  new Operator(
+    CustomOperator.IsEmptyArray,
+    (arr) => arr.length === 0,
+    arrayValidator,
   ),
 );
 

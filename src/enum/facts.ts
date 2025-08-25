@@ -1,5 +1,6 @@
 export enum PolicyFacts {
   AllowedVehicles = 'allowedVehicles',
+  AxleCalcViolations = 'axleCalcViolations',
   ConfigurationIsValid = 'configurationIsValid',
   DaysBetween = 'daysBetween',
   DaysInPermitYear = 'daysInPermitYear',

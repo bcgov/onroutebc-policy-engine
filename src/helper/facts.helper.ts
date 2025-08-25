@@ -245,6 +245,32 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
   );
 
   /**
+   * Add runtime fact to return an array of all messages that result from
+   * all combined policy checks for axle calculation. This is used in
+   * permit validation, returned in the details param for that rule for
+   * overweight permit types.
+   */
+  engine.addFact(
+    PolicyFacts.AxleCalcViolations,
+    async function (params, almanac) {
+      // Retrieve the complete vehicle configuration (power unit + trailers)
+      const vehicleConfiguration: Array<string> = await almanac.factValue(
+        PolicyFacts.VehicleConfiguration,
+      );
+      // Retrieve the axle configuration from permit data
+      const axleConfiguration: Array<AxleConfiguration> =
+        await almanac.factValue(
+          PermitAppInfo.PermitData,
+          {},
+          PermitAppInfo.AxleConfiguration,
+        );
+      const results = policy.runAxleCalculation(vehicleConfiguration, axleConfiguration);
+      const violations = results.results.filter(r => r.result === PolicyCheckResultType.Fail);
+      return violations.map(v => v.message);
+    },
+  );
+
+  /**
    * Add runtime fact to calculate the number of days between a from
    * and to date supplied in parameters. Will be positive for a dateTo
    * in the future with respect to dateFrom, negative otherwise.
