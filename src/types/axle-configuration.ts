@@ -8,9 +8,9 @@
 export type AxleConfiguration = {
   /** Number of axles in this configuration (1 for single, 2+ for groups) */
   numberOfAxles: number;
-  /** Total spread between first and last axle in millimeters */
+  /** Total spread between first and last axle in centimeters */
   axleSpread?: number;
-  /** Spacing from the previous axle unit in millimeters */
+  /** Spacing from the previous axle unit in centimeters */
   interaxleSpacing?: number;
   /** Weight carried by this axle unit in kilograms */
   axleUnitWeight: number;
