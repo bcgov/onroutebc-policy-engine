@@ -4,6 +4,9 @@ coverage/
 **/*.tgz
 .eslintignore
 .eslintrc.cjs
+eslint.config.mjs
+.github/
+.vscode/
 dist/_test/
 dist/_examples/
 dist/tsconfig.tsbuildinfo
