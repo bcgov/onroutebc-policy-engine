@@ -51,6 +51,7 @@ export class ValidationResults {
         );
         result.fieldReference = e.params?.fieldReference;
         result.cost = e.params?.cost;
+        result.details = e.params?.details;
 
         switch (type) {
           case ValidationResultType.Violation:

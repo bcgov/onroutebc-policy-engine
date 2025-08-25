@@ -15,6 +15,9 @@ import {
   SingleAxleDimension,
   StandardTireSize,
   TrailerDimensions,
+  AxleCalcResults,
+  PermitVehicleDetails,
+  VehicleConfiguration,
 } from 'onroute-policy-engine/types';
 import {
   extractIdentifiedObjects,
@@ -38,7 +41,11 @@ import semverValid from 'semver/functions/valid';
 import semverLt from 'semver/functions/lt';
 import semverMajor from 'semver/functions/major';
 import { SpecialAuthorizations } from './types/special-authorizations';
-import { filterOutLcv, filterVehiclesByType } from './helper/vehicles.helper';
+import {
+  filterOutLcv,
+  filterVehiclesByType,
+  getSimplifiedVehicleConfigurationHelper,
+} from './helper/vehicles.helper';
 import { getConditionsForPermitHelper } from './helper/conditions.helper';
 import {
   getSizeDimensionHelper,
@@ -49,6 +56,7 @@ import {
   getDefaultTrailerWeightHelper,
 } from './helper/dimensions.helper';
 import { getVehicleDisplayCodeHelper } from './helper/display-code-helper';
+import { policyCheckMap } from './helper/policy-check.helper';
 
 /** Class representing commercial vehicle policy. */
 export class Policy {
@@ -920,6 +928,54 @@ export class Policy {
   }
 
   /**
+   * Runs all configured axle calculation policy checks against a vehicle configuration.
+   *
+   * This method iterates through all registered policy check functions (such as bridge formula
+   * calculations and tire count validations) and applies them to the provided vehicle and axle
+   * configurations. The results are aggregated into a single AxleCalcResults object containing
+   * all policy check outcomes and a total overload calculation.
+   *
+   * @param vehicleConfiguration Array of vehicle type identifiers representing the vehicle configuration.
+   *                            The first element should be a power unit type, followed by trailer types.
+   *                            Example: ['TRKTRAC', 'SEMITRL'] for a truck tractor with semi-trailer.
+   * @param axleConfiguration Array of axle configurations corresponding to each vehicle in the configuration.
+   *                          Each axle configuration contains details like number of axles, spacing, tire count, etc.
+   *                          The length should match the vehicleConfiguration array plus one (since the first
+   *                          vehicle in the configuration is a power unit with two axle units).
+   * @returns AxleCalcResults object containing:
+   *          - results: Array of PolicyCheckResult objects, each representing the outcome of a specific policy check
+   *          - totalOverload: Numeric value representing the total overload across all axle calculations
+   *
+   * @example
+   * // For a truck-tractor with 2-axle steer, 3-axle drive, and a 3-axle semi-trailer
+   * const results = policy.runAxleCalculation(
+   *   ['TRKTRAC', 'SEMITRL'],
+   *   [
+   *     { numberOfAxles: 2, axleSpread: 1.8, numberOfTires: 4 },
+   *     { numberOfAxles: 3, axleSpread: 4.2, numberOfTires: 12 },
+   *     { numberOfAxles: 3, axleSpread: 3.0, numberOfTires: 12 }
+   *   ]
+   * );
+   * // Returns results with bridge formula checks, tire count validations, etc.
+   *
+   * @see AxleCalcResults
+   * @see PolicyCheckResult
+   * @see AxleConfiguration
+   */
+  runAxleCalculation(
+    vehicleConfiguration: Array<string>,
+    axleConfiguration: Array<AxleConfiguration>,
+  ): AxleCalcResults {
+    const axleCalcResults: AxleCalcResults = { results: [], totalOverload: 0 };
+    for (const [, func] of policyCheckMap) {
+      axleCalcResults.results.push(
+        ...func(this, vehicleConfiguration, axleConfiguration),
+      );
+    }
+    return axleCalcResults;
+  }
+
+  /**
    * Gets the list of allowed vehicles separated into two maps, one
    * for trailers and one for power units. This will filter out LCV
    * vehicles unless authorized in special authorizations.
@@ -1096,5 +1152,47 @@ export class Policy {
     axleConfiguration: Array<AxleConfiguration>,
   ): string {
     return getVehicleDisplayCodeHelper(this, configuration, axleConfiguration);
+  }
+
+  /**
+   * Converts detailed vehicle information into a simplified vehicle configuration array.
+   *
+   * This method takes the vehicle details (which contain the power unit information) and
+   * the vehicle configuration (which contains trailer information) and combines them into
+   * a single array of vehicle type identifiers. The resulting array represents the complete
+   * vehicle configuration in the order: [powerUnit, trailer1, trailer2, ...].
+   *
+   * @param vehicleDetails - The vehicle details containing power unit information including
+   *                        the vehicle subtype (e.g., 'TRKTRAC' for truck-tractor)
+   * @param vehicleConfiguration - The vehicle configuration containing trailer information
+   *                              and other vehicle configuration details
+   * @returns An array of vehicle type identifiers representing the complete vehicle configuration.
+   *          The first element is always the power unit type, followed by any attached trailer types.
+   *          Returns an empty array if no power unit type is found in vehicle details.
+   *
+   * @example
+   * // For a truck-tractor with a semi-trailer
+   * const config = policy.getSimplifiedVehicleConfiguration(
+   *   { vehicleSubType: 'TRKTRAC', ... },
+   *   { trailers: [{ vehicleSubType: 'SEMITRL' }] }
+   * );
+   * // Returns: ['TRKTRAC', 'SEMITRL']
+   *
+   * @example
+   * // For a single power unit with no trailers
+   * const config = policy.getSimplifiedVehicleConfiguration(
+   *   { vehicleSubType: 'TRKTRAC', ... },
+   *   { trailers: [] }
+   * );
+   * // Returns: ['TRKTRAC']
+   */
+  getSimplifiedVehicleConfiguration(
+    vehicleDetails: PermitVehicleDetails,
+    vehicleConfiguration: VehicleConfiguration,
+  ) {
+    return getSimplifiedVehicleConfigurationHelper(
+      vehicleDetails,
+      vehicleConfiguration,
+    );
   }
 }

@@ -5,9 +5,17 @@ import {
   PermitAppInfo,
   PolicyFacts,
   CostFacts,
+  PolicyCheckResultType,
 } from 'onroute-policy-engine/enum';
 import { Policy } from 'onroute-policy-engine';
-import { PermitType, RangeMatrix } from 'onroute-policy-engine/types';
+import {
+  AxleConfiguration,
+  PermitType,
+  PermitVehicleDetails,
+  RangeMatrix,
+  VehicleConfiguration,
+} from 'onroute-policy-engine/types';
+import { policyCheckMap } from './policy-check.helper';
 
 dayjs.extend(quarterOfYear);
 
@@ -140,6 +148,129 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
       }
 
       return allowedVehicles;
+    },
+  );
+
+  /**
+   * Add runtime fact to calculate the complete vehicle configuration
+   * by combining the power unit type with any attached trailers.
+   * Returns an array of vehicle types representing the full configuration.
+   */
+  engine.addFact(
+    PolicyFacts.VehicleConfiguration.toString(),
+    async function (params, almanac) {
+      // Retrieve the vehicle details from permit data
+      const vehicleDetails: PermitVehicleDetails = await almanac.factValue(
+        PermitAppInfo.PermitData,
+        {},
+        PermitAppInfo.VehicleDetails,
+      );
+      // Retrieve the vehicle configuration from permit data
+      const vehicleConfiguration: VehicleConfiguration =
+        await almanac.factValue(
+          PermitAppInfo.PermitData,
+          {},
+          PermitAppInfo.VehicleConfiguration,
+        );
+
+      return policy.getSimplifiedVehicleConfiguration(
+        vehicleDetails,
+        vehicleConfiguration,
+      );
+    },
+  );
+
+  /**
+   * Add runtime fact to calculate the gross vehicle combination
+   * weight by summing the weights of the individual axle units.
+   */
+  engine.addFact(
+    PolicyFacts.GrossVehicleCombinationWeight,
+    async function (params, almanac) {
+      // Retrieve the axle configuration from permit data
+      const axleConfiguration: Array<AxleConfiguration> =
+        await almanac.factValue(
+          PermitAppInfo.PermitData,
+          {},
+          PermitAppInfo.AxleConfiguration,
+        );
+      return axleConfiguration.reduce((w, curr) => w + curr.axleUnitWeight, 0);
+    },
+  );
+
+  /**
+   * Add runtime fact to evaluate whether a specific policy check passes
+   * based on the vehicle configuration and axle configuration.
+   * Returns true if all policy check results are 'pass', false otherwise.
+   */
+  engine.addFact(
+    PolicyFacts.PolicyCheckPassed.toString(),
+    async function (params, almanac) {
+      // Retrieve the complete vehicle configuration (power unit + trailers)
+      const vehicleConfiguration: Array<string> = await almanac.factValue(
+        PolicyFacts.VehicleConfiguration,
+      );
+      // Retrieve the axle configuration from permit data
+      const axleConfiguration: Array<AxleConfiguration> =
+        await almanac.factValue(
+          PermitAppInfo.PermitData,
+          {},
+          PermitAppInfo.AxleConfiguration,
+        );
+      // Get the specific policy check ID from parameters
+      const policyCheckId = params.policyId;
+
+      // Look up the policy check function from the policy check map
+      const func = policyCheckMap.get(policyCheckId);
+      if (!func) {
+        return false;
+      }
+      // Execute the policy check function with vehicle and axle configurations
+      const policyCheckResults = func(
+        policy,
+        vehicleConfiguration,
+        axleConfiguration,
+      );
+      if (!policyCheckResults || policyCheckResults.length === 0) {
+        // We did not get any policy check results returned which is an error
+        // condition - all policy checks must return at least one result
+        return false;
+      }
+      // Return true only if all policy check results are 'pass'
+      return policyCheckResults.every(
+        (r) => r.result === PolicyCheckResultType.Pass,
+      );
+    },
+  );
+
+  /**
+   * Add runtime fact to return an array of all messages that result from
+   * all combined policy checks for axle calculation. This is used in
+   * permit validation, returned in the details param for that rule for
+   * overweight permit types.
+   */
+  engine.addFact(
+    PolicyFacts.AxleCalcViolations,
+    async function (params, almanac) {
+      // Retrieve the complete vehicle configuration (power unit + trailers)
+      const vehicleConfiguration: Array<string> = await almanac.factValue(
+        PolicyFacts.VehicleConfiguration,
+      );
+      // Retrieve the axle configuration from permit data
+      const axleConfiguration: Array<AxleConfiguration> =
+        await almanac.factValue(
+          PermitAppInfo.PermitData,
+          {},
+          PermitAppInfo.AxleConfiguration,
+        );
+      const results = policy.runAxleCalculation(
+        vehicleConfiguration,
+        axleConfiguration,
+      );
+      const violations = results.results.filter(
+        (r) => r.result === PolicyCheckResultType.Fail,
+      );
+      return violations.map((v) => v.message);
     },
   );
 

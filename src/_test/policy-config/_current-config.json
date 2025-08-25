@@ -1939,6 +1939,25 @@
               "fieldReference": "permitData.permittedCommodity.loadDescription"
             }
           }
+        },
+        {
+          "conditions": {
+            "not": {
+              "fact": "axleCalcViolations",
+              "operator": "isEmptyArray",
+              "value": true
+            }
+          },
+          "event": {
+            "type": "violation",
+            "params": {
+              "message": "Vehicle configuration failed axle calculation policy checks",
+              "code": "policy-validation-error",
+              "details": {
+                "fact": "axleCalcViolations"
+              }
+            }
+          }
         }
       ],
       "costRules": [
