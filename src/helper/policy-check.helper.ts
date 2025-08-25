@@ -244,12 +244,14 @@ export function CheckPermittableWeight(
     const permittableWeight = singleAxleDimensions[i].permittable || 0;
     let result = actualWeight <= permittableWeight;
     let axleUnit = i + 1;
-    let message = `Weight for axle unit ${axleUnit} ${result ? 'is permittable' : 'must not exceed ' + permittableWeight.toString() + ' kgs'}`;
+    let message = `Weight for axle unit ${axleUnit} ${result ? 'is permittable' : `must not exceed ${permittableWeight} kgs`}`;
     policyCheckResults.push({
       id: policyId,
       message: message,
       result: result ? PolicyCheckResultType.Pass : PolicyCheckResultType.Fail,
       axleUnit: axleUnit,
+      actualWeight: actualWeight,
+      thresholdWeight: permittableWeight,
     });
   });
 

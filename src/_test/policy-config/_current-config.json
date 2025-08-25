@@ -1977,6 +1977,25 @@
               "code": "policy-validation-error"
             }
           }
+        },
+        {
+          "conditions": {
+            "not": {
+              "fact": "policyCheckPassed",
+              "params": {
+                "policyId": "check-permittable-weight"
+              },
+              "operator": "equal",
+              "value": true
+            }
+          },
+          "event": {
+            "type": "violation",
+            "params": {
+              "message": "One or more axle units has weight exceeding permittable value",
+              "code": "policy-validation-error"
+            }
+          }
         }
       ],
       "costRules": [
