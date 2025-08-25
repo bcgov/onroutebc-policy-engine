@@ -182,6 +182,24 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
   );
 
   /**
+   * Add runtime fact to calculate the gross vehicle combination
+   * weight by summing the weights of the individual axle units.
+   */
+  engine.addFact(
+    PolicyFacts.GrossVehicleCombinationWeight,
+    async function (params, almanac) {
+      // Retrieve the axle configuration from permit data
+      const axleConfiguration: Array<AxleConfiguration> =
+        await almanac.factValue(
+          PermitAppInfo.PermitData,
+          {},
+          PermitAppInfo.AxleConfiguration,
+        );
+      return axleConfiguration.reduce((w, curr) => w + curr.axleUnitWeight, 0);
+    },
+  );
+
+  /**
    * Add runtime fact to evaluate whether a specific policy check passes
    * based on the vehicle configuration and axle configuration.
    * Returns true if all policy check results are 'pass', false otherwise.

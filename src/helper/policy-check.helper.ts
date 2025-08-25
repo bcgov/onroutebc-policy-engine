@@ -258,6 +258,83 @@ export function CheckPermittableWeight(
   return policyCheckResults;
 }
 
+export function CheckMinSteerAxleWeight(
+  _policy: Policy,
+  _vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+): Array<PolicyCheckResult> {
+  const policyCheckResults = new Array<AxleGroupPolicyCheckResult>();
+  const policyId = PolicyCheckId.MinSteerAxleWeight;
+  
+  let message, result;
+  if (axleConfiguration[0].numberOfAxles === 1 &&
+    axleConfiguration[1].numberOfAxles === 3) {
+    // Check minimum load on steer axle
+    if (axleConfiguration[0].axleUnitWeight >= axleConfiguration[1].axleUnitWeight * 0.27) {
+      message = 'Steer axle meets minimum weight requirements';
+      result = PolicyCheckResultType.Pass;
+    } else {
+      message = 'Steer axle must be a minimum of 27% of tridem drive axle weight';
+      result = PolicyCheckResultType.Fail;
+    }
+  } else {
+    // This policy check is only for single steer, tridem drive power units
+    message = 'Policy check does not apply to this configuration';
+    result = PolicyCheckResultType.Pass;
+  }
+  policyCheckResults.push({
+    id: policyId,
+    message: message,
+    result: result,
+    startAxleUnit: 1,
+    endAxleUnit: 2
+  });
+
+  return policyCheckResults;
+}
+
+export function CheckMinDriveAxleWeight(
+  _policy: Policy,
+  _vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+): Array<PolicyCheckResult> {
+  const policyCheckResults = new Array<AxleGroupPolicyCheckResult>();
+  const policyId = PolicyCheckId.MinDriveAxleWeight;
+
+  const gvcw = axleConfiguration.reduce((w, curr) => w + curr.axleUnitWeight, 0);
+
+  let message, result;
+  if (axleConfiguration[1].numberOfAxles === 2 ||
+    axleConfiguration[1].numberOfAxles === 3) {
+    let targetMinWeight = gvcw * 0.2;
+    if (axleConfiguration[1].numberOfAxles === 2 && gvcw > 23000) {
+      targetMinWeight = 23000;
+    } else if (axleConfiguration[1].numberOfAxles === 3 && gvcw > 28000) {
+      targetMinWeight = 28000;
+    }
+    if (axleConfiguration[1].axleUnitWeight >= targetMinWeight) {
+      message = 'Drive axle meets minimum weight requirements';
+      result = PolicyCheckResultType.Pass;
+    } else {
+      message = 'Drive axle must be a minimum 20% of the GVCW';
+      result = PolicyCheckResultType.Fail;
+    }
+  } else {
+    // This policy check is only for tandem or tridem drive power units
+    message = 'Policy check does not apply to this configuration';
+    result = PolicyCheckResultType.Pass;
+  }
+  policyCheckResults.push({
+    id: policyId,
+    message: message,
+    result: result,
+    startAxleUnit: 1,
+    endAxleUnit: axleConfiguration.length,
+  });
+
+  return policyCheckResults;
+}
+
 /**
  * Map of policy check functions keyed by their corresponding PolicyCheckId.
  *
@@ -276,6 +353,8 @@ export function CheckPermittableWeight(
  */
 export const policyCheckMap = new Map<string, PolicyCheck>([
   [PolicyCheckId.BridgeFormula, CheckBridgeFormula],
-  [PolicyCheckId.NumberOfWheelsPerAxle, CheckNumTiresPerAxle],
   [PolicyCheckId.CheckPermittableWeight, CheckPermittableWeight],
+  [PolicyCheckId.MinDriveAxleWeight, CheckMinDriveAxleWeight],
+  [PolicyCheckId.MinSteerAxleWeight, CheckMinSteerAxleWeight],
+  [PolicyCheckId.NumberOfWheelsPerAxle, CheckNumTiresPerAxle],
 ]);

@@ -1,18 +1,19 @@
 export enum PolicyFacts {
   AllowedVehicles = 'allowedVehicles',
-  DaysInPermitYear = 'daysInPermitYear',
-  EndOfPermitQuarter = 'endOfPermitQuarter',
-  ValidationDate = 'validationDate',
   ConfigurationIsValid = 'configurationIsValid',
   DaysBetween = 'daysBetween',
-  VehicleConfiguration = 'vehicleConfiguration',
+  DaysInPermitYear = 'daysInPermitYear',
+  EndOfPermitQuarter = 'endOfPermitQuarter',
+  GrossVehicleCombinationWeight = "gvcw",
   PolicyCheckPassed = 'policyCheckPassed',
+  ValidationDate = 'validationDate',
+  VehicleConfiguration = 'vehicleConfiguration',
 }
 
 export enum CostFacts {
   ConditionalFixedCost = 'conditionalFixedCost',
-  FixedCost = 'fixedCost',
-  CostPerMonth = 'costPerMonth',
   CostPerKilometre = 'costPerKilometre',
+  CostPerMonth = 'costPerMonth',
+  FixedCost = 'fixedCost',
   RangeMatrixCostLookup = 'rangeMatrixCostLookup',
 }

@@ -1996,6 +1996,25 @@
               "code": "policy-validation-error"
             }
           }
+        },
+        {
+          "conditions": {
+            "not": {
+              "fact": "policyCheckPassed",
+              "params": {
+                "policyId": "minimum-steer-axle-weight"
+              },
+              "operator": "equal",
+              "value": true
+            }
+          },
+          "event": {
+            "type": "violation",
+            "params": {
+              "message": "Steer axle must be a minimum of 27% of tridem drive axle weight",
+              "code": "policy-validation-error"
+            }
+          }
         }
       ],
       "costRules": [
