@@ -1,6 +1,6 @@
 /**
  * Standard Tire Size Type
- * 
+ *
  * Defines the structure for standard tire sizes used in vehicle configurations
  * and axle calculations.
  */

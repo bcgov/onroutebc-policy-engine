@@ -1,6 +1,6 @@
 /**
  * Special Authorizations Type
- * 
+ *
  * Defines special authorizations and exemptions for companies including
  * LCV (Long Combination Vehicle) allowances and fee exemptions.
  */

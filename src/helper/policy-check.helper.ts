@@ -242,9 +242,9 @@ export function CheckPermittableWeight(
   axleConfiguration.forEach((ac, i) => {
     const actualWeight = ac.axleUnitWeight;
     const permittableWeight = singleAxleDimensions[i].permittable || 0;
-    let result = actualWeight <= permittableWeight;
-    let axleUnit = i + 1;
-    let message = `Weight for axle unit ${axleUnit} ${result ? 'is permittable' : `must not exceed ${permittableWeight} kgs`}`;
+    const result = actualWeight <= permittableWeight;
+    const axleUnit = i + 1;
+    const message = `Weight for axle unit ${axleUnit} ${result ? 'is permittable' : `must not exceed ${permittableWeight} kgs`}`;
     policyCheckResults.push({
       id: policyId,
       message: message,
@@ -288,16 +288,22 @@ export function CheckMinSteerAxleWeight(
 ): Array<PolicyCheckResult> {
   const policyCheckResults = new Array<AxleGroupPolicyCheckResult>();
   const policyId = PolicyCheckId.MinSteerAxleWeight;
-  
+
   let message, result;
-  if (axleConfiguration[0].numberOfAxles === 1 &&
-    axleConfiguration[1].numberOfAxles === 3) {
+  if (
+    axleConfiguration[0].numberOfAxles === 1 &&
+    axleConfiguration[1].numberOfAxles === 3
+  ) {
     // Check minimum load on steer axle
-    if (axleConfiguration[0].axleUnitWeight >= axleConfiguration[1].axleUnitWeight * 0.27) {
+    if (
+      axleConfiguration[0].axleUnitWeight >=
+      axleConfiguration[1].axleUnitWeight * 0.27
+    ) {
       message = 'Steer axle meets minimum weight requirements';
       result = PolicyCheckResultType.Pass;
     } else {
-      message = 'Steer axle must be a minimum of 27% of tridem drive axle weight';
+      message =
+        'Steer axle must be a minimum of 27% of tridem drive axle weight';
       result = PolicyCheckResultType.Fail;
     }
   } else {
@@ -310,7 +316,7 @@ export function CheckMinSteerAxleWeight(
     message: message,
     result: result,
     startAxleUnit: 1,
-    endAxleUnit: 2
+    endAxleUnit: 2,
   });
 
   return policyCheckResults;
@@ -348,11 +354,16 @@ export function CheckMinDriveAxleWeight(
   const policyCheckResults = new Array<AxleGroupPolicyCheckResult>();
   const policyId = PolicyCheckId.MinDriveAxleWeight;
 
-  const gvcw = axleConfiguration.reduce((w, curr) => w + curr.axleUnitWeight, 0);
+  const gvcw = axleConfiguration.reduce(
+    (w, curr) => w + curr.axleUnitWeight,
+    0,
+  );
 
   let message, result;
-  if (axleConfiguration[1].numberOfAxles === 2 ||
-    axleConfiguration[1].numberOfAxles === 3) {
+  if (
+    axleConfiguration[1].numberOfAxles === 2 ||
+    axleConfiguration[1].numberOfAxles === 3
+  ) {
     let targetMinWeight = gvcw * 0.2;
     if (axleConfiguration[1].numberOfAxles === 2) {
       targetMinWeight = Math.min(targetMinWeight, 23000);

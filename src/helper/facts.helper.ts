@@ -14,7 +14,6 @@ import {
   PermitVehicleDetails,
   RangeMatrix,
   VehicleConfiguration,
-  VehicleInConfiguration,
 } from 'onroute-policy-engine/types';
 import { policyCheckMap } from './policy-check.helper';
 
@@ -264,9 +263,14 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
           {},
           PermitAppInfo.AxleConfiguration,
         );
-      const results = policy.runAxleCalculation(vehicleConfiguration, axleConfiguration);
-      const violations = results.results.filter(r => r.result === PolicyCheckResultType.Fail);
-      return violations.map(v => v.message);
+      const results = policy.runAxleCalculation(
+        vehicleConfiguration,
+        axleConfiguration,
+      );
+      const violations = results.results.filter(
+        (r) => r.result === PolicyCheckResultType.Fail,
+      );
+      return violations.map((v) => v.message);
     },
   );
 

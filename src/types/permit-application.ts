@@ -1,6 +1,6 @@
 /**
  * Permit Application Types
- * 
+ *
  * Defines the complete structure for permit applications including contact details,
  * vehicle information, routing, and configuration data.
  */

@@ -1,6 +1,6 @@
 /**
  * Vehicle Category Types
- * 
+ *
  * Defines the structure for vehicle categories including power units and trailers.
  * Extends IdentifiedObject with size and weight dimension defaults.
  */

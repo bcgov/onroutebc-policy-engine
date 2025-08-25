@@ -1,6 +1,6 @@
 /**
  * Bridge Calculation Constants Type
- * 
+ *
  * Defines constants used in bridge formula calculations for determining
  * maximum allowable weights based on axle spacing and configuration.
  */

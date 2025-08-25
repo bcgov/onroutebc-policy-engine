@@ -1,6 +1,6 @@
 /**
  * Commodity Type
- * 
+ *
  * Defines the structure for permitted commodities that can be transported.
  * Extends IdentifiedObject with vehicle dimension requirements.
  */

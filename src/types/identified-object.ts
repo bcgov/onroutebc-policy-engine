@@ -1,6 +1,6 @@
 /**
  * Identified Object Type
- * 
+ *
  * Base type for objects that require unique identification and naming.
  * Used as a foundation for many other types in the system.
  */

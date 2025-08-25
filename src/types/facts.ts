@@ -1,6 +1,6 @@
 /**
  * Permit Facts Type
- * 
+ *
  * Defines the structure for permit application facts used in policy validation.
  * Contains essential information about the permit application and vehicle.
  */

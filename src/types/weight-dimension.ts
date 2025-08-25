@@ -1,6 +1,6 @@
 /**
  * Weight Dimension Types
- * 
+ *
  * Defines the structure for weight dimensions including single axles, power units,
  * and trailers. Extends SelfIssuable for self-issuance capability.
  */

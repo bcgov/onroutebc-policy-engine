@@ -1,13 +1,10 @@
 /**
  * Axle Configuration Type
- * 
+ *
  * Defines the structure for individual axle configurations within a vehicle.
  * Used for weight calculations, spacing requirements, and compliance validation.
  */
 
-/**
- * Configuration details for a single axle or axle group
- */
 export type AxleConfiguration = {
   /** Number of axles in this configuration (1 for single, 2+ for groups) */
   numberOfAxles: number;

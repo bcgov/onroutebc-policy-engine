@@ -1,6 +1,6 @@
 /**
  * Dimension Modifier Types
- * 
+ *
  * Defines structures for modifying vehicle dimensions based on configuration
  * and relationships between vehicle components.
  */

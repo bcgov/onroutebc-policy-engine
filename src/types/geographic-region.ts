@@ -1,6 +1,6 @@
 /**
  * Geographic Region Type
- * 
+ *
  * Defines the structure for geographic regions used in permit routing and validation.
  * Extends IdentifiedObject with optional description for enhanced identification.
  */

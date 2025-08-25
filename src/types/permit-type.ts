@@ -1,6 +1,6 @@
 /**
  * Permit Type
- * 
+ *
  * Defines the structure for permit types including requirements, allowed vehicles,
  * commodities, rules, and conditions. Extends IdentifiedObject with permit-specific properties.
  */

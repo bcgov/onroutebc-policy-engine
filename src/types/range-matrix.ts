@@ -1,6 +1,6 @@
 /**
  * Range Matrix Types
- * 
+ *
  * Defines structures for range-based calculations and lookups used in cost
  * calculations and other policy determinations.
  */

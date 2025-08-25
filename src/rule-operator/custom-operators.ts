@@ -1,6 +1,6 @@
 /**
  * Custom Operators for JSON Rules Engine
- * 
+ *
  * This module defines custom operators that extend the functionality of the json-rules-engine
  * library. These operators provide specialized validation and comparison logic for the
  * onRouteBC policy engine.
@@ -43,7 +43,7 @@ const CustomOperators: Array<Operator> = [];
 
 /**
  * String Minimum Length Operator
- * 
+ *
  * Checks if a string has a minimum length after trimming whitespace.
  * Returns false if the input is falsy (null, undefined, empty string).
  */
@@ -63,7 +63,7 @@ CustomOperators.push(
 
 /**
  * Date Less Than Operator
- * 
+ *
  * Compares two date strings in permit application format.
  * Returns true if the first date is before the second date.
  */
@@ -74,7 +74,7 @@ CustomOperators.push(
       // Parse both dates using the permit application date format
       const firstDate = dayjs(a, PermitAppInfo.PermitDateFormat.toString());
       const secondDate = dayjs(b, PermitAppInfo.PermitDateFormat.toString());
-      
+
       // Return true if first date is before second date (difference is negative)
       return firstDate.diff(secondDate) < 0;
     },
@@ -84,7 +84,7 @@ CustomOperators.push(
 
 /**
  * Regular Expression Operator
- * 
+ *
  * Tests if a string matches a regular expression pattern.
  * Uses RegExp.exec() to check for matches.
  */
@@ -98,7 +98,7 @@ CustomOperators.push(
 
 /**
  * Is Empty Array Operator
- * 
+ *
  * Checks if an array is empty (has length 0).
  */
 CustomOperators.push(

@@ -1,6 +1,6 @@
 /**
  * Vehicle Types
- * 
+ *
  * Defines the structure for vehicles including power units and trailers.
  * Extends SelfIssuable for self-issuance capability and includes dimension configurations.
  */

@@ -1,6 +1,6 @@
 /**
  * Bridge Calculation Result Type
- * 
+ *
  * Defines the result structure for bridge formula calculations.
  * Used to determine if a vehicle configuration meets bridge weight requirements.
  */

@@ -1,6 +1,6 @@
 /**
  * Axle Calculation Results Types
- * 
+ *
  * These types define the structure for axle calculation results and policy check outcomes.
  * Used for validating vehicle configurations against weight and axle requirements.
  */

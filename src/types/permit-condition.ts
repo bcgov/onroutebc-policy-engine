@@ -1,6 +1,6 @@
 /**
  * Permit Condition Types
- * 
+ *
  * Defines the structure for permit conditions and requirements that must be met
  * for permit approval and compliance.
  */

@@ -1,6 +1,6 @@
 /**
  * Vehicle Display Code Defaults Type
- * 
+ *
  * Defines default values and formatting rules for generating vehicle display codes.
  * Used for creating standardized vehicle identification codes across the system.
  */

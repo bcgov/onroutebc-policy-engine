@@ -1,6 +1,6 @@
 /**
  * Size Dimension Type
- * 
+ *
  * Defines the structure for vehicle size dimensions including length, width, height,
  * projections, and regional overrides. Extends SelfIssuable for self-issuance capability.
  */

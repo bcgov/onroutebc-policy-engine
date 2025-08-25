@@ -1,6 +1,6 @@
 /**
  * Vehicle Type Types
- * 
+ *
  * Defines the structure for vehicle types including power units and trailers.
  * Extends IdentifiedObject with category, dimensions, and special configurations.
  */

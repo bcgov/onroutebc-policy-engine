@@ -1,6 +1,6 @@
 /**
  * Policy Definition Type
- * 
+ *
  * Defines the complete structure for policy definitions including geographic regions,
  * permit types, rules, defaults, and configurations. This is the main configuration
  * type for the policy engine.

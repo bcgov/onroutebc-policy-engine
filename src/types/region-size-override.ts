@@ -1,6 +1,6 @@
 /**
  * Region Size Override Type
- * 
+ *
  * Defines size dimension overrides for specific geographic regions.
  * Used to apply region-specific size limits and requirements.
  */
