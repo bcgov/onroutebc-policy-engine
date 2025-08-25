@@ -1943,57 +1943,19 @@
         {
           "conditions": {
             "not": {
-              "fact": "policyCheckPassed",
-              "params": {
-                "policyId": "bridge-formula"
-              },
-              "operator": "equal",
+              "fact": "axleCalcViolations",
+              "operator": "isEmptyArray",
               "value": true
             }
           },
           "event": {
             "type": "violation",
             "params": {
-              "message": "Vehicle configuration failed bridge formula",
-              "code": "policy-validation-error"
-            }
-          }
-        },
-        {
-          "conditions": {
-            "not": {
-              "fact": "policyCheckPassed",
-              "params": {
-                "policyId": "number-of-wheels"
-              },
-              "operator": "equal",
-              "value": true
-            }
-          },
-          "event": {
-            "type": "violation",
-            "params": {
-              "message": "One or more axle units has an invalid number of wheels",
-              "code": "policy-validation-error"
-            }
-          }
-        },
-        {
-          "conditions": {
-            "not": {
-              "fact": "policyCheckPassed",
-              "params": {
-                "policyId": "check-permittable-weight"
-              },
-              "operator": "equal",
-              "value": true
-            }
-          },
-          "event": {
-            "type": "violation",
-            "params": {
-              "message": "One or more axle units has weight exceeding permittable value",
-              "code": "policy-validation-error"
+              "message": "Vehicle configuration failed axle calculation policy checks",
+              "code": "policy-validation-error",
+              "details": {
+                "fact": "axleCalcViolations"
+              }
             }
           }
         }
