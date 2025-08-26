@@ -393,6 +393,51 @@ export function CheckMinDriveAxleWeight(
   return policyCheckResults;
 }
 
+/**
+ * Validates maximum tire load capacity for each axle unit based on tire size and count.
+ *
+ * This function performs tire load validation for all axle units in a vehicle configuration.
+ * It checks that the weight on each axle unit does not exceed the maximum load capacity
+ * of the tires based on their size and quantity. The validation uses different rules for
+ * steer axles versus non-steer axles.
+ *
+ * For steer axles:
+ * - Tire size must not exceed 455mm
+ * - For tires ≥445mm: Maximum weight is 9,100kg
+ * - For tires <445mm: Maximum weight is calculated as (number of tires × tire size × 10)
+ *
+ * For non-steer axles:
+ * - For tires ≥445mm: Maximum weight is (number of tires × 3,850kg)
+ * - For tires >300mm and <445mm: Maximum weight is (number of tires × 3,000kg)
+ * - For tires ≤300mm: Maximum weight is (number of tires × tire size × 10)
+ *
+ * @param _policy - The policy instance (unused in this check, but required by PolicyCheck type)
+ * @param _vehicleConfiguration - Vehicle configuration (unused in this check, but required by PolicyCheck type)
+ * @param axleConfiguration - Array of axle configurations containing tire size, tire count, and weight information
+ * @returns Array of PolicyCheckResult objects, with individual axle unit results for failures
+ *          or a single group result for successful validation
+ *
+ * @example
+ * // For a vehicle with valid tire loads
+ * const results = CheckMaxTireLoad(policy, ['TRKTRAC'], [
+ *   { tireSize: 445, numberOfTires: 2, axleUnitWeight: 8000 },  // Steer axle: 8000kg ≤ 9100kg (pass)
+ *   { tireSize: 445, numberOfTires: 8, axleUnitWeight: 30000 }  // Drive axle: 30000kg ≤ 30800kg (pass)
+ * ]);
+ * // Returns single pass result for all axle units
+ *
+ * @example
+ * // For a vehicle with invalid tire loads
+ * const results = CheckMaxTireLoad(policy, ['TRKTRAC'], [
+ *   { tireSize: 460, numberOfTires: 2, axleUnitWeight: 8000 },  // Steer axle: tire size > 455mm (fail)
+ *   { tireSize: 445, numberOfTires: 8, axleUnitWeight: 32000 }  // Drive axle: 32000kg > 30800kg (fail)
+ * ]);
+ * // Returns individual fail results for each axle unit
+ *
+ * @see PolicyCheck
+ * @see AxleUnitPolicyCheckResult
+ * @see AxleGroupPolicyCheckResult
+ * @see AxleConfiguration
+ */
 export function CheckMaxTireLoad(
   _policy: Policy,
   _vehicleConfiguration: Array<string>,
@@ -498,6 +543,10 @@ export function CheckMaxTireLoad(
  *
  * Currently includes:
  * - BridgeFormula: Validates axle groups against bridge formula requirements
+ * - CheckPermittableWeight: Validates total vehicle weight against permit limits
+ * - MaxTireLoad: Validates tire load capacity for each axle unit
+ * - MinDriveAxleWeight: Validates minimum weight requirements for drive axles
+ * - MinSteerAxleWeight: Validates minimum weight requirements for steer axles
  * - NumberOfWheelsPerAxle: Validates tire count per axle unit
  *
  * @see PolicyCheck
