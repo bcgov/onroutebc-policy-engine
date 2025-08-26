@@ -393,6 +393,101 @@ export function CheckMinDriveAxleWeight(
   return policyCheckResults;
 }
 
+export function CheckMaxTireLoad(
+  _policy: Policy,
+  _vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+): Array<PolicyCheckResult> {
+  const policyCheckResults = new Array<PolicyCheckResult>();
+  const policyId = PolicyCheckId.MaxTireLoad;
+  
+  // Steer axle tire load check
+  const steerTireSize = axleConfiguration[0].tireSize;
+  if (!steerTireSize) {
+    policyCheckResults.push({
+      id: policyId,
+      result: PolicyCheckResultType.Fail,
+      message: `Steer axle tire size is invalid`,
+      axleUnit: 1,
+    } as AxleUnitPolicyCheckResult);
+  } else if (steerTireSize > 455) {
+    policyCheckResults.push({
+      id: policyId,
+      result: PolicyCheckResultType.Fail,
+      message: `Steer axle tire size must not exceed 455mm`,
+      axleUnit: 1,
+    } as AxleUnitPolicyCheckResult);
+  } else if (steerTireSize >= 445) {
+    if (axleConfiguration[0].axleUnitWeight > 9100) {
+      policyCheckResults.push({
+        id: policyId,
+        result: PolicyCheckResultType.Fail,
+        message: `Steer axle weight exceeds maximum of 9100kg for ${steerTireSize}mm tire size`,
+        axleUnit: 1,
+      } as AxleUnitPolicyCheckResult);
+    }
+  } else {
+    const maxWeightOnSteerAxle = (axleConfiguration[0].numberOfTires || 0) * (steerTireSize * 10);
+    if (axleConfiguration[0].axleUnitWeight > maxWeightOnSteerAxle) {
+      policyCheckResults.push({
+        id: policyId,
+        result: PolicyCheckResultType.Fail,
+        message: `Steer axle weight exceeds maximum of ${maxWeightOnSteerAxle}kg for ${steerTireSize}mm tire size`,
+        axleUnit: 1,
+      } as AxleUnitPolicyCheckResult);
+    }
+  }
+
+  // Non-steer axle tire load checks
+  axleConfiguration.slice(1).forEach((a, i) => {
+    const tireSize = a.tireSize;
+    const numberOfTires = a.numberOfTires;
+    let maxWeight = 0;
+    if (!tireSize) {
+      policyCheckResults.push({
+        id: policyId,
+        result: PolicyCheckResultType.Fail,
+        message: `Axle unit ${i + 1} tire size is invalid`,
+        axleUnit: i + 1,
+      } as AxleUnitPolicyCheckResult);
+    } else if (!numberOfTires) {
+      policyCheckResults.push({
+        id: policyId,
+        result: PolicyCheckResultType.Fail,
+        message: `Axle unit ${i + 1} number of wheels is invalid`,
+        axleUnit: i + 1,
+      } as AxleUnitPolicyCheckResult);
+    } else {
+      if (tireSize >= 445) {
+        maxWeight = numberOfTires * 3850;
+      } else if (tireSize > 300) {
+        maxWeight = numberOfTires * 3000;
+      } else {
+        maxWeight = numberOfTires * tireSize * 10;
+      }
+      if (a.axleUnitWeight > maxWeight) {
+        policyCheckResults.push({
+          id: policyId,
+          result: PolicyCheckResultType.Fail,
+          message: `Axle unit ${i + 1} weight exceeds maximum of ${maxWeight}kg for ${numberOfTires} ${steerTireSize}mm tires`,
+          axleUnit: 1,
+        } as AxleUnitPolicyCheckResult);
+      }
+    }
+  });
+
+  if (policyCheckResults.length === 0) {
+    policyCheckResults.push({
+      id: policyId,
+      result: PolicyCheckResultType.Pass,
+      message: 'Max tire load check passed for all axle units',
+      startAxleUnit: 1,
+      endAxleUnit: axleConfiguration.length,
+    } as AxleGroupPolicyCheckResult)
+  }
+  return policyCheckResults;
+}
+
 /**
  * Map of policy check functions keyed by their corresponding PolicyCheckId.
  *
@@ -412,6 +507,7 @@ export function CheckMinDriveAxleWeight(
 export const policyCheckMap = new Map<string, PolicyCheck>([
   [PolicyCheckId.BridgeFormula, CheckBridgeFormula],
   [PolicyCheckId.CheckPermittableWeight, CheckPermittableWeight],
+  [PolicyCheckId.MaxTireLoad, CheckMaxTireLoad],
   [PolicyCheckId.MinDriveAxleWeight, CheckMinDriveAxleWeight],
   [PolicyCheckId.MinSteerAxleWeight, CheckMinSteerAxleWeight],
   [PolicyCheckId.NumberOfWheelsPerAxle, CheckNumTiresPerAxle],
