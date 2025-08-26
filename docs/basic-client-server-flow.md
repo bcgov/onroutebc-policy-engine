@@ -1,34 +1,69 @@
-# Basic client server flow for policy engine
+# Basic Client-Server Flow for Policy Engine
 
-## Principles
-The policy engine is implemented as a javascript module that can be used server-side with Nodejs, or in the browser.  
+## Overview
 
-When the policy engine is initialized, a JSON file describing policy rules is supplied. When a method of the policy engine is called, it generates its response based on the policy JSON that it was initialized with.
+The onRouteBC Policy Engine is implemented as a JavaScript module that can be used server-side with Node.js or in the browser. This document describes the basic flow of how the policy engine integrates with client and server applications.
 
-For example, a policy JSON will include a list of all valid permit types, as well as a list of all valid vehicle types. When the getPermitTypes or getVehicleTypes methods are called, the response will be based on just those permit / vehicle types defined in the JSON. Notably, there are no 'built-in' permit or vehicle types - all are defined exclusively in the JSON. This provides maximum flexibility.
+## Core Principles
 
-The most current policy JSON will describe Commercial Vehicle policy as of right now. This current policy JSON will be stored in the onRouteBC SQL Server database in a column in a table. When changes are made to policy, a new row is added to the table and the old policy JSON is end-dated. There is only ever one current policy JSON at any one time.
+### Policy Engine Architecture
 
-It will be possible to retrieve any previous version of policy because all are kept in the database. It is also possible to initialize the policy engine with an arbitrary policy JSON for development and testing purposes. The policy JSON need not be retrieved from the database, the policy engine doesn't care where it comes from.
+The policy engine is initialized with a JSON file describing policy rules. When methods of the policy engine are called, responses are generated based on the policy JSON that was used for initialization.
 
-Initializing the policy engine with a policy JSON that is __not__ the current version is useful in the scenario where new policy rules are being edited and need to be tested thoroughly before going live. In this scenario, the new policy JSON would be in the database in 'draft' state, and the onRouteBC application launched in a test state that will load the specific draft policy JSON instead of current live policy.
+For example, a policy JSON includes lists of all valid permit types and vehicle types. When the `getPermitTypes()` or `getVehicleTypes()` methods are called, the response is based exclusively on those permit/vehicle types defined in the JSON. Notably, there are no 'built-in' permit or vehicle types - all are defined exclusively in the JSON configuration, providing maximum flexibility.
 
-The policy JSON in the onRouteBC database will be accessible only through a policy API. This API should be used by the backend as well as the frontend to ensure consistency - make sure the entire application is using the same policy.
+### Policy Version Management
 
-Retrieving the current policy JSON could be achieved with a GET request to, for example, /policy/current.
+The most current policy JSON describes Commercial Vehicle policy as of the current date. This policy JSON is stored in the onRouteBC SQL Server database in a dedicated table column. When policy changes are made, a new row is added to the table and the old policy JSON is end-dated. There is only ever one current policy JSON active at any given time.
 
-Retrieving a non-current (draft or expired) policy JSON could be achieved with a GET request to the endpoint with ID, for example, /policy/10042 (where 10042 is the ID of the draft policy JSON in the database).
+**Key Benefits:**
+- All previous policy versions are retained for historical reference
+- The policy engine can be initialized with any arbitrary policy JSON for development and testing
+- The policy engine doesn't care where the JSON comes from - it can be retrieved from the database or loaded from any source
 
-The policy engine javascript library will provide methods for various policy-related tasks in onRouteBC. Examples are getting the list of all valid permit types, getting the list of valid trailer types, getting the list of rules applicable for a specific permit type, and a validate method to check a supplied permit application against policy for any violations or warnings.
+### Development and Testing Workflow (For Future)
 
-Some of these methods are exposed through the policy engine API. For example, a /policy/current/validate method where a policy application JSON is POSTed to it could return an identical result to executing this in the browser in javascript. The policy engine API will simply delegate the call to the policy engine library running in Nodejs in the backend, and package and return the response unmodified.
+Initializing the policy engine with a policy JSON that is **not** the current version is particularly useful when new policy rules are being edited and need thorough testing before going live. In this scenario:
 
-In this way, a server-side validation of a permit application can be mandatory before a permit is issued, but intermediate validation steps (such as when the client is filling out the permit application form) can be executed quickly in-browser instead of calling back to the server constantly.
+1. The new policy JSON is stored in the database in 'draft' state
+2. The onRouteBC application is launched in test mode
+3. The test environment loads the specific draft policy JSON instead of the current live policy
 
-### Payload Size
-The size of the policy JSON will be reduced by relying on default values for weight and size dimensions, the largest part of policy configuration. When transmitting and storing the policy JSON, the 'dehydrated' and unformatted JSON will be used. When the policy engine is initialized with a policy JSON it will rehydrate it with the weight and size dimension defaults. An 'export' method will dehydrate the policy JSON and return the smaller JSON result.
+## API Integration
 
-Rehydration and dehydration on initialization and export simplifies the admin management of policy, since values can be updated directly in the policy engine JSON without having to worry about default values.
+### Policy API Access
+
+The policy JSON in the onRouteBC database is accessible only through a dedicated policy API. This API should be used by both backend and frontend applications to ensure consistency across the entire system.
+
+**API Endpoints (For Future):**
+- **Current Policy:** `GET /policy/current` - Retrieves the currently active policy JSON
+- **Specific Policy:** `GET /policy/{id}` - Retrieves a specific policy version (e.g., `/policy/10042` for draft policy with ID 10042)
+
+### Policy Engine Methods
+
+The policy engine JavaScript library provides methods for various policy-related tasks:
+
+- `getPermitTypes()` - Retrieve all valid permit types
+- `getVehicleTypes()` - Retrieve all valid vehicle types  
+- `getTrailerTypes()` - Retrieve all valid trailer types
+- `getRules(permitType)` - Get rules applicable for a specific permit type
+- `validate(permitApplication)` - Check a permit application against policy for violations or warnings
+
+### Server-Side vs Client-Side Validation
+
+Some policy engine methods are exposed through the policy engine API. For example, a `POST /policy/current/validate` endpoint could be implemented which would return identical results to executing the same validation in the browser using JavaScript.
+
+The policy engine API simply delegates calls to the policy engine library running in Node.js on the backend and returns the response unmodified.
+
+**Benefits of This Approach:**
+- **Server-side validation** can be mandatory before a permit is issued
+- **Client-side validation** can be executed quickly in-browser for intermediate validation steps (such as when users are filling out permit application forms)
+- **Consistency** is maintained between client and server validation results
+- **Performance** is improved by reducing constant server calls during form completion
+
+## Client-Server Flow Diagram
+
+The following sequence diagram illustrates the typical flow of a permit application through the system:
 
 ```mermaid
 sequenceDiagram
@@ -36,6 +71,7 @@ sequenceDiagram
     participant orbc as onRouteBC
     participant policy as Policy Engine API
     participant db as SQL Server
+    
     browser->>orbc: Log in
     orbc->>policy: Request current<br/>policy
     note over orbc,policy: e.g. GET /policy/current/
@@ -48,10 +84,12 @@ sequenceDiagram
     browser->>orbc: Request to start permit app
     orbc-->>browser: Return application form
     browser->>browser: Populate permit type<br/>dropdown from policy<br/>engine
+    
     loop As user fills in form
         browser->>browser: Validate permit<br/>in browser
         note over browser, orbc: Final validation occurs when user<br/>submits completed application.
     end
+    
     browser->>orbc: Submit application
     note over browser,orbc: Include complete permit JSON
     orbc->>policy: Validate permit JSON
@@ -62,9 +100,27 @@ sequenceDiagram
     policy->>policy: Validate permit<br/>server-side
     note over orbc,policy: Server-side validation should return<br/>identical results to client-side.
     policy-->>orbc: Return validation results
+    
     alt Permit is valid
         note over browser,db: Proceed as normal with sending client to payment page / cart
     else Permit is not valid
         orbc-->>browser: Return error message
     end
 ```
+
+## Implementation Notes
+
+### Policy Engine Initialization
+
+The policy engine is initialized once per session with the current policy JSON. This ensures that all validations during the session use the same policy rules.
+
+### Validation Consistency
+
+Both client-side and server-side validation should produce identical results when using the same policy JSON. This is critical for maintaining user trust and system reliability.
+
+### Performance Considerations
+
+- **Client-side validation** provides immediate feedback during form completion
+- **Server-side validation** ensures security and data integrity
+- **Policy caching** can be implemented to reduce database queries
+- **Incremental validation** can be performed as users complete form sections
