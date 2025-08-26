@@ -188,7 +188,7 @@ describe('Axle Calculation Functions', () => {
       JSON.stringify(axleConfiguration),
     ) as Array<AxleConfiguration>;
     ac[2].tireSize = 445;
-    ac[2].axleUnitWeight = (3850 * (ac[2].numberOfTires || 0)) + 1;
+    ac[2].axleUnitWeight = 3850 * (ac[2].numberOfTires || 0) + 1;
     const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
@@ -206,7 +206,7 @@ describe('Axle Calculation Functions', () => {
       JSON.stringify(axleConfiguration),
     ) as Array<AxleConfiguration>;
     ac[2].tireSize = 330;
-    ac[2].axleUnitWeight = (3000 * (ac[2].numberOfTires || 0)) + 1;
+    ac[2].axleUnitWeight = 3000 * (ac[2].numberOfTires || 0) + 1;
     const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
@@ -224,7 +224,7 @@ describe('Axle Calculation Functions', () => {
       JSON.stringify(axleConfiguration),
     ) as Array<AxleConfiguration>;
     ac[2].tireSize = 279;
-    ac[2].axleUnitWeight = (2790 * (ac[2].numberOfTires || 0)) + 1;
+    ac[2].axleUnitWeight = 2790 * (ac[2].numberOfTires || 0) + 1;
     const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),

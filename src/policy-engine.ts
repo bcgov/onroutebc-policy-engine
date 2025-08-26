@@ -978,7 +978,10 @@ export class Policy {
       (w, curr) => w + curr.axleUnitWeight,
       0,
     );
-    axleCalcResults.totalOverload = Math.max(axleCalcResults.totalOverload, gvcw - licensedGVW);
+    axleCalcResults.totalOverload = Math.max(
+      axleCalcResults.totalOverload,
+      gvcw - licensedGVW,
+    );
     return axleCalcResults;
   }
 

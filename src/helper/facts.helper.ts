@@ -264,12 +264,11 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
           PermitAppInfo.AxleConfiguration,
         );
       // Retrieve licensed GVW from permit data
-      const vehicleDetails: PermitVehicleDetails =
-        await almanac.factValue(
-          PermitAppInfo.PermitData,
-          {},
-          PermitAppInfo.VehicleDetails,
-        );
+      const vehicleDetails: PermitVehicleDetails = await almanac.factValue(
+        PermitAppInfo.PermitData,
+        {},
+        PermitAppInfo.VehicleDetails,
+      );
       const results = policy.runAxleCalculation(
         vehicleConfiguration,
         axleConfiguration,
