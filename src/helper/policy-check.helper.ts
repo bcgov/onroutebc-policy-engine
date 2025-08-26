@@ -445,7 +445,7 @@ export function CheckMaxTireLoad(
 ): Array<PolicyCheckResult> {
   const policyCheckResults = new Array<PolicyCheckResult>();
   const policyId = PolicyCheckId.MaxTireLoad;
-  
+
   // Steer axle tire load check
   const steerTireSize = axleConfiguration[0].tireSize;
   if (!steerTireSize) {
@@ -472,7 +472,8 @@ export function CheckMaxTireLoad(
       } as AxleUnitPolicyCheckResult);
     }
   } else {
-    const maxWeightOnSteerAxle = (axleConfiguration[0].numberOfTires || 0) * (steerTireSize * 10);
+    const maxWeightOnSteerAxle =
+      (axleConfiguration[0].numberOfTires || 0) * (steerTireSize * 10);
     if (axleConfiguration[0].axleUnitWeight > maxWeightOnSteerAxle) {
       policyCheckResults.push({
         id: policyId,
@@ -487,20 +488,21 @@ export function CheckMaxTireLoad(
   axleConfiguration.slice(1).forEach((a, i) => {
     const tireSize = a.tireSize;
     const numberOfTires = a.numberOfTires;
+    const axleUnitNum = i + 2;
     let maxWeight = 0;
     if (!tireSize) {
       policyCheckResults.push({
         id: policyId,
         result: PolicyCheckResultType.Fail,
-        message: `Axle unit ${i + 1} tire size is invalid`,
-        axleUnit: i + 1,
+        message: `Axle unit ${axleUnitNum} tire size is invalid`,
+        axleUnit: axleUnitNum,
       } as AxleUnitPolicyCheckResult);
     } else if (!numberOfTires) {
       policyCheckResults.push({
         id: policyId,
         result: PolicyCheckResultType.Fail,
-        message: `Axle unit ${i + 1} number of wheels is invalid`,
-        axleUnit: i + 1,
+        message: `Axle unit ${axleUnitNum} number of wheels is invalid`,
+        axleUnit: axleUnitNum,
       } as AxleUnitPolicyCheckResult);
     } else {
       if (tireSize >= 445) {
@@ -514,8 +516,8 @@ export function CheckMaxTireLoad(
         policyCheckResults.push({
           id: policyId,
           result: PolicyCheckResultType.Fail,
-          message: `Axle unit ${i + 1} weight exceeds maximum of ${maxWeight}kg for ${numberOfTires} ${steerTireSize}mm tires`,
-          axleUnit: 1,
+          message: `Axle unit ${axleUnitNum} weight exceeds maximum of ${maxWeight}kg for ${numberOfTires} ${tireSize}mm tires`,
+          axleUnit: axleUnitNum,
         } as AxleUnitPolicyCheckResult);
       }
     }
@@ -528,7 +530,7 @@ export function CheckMaxTireLoad(
       message: 'Max tire load check passed for all axle units',
       startAxleUnit: 1,
       endAxleUnit: axleConfiguration.length,
-    } as AxleGroupPolicyCheckResult)
+    } as AxleGroupPolicyCheckResult);
   }
   return policyCheckResults;
 }
