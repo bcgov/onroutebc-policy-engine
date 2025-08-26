@@ -271,7 +271,7 @@ npm run build
 - [Policy Configuration Reference](./docs/policy-configuration-reference.md) - Detailed policy definition format
 - [Validation Result Reference](./docs/validation-result-reference.md) - Understanding validation results
 - [Basic Client-Server Flow](./docs/basic-client-server-flow.md) - Integration patterns
-- [Policy Check Rules](./POLICY_CHECK_RULES_README.md) - Detailed explanation of validation rules
+- [Policy Check Rules](./docs/policy-check-rules.md) - Detailed explanation of validation rules
 
 ## Contributing
 
