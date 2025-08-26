@@ -59,34 +59,40 @@
         {
           "numberOfAxles": 1,
           "axleUnitWeight": 6700,
-          "numberOfTires": 2
+          "numberOfTires": 2,
+          "tireSize": 355
         },
         {
           "numberOfAxles": 2,
           "axleSpread": 160,
           "interaxleSpacing": 350,
           "axleUnitWeight": 12000,
-          "numberOfTires": 4
+          "numberOfTires": 4,
+          "tireSize": 330
         },
         {
-          "numberOfAxles": 1,
+          "numberOfAxles": 2,
+          "axleSpread": 160,
           "interaxleSpacing": 300,
           "axleUnitWeight": 11000,
-          "numberOfTires": 2
+          "numberOfTires": 4,
+          "tireSize": 330
         },
         {
           "numberOfAxles": 3,
           "axleSpread": 220,
           "interaxleSpacing": 700,
           "axleUnitWeight": 18000,
-          "numberOfTires": 12
+          "numberOfTires": 12,
+          "tireSize": 330
         },
         {
           "numberOfAxles": 2,
           "axleSpread": 160,
           "interaxleSpacing": 350,
           "axleUnitWeight": 10000,
-          "numberOfTires": 4
+          "numberOfTires": 4,
+          "tireSize": 330
         }
       ]
     },

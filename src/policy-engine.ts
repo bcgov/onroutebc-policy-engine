@@ -942,6 +942,7 @@ export class Policy {
    *                          Each axle configuration contains details like number of axles, spacing, tire count, etc.
    *                          The length should match the vehicleConfiguration array plus one (since the first
    *                          vehicle in the configuration is a power unit with two axle units).
+   * @param licensedGVW Licensed GVW of the vehicle being permitted.
    * @returns AxleCalcResults object containing:
    *          - results: Array of PolicyCheckResult objects, each representing the outcome of a specific policy check
    *          - totalOverload: Numeric value representing the total overload across all axle calculations
@@ -965,6 +966,7 @@ export class Policy {
   runAxleCalculation(
     vehicleConfiguration: Array<string>,
     axleConfiguration: Array<AxleConfiguration>,
+    licensedGVW: number,
   ): AxleCalcResults {
     const axleCalcResults: AxleCalcResults = { results: [], totalOverload: 0 };
     for (const [, func] of policyCheckMap) {
@@ -972,6 +974,11 @@ export class Policy {
         ...func(this, vehicleConfiguration, axleConfiguration),
       );
     }
+    const gvcw = axleConfiguration.reduce(
+      (w, curr) => w + curr.axleUnitWeight,
+      0,
+    );
+    axleCalcResults.totalOverload = Math.max(axleCalcResults.totalOverload, gvcw - licensedGVW);
     return axleCalcResults;
   }
 

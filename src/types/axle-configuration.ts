@@ -16,6 +16,6 @@ export type AxleConfiguration = {
   axleUnitWeight: number;
   /** Number of tires on this axle unit */
   numberOfTires?: number;
-  /** Tire size in inches */
+  /** Tire size in centimetres */
   tireSize?: number;
 };
