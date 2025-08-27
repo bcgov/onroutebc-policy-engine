@@ -535,6 +535,58 @@ export function CheckMaxTireLoad(
   return policyCheckResults;
 }
 
+export function CheckDriveJeepWeightBalance(
+  _policy: Policy,
+  vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+): Array<PolicyCheckResult> {
+  const policyCheckResults = new Array<AxleGroupPolicyCheckResult>();
+  const policyId = PolicyCheckId.DriveJeepWeightBalance;
+
+  if (
+    (axleConfiguration.length < 3)
+    || (axleConfiguration[1].numberOfAxles !== axleConfiguration[2].numberOfAxles)
+    || (vehicleConfiguration.length > 1 && vehicleConfiguration[1] !== 'JEEPSRG')
+  ) {
+    policyCheckResults.push({
+      id: policyId,
+      message: 'Policy check does not apply to this configuration',
+      result: PolicyCheckResultType.Pass,
+      startAxleUnit: 1,
+      endAxleUnit: axleConfiguration.length,
+    });
+
+    return policyCheckResults;
+  }
+
+  // Get difference between drive axle and jeep axle
+  const weightDifference = Math.abs(
+    axleConfiguration[1].axleUnitWeight - axleConfiguration[2].axleUnitWeight,
+  );
+
+  if (weightDifference > 1000) {
+    policyCheckResults.push({
+      id: policyId,
+      message: 'Drive axle weight must be within 1000kg of adjacent jeep axle weight',
+      result: PolicyCheckResultType.Fail,
+      startAxleUnit: 2,
+      endAxleUnit: 3,
+    });
+
+    return policyCheckResults;
+  }
+
+  policyCheckResults.push({
+    id: policyId,
+    message: 'Drive axle weight is within 1000kg of adjacent jeep axle weight',
+    result: PolicyCheckResultType.Pass,
+    startAxleUnit: 2,
+    endAxleUnit: 3,
+  });
+
+  return policyCheckResults;
+}
+
 /**
  * Map of policy check functions keyed by their corresponding PolicyCheckId.
  *
@@ -562,4 +614,5 @@ export const policyCheckMap = new Map<string, PolicyCheck>([
   [PolicyCheckId.MinDriveAxleWeight, CheckMinDriveAxleWeight],
   [PolicyCheckId.MinSteerAxleWeight, CheckMinSteerAxleWeight],
   [PolicyCheckId.NumberOfWheelsPerAxle, CheckNumTiresPerAxle],
+  [PolicyCheckId.DriveJeepWeightBalance, CheckDriveJeepWeightBalance],
 ]);

@@ -10,4 +10,5 @@ export enum PolicyCheckId {
   MinDriveAxleWeight = 'minimum-drive-axle-weight',
   MinSteerAxleWeight = 'minimum-steer-axle-weight',
   NumberOfWheelsPerAxle = 'number-of-wheels',
+  DriveJeepWeightBalance = 'drive-jeep-weight-balance',
 }

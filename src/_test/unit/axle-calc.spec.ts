@@ -236,4 +236,22 @@ describe('Axle Calculation Functions', () => {
       maxTireResults.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(false);
   });
+
+  it('should fail policy check for unbalanced drive and jeep axle weights', async () => {
+    const ac = JSON.parse(
+      JSON.stringify(axleConfiguration),
+    ) as Array<AxleConfiguration>;
+    ac[1].axleUnitWeight = 12000;
+    ac[2].axleUnitWeight = 10000;
+    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    expect(
+      results.results.every((r) => r.result === PolicyCheckResultType.Pass),
+    ).toBe(false);
+    const balancedAxleWeightResults = results.results.filter(
+      (r) => r.id === PolicyCheckId.DriveJeepWeightBalance,
+    );
+    expect(
+      balancedAxleWeightResults.every((r) => r.result === PolicyCheckResultType.Pass),
+    ).toBe(false);
+  });
 });
