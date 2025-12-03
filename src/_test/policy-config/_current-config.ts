@@ -3284,7 +3284,7 @@ export const data: PolicyDefinition = {
     powerUnitTypes: [
       {
         id: 'BUSCRUM',
-        name: 'Buses/Crummies',
+        name: 'Buses',
         category: 'powerunit',
       },
       {
