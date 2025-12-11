@@ -205,6 +205,20 @@ describe('Non-Resident Single Trip Validation Tests', () => {
     expect(validationResult.violations).toHaveLength(0);
   });
 
+  it('should pass validation for NRSCV with conditional licensing fee commercial-passenger', async () => {
+    const permit = JSON.parse(JSON.stringify(validNrscv));
+    // Set startDate to today
+    permit.permitData.startDate = dayjs().format(
+      PermitAppInfo.PermitDateFormat.toString(),
+    );
+
+    // Set conditionalLicensingFee to commercial-passenger
+    permit.permitData.conditionalLicensingFee = 'commercial-passenger';
+
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.violations).toHaveLength(0);
+  });
+
   it('should pass validation for NRSCV with conditional licensing fee farm-vehicle', async () => {
     const permit = JSON.parse(JSON.stringify(validNrscv));
     // Set startDate to today
@@ -357,6 +371,27 @@ describe('Non-Resident Single Trip Validation Tests', () => {
       initialValue,
     );
     expect(cost).toBe(9);
+  });
+
+  it('should calculate NRSCV commercial-passenger cost correctly', async () => {
+    const permit = JSON.parse(JSON.stringify(validNrscv));
+    // Set startDate to today
+    permit.permitData.startDate = dayjs().format(
+      PermitAppInfo.PermitDateFormat.toString(),
+    );
+    // Set conditionalLicensingFee to commercial-passenger
+    permit.permitData.conditionalLicensingFee = 'commercial-passenger';
+    // Set loadedGVW to 6250
+    permit.permitData.vehicleConfiguration.loadedGVW = 6250;
+
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.cost).not.toHaveLength(0);
+    const initialValue: number = 0;
+    const cost = validationResult.cost.reduce(
+      (prev: any, curr: any) => prev + curr.cost,
+      initialValue,
+    );
+    expect(cost).toBe(18);
   });
 
   it('should calculate NRSCV farm vehicle cost correctly', async () => {

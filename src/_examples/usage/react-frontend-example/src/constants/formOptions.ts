@@ -98,4 +98,5 @@ export const CONDITIONAL_LICENSING_FEE_OPTIONS: Array<[string, string]> = [
   ['x-plated', 'Industrial (X-plated)'],
   ['farm-vehicle', 'Farm Vehicle'],
   ['farm-tractor', 'Farm Tractor'],
+  ['commercial-passenger', "Commercial Passenger Vehicle"],
 ];

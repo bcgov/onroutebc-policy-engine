@@ -202,6 +202,24 @@ describe('Non-Resident Quarterly Validation Tests', () => {
     expect(validationResult.violations).toHaveLength(0);
   });
 
+  it('should pass validation for NRQCV with conditional licensing fee commercial-passenger', async () => {
+    const permit = JSON.parse(JSON.stringify(validNrqcv));
+    // Set startDate to today, end date to the end of the quarter
+    const dateFrom = dayjs();
+    permit.permitData.startDate = dateFrom.format(
+      PermitAppInfo.PermitDateFormat.toString(),
+    );
+    permit.permitData.expiryDate = dateFrom
+      .endOf('quarter')
+      .format(PermitAppInfo.PermitDateFormat.toString());
+
+    // Set conditionalLicensingFee to commercial-passenger
+    permit.permitData.conditionalLicensingFee = 'commercial-passenger';
+
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.violations).toHaveLength(0);
+  });
+
   it('should pass validation for NRQCV with conditional licensing fee farm-vehicle', async () => {
     const permit = JSON.parse(JSON.stringify(validNrqcv));
     // Set startDate to today, end date to the end of the quarter
@@ -390,6 +408,31 @@ describe('Non-Resident Quarterly Validation Tests', () => {
       initialValue,
     );
     expect(cost).toBe(28);
+  });
+
+  it('should calculate NRQCV commercial-passenger cost correctly', async () => {
+    const permit = JSON.parse(JSON.stringify(validNrqcv));
+    // Set startDate to today, end date to the end of the quarter
+    const dateFrom = dayjs();
+    permit.permitData.startDate = dateFrom.format(
+      PermitAppInfo.PermitDateFormat.toString(),
+    );
+    permit.permitData.expiryDate = dateFrom
+      .endOf('quarter')
+      .format(PermitAppInfo.PermitDateFormat.toString());
+    // Set conditionalLicensingFee to commercial-passenger
+    permit.permitData.conditionalLicensingFee = 'commercial-passenger';
+    // Set loadedGVW to 6250
+    permit.permitData.vehicleConfiguration.loadedGVW = 6250;
+
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.cost).not.toHaveLength(0);
+    const initialValue: number = 0;
+    const cost = validationResult.cost.reduce(
+      (prev: any, curr: any) => prev + curr.cost,
+      initialValue,
+    );
+    expect(cost).toBe(55);
   });
 
   it('should calculate NRQCV farm tractor cost correctly', async () => {
