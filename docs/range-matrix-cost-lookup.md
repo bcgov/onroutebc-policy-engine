@@ -28,6 +28,10 @@ The `rangeMatrixCostLookup` fact performs the following steps:
       {
         "key": "x-plated",
         "value": "annualFeeIndustrial"
+      },
+      {
+        "key": "commercial-passenger",
+        "value": "annualFeePassenger"
       }
     ],
     "rangeLookupKey": "conditionalLicensingFee",
@@ -142,6 +146,10 @@ Handle different fee structures based on vehicle type:
       {
         "key": "farm-vehicle",
         "value": "annualFeeFarm"
+      },
+      {
+        "key": "commercial-passenger",
+        "value": "annualFeePassenger"
       }
     ],
     "rangeLookupKey": "conditionalLicensingFee",
@@ -228,6 +236,10 @@ Here's a complete example showing how to configure range matrix cost lookup for 
               {
                 "key": "x-plated",
                 "value": "annualFeeIndustrial"
+              },
+              {
+                "key": "commercial-passenger",
+                "value": "annualFeePassenger"
               }
             ],
             "rangeLookupKey": "conditionalLicensingFee",
@@ -242,7 +254,7 @@ Here's a complete example showing how to configure range matrix cost lookup for 
 
 ## Calculation Process
 
-1. **Extract Lookup Key:** Get the value from `permitData.conditionalLicensingFee` (e.g., "none", "x-plated")
+1. **Extract Lookup Key:** Get the value from `permitData.conditionalLicensingFee` (e.g., "none", "x-plated", "commercial-passenger")
 2. **Find Matrix:** Look up the matrix ID in `matrixMap` using the key
 3. **Get Weight Value:** Extract the weight from `permitData.vehicleConfiguration.loadedGVW`
 4. **Match Range:** Find the matrix entry where `min <= weight <= max`

@@ -2579,7 +2579,7 @@ export const data: PolicyDefinition = {
                 fact: 'permitData',
                 path: 'conditionalLicensingFee',
                 operator: 'in',
-                value: ['conditional', 'none', 'x-plated'],
+                value: ['conditional', 'none', 'x-plated', 'commercial-passenger'],
               },
             ],
           },
@@ -2732,6 +2732,7 @@ export const data: PolicyDefinition = {
                 'x-plated',
                 'farm-vehicle',
                 'farm-tractor',
+                'commercial-passenger'
               ],
             },
           },
@@ -2774,6 +2775,10 @@ export const data: PolicyDefinition = {
               {
                 key: 'x-plated',
                 value: 'annualFeeIndustrial',
+              },
+              {
+                key: 'commercial-passenger',
+                value: 'annualFeePassenger',
               },
             ],
             rangeLookupKey: 'conditionalLicensingFee',
@@ -2867,7 +2872,7 @@ export const data: PolicyDefinition = {
                 fact: 'permitData',
                 path: 'conditionalLicensingFee',
                 operator: 'in',
-                value: ['conditional', 'none', 'x-plated'],
+                value: ['conditional', 'none', 'x-plated', 'commercial-passenger'],
               },
             ],
           },
@@ -3020,6 +3025,7 @@ export const data: PolicyDefinition = {
                 'x-plated',
                 'farm-vehicle',
                 'farm-tractor',
+                'commercial-passenger'
               ],
             },
           },
@@ -3062,6 +3068,10 @@ export const data: PolicyDefinition = {
               {
                 key: 'x-plated',
                 value: 'annualFeeIndustrial',
+              },
+              {
+                key: 'commercial-passenger',
+                value: 'annualFeePassenger',
               },
             ],
             rangeLookupKey: 'conditionalLicensingFee',

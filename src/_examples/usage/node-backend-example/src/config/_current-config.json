@@ -2603,7 +2603,8 @@
                 "value": [
                   "conditional",
                   "none",
-                  "x-plated"
+                  "x-plated",
+                  "commercial-passenger"
                 ]
               }
             ]
@@ -2754,7 +2755,8 @@
                 "conditional",
                 "x-plated",
                 "farm-vehicle",
-                "farm-tractor"
+                "farm-tractor",
+                "commercial-passenger"
               ]
             }
           },
@@ -2797,6 +2799,10 @@
               {
                 "key": "x-plated",
                 "value": "annualFeeIndustrial"
+              },
+              {
+                "key": "commercial-passenger",
+                "value": "annualFeePassenger"
               }
             ],
             "rangeLookupKey": "conditionalLicensingFee",
@@ -2892,7 +2898,8 @@
                 "value": [
                   "conditional",
                   "none",
-                  "x-plated"
+                  "x-plated",
+                  "commercial-passenger"
                 ]
               }
             ]
@@ -3043,7 +3050,8 @@
                 "conditional",
                 "x-plated",
                 "farm-vehicle",
-                "farm-tractor"
+                "farm-tractor",
+                "commercial-passenger"
               ]
             }
           },
@@ -3086,6 +3094,10 @@
               {
                 "key": "x-plated",
                 "value": "annualFeeIndustrial"
+              },
+              {
+                "key": "commercial-passenger",
+                "value": "annualFeePassenger"
               }
             ],
             "rangeLookupKey": "conditionalLicensingFee",
