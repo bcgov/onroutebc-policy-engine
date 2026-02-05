@@ -94,8 +94,40 @@ describe('Policy Engine Cost Calculator', () => {
     );
 
     const validationResult = await policy.validate(permit);
-    expect(validationResult.cost).toHaveLength(1);
+    expect(validationResult.cost).toHaveLength(2);
     expect(validationResult.cost[0].cost).toBe(15);
+    expect(validationResult.cost[1].cost).toBe(0);
+
+    const cost = validationResult.cost.reduce(
+      (prev, curr) => prev + (curr.cost ?? 0),
+      0,
+    );
+
+    // STOS cost should be the fixed cost of $15 for normal circumstances
+    expect(cost).toBe(15);
+  });
+
+  it('should calculate STOS cost correctly for return trip', async () => {
+    const permit = JSON.parse(JSON.stringify(testStos));
+    // Set startDate to today
+    permit.permitData.startDate = dayjs().format(
+      PermitAppInfo.PermitDateFormat.toString(),
+    );
+
+    // Set return trip flag to true
+    permit.permitData.permittedRoute.manualRoute.isReturnTrip = true;
+
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.cost).toHaveLength(2);
+    expect(validationResult.cost[0].cost).toBe(15);
+    expect(validationResult.cost[1].cost).toBe(15);
+
+    const cost = validationResult.cost.reduce(
+      (prev, curr) => prev + (curr.cost ?? 0),
+      0,
+    );
+
+    expect(cost).toBe(30);
   });
 
   it('should not throw error when validating STOS', async () => {
@@ -105,7 +137,7 @@ describe('Policy Engine Cost Calculator', () => {
       PermitAppInfo.PermitDateFormat.toString(),
     );
     const validationResult = await policy.validate(permit);
-    expect(validationResult.cost).toHaveLength(1);
+    expect(validationResult.cost).toHaveLength(2);
     expect(validationResult.cost[0].cost).toBe(15);
   });
 
@@ -117,7 +149,7 @@ describe('Policy Engine Cost Calculator', () => {
       PermitAppInfo.PermitDateFormat.toString(),
     );
     const validationResult = await lcvPolicy.validate(permit);
-    expect(validationResult.cost).toHaveLength(1);
+    expect(validationResult.cost).toHaveLength(2);
     expect(validationResult.cost[0].cost).toBe(15);
   });
 

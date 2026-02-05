@@ -115,6 +115,14 @@
           "params": {
             "cost": 15
           }
+        },
+        {
+          "fact": "conditionalFixedCost",
+          "params": {
+            "cost": 15,
+            "fact": "permittedRoute.manualRoute.isReturnTrip",
+            "value": true
+          }
         }
       ]
     },

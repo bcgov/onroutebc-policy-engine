@@ -1846,6 +1846,14 @@ export const data: PolicyDefinition = {
             cost: 15,
           },
         },
+        {
+          fact: 'conditionalFixedCost',
+          params: {
+            cost: 15,
+            fact: 'permittedRoute.manualRoute.isReturnTrip',
+            value: true
+          }
+        },
       ],
       conditions: [
         {
@@ -1949,6 +1957,14 @@ export const data: PolicyDefinition = {
           params: {
             cost: 15,
           },
+        },
+        {
+          fact: 'conditionalFixedCost',
+          params: {
+            cost: 15,
+            fact: 'permittedRoute.manualRoute.isReturnTrip',
+            value: true
+          }
         },
       ],
       conditions: [],
