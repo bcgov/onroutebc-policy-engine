@@ -1,0 +1,19 @@
+{
+  "name": "onroute-policy-engine-xls-scraper",
+  "version": "1.0.0",
+  "description": "Small standalone XLS scraper for local policy workbook data",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "scrape": "node --import tsx src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.4.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
