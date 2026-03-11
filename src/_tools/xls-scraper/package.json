@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "scrape": "node --import tsx src/index.ts",
+    "scrape:update-json": "node --import tsx src/updateJson.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

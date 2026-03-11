@@ -30,7 +30,7 @@ export function readWorksheetRows(
     );
 
     if (values.every(isBlankCellValue)) {
-      break;
+      continue;
     }
 
     const record: ScrapedRow = {};
@@ -89,6 +89,14 @@ function normalizeCellValue(value: CellValue | undefined): ScrapedCellValue {
       return normalizeCellValue(value.result);
     }
 
+    if ('formula' in value && typeof value.formula === 'string') {
+      return value.formula;
+    }
+
+    if ('sharedFormula' in value && typeof value.sharedFormula === 'string') {
+      return value.sharedFormula;
+    }
+
     if ('text' in value && typeof value.text === 'string') {
       return value.text;
     }
@@ -106,5 +114,5 @@ function normalizeCellValue(value: CellValue | undefined): ScrapedCellValue {
 }
 
 function isBlankCellValue(value: ScrapedCellValue): boolean {
-  return value === null || value === '';
+  return value === null || (typeof value === 'string' && value.trim() === '');
 }

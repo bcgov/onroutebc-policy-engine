@@ -4116,7 +4116,7 @@
             {
               "type": "STROPRT",
               "jeep": true,
-              "booster": true,
+              "booster": false,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -4133,7 +4133,7 @@
             {
               "type": "STRSELF",
               "jeep": true,
-              "booster": true,
+              "booster": false,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -4533,6 +4533,11 @@
                   ]
                 }
               ]
+            },
+            {
+              "type": "FECVYRX",
+              "jeep": false,
+              "booster": false
             }
           ]
         },
@@ -4563,7 +4568,7 @@
             {
               "type": "XXXXXXX",
               "jeep": false,
-              "booster": true,
+              "booster": false,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -4657,7 +4662,7 @@
             {
               "type": "STROPRT",
               "jeep": true,
-              "booster": true,
+              "booster": false,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -4680,7 +4685,7 @@
             {
               "type": "STRSELF",
               "jeep": true,
-              "booster": true,
+              "booster": false,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -4832,6 +4837,36 @@
                   "l": 23
                 }
               ]
+            }
+          ]
+        },
+        {
+          "type": "CRAFTAT",
+          "trailers": [
+            {
+              "type": "DOLLIES",
+              "jeep": false,
+              "booster": false
+            }
+          ]
+        },
+        {
+          "type": "CRAFTMB",
+          "trailers": [
+            {
+              "type": "DOLLIES",
+              "jeep": false,
+              "booster": false
+            }
+          ]
+        },
+        {
+          "type": "PICKRTR",
+          "trailers": [
+            {
+              "type": "XXXXXXX",
+              "jeep": false,
+              "booster": false
             }
           ]
         }
@@ -6595,7 +6630,7 @@
             {
               "type": "PLATFRM",
               "jeep": true,
-              "booster": true,
+              "booster": false,
               "selfIssue": false,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -6737,6 +6772,31 @@
                   ]
                 }
               ]
+            },
+            {
+              "type": "EXPANDO",
+              "jeep": false,
+              "booster": true
+            },
+            {
+              "type": "OGOSFDT",
+              "jeep": false,
+              "booster": true
+            },
+            {
+              "type": "SEMITRL",
+              "jeep": false,
+              "booster": true
+            },
+            {
+              "type": "STSTEER",
+              "jeep": false,
+              "booster": true
+            },
+            {
+              "type": "STCRANE",
+              "jeep": false,
+              "booster": true
             }
           ]
         },
@@ -6762,7 +6822,7 @@
             {
               "type": "PLATFRM",
               "jeep": true,
-              "booster": true,
+              "booster": false,
               "selfIssue": false,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -6829,6 +6889,36 @@
                   "l": 27.5
                 }
               ]
+            },
+            {
+              "type": "EXPANDO",
+              "jeep": false,
+              "booster": true
+            },
+            {
+              "type": "SEMITRL",
+              "jeep": false,
+              "booster": true
+            },
+            {
+              "type": "HIBOFLT",
+              "jeep": false,
+              "booster": true
+            },
+            {
+              "type": "STSDBDK",
+              "jeep": false,
+              "booster": true
+            },
+            {
+              "type": "STSTEER",
+              "jeep": false,
+              "booster": true
+            },
+            {
+              "type": "STCRANE",
+              "jeep": false,
+              "booster": true
             }
           ]
         },
@@ -6850,6 +6940,21 @@
                   "l": 23
                 }
               ]
+            },
+            {
+              "type": "XXXXXXX",
+              "jeep": false,
+              "booster": false
+            }
+          ]
+        },
+        {
+          "type": "REGTRCK",
+          "trailers": [
+            {
+              "type": "XXXXXXX",
+              "jeep": false,
+              "booster": false
             }
           ]
         }
@@ -7526,7 +7631,7 @@
             {
               "type": "POLETRL",
               "jeep": true,
-              "booster": false,
+              "booster": true,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -7857,7 +7962,7 @@
             {
               "type": "STROPRT",
               "jeep": true,
-              "booster": true,
+              "booster": false,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -7879,7 +7984,7 @@
             {
               "type": "STRSELF",
               "jeep": true,
-              "booster": true,
+              "booster": false,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -7928,7 +8033,7 @@
             {
               "type": "PLATFRM",
               "jeep": true,
-              "booster": true,
+              "booster": false,
               "selfIssue": false,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -8165,7 +8270,7 @@
             {
               "type": "STROPRT",
               "jeep": true,
-              "booster": true,
+              "booster": false,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -8187,7 +8292,7 @@
             {
               "type": "STRSELF",
               "jeep": true,
-              "booster": true,
+              "booster": false,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -8227,6 +8332,11 @@
                   ]
                 }
               ]
+            },
+            {
+              "type": "STWDTAN",
+              "jeep": false,
+              "booster": false
             }
           ]
         },
@@ -8276,6 +8386,16 @@
                   ]
                 }
               ]
+            }
+          ]
+        },
+        {
+          "type": "PICKRTR",
+          "trailers": [
+            {
+              "type": "XXXXXXX",
+              "jeep": false,
+              "booster": false
             }
           ]
         }
@@ -8472,7 +8592,7 @@
             {
               "type": "FECVYRX",
               "jeep": true,
-              "booster": true,
+              "booster": false,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -8573,6 +8693,11 @@
                   ]
                 }
               ]
+            },
+            {
+              "type": "STWDTAN",
+              "jeep": false,
+              "booster": false
             }
           ]
         },
@@ -8644,6 +8769,11 @@
                   "h": 4.72
                 }
               ]
+            },
+            {
+              "type": "PONYTRL",
+              "jeep": false,
+              "booster": false
             }
           ]
         }

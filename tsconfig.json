@@ -17,7 +17,6 @@
     "**/*.spec.ts"
   ],
   "exclude": [
-    "src/_examples/usage/**/*",
-    "src/_tools/xls-scraper/**/*"
+    "src/_examples/usage/**/*"
   ]
 }
