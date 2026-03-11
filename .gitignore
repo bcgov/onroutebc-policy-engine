@@ -125,3 +125,8 @@ Chart.lock
 #Loadtest Results
 loadtests/results
 loadtests/*/results
+
+
+# XLS files we extract from
+_tools/xls-scraper/*.xls
+_tools/xls-scraper/*.xlsx
