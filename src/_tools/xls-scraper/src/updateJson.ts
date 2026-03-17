@@ -222,36 +222,12 @@ function parseRow(
   };
 }
 
-// This is the main function which actually does the business logic interpreation of each row based on the existing config model and logic
+// Supported rows from the STOW worksheet are modeled as weight-permittable
+// commodity/power-unit/trailer combinations in the generated config.
 function applySupportedEntries(
   config: PolicyConfig,
   supportedEntries: SupportedEntry[],
 ): void {
-  // Unsure about this below part so removing for now.
-  // Basic question: it seems like weightPermittable is used to determine if a trailer combination requires(?) weight to be considered for permitting, i.e. required in form.
-  // My main concern is - does this come from other sheets beside Commodity to Vehicle to Trailer too? How would Commodity to Vehicle to Trailer relate to or modify this?
-  // Note: There are some setups in existing json with weightPermittable:true that do NOT exist in the sheet we're looking at here.
-
-  // Proposal: If a given Vehicle Type/Trailer is listed in Sheet, then set weightPermittable to true, otherwise leave as-is .
-
-  // for (const commodity of config.commodities) {
-  //   if (!affectedCommodityIds.has(commodity.id) || !commodity.powerUnits) {
-  //     continue;
-  //   }
-
-
-  //   // Somewhat unsure of this part, but this is REMOVING pre-existing weightPermittable values.
-  //   // I am unclear if those should be removed or not. However, the Commodity to Vehicle to Trailer tab does not indicate it should be true.
-  //   // Plan on checking with team if this logic might affect other forms, entries, etc.
-  //   for (const powerUnit of commodity.powerUnits) {
-  //     for (const trailer of powerUnit.trailers) {
-  //       if (managedTrailerTypeIds.has(trailer.type)) {
-  //         delete trailer.weightPermittable;
-  //       }
-  //     }
-  //   }
-  // }
-
   for (const supportedEntry of supportedEntries) {
     const commodity = config.commodities.find(
       (entry) => entry.id === supportedEntry.commodityId,
@@ -288,11 +264,8 @@ function applySupportedEntries(
       powerUnit.trailers.push(trailer);
     }
 
-
-    // Assuming it's a valid row, we set weightPermittable to true... unclear if this is exactly right, as
-    // it's not documented exactly what weightPermittable is... but it makes sense if valid row in xlsx?
-    // trailer.weightPermittable = true;
     trailer.booster = supportedEntry.booster;
+    trailer.weightPermittable = true;
 
 
     // This is the jeep logic I'm a bit unsure about. Jeep has specific logic to it.
