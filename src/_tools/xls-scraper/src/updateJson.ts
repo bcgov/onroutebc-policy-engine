@@ -1,26 +1,14 @@
 import { readFile, writeFile } from 'node:fs/promises';
-import path from 'node:path';
 
 import { readWorksheetRows, type ScrapedRow } from './readWorksheet.js';
 import { COMMODITY_TO_VEHICLE_TO_TRAILER_SHEET } from './sheets.js';
-import { loadWorkbook, resolvePackagePath } from './workbook.js';
+import { loadWorkbook } from './workbook.js';
+import {
+  CANONICAL_CONFIG_PATH,
+  GENERATED_CONFIG_PATH,
+} from './configPaths.js';
 
 const NONE_ID = 'XXXXXXX';
-const CANONICAL_CONFIG_PATH = path.resolve(
-  resolvePackagePath('..', '..'),
-  '_test',
-  'policy-config',
-  '_current-config.json',
-);
-const BACKEND_EXAMPLE_CONFIG_PATH = path.resolve(
-  resolvePackagePath('..', '..'),
-  '_examples',
-  'usage',
-  'node-backend-example',
-  'src',
-  'config',
-  '_current-config.json',
-);
 
 const COMMODITY_ID_OVERRIDES: Record<string, string> = {
   'Scrapers on Dollies': 'SCRAPER',
@@ -80,16 +68,17 @@ interface SkippedEntry {
 async function main(): Promise<void> {
   const workbook = await loadWorkbook();
   const rows = readWorksheetRows(workbook, COMMODITY_TO_VEHICLE_TO_TRAILER_SHEET);
-  const config = await readPolicyConfig(CANONICAL_CONFIG_PATH);
+  const existingCanonicalConfig = await readFile(CANONICAL_CONFIG_PATH, 'utf8');
+  const config = JSON.parse(existingCanonicalConfig) as PolicyConfig;
   const parsed = parseSupportedEntries(rows, config);
 
   // pass config as reference, modify it.
   applySupportedEntries(config, parsed.supportedEntries);
 
   const serializedConfig = `${JSON.stringify(config, null, 2)}\n`;
+  const differsFromCanonical = serializedConfig !== existingCanonicalConfig;
 
-  await writeFile(CANONICAL_CONFIG_PATH, serializedConfig, 'utf8');
-  await writeFile(BACKEND_EXAMPLE_CONFIG_PATH, serializedConfig, 'utf8');
+  await writeFile(GENERATED_CONFIG_PATH, serializedConfig, 'utf8');
 
   console.log(
     JSON.stringify(
@@ -99,17 +88,13 @@ async function main(): Promise<void> {
           parsed.supportedEntries.map((entry) => entry.commodityId),
         ).size,
         skippedRowsByReason: countSkippedEntries(parsed.skippedEntries),
-        writtenFiles: [CANONICAL_CONFIG_PATH, BACKEND_EXAMPLE_CONFIG_PATH],
+        differsFromCanonical,
+        writtenFiles: [GENERATED_CONFIG_PATH],
       },
       null,
       2,
     ),
   );
-}
-
-async function readPolicyConfig(configPath: string): Promise<PolicyConfig> {
-  const json = await readFile(configPath, 'utf8');
-  return JSON.parse(json) as PolicyConfig;
 }
 
 function parseSupportedEntries(
@@ -242,16 +227,6 @@ function applySupportedEntries(
   config: PolicyConfig,
   supportedEntries: SupportedEntry[],
 ): void {
-  const managedTrailerTypeIds = new Set(
-    config.vehicleTypes.trailerTypes
-      .filter((trailerType) => trailerType.category !== 'accessory')
-      .map((trailerType) => trailerType.id),
-  );
-  const affectedCommodityIds = new Set(
-    supportedEntries.map((supportedEntry) => supportedEntry.commodityId),
-  );
-
-
   // Unsure about this below part so removing for now.
   // Basic question: it seems like weightPermittable is used to determine if a trailer combination requires(?) weight to be considered for permitting, i.e. required in form.
   // My main concern is - does this come from other sheets beside Commodity to Vehicle to Trailer too? How would Commodity to Vehicle to Trailer relate to or modify this?
