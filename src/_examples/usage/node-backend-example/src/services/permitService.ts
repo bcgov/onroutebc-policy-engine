@@ -11,40 +11,20 @@ const EXAMPLE_CONFIG_PATH = path.resolve(
   'config',
   '_current-config.json',
 );
-const GENERATED_CONFIG_PATH = path.resolve(
-  __dirname,
-  '..',
-  '..',
-  '..',
-  '..',
-  '..',
-  '..',
-  'src',
-  '_test',
-  'policy-config',
-  '_current-config.generated.json',
-);
 
 let policyInstance: Policy | null = null;
 let loadedConfigPath: string | null = null;
 
-const resolvePolicyConfigPath = (): string => {
-  return fs.existsSync(GENERATED_CONFIG_PATH)
-    ? GENERATED_CONFIG_PATH
-    : EXAMPLE_CONFIG_PATH;
-};
-
 const loadPolicyConfig = (): any => {
-  const configPath = resolvePolicyConfigPath();
-  return JSON.parse(fs.readFileSync(configPath, 'utf8'));
+  return JSON.parse(fs.readFileSync(EXAMPLE_CONFIG_PATH, 'utf8'));
 };
 
 export const getPolicyConfig = (): any => loadPolicyConfig();
-export const getPolicyConfigPath = (): string => resolvePolicyConfigPath();
+export const getPolicyConfigPath = (): string => EXAMPLE_CONFIG_PATH;
 
 // Initialize the policy engine
 const initializePolicy = (): Policy => {
-  const configPath = resolvePolicyConfigPath();
+  const configPath = EXAMPLE_CONFIG_PATH;
 
   if (!policyInstance || loadedConfigPath !== configPath) {
     try {

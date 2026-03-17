@@ -7,6 +7,7 @@
   "scripts": {
     "scrape": "node --import tsx src/index.ts",
     "scrape:update-json": "node --import tsx src/updateJson.ts",
+    "revert-json": "node --import tsx src/revertJson.ts",
     "audit:commodity": "node --import tsx src/auditCommodity.ts",
     "scrape:apply-generated": "node --import tsx src/applyGenerated.ts",
     "typecheck": "tsc --noEmit"

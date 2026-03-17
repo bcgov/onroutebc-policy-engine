@@ -7,6 +7,7 @@ import {
   type SkippedEntry,
 } from './commodityWorksheet.js';
 import {
+  BACKEND_EXAMPLE_CONFIG_PATH,
   CANONICAL_CONFIG_PATH,
   GENERATED_CONFIG_PATH,
 } from './configPaths.js';
@@ -20,6 +21,11 @@ import { COMMODITY_TO_VEHICLE_TO_TRAILER_SHEET } from './sheets.js';
 import { loadWorkbook } from './workbook.js';
 
 async function main(): Promise<void> {
+  await ensureExistingConfigFiles([
+    CANONICAL_CONFIG_PATH,
+    BACKEND_EXAMPLE_CONFIG_PATH,
+  ]);
+
   const workbook = await loadWorkbook();
   const rows = readWorksheetRowEntries(
     workbook,
@@ -35,6 +41,7 @@ async function main(): Promise<void> {
   const differsFromCanonical = serializedConfig !== existingCanonicalConfig;
 
   await writeFile(GENERATED_CONFIG_PATH, serializedConfig, 'utf8');
+  await writeFile(BACKEND_EXAMPLE_CONFIG_PATH, serializedConfig, 'utf8');
 
   console.log(
     JSON.stringify(
@@ -45,7 +52,7 @@ async function main(): Promise<void> {
         ).size,
         skippedRowsByReason: countSkippedEntries(parsed.skippedEntries),
         differsFromCanonical,
-        writtenFiles: [GENERATED_CONFIG_PATH],
+        writtenFiles: [GENERATED_CONFIG_PATH, BACKEND_EXAMPLE_CONFIG_PATH],
       },
       null,
       2,
@@ -123,6 +130,22 @@ function countSkippedEntries(skippedEntries: SkippedEntry[]): Record<string, num
   }
 
   return counts;
+}
+
+async function ensureExistingConfigFiles(paths: string[]): Promise<void> {
+  await Promise.all(
+    paths.map(async (filePath) => {
+      try {
+        await readFile(filePath, 'utf8');
+      } catch (error: unknown) {
+        if ((error as NodeJS.ErrnoException)?.code === 'ENOENT') {
+          throw new Error(`Required config file not found at ${filePath}`);
+        }
+
+        throw error;
+      }
+    }),
+  );
 }
 
 main().catch((error: unknown) => {

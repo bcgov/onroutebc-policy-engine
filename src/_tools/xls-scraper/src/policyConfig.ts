@@ -5,6 +5,8 @@ import {
   GENERATED_CONFIG_PATH,
 } from './configPaths.js';
 
+export type CompareConfigMode = 'canonical' | 'generated' | 'prefer-generated';
+
 export interface NamedDefinition {
   id: string;
   name: string;
@@ -46,4 +48,24 @@ export function resolveGeneratedPreferredConfigPath(): string {
   return existsSync(GENERATED_CONFIG_PATH)
     ? GENERATED_CONFIG_PATH
     : CANONICAL_CONFIG_PATH;
+}
+
+export function resolvePolicyConfigPath(
+  mode: CompareConfigMode = 'generated',
+): string {
+  if (mode === 'canonical') {
+    return CANONICAL_CONFIG_PATH;
+  }
+
+  if (mode === 'prefer-generated') {
+    return resolveGeneratedPreferredConfigPath();
+  }
+
+  if (!existsSync(GENERATED_CONFIG_PATH)) {
+    throw new Error(
+      `Generated config not found: ${GENERATED_CONFIG_PATH}. Run npm run scrape:update-json or use --compare-config=canonical`,
+    );
+  }
+
+  return GENERATED_CONFIG_PATH;
 }

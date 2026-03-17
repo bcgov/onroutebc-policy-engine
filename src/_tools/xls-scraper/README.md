@@ -13,6 +13,7 @@ cd src/_tools/xls-scraper
 npm install
 npm run scrape
 npm run scrape:update-json
+npm run revert-json
 npm run audit:commodity -- --commodity-type=None
 npm run scrape:apply-generated
 npm run typecheck
@@ -23,8 +24,20 @@ npm run typecheck
 `npm run scrape:update-json` reads the same sheet and writes a generated review artifact to:
 
 - `src/_test/policy-config/_current-config.generated.json`
+- `src/_examples/usage/node-backend-example/src/config/_current-config.json`
 
-It does not update the tracked config files.
+It does not update the canonical tracked config file at `src/_test/policy-config/_current-config.json`.
+
+`npm run revert-json` copies the canonical tracked config from:
+
+- `src/_test/policy-config/_current-config.json`
+
+back into:
+
+- `src/_test/policy-config/_current-config.generated.json`
+- `src/_examples/usage/node-backend-example/src/config/_current-config.json`
+
+This resets the local preview state back to the canonical config without applying the generated file.
 
 `npm run scrape:apply-generated` copies the reviewed generated file into:
 
@@ -33,13 +46,19 @@ It does not update the tracked config files.
 
 The generate step is intended to be idempotent. If the workbook does not change, rerunning it should not produce a diff in the generated file.
 
-`npm run audit:commodity -- --commodity-type=None` reads the XLS directly, excludes struck-through rows, compares the XLS-derived rows for that commodity against the current policy engine output, and prints:
+`npm run audit:commodity -- --commodity-type=None` reads the XLS directly, excludes struck-through rows, compares the XLS-derived rows for that commodity against the current policy engine output, and prints clearly-labelled sections for:
 
 - expected vehicle sub-types from XLS
-- current permittable vehicle sub-types
-- missing vehicle sub-types
-- missing trailers
-- ignored/unsupported rows
+- current permittable vehicle sub-types from `policyEngine.getPermittablePowerUnitTypes(...)`
+- missing vehicle sub-types as `XLS - policyEngine`
+- extra vehicle sub-types in policy as `policyEngine - XLS`
+- expected trailers from XLS
+- current permittable trailers from `policyEngine.getNextPermittableVehicles(...)`
+- missing trailers as `XLS - policyEngine`
+- extra trailers in policy as `policyEngine - XLS`
+- ignored/unsupported XLS rows
+
+By default it compares against `src/_test/policy-config/_current-config.generated.json`. Override that with `--compare-config=canonical|generated|prefer-generated`.
 
 ## Included
 
@@ -70,19 +89,22 @@ This means the updater only claims correctness for direct trailer and no-trailer
 ## What The Updater Changes
 
 - `npm run scrape:update-json` writes only the generated review artifact.
+- It also refreshes the backend example config copy so the running example reflects the generated preview.
 - It preserves existing trailer objects when they already exist.
 - It prints a summary of supported row count, affected commodity count, skipped-row reasons, the generated file path, and whether the generated output differs from the current canonical config.
 - `npm run scrape:apply-generated` copies the exact reviewed generated JSON into the canonical config and backend example config.
+- `npm run revert-json` copies the canonical config into the generated file and backend example config.
 
 ## Review Workflow
 
 1. Run `npm run scrape:update-json`.
 2. Review `src/_test/policy-config/_current-config.generated.json`.
-3. Compare it against `src/_test/policy-config/_current-config.json`.
-4. If the generated output is wrong, discard or edit the generated file and rerun the generator as needed.
-5. Only when satisfied, run `npm run scrape:apply-generated`.
+3. Use the backend example against the refreshed backend config copy if you want to validate the preview locally.
+4. Compare the generated file against `src/_test/policy-config/_current-config.json`.
+5. If the generated output is wrong, run `npm run revert-json` to restore the preview state.
+6. Only when satisfied, run `npm run scrape:apply-generated`.
 
-This keeps the tracked config stable while you iterate on content questions.
+This keeps the canonical tracked config stable while you iterate on content questions.
 
 ## Confidentiality
 
