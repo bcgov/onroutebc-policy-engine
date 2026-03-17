@@ -2,18 +2,57 @@ import { Policy } from 'onroute-policy-engine';
 import { ValidationResults } from 'onroute-policy-engine';
 import { PermitAppInfo } from 'onroute-policy-engine/enum';
 import dayjs from 'dayjs';
+import fs from 'node:fs';
+import path from 'node:path';
 
-// Use require for JSON import to avoid TypeScript module resolution issues
-const completePolicyConfig = require('../config/_current-config.json');
+const EXAMPLE_CONFIG_PATH = path.resolve(
+  __dirname,
+  '..',
+  'config',
+  '_current-config.json',
+);
+const GENERATED_CONFIG_PATH = path.resolve(
+  __dirname,
+  '..',
+  '..',
+  '..',
+  '..',
+  '..',
+  '..',
+  'src',
+  '_test',
+  'policy-config',
+  '_current-config.generated.json',
+);
 
 let policyInstance: Policy | null = null;
+let loadedConfigPath: string | null = null;
+
+const resolvePolicyConfigPath = (): string => {
+  return fs.existsSync(GENERATED_CONFIG_PATH)
+    ? GENERATED_CONFIG_PATH
+    : EXAMPLE_CONFIG_PATH;
+};
+
+const loadPolicyConfig = (): any => {
+  const configPath = resolvePolicyConfigPath();
+  return JSON.parse(fs.readFileSync(configPath, 'utf8'));
+};
+
+export const getPolicyConfig = (): any => loadPolicyConfig();
+export const getPolicyConfigPath = (): string => resolvePolicyConfigPath();
 
 // Initialize the policy engine
 const initializePolicy = (): Policy => {
-  if (!policyInstance) {
+  const configPath = resolvePolicyConfigPath();
+
+  if (!policyInstance || loadedConfigPath !== configPath) {
     try {
-      policyInstance = new Policy(completePolicyConfig);
-      console.log('Policy engine initialized successfully');
+      policyInstance = new Policy(loadPolicyConfig());
+      loadedConfigPath = configPath;
+      console.log('Policy engine initialized successfully', {
+        configPath,
+      });
     } catch (error) {
       console.error('Failed to initialize policy engine:', error);
       throw new Error('Policy engine initialization failed');

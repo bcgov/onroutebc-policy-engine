@@ -117,13 +117,35 @@ router.get('/vehicles', (req, res, next) => {
 });
 
 // Get policy configuration
+// This is mainly used for local debug and validation when working on policy config.
 router.get('/config', (req, res, next) => {
   try {
-    const policyConfig = require('../config/_current-config.json');
+    const permitService = require('../services/permitService');
 
     res.json({
       success: true,
-      data: policyConfig,
+      data: permitService.getPolicyConfig(),
+      sourcePath: permitService.getPolicyConfigPath(),
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Get available commodities for a permit type
+router.get('/commodities', (req, res, next) => {
+  try {
+    const permitService = require('../services/permitService');
+    const permitTypeId =
+      typeof req.query.permitType === 'string' ? req.query.permitType : undefined;
+    const commodities = permitService.getCommodities(permitTypeId);
+
+    res.json({
+      success: true,
+      data: Array.from(commodities.entries()),
+      permitTypeId,
+      sourcePath: permitService.getPolicyConfigPath(),
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
