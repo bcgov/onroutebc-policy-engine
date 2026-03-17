@@ -13,6 +13,7 @@ cd src/_tools/xls-scraper
 npm install
 npm run scrape
 npm run scrape:update-json
+npm run audit:commodity -- --commodity-type=None
 npm run scrape:apply-generated
 npm run typecheck
 ```
@@ -31,6 +32,14 @@ It does not update the tracked config files.
 - `src/_examples/usage/node-backend-example/src/config/_current-config.json`
 
 The generate step is intended to be idempotent. If the workbook does not change, rerunning it should not produce a diff in the generated file.
+
+`npm run audit:commodity -- --commodity-type=None` reads the XLS directly, excludes struck-through rows, compares the XLS-derived rows for that commodity against the current policy engine output, and prints:
+
+- expected vehicle sub-types from XLS
+- current permittable vehicle sub-types
+- missing vehicle sub-types
+- missing trailers
+- ignored/unsupported rows
 
 ## Included
 

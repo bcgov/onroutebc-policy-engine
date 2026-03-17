@@ -4125,7 +4125,7 @@
             {
               "type": "STROPRT",
               "jeep": true,
-              "booster": false,
+              "booster": true,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -4142,7 +4142,7 @@
             {
               "type": "STRSELF",
               "jeep": true,
-              "booster": false,
+              "booster": true,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -4300,7 +4300,8 @@
                   "h": 4.3,
                   "l": 25
                 }
-              ]
+              ],
+              "weightPermittable": true
             }
           ]
         },
@@ -4321,7 +4322,8 @@
                   "h": 4.3,
                   "l": 25
                 }
-              ]
+              ],
+              "weightPermittable": true
             }
           ]
         },
@@ -4672,7 +4674,7 @@
             {
               "type": "STROPRT",
               "jeep": true,
-              "booster": false,
+              "booster": true,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -4695,7 +4697,7 @@
             {
               "type": "STRSELF",
               "jeep": true,
-              "booster": false,
+              "booster": true,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -4849,28 +4851,6 @@
                   "l": 23
                 }
               ]
-            }
-          ]
-        },
-        {
-          "type": "CRAFTAT",
-          "trailers": [
-            {
-              "type": "DOLLIES",
-              "jeep": false,
-              "booster": false,
-              "weightPermittable": true
-            }
-          ]
-        },
-        {
-          "type": "CRAFTMB",
-          "trailers": [
-            {
-              "type": "DOLLIES",
-              "jeep": false,
-              "booster": false,
-              "weightPermittable": true
             }
           ]
         },
@@ -6823,12 +6803,6 @@
               "weightPermittable": true
             },
             {
-              "type": "STSTEER",
-              "jeep": false,
-              "booster": true,
-              "weightPermittable": true
-            },
-            {
               "type": "STCRANE",
               "jeep": false,
               "booster": true,
@@ -8018,7 +7992,7 @@
             {
               "type": "STROPRT",
               "jeep": true,
-              "booster": false,
+              "booster": true,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -8035,13 +8009,12 @@
                     }
                   ]
                 }
-              ],
-              "weightPermittable": true
+              ]
             },
             {
               "type": "STRSELF",
               "jeep": true,
-              "booster": false,
+              "booster": true,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -8058,8 +8031,7 @@
                     }
                   ]
                 }
-              ],
-              "weightPermittable": true
+              ]
             },
             {
               "type": "STWIDWH",
@@ -8284,8 +8256,7 @@
                     }
                   ]
                 }
-              ],
-              "weightPermittable": true
+              ]
             },
             {
               "type": "STWHELR",
@@ -8336,7 +8307,7 @@
             {
               "type": "STROPRT",
               "jeep": true,
-              "booster": false,
+              "booster": true,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -8353,13 +8324,12 @@
                     }
                   ]
                 }
-              ],
-              "weightPermittable": true
+              ]
             },
             {
               "type": "STRSELF",
               "jeep": true,
-              "booster": false,
+              "booster": true,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -8376,8 +8346,7 @@
                     }
                   ]
                 }
-              ],
-              "weightPermittable": true
+              ]
             },
             {
               "type": "STWIDWH",

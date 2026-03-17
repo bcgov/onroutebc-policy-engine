@@ -1,78 +1,34 @@
 import { readFile, writeFile } from 'node:fs/promises';
 
-import { readWorksheetRows, type ScrapedRow } from './readWorksheet.js';
-import { COMMODITY_TO_VEHICLE_TO_TRAILER_SHEET } from './sheets.js';
-import { loadWorkbook } from './workbook.js';
+import {
+  NONE_ID,
+  parseSupportedEntries,
+  type SupportedEntry,
+  type SkippedEntry,
+} from './commodityWorksheet.js';
 import {
   CANONICAL_CONFIG_PATH,
   GENERATED_CONFIG_PATH,
 } from './configPaths.js';
-
-const NONE_ID = 'XXXXXXX';
-
-const COMMODITY_ID_OVERRIDES: Record<string, string> = {
-  'Scrapers on Dollies': 'SCRAPER',
-  'Tow Trucks and Disabled Vehicles': 'TOWDISB',
-};
-
-const TRAILER_ID_OVERRIDES: Record<string, string> = {
-  'Platform Trailer': 'PLATFRM',
-  'Semi-Trailers - Widespread Tandem': 'STWDTAN',
-};
-
-interface NamedDefinition {
-  id: string;
-  name: string;
-  category?: string;
-}
-
-interface TrailerEntry {
-  type: string;
-  booster?: boolean;
-  jeep?: boolean;
-  weightPermittable?: boolean;
-  [key: string]: unknown;
-}
-
-interface PowerUnitEntry {
-  type: string;
-  trailers: TrailerEntry[];
-}
-
-interface CommodityEntry {
-  id: string;
-  name: string;
-  powerUnits?: PowerUnitEntry[];
-}
-
-interface PolicyConfig {
-  vehicleTypes: {
-    powerUnitTypes: NamedDefinition[];
-    trailerTypes: NamedDefinition[];
-  };
-  commodities: CommodityEntry[];
-}
-
-interface SupportedEntry {
-  commodityId: string;
-  powerUnitId: string;
-  trailerId: string;
-  booster: boolean;
-}
-
-interface SkippedEntry {
-  reason: string;
-  row: ScrapedRow;
-}
+import type {
+  PolicyConfig,
+  PowerUnitEntry,
+  TrailerEntry,
+} from './policyConfig.js';
+import { readWorksheetRowEntries } from './readWorksheet.js';
+import { COMMODITY_TO_VEHICLE_TO_TRAILER_SHEET } from './sheets.js';
+import { loadWorkbook } from './workbook.js';
 
 async function main(): Promise<void> {
   const workbook = await loadWorkbook();
-  const rows = readWorksheetRows(workbook, COMMODITY_TO_VEHICLE_TO_TRAILER_SHEET);
+  const rows = readWorksheetRowEntries(
+    workbook,
+    COMMODITY_TO_VEHICLE_TO_TRAILER_SHEET,
+  );
   const existingCanonicalConfig = await readFile(CANONICAL_CONFIG_PATH, 'utf8');
   const config = JSON.parse(existingCanonicalConfig) as PolicyConfig;
   const parsed = parseSupportedEntries(rows, config);
 
-  // pass config as reference, modify it.
   applySupportedEntries(config, parsed.supportedEntries);
 
   const serializedConfig = `${JSON.stringify(config, null, 2)}\n`;
@@ -95,131 +51,6 @@ async function main(): Promise<void> {
       2,
     ),
   );
-}
-
-function parseSupportedEntries(
-  rows: ScrapedRow[],
-  config: PolicyConfig,
-): {
-  supportedEntries: SupportedEntry[];
-  skippedEntries: SkippedEntry[];
-} {
-  const commodityNameToId = new Map(
-    config.commodities.map((commodity) => [commodity.name, commodity.id]),
-  );
-  const powerUnitNameToId = new Map(
-    config.vehicleTypes.powerUnitTypes.map((powerUnit) => [powerUnit.name, powerUnit.id]),
-  );
-  const trailerNameToId = new Map(
-    config.vehicleTypes.trailerTypes.map((trailer) => [trailer.name, trailer.id]),
-  );
-
-  const supportedEntries: SupportedEntry[] = [];
-  const skippedEntries: SkippedEntry[] = [];
-
-  for (const row of rows) {
-    const parsedRow = parseRow(
-      row,
-      commodityNameToId,
-      powerUnitNameToId,
-      trailerNameToId,
-    );
-
-    if ('reason' in parsedRow) {
-      skippedEntries.push(parsedRow);
-      continue;
-    }
-
-    supportedEntries.push(parsedRow);
-  }
-
-  return { supportedEntries, skippedEntries };
-}
-
-function parseRow(
-  row: ScrapedRow,
-  commodityNameToId: Map<string, string>,
-  powerUnitNameToId: Map<string, string>,
-  trailerNameToId: Map<string, string>,
-): SupportedEntry | SkippedEntry {
-  const commodityName = getCellText(row, 'Commodity Type');
-  const powerUnitName = getCellText(row, 'Vehicle Type');
-  const trailerName = getCellText(row, 'Trailer');
-  const trailerCategory = getCellText(row, 'Trailer Category');
-  const canAddTrailer = getCellText(row, 'Can Add Trailer?');
-  const canAddBooster = getCellText(row, 'Can Add Booster?');
-  const forceSubmitToQueue = getCellText(row, 'Force Submit to Queue');
-  const steer = getCellText(row, 'Steer');
-  const drive = getCellText(row, 'Drive');
-  const wheelbase = getCellText(row, 'Wheelbase');
-  const specialInstructions = getCellText(row, 'Special Instructions');
-
-  if (!commodityName && !powerUnitName && !trailerName && specialInstructions) {
-    return { reason: 'note-row', row };
-  }
-
-  if (!commodityName || !powerUnitName) {
-    return { reason: 'missing-core-columns', row };
-  }
-
-  if (forceSubmitToQueue) {
-    return { reason: 'force-submit-to-queue', row };
-  }
-
-  if (steer || drive || wheelbase) {
-    return { reason: 'steer-drive-wheelbase', row };
-  }
-
-  const commodityId =
-    COMMODITY_ID_OVERRIDES[commodityName] ?? commodityNameToId.get(commodityName);
-  const powerUnitId = powerUnitNameToId.get(powerUnitName);
-
-  if (!commodityId || !powerUnitId) {
-    return { reason: 'missing-commodity-or-powerunit-mapping', row };
-  }
-
-  if (canAddTrailer === 'N') {
-    return {
-      commodityId,
-      powerUnitId,
-      trailerId: NONE_ID,
-      booster: false,
-    };
-  }
-
-  if (canAddTrailer === 'Y' && !trailerName) {
-    return {
-      commodityId,
-      powerUnitId,
-      trailerId: NONE_ID,
-      booster: false,
-    };
-  }
-
-  if (trailerCategory === 'Jeep' || trailerName === 'Jeep') {
-    return { reason: 'jeep-row', row };
-  }
-
-  if (trailerCategory === 'Booster' || trailerName === 'Boosters') {
-    return { reason: 'booster-row', row };
-  }
-
-  if (canAddTrailer !== 'Y' || !trailerName) {
-    return { reason: 'unsupported-row-shape', row };
-  }
-
-  const trailerId = TRAILER_ID_OVERRIDES[trailerName] ?? trailerNameToId.get(trailerName);
-
-  if (!trailerId) {
-    return { reason: 'missing-trailer-mapping', row };
-  }
-
-  return {
-    commodityId,
-    powerUnitId,
-    trailerId,
-    booster: canAddBooster === 'Y',
-  };
 }
 
 // Supported rows from the STOW worksheet are modeled as weight-permittable
@@ -245,10 +76,7 @@ function applySupportedEntries(
       (entry) => entry.type === supportedEntry.powerUnitId,
     );
     if (!powerUnit) {
-      powerUnit = {
-        type: supportedEntry.powerUnitId,
-        trailers: [],
-      };
+      powerUnit = createPowerUnitEntry(supportedEntry.powerUnitId);
       commodity.powerUnits.push(powerUnit);
     }
 
@@ -256,23 +84,35 @@ function applySupportedEntries(
       (entry) => entry.type === supportedEntry.trailerId,
     );
     if (!trailer) {
-      trailer = {
-        type: supportedEntry.trailerId,
-        jeep: false,
-        booster: supportedEntry.booster,
-      };
+      trailer = createTrailerEntry(
+        supportedEntry.trailerId,
+        supportedEntry.booster,
+      );
       powerUnit.trailers.push(trailer);
     }
 
     trailer.booster = supportedEntry.booster;
     trailer.weightPermittable = true;
 
-
-    // This is the jeep logic I'm a bit unsure about. Jeep has specific logic to it.
     if (supportedEntry.trailerId === NONE_ID && trailer.jeep === undefined) {
       trailer.jeep = false;
     }
   }
+}
+
+function createPowerUnitEntry(type: string): PowerUnitEntry {
+  return {
+    type,
+    trailers: [],
+  };
+}
+
+function createTrailerEntry(type: string, booster: boolean): TrailerEntry {
+  return {
+    type,
+    jeep: false,
+    booster,
+  };
 }
 
 function countSkippedEntries(skippedEntries: SkippedEntry[]): Record<string, number> {
@@ -283,17 +123,6 @@ function countSkippedEntries(skippedEntries: SkippedEntry[]): Record<string, num
   }
 
   return counts;
-}
-
-function getCellText(row: ScrapedRow, key: string): string | null {
-  const value = row[key];
-
-  if (value == null) {
-    return null;
-  }
-
-  const text = String(value).trim();
-  return text === '' ? null : text;
 }
 
 main().catch((error: unknown) => {

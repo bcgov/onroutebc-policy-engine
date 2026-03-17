@@ -1,4 +1,4 @@
-import type { CellValue, Workbook, Worksheet } from 'exceljs';
+import type { CellValue, Row, Workbook, Worksheet } from 'exceljs';
 
 export interface SheetConfig {
   sheetName: string;
@@ -8,11 +8,16 @@ export interface SheetConfig {
 
 export type ScrapedCellValue = string | number | boolean | null;
 export type ScrapedRow = Record<string, ScrapedCellValue>;
+export interface ScrapedWorksheetRow {
+  rowNumber: number;
+  row: ScrapedRow;
+  isStruckThrough: boolean;
+}
 
-export function readWorksheetRows(
+export function readWorksheetRowEntries(
   workbook: Workbook,
   config: SheetConfig,
-): ScrapedRow[] {
+): ScrapedWorksheetRow[] {
   const worksheet = workbook.getWorksheet(config.sheetName);
 
   if (!worksheet) {
@@ -21,7 +26,7 @@ export function readWorksheetRows(
 
   const headers = readHeaders(worksheet, config.headerRow);
   const firstDataRow = config.firstDataRow ?? config.headerRow + 1;
-  const rows: ScrapedRow[] = [];
+  const rows: ScrapedWorksheetRow[] = [];
 
   for (let rowNumber = firstDataRow; rowNumber <= worksheet.rowCount; rowNumber += 1) {
     const row = worksheet.getRow(rowNumber);
@@ -39,10 +44,21 @@ export function readWorksheetRows(
       record[header] = values[index] ?? null;
     });
 
-    rows.push(record);
+    rows.push({
+      rowNumber,
+      row: record,
+      isStruckThrough: isStruckThroughRow(row, headers.length),
+    });
   }
 
   return rows;
+}
+
+export function readWorksheetRows(
+  workbook: Workbook,
+  config: SheetConfig,
+): ScrapedRow[] {
+  return readWorksheetRowEntries(workbook, config).map((entry) => entry.row);
 }
 
 function readHeaders(worksheet: Worksheet, headerRowNumber: number): string[] {
@@ -115,4 +131,21 @@ function normalizeCellValue(value: CellValue | undefined): ScrapedCellValue {
 
 function isBlankCellValue(value: ScrapedCellValue): boolean {
   return value === null || (typeof value === 'string' && value.trim() === '');
+}
+
+function isStruckThroughRow(row: Row, headerCount: number): boolean {
+  for (let columnIndex = 1; columnIndex <= headerCount; columnIndex += 1) {
+    const cell = row.getCell(columnIndex);
+    const value = normalizeCellValue(cell.value);
+
+    if (isBlankCellValue(value)) {
+      continue;
+    }
+
+    if (cell.font?.strike) {
+      return true;
+    }
+  }
+
+  return false;
 }
