@@ -48,6 +48,7 @@ export interface AuditEntry {
   powerUnitId: string | null;
   trailerLabel: string;
   trailerId: string | null;
+  canAddBooster: boolean;
   reasonTags: string[];
   isStruckThrough: boolean;
   canCompareTrailer: boolean;
@@ -135,6 +136,7 @@ export function parseAuditEntries(
         trailerId: trailerName
           ? resolveTrailerId(trailerName, lookups) ?? null
           : NONE_ID,
+        canAddBooster: false,
         reasonTags: ['missing-core-columns'],
         isStruckThrough: false,
         canCompareTrailer: false,
@@ -188,6 +190,7 @@ export function parseAuditEntries(
       powerUnitId: powerUnitId ?? null,
       trailerLabel,
       trailerId: trailerId ?? null,
+      canAddBooster: canAddBooster === 'Y',
       reasonTags,
       isStruckThrough: false,
       canCompareTrailer: Boolean(powerUnitId && trailerId),

@@ -5,6 +5,10 @@ import {
   parseAuditEntries,
   type AuditEntry,
 } from './commodityWorksheet.js';
+import {
+  correlateBoosterPlacements,
+  type CorrelatedTrailerWeightBoosterGroup,
+} from './boosterPlacementCorrelation.js';
 import type {
   CompareConfigMode,
   PolicyConfig,
@@ -22,10 +26,9 @@ import {
   parseBoosterExpectationEntries,
   type BoosterExpectationEntry,
 } from './trailerWeightWorksheet.js';
-import {
-  classifyBoosterRows,
-} from './boosterRowAudit.js';
 import { loadWorkbook } from './workbook.js';
+
+export type { CorrelatedTrailerWeightBoosterGroup } from './boosterPlacementCorrelation.js';
 
 const BOOSTER_ID = 'BOOSTER';
 
@@ -75,7 +78,6 @@ export interface ExpectedBoosterGroup {
   trailerName: string;
   trailerId: string;
   rows: number[];
-  sourceBoosterRows: number[];
   reasonTags: string[];
 }
 
@@ -126,6 +128,11 @@ export interface CommodityAuditResult {
   currentBoosters: CurrentBoosterGroup[];
   missingBoosters: ExpectedBoosterGroup[];
   extraBoosters: ExpectedBoosterGroup[];
+  safeTrailerWeightBoosters: CorrelatedTrailerWeightBoosterGroup[];
+  ambiguousTrailerWeightBoosters: CorrelatedTrailerWeightBoosterGroup[];
+  contradictoryTrailerWeightBoosters: CorrelatedTrailerWeightBoosterGroup[];
+  directBoostersWithoutSafePlacement: ExpectedBoosterGroup[];
+  unmatchedTrailerWeightBoosters: CorrelatedTrailerWeightBoosterGroup[];
   ignoredRows: IgnoredAuditEntry[];
 }
 
@@ -257,29 +264,33 @@ function buildCommodityAuditResultFromContext(
     currentDirectTrailers,
     comparablePowerUnitIds,
   );
-  const boosterRowEntries = commodityEntries.filter((entry) =>
-    entry.reasonTags.includes('booster-row'),
-  );
   const expectedBoosters = buildExpectedBoosters(
-    commodityName,
-    commodityId,
-    currentDirectTrailers,
-    context.boosterEntries,
-    groupBoosterSourceRowsByPowerUnit(boosterRowEntries),
+    directTrailerEntries.filter((entry) => entry.canAddBooster),
   );
   const currentBoosters = buildCurrentBoosters(
     context.policy,
     context.permitType,
     commodityId,
-    expectedBoosters,
+    currentDirectTrailers,
   );
-  const missingBoosters = expectedBoosters.filter((entry) => {
-    const current = currentBoosters.find(
-      (group) =>
-        group.powerUnitId === entry.powerUnitId && group.trailerId === entry.trailerId,
-    );
-    return !current?.nextVehicles.has(BOOSTER_ID);
-  });
+  const comparableBoosterKeys = new Set(
+    expectedBoosters
+      .filter((entry) =>
+        currentDirectTrailers.get(entry.powerUnitId)?.trailers.has(entry.trailerId),
+      )
+      .map((entry) => buildBoosterKey(entry.powerUnitId, entry.trailerId)),
+  );
+  const missingBoosters = expectedBoosters
+    .filter((entry) =>
+      comparableBoosterKeys.has(buildBoosterKey(entry.powerUnitId, entry.trailerId)),
+    )
+    .filter((entry) => {
+      const current = currentBoosters.find(
+        (group) =>
+          group.powerUnitId === entry.powerUnitId && group.trailerId === entry.trailerId,
+      );
+      return !current?.nextVehicles.has(BOOSTER_ID);
+    });
   const extraBoosters = currentBoosters
     .filter((group) => group.nextVehicles.has(BOOSTER_ID))
     .filter(
@@ -297,7 +308,6 @@ function buildCommodityAuditResultFromContext(
       trailerName: group.trailerName,
       trailerId: group.trailerId,
       rows: [],
-      sourceBoosterRows: [],
       reasonTags: [],
     }))
     .sort((left, right) => {
@@ -308,40 +318,25 @@ function buildCommodityAuditResultFromContext(
 
       return left.trailerName.localeCompare(right.trailerName);
     });
-  const classifiedBoosterRows = classifyBoosterRows({
-    boosterRows: boosterRowEntries,
-    missingPowerUnits,
-    missingDirectTrailers,
-    expectedBoosters,
-    missingBoosters,
+  const trailerWeightCorrelation = correlateBoosterPlacements({
+    commodityName,
+    directTrailerEntries,
+    trailerWeightEntries: context.boosterEntries.filter(
+      (entry) => entry.commodityId === commodityId,
+    ),
   });
-  const boosterRowStatusByRowNumber = new Map(
-    classifiedBoosterRows.map((entry) => [entry.rowNumber, entry.status]),
+  const directBoostersWithoutSafePlacement = expectedBoosters.filter(
+    (entry) => !trailerWeightCorrelation.safeTrailerIds.has(entry.trailerId),
   );
   const ignoredRows = commodityEntries
-    .flatMap((entry) => {
-      if (!isIgnoredAuditEntry(entry)) {
-        return [];
-      }
-
-      const boosterRowStatus = boosterRowStatusByRowNumber.get(entry.rowNumber);
-      if (boosterRowStatus && boosterRowStatus !== 'unmapped_booster_row') {
-        return [];
-      }
-
-      const reasonTags = filterIgnoredReasonTags(entry.reasonTags);
-      if (reasonTags.length === 0) {
-        return [];
-      }
-
-      return [{
-        rowNumber: entry.rowNumber,
-        commodityName: entry.commodityName,
-        powerUnitName: entry.powerUnitName,
-        trailerLabel: entry.trailerLabel,
-        reasonTags,
-      }];
-    })
+    .map((entry) => ({
+      rowNumber: entry.rowNumber,
+      commodityName: entry.commodityName,
+      powerUnitName: entry.powerUnitName,
+      trailerLabel: entry.trailerLabel,
+      reasonTags: filterIgnoredReasonTags(entry.reasonTags),
+    }))
+    .filter((entry) => entry.reasonTags.length > 0)
     .sort((left, right) => left.rowNumber - right.rowNumber);
 
   return {
@@ -364,6 +359,11 @@ function buildCommodityAuditResultFromContext(
     currentBoosters,
     missingBoosters,
     extraBoosters,
+    safeTrailerWeightBoosters: trailerWeightCorrelation.safeGroups,
+    ambiguousTrailerWeightBoosters: trailerWeightCorrelation.ambiguousGroups,
+    contradictoryTrailerWeightBoosters: trailerWeightCorrelation.contradictoryGroups,
+    directBoostersWithoutSafePlacement,
+    unmatchedTrailerWeightBoosters: trailerWeightCorrelation.unmatchedGroups,
     ignoredRows,
   };
 }
@@ -440,39 +440,35 @@ function buildExpectedTrailers(entries: AuditEntry[]): ExpectedTrailerGroup[] {
   );
 }
 
-function buildExpectedBoosters(
-  commodityName: string,
-  commodityId: string,
-  currentTrailersByPowerUnit: Map<string, CurrentTrailerGroup>,
-  boosterEntries: BoosterExpectationEntry[],
-  boosterSourceRowsByPowerUnit: Map<string, number[]>,
-): ExpectedBoosterGroup[] {
-  const groupedEntries = groupBoosterEntries(
-    boosterEntries.filter((entry) => entry.commodityId === commodityId),
-  );
-  const expectedBoosters: ExpectedBoosterGroup[] = [];
+function buildExpectedBoosters(entries: AuditEntry[]): ExpectedBoosterGroup[] {
+  const grouped = new Map<string, ExpectedBoosterGroup>();
 
-  for (const [powerUnitId, currentGroup] of currentTrailersByPowerUnit.entries()) {
-    for (const [trailerId, trailerName] of currentGroup.trailers.entries()) {
-      const groupedEntry = groupedEntries.get(trailerId);
-      if (!groupedEntry) {
-        continue;
-      }
-
-      expectedBoosters.push({
-        commodityName,
-        powerUnitName: currentGroup.powerUnitName,
-        powerUnitId,
-        trailerName,
-        trailerId,
-        rows: groupedEntry.rows,
-        sourceBoosterRows: boosterSourceRowsByPowerUnit.get(powerUnitId) ?? [],
-        reasonTags: groupedEntry.reasonTags,
-      });
+  for (const entry of entries) {
+    if (!entry.powerUnitId || !entry.trailerId) {
+      continue;
     }
+
+    const key = buildBoosterKey(entry.powerUnitId, entry.trailerId);
+    const existing = grouped.get(key);
+
+    if (existing) {
+      existing.rows.push(entry.rowNumber);
+      existing.reasonTags = mergeTags(existing.reasonTags, entry.reasonTags);
+      continue;
+    }
+
+    grouped.set(key, {
+      commodityName: entry.commodityName,
+      powerUnitName: entry.powerUnitName,
+      powerUnitId: entry.powerUnitId,
+      trailerName: entry.trailerLabel,
+      trailerId: entry.trailerId,
+      rows: [entry.rowNumber],
+      reasonTags: [...entry.reasonTags],
+    });
   }
 
-  return expectedBoosters.sort((left, right) => {
+  return Array.from(grouped.values()).sort((left, right) => {
     const powerUnitCompare = left.powerUnitName.localeCompare(right.powerUnitName);
     if (powerUnitCompare !== 0) {
       return powerUnitCompare;
@@ -505,18 +501,26 @@ function buildCurrentBoosters(
   policy: PolicyLike,
   permitType: string,
   commodityId: string,
-  expectedBoosters: ExpectedBoosterGroup[],
+  currentTrailersByPowerUnit: Map<string, CurrentTrailerGroup>,
 ): CurrentBoosterGroup[] {
-  return expectedBoosters.map((entry) => ({
-    powerUnitId: entry.powerUnitId,
-    powerUnitName: entry.powerUnitName,
-    trailerId: entry.trailerId,
-    trailerName: entry.trailerName,
-    nextVehicles: policy.getNextPermittableVehicles(permitType, commodityId, [
-      entry.powerUnitId,
-      entry.trailerId,
-    ]),
-  }));
+  const groups: CurrentBoosterGroup[] = [];
+
+  for (const [powerUnitId, currentGroup] of currentTrailersByPowerUnit.entries()) {
+    for (const [trailerId, trailerName] of currentGroup.trailers.entries()) {
+      groups.push({
+        powerUnitId,
+        powerUnitName: currentGroup.powerUnitName,
+        trailerId,
+        trailerName,
+        nextVehicles: policy.getNextPermittableVehicles(permitType, commodityId, [
+          powerUnitId,
+          trailerId,
+        ]),
+      });
+    }
+  }
+
+  return groups;
 }
 
 function buildMissingTrailers(
@@ -580,48 +584,8 @@ function buildExtraTrailers(
   });
 }
 
-function groupBoosterEntries(
-  entries: BoosterExpectationEntry[],
-): Map<string, { rows: number[]; reasonTags: string[] }> {
-  const grouped = new Map<string, { rows: number[]; reasonTags: string[] }>();
-
-  for (const entry of entries) {
-    if (!entry.trailerId) {
-      continue;
-    }
-
-    const existing = grouped.get(entry.trailerId);
-    if (existing) {
-      existing.rows.push(entry.rowNumber);
-      existing.reasonTags = mergeTags(existing.reasonTags, entry.reasonTags);
-      continue;
-    }
-
-    grouped.set(entry.trailerId, {
-      rows: [entry.rowNumber],
-      reasonTags: [...entry.reasonTags],
-    });
-  }
-
-  return grouped;
-}
-
-function groupBoosterSourceRowsByPowerUnit(
-  entries: AuditEntry[],
-): Map<string, number[]> {
-  const grouped = new Map<string, number[]>();
-
-  for (const entry of entries) {
-    if (!entry.powerUnitId) {
-      continue;
-    }
-
-    const existing = grouped.get(entry.powerUnitId) ?? [];
-    existing.push(entry.rowNumber);
-    grouped.set(entry.powerUnitId, existing);
-  }
-
-  return grouped;
+function buildBoosterKey(powerUnitId: string, trailerId: string): string {
+  return `${powerUnitId}:${trailerId}`;
 }
 
 function isDirectPowerEntry(entry: AuditEntry): boolean {

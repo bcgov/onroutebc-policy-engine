@@ -1,6 +1,7 @@
 import {
   buildCommodityAuditResult,
   type CommodityAuditResult,
+  type CorrelatedTrailerWeightBoosterGroup,
   type CurrentBoosterGroup,
   type CurrentTrailerGroup,
   type ExpectedBoosterGroup,
@@ -68,17 +69,32 @@ async function main(): Promise<void> {
       'Extra Direct Trailers In Policy (Source: computed diff = policyEngine after [powerUnit] - XLS direct rows)',
       ...formatExtraTrailers(result.extraDirectTrailers),
       '',
-      'Expected Boosters (Source: XLS Trailer - Weight Dim. Sets)',
+      'Expected Boosters (Source: XLS Commodity to Vehicle to Trailer direct rows with Can Add Booster = Y)',
       ...formatExpectedBoosters(result.expectedBoosters),
       '',
       'Current Permittable Boosters (Source: policyEngine.getNextPermittableVehicles after [powerUnit, trailer])',
       ...formatCurrentBoosters(result.currentBoosters),
       '',
-      'Missing Boosters (Source: computed diff = XLS trailer weight rows - policyEngine after [powerUnit, trailer])',
+      'Missing Boosters (Source: computed diff = XLS direct booster-capable rows - policyEngine after [powerUnit, trailer])',
       ...formatExpectedBoosters(result.missingBoosters),
       '',
-      'Extra Boosters In Policy (Source: computed diff = policyEngine after [powerUnit, trailer] - XLS trailer weight rows)',
+      'Extra Boosters In Policy (Source: computed diff = policyEngine after [powerUnit, trailer] - XLS direct booster-capable rows)',
       ...formatExpectedBoosters(result.extraBoosters),
+      '',
+      'Safe Booster Placement Rows (Source: XLS Trailer - Weight Dim. Sets rows that safely correlate to direct Commodity rows)',
+      ...formatTrailerWeightBoosters(result.safeTrailerWeightBoosters),
+      '',
+      'Direct Booster Rows Without Safe Placement Detail (Source: XLS direct booster-capable rows with no safe trailer-weight correlation)',
+      ...formatExpectedBoosters(result.directBoostersWithoutSafePlacement),
+      '',
+      'Ambiguous Trailer Weight Booster Rows (Source: XLS Trailer - Weight Dim. Sets rows with mixed direct Commodity booster flags)',
+      ...formatTrailerWeightBoosters(result.ambiguousTrailerWeightBoosters),
+      '',
+      'Contradictory Trailer Weight Booster Rows (Source: XLS Trailer - Weight Dim. Sets rows whose matching direct Commodity rows all say Can Add Booster = N)',
+      ...formatTrailerWeightBoosters(result.contradictoryTrailerWeightBoosters),
+      '',
+      'Unmatched Trailer Weight Booster Rows (Source: XLS Trailer - Weight Dim. Sets rows with no matching direct Commodity trailer rows)',
+      ...formatTrailerWeightBoosters(result.unmatchedTrailerWeightBoosters),
       '',
       'Unresolved XLS Rows Not Yet Modeled By The Updater (Source: XLS Commodity to Vehicle to Trailer)',
       ...formatIgnoredRows(result.ignoredRows),
@@ -92,7 +108,7 @@ function formatExpectedPowerUnits(entries: ExpectedPowerUnitGroup[]): string[] {
   }
 
   return entries.map((entry) =>
-    `- ${entry.commodityName} - ${entry.powerUnitName} (${entry.rows.join(', ')})`,
+    `- ${entry.commodityName} - ${entry.powerUnitName} (${formatCommodityRows(entry.rows)})`,
   );
 }
 
@@ -123,7 +139,7 @@ function formatExpectedTrailers(entries: ExpectedTrailerGroup[]): string[] {
     const reasonTags = entry.reasonTags.length > 0
       ? ` [${entry.reasonTags.join(', ')}]`
       : '';
-    return `- ${entry.commodityName} - ${entry.powerUnitName} - ${entry.trailerLabel} (${entry.rows.join(', ')})${reasonTags}`;
+    return `- ${entry.commodityName} - ${entry.powerUnitName} - ${entry.trailerLabel} (${formatCommodityRows(entry.rows)})${reasonTags}`;
   });
 }
 
@@ -168,20 +184,34 @@ function formatExpectedBoosters(entries: ExpectedBoosterGroup[]): string[] {
   }
 
   return entries.map((entry) => {
-    const rowParts: string[] = [];
-    if (entry.rows.length > 0) {
-      rowParts.push(`trailer weight rows: ${entry.rows.join(', ')}`);
-    }
-
-    if (entry.sourceBoosterRows.length > 0) {
-      rowParts.push(`commodity booster rows: ${entry.sourceBoosterRows.join(', ')}`);
-    }
-
-    const rowSuffix = rowParts.length > 0 ? ` (${rowParts.join('; ')})` : '';
+    const rowSuffix = entry.rows.length > 0
+      ? ` (${formatCommodityRows(entry.rows)})`
+      : '';
     const reasonTags = entry.reasonTags.length > 0
       ? ` [${entry.reasonTags.join(', ')}]`
       : '';
     return `- ${entry.commodityName} - ${entry.powerUnitName} - ${entry.trailerName}${rowSuffix}${reasonTags}`;
+  });
+}
+
+function formatTrailerWeightBoosters(
+  entries: CorrelatedTrailerWeightBoosterGroup[],
+): string[] {
+  if (entries.length === 0) {
+    return ['- None'];
+  }
+
+  return entries.map((entry) => {
+    const rowSuffix = entry.rows.length > 0
+      ? ` (${formatWeightDimRows(entry.rows)})`
+      : '';
+    const reasonTags = entry.reasonTags.length > 0
+      ? ` [${entry.reasonTags.join(', ')}]`
+      : '';
+    const directRows = entry.directRows.length > 0
+      ? ` {${formatCommodityDirectRows(entry.directRows)}}`
+      : '';
+    return `- ${entry.commodityName} - ${entry.trailerName}${rowSuffix}${reasonTags}${directRows}`;
   });
 }
 
@@ -211,8 +241,20 @@ function formatIgnoredRows(entries: IgnoredAuditEntry[]): string[] {
   }
 
   return entries.map((entry) =>
-    `- ${entry.commodityName} - ${entry.powerUnitName} - ${entry.trailerLabel} (${entry.rowNumber}) [${entry.reasonTags.join(', ')}]`,
+    `- ${entry.commodityName} - ${entry.powerUnitName} - ${entry.trailerLabel} (Commodity row: ${entry.rowNumber}) [${entry.reasonTags.join(', ')}]`,
   );
+}
+
+function formatCommodityRows(rows: number[]): string {
+  return `Commodity rows: ${rows.join(', ')}`;
+}
+
+function formatWeightDimRows(rows: number[]): string {
+  return `Weight Dim. rows: ${rows.join(', ')}`;
+}
+
+function formatCommodityDirectRows(rows: string[]): string {
+  return `Commodity rows: ${rows.join(', ')}`;
 }
 
 function parseCliArgs(args: string[]): CliOptions {

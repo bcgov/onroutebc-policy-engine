@@ -3992,7 +3992,7 @@
             {
               "type": "FECVYRX",
               "jeep": true,
-              "booster": true,
+              "booster": false,
               "weightPermittable": true
             },
             {
@@ -4182,7 +4182,7 @@
             {
               "type": "SEMITRL",
               "jeep": false,
-              "booster": true,
+              "booster": false,
               "weightPermittable": true
             }
           ]
@@ -4554,7 +4554,7 @@
             {
               "type": "FECVYRX",
               "jeep": false,
-              "booster": true,
+              "booster": false,
               "weightPermittable": true
             }
           ]
@@ -4795,7 +4795,7 @@
             {
               "type": "SEMITRL",
               "jeep": false,
-              "booster": true,
+              "booster": false,
               "selfIssue": false,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -4823,7 +4823,7 @@
             {
               "type": "SEMITRL",
               "jeep": false,
-              "booster": true,
+              "booster": false,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -8772,7 +8772,7 @@
             {
               "type": "FECVYRX",
               "jeep": false,
-              "booster": true,
+              "booster": false,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [

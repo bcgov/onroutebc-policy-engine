@@ -36,12 +36,12 @@ describe('STOW regression surface', () => {
     ).toContain('SEMITRL');
   });
 
-  it('should expose the conveyor booster cases after trailer selection', () => {
+  it('should only expose booster cases that are backed by direct booster-capable rows', () => {
     expect(
       Array.from(
         policy.getNextPermittableVehicles('STOW', 'FIXEDEQ', [
           'TRKTRAC',
-          'FECVYRX',
+          'FEDRMMX',
         ]).keys(),
       ),
     ).toContain('BOOSTER');
@@ -52,7 +52,15 @@ describe('STOW regression surface', () => {
           'FECVYRX',
         ]).keys(),
       ),
-    ).toContain('BOOSTER');
+    ).not.toContain('BOOSTER');
+    expect(
+      Array.from(
+        policy.getNextPermittableVehicles('STOW', 'XXXXXXX', [
+          'TRKTRAC',
+          'SEMITRL',
+        ]).keys(),
+      ),
+    ).not.toContain('BOOSTER');
   });
 
   it('should hide LCV power units by default and expose them with LCV auth', () => {
@@ -65,7 +73,7 @@ describe('STOW regression surface', () => {
     ).toEqual(expect.arrayContaining(['LCVRMDB', 'LCVTPDB']));
   });
 
-  it('should require LCV auth before STOW LCV trailers and boosters become selectable', () => {
+  it('should require LCV auth before STOW LCV trailers become selectable and should not infer boosters from trailer-weight rows alone', () => {
     expect(
       Array.from(
         policy.getNextPermittableVehicles('STOW', 'XXXXXXX', ['LCVRMDB']).keys(),
@@ -84,7 +92,7 @@ describe('STOW regression surface', () => {
           .getNextPermittableVehicles('STOW', 'XXXXXXX', ['LCVRMDB', 'SEMITRL'])
           .keys(),
       ),
-    ).toContain('BOOSTER');
+    ).not.toContain('BOOSTER');
   });
 });
 

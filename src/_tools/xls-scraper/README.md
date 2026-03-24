@@ -67,10 +67,15 @@ The existing `npm test` command continues to use `src/_test/policy-config/_curre
 - current direct trailers from `policyEngine.getNextPermittableVehicles(...)` after `[powerUnit]`
 - missing direct trailers as `XLS direct rows - policyEngine`
 - extra direct trailers in policy as `policyEngine - XLS`
-- expected boosters from `Trailer - Weight Dim. Sets`
+- expected boosters from direct `Commodity to Vehicle to Trailer` rows with `Can Add Booster? = Y`
 - current boosters from `policyEngine.getNextPermittableVehicles(...)` after `[powerUnit, trailer]`
-- missing boosters as `Trailer - Weight Dim. Sets - policyEngine`
-- extra boosters in policy as `policyEngine - Trailer - Weight Dim. Sets`
+- missing boosters as `XLS direct booster-capable rows - policyEngine`
+- extra boosters in policy as `policyEngine - XLS direct booster-capable rows`
+- safe trailer-weight booster placement rows from `Trailer - Weight Dim. Sets`
+- direct booster-capable rows with no safe trailer-weight placement detail
+- ambiguous trailer-weight booster rows with mixed direct `Can Add Booster?` flags
+- contradictory trailer-weight booster rows where direct rows all say `Can Add Booster? = N`
+- trailer-weight booster rows with no matching direct trailer row
 - unresolved XLS rows not yet modeled by the updater, including jeep rows, standalone booster rows, `Force Submit to Queue`, and `Steer`/`Drive`/`Wheelbase` rows
 
 By default it compares against `src/_test/policy-config/_current-config.generated.json`. Override that with `--compare-config=canonical|generated|prefer-generated`.
@@ -82,6 +87,11 @@ The audit always compares against a `Policy` instance with LCV authorization ena
 - missing direct power units
 - missing direct trailers
 - missing boosters
+- safe booster placement rows
+- direct booster rows without safe placement detail
+- ambiguous trailer-weight booster rows
+- contradictory trailer-weight booster rows
+- unmatched trailer-weight booster rows
 - unresolved XLS rows not yet modeled by the updater, including jeep rows, standalone booster rows, `Force Submit to Queue`, and `Steer`/`Drive`/`Wheelbase` rows
 - deferred rows that remain blocked even with the audit's LCV-enabled comparison
 
@@ -99,7 +109,7 @@ In practice this means:
 
 - power unit gaps are checked at step 2
 - direct trailer gaps are checked at step 3
-- booster gaps are checked at step 4
+- booster gaps are checked at step 4 using direct first-sheet rows with `Can Add Booster? = Y`
 
 LCV is the one important gating exception in this flow:
 
@@ -156,7 +166,7 @@ Important example-app caveat:
 ## Included
 
 - Sheet: `Commodity to Vehicle to Trailer`
-- Sheet: `Trailer - Weight Dim. Sets` for booster-after-trailer relationships
+- Sheet: `Trailer - Weight Dim. Sets` for safe booster placement correlation and diagnostics
 - Headers from row 5
 - Data rows from row 6 onward
 - Direct STOW basic `commodity -> power unit -> trailer` combinations
@@ -164,7 +174,6 @@ Important example-app caveat:
 - Rows with `Can Add Trailer? = Y` and a blank trailer are also treated as `XXXXXXX`
 - Rows with a real trailer but blank `Can Add Trailer?` are treated as direct trailer rows
 - `booster` on supported direct trailer rows is additive from `Can Add Booster?`
-- `booster` is also additive from `Trailer - Weight Dim. Sets` for currently `weightPermittable` STOW trailer objects
 - Exact-name lookups plus these explicit overrides:
   - `Scrapers on Dollies` -> `SCRAPER`
   - `Tow Trucks and Disabled Vehicles` -> `TOWDISB`
@@ -187,7 +196,11 @@ This means the updater claims correctness for direct trailer and no-trailer STOW
 - `npm run scrape:update-json` writes only the generated review artifact.
 - It also refreshes the backend example config copy so the running example reflects the generated preview.
 - It preserves existing trailer objects when they already exist.
-- It only adds `weightPermittable` and `booster` capability; it does not clear existing capability in this pass.
+- It only adds `weightPermittable` and direct first-sheet `booster` capability; it does not clear existing capability in this pass.
+- `Trailer - Weight Dim. Sets` is correlated against the direct sheet by `commodity + trailer`.
+- That second-sheet correlation is considered safe only when every matching direct row for that same `commodity + trailer` says `Can Add Booster? = Y`.
+- Contradictory, ambiguous, or unmatched trailer-weight rows are kept in audit output only and do not expand JSON behavior.
+- The current JSON model only stores trailer-level `booster: boolean`, so second-sheet placement data does not create new booster capability beyond the direct first-sheet rows.
 - It prints a summary of supported row count, affected commodity count, skipped-row reasons, the generated file path, and whether the generated output differs from the current canonical config.
 - `npm run scrape:apply-generated` copies the exact reviewed generated JSON into the canonical config and backend example config.
 - `npm run revert-json` copies the canonical config into the generated file and backend example config.
