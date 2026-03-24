@@ -31,10 +31,20 @@ async function main(): Promise<void> {
   );
   const missingBoosters = results.flatMap((result) =>
     result.missingBoosters.map((entry) => {
+      const rowParts: string[] = [];
+      if (entry.rows.length > 0) {
+        rowParts.push(`trailer weight rows: ${entry.rows.join(', ')}`);
+      }
+
+      if (entry.sourceBoosterRows.length > 0) {
+        rowParts.push(`commodity booster rows: ${entry.sourceBoosterRows.join(', ')}`);
+      }
+
+      const rowSuffix = rowParts.length > 0 ? ` (${rowParts.join('; ')})` : '';
       const reasonTags = entry.reasonTags.length > 0
         ? ` [${entry.reasonTags.join(', ')}]`
         : '';
-      return `- ${entry.commodityName} - ${entry.powerUnitName} - ${entry.trailerName} (${entry.rows.join(', ')})${reasonTags}`;
+      return `- ${entry.commodityName} - ${entry.powerUnitName} - ${entry.trailerName}${rowSuffix}${reasonTags}`;
     }),
   );
   const deferredPowerUnits = results.flatMap((result) =>

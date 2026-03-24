@@ -22,6 +22,9 @@ import {
   parseBoosterExpectationEntries,
   type BoosterExpectationEntry,
 } from './trailerWeightWorksheet.js';
+import {
+  classifyBoosterRows,
+} from './boosterRowAudit.js';
 import { loadWorkbook } from './workbook.js';
 
 const BOOSTER_ID = 'BOOSTER';
@@ -72,6 +75,7 @@ export interface ExpectedBoosterGroup {
   trailerName: string;
   trailerId: string;
   rows: number[];
+  sourceBoosterRows: number[];
   reasonTags: string[];
 }
 
@@ -253,11 +257,15 @@ function buildCommodityAuditResultFromContext(
     currentDirectTrailers,
     comparablePowerUnitIds,
   );
+  const boosterRowEntries = commodityEntries.filter((entry) =>
+    entry.reasonTags.includes('booster-row'),
+  );
   const expectedBoosters = buildExpectedBoosters(
     commodityName,
     commodityId,
     currentDirectTrailers,
     context.boosterEntries,
+    groupBoosterSourceRowsByPowerUnit(boosterRowEntries),
   );
   const currentBoosters = buildCurrentBoosters(
     context.policy,
@@ -289,6 +297,7 @@ function buildCommodityAuditResultFromContext(
       trailerName: group.trailerName,
       trailerId: group.trailerId,
       rows: [],
+      sourceBoosterRows: [],
       reasonTags: [],
     }))
     .sort((left, right) => {
@@ -299,15 +308,40 @@ function buildCommodityAuditResultFromContext(
 
       return left.trailerName.localeCompare(right.trailerName);
     });
+  const classifiedBoosterRows = classifyBoosterRows({
+    boosterRows: boosterRowEntries,
+    missingPowerUnits,
+    missingDirectTrailers,
+    expectedBoosters,
+    missingBoosters,
+  });
+  const boosterRowStatusByRowNumber = new Map(
+    classifiedBoosterRows.map((entry) => [entry.rowNumber, entry.status]),
+  );
   const ignoredRows = commodityEntries
-    .filter(isIgnoredAuditEntry)
-    .map((entry) => ({
-      rowNumber: entry.rowNumber,
-      commodityName: entry.commodityName,
-      powerUnitName: entry.powerUnitName,
-      trailerLabel: entry.trailerLabel,
-      reasonTags: filterIgnoredReasonTags(entry.reasonTags),
-    }))
+    .flatMap((entry) => {
+      if (!isIgnoredAuditEntry(entry)) {
+        return [];
+      }
+
+      const boosterRowStatus = boosterRowStatusByRowNumber.get(entry.rowNumber);
+      if (boosterRowStatus && boosterRowStatus !== 'unmapped_booster_row') {
+        return [];
+      }
+
+      const reasonTags = filterIgnoredReasonTags(entry.reasonTags);
+      if (reasonTags.length === 0) {
+        return [];
+      }
+
+      return [{
+        rowNumber: entry.rowNumber,
+        commodityName: entry.commodityName,
+        powerUnitName: entry.powerUnitName,
+        trailerLabel: entry.trailerLabel,
+        reasonTags,
+      }];
+    })
     .sort((left, right) => left.rowNumber - right.rowNumber);
 
   return {
@@ -411,6 +445,7 @@ function buildExpectedBoosters(
   commodityId: string,
   currentTrailersByPowerUnit: Map<string, CurrentTrailerGroup>,
   boosterEntries: BoosterExpectationEntry[],
+  boosterSourceRowsByPowerUnit: Map<string, number[]>,
 ): ExpectedBoosterGroup[] {
   const groupedEntries = groupBoosterEntries(
     boosterEntries.filter((entry) => entry.commodityId === commodityId),
@@ -431,6 +466,7 @@ function buildExpectedBoosters(
         trailerName,
         trailerId,
         rows: groupedEntry.rows,
+        sourceBoosterRows: boosterSourceRowsByPowerUnit.get(powerUnitId) ?? [],
         reasonTags: groupedEntry.reasonTags,
       });
     }
@@ -565,6 +601,24 @@ function groupBoosterEntries(
       rows: [entry.rowNumber],
       reasonTags: [...entry.reasonTags],
     });
+  }
+
+  return grouped;
+}
+
+function groupBoosterSourceRowsByPowerUnit(
+  entries: AuditEntry[],
+): Map<string, number[]> {
+  const grouped = new Map<string, number[]>();
+
+  for (const entry of entries) {
+    if (!entry.powerUnitId) {
+      continue;
+    }
+
+    const existing = grouped.get(entry.powerUnitId) ?? [];
+    existing.push(entry.rowNumber);
+    grouped.set(entry.powerUnitId, existing);
   }
 
   return grouped;
