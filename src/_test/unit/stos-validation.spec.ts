@@ -99,7 +99,7 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
     expect(validationResult.violations).toHaveLength(1);
   });
 
-  it('should pass validation for STOS with multiple boosters', async () => {
+  it('should fail validation for STOS with multiple boosters after a platform trailer', async () => {
     const permit = JSON.parse(JSON.stringify(testStos));
     // Set startDate to today
     permit.permitData.startDate = dayjs().format(
@@ -115,7 +115,7 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
     });
 
     const validationResult = await policy.validate(permit);
-    expect(validationResult.violations).toHaveLength(0);
+    expect(validationResult.violations).toHaveLength(1);
   });
 
   it('should pass validation for STOS with multiple jeeps', async () => {

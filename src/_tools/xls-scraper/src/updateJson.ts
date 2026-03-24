@@ -17,7 +17,11 @@ import type {
   TrailerEntry,
 } from './policyConfig.js';
 import { readWorksheetRowEntries } from './readWorksheet.js';
-import { COMMODITY_TO_VEHICLE_TO_TRAILER_SHEET } from './sheets.js';
+import {
+  COMMODITY_TO_VEHICLE_TO_TRAILER_SHEET,
+  TRAILER_WEIGHT_DIM_SETS_SHEET,
+} from './sheets.js';
+import { parseBoosterExpectationEntries } from './trailerWeightWorksheet.js';
 import { loadWorkbook } from './workbook.js';
 
 async function main(): Promise<void> {
@@ -31,11 +35,20 @@ async function main(): Promise<void> {
     workbook,
     COMMODITY_TO_VEHICLE_TO_TRAILER_SHEET,
   );
+  const trailerWeightRows = readWorksheetRowEntries(
+    workbook,
+    TRAILER_WEIGHT_DIM_SETS_SHEET,
+  );
   const existingCanonicalConfig = await readFile(CANONICAL_CONFIG_PATH, 'utf8');
   const config = JSON.parse(existingCanonicalConfig) as PolicyConfig;
   const parsed = parseSupportedEntries(rows, config);
+  const boosterExpectations = parseBoosterExpectationEntries(
+    trailerWeightRows,
+    config,
+  );
 
   applySupportedEntries(config, parsed.supportedEntries);
+  applyBoosterExpectations(config, boosterExpectations);
 
   const serializedConfig = `${JSON.stringify(config, null, 2)}\n`;
   const differsFromCanonical = serializedConfig !== existingCanonicalConfig;
@@ -47,6 +60,7 @@ async function main(): Promise<void> {
     JSON.stringify(
       {
         supportedRowCount: parsed.supportedEntries.length,
+        boosterExpectationCount: boosterExpectations.length,
         affectedCommodityCount: new Set(
           parsed.supportedEntries.map((entry) => entry.commodityId),
         ).size,
@@ -98,11 +112,54 @@ function applySupportedEntries(
       powerUnit.trailers.push(trailer);
     }
 
-    trailer.booster = supportedEntry.booster;
+    trailer.booster = trailer.booster || supportedEntry.booster;
     trailer.weightPermittable = true;
 
     if (supportedEntry.trailerId === NONE_ID && trailer.jeep === undefined) {
       trailer.jeep = false;
+    }
+  }
+}
+
+// Booster rows live on the trailer weight worksheet rather than the direct
+// commodity/power-unit/trailer sheet. Apply them only to trailer objects that
+// are already STOW-managed via weightPermittable so we do not widen unrelated
+// size-only combinations.
+function applyBoosterExpectations(
+  config: PolicyConfig,
+  boosterExpectations: Array<{
+    commodityId: string | null;
+    trailerId: string | null;
+  }>,
+): void {
+  const boosterKeys = new Set(
+    boosterExpectations
+      .filter(
+        (
+          entry,
+        ): entry is {
+          commodityId: string;
+          trailerId: string;
+        } => Boolean(entry.commodityId && entry.trailerId),
+      )
+      .map((entry) => `${entry.commodityId}:${entry.trailerId}`),
+  );
+
+  for (const commodity of config.commodities) {
+    if (!commodity.powerUnits) {
+      continue;
+    }
+
+    for (const powerUnit of commodity.powerUnits) {
+      for (const trailer of powerUnit.trailers) {
+        if (!trailer.weightPermittable) {
+          continue;
+        }
+
+        if (boosterKeys.has(`${commodity.id}:${trailer.type}`)) {
+          trailer.booster = true;
+        }
+      }
     }
   }
 }

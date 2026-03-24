@@ -1,0 +1,561 @@
+{
+  "commodities": [
+    "BRGBEAM",
+    "EMPTYXX",
+    "FIXEDEQ",
+    "IMCONWS",
+    "LAMBEAM",
+    "MFHOMEL",
+    "NONREDU",
+    "OILFILD",
+    "REDUCBL",
+    "SCRAPER",
+    "TOWDISB",
+    "XXXXXXX"
+  ],
+  "powerUnits": {
+    "BRGBEAM": [
+      "TRKTRAC"
+    ],
+    "EMPTYXX": [
+      "PICKRTR",
+      "PICKRTT",
+      "REGTRCK",
+      "TRKTRAC"
+    ],
+    "FIXEDEQ": [
+      "REGTRCK",
+      "TRKTRAC"
+    ],
+    "IMCONWS": [
+      "TRKTRAC"
+    ],
+    "LAMBEAM": [
+      "TRKTRAC"
+    ],
+    "MFHOMEL": [
+      "TRKTRAC"
+    ],
+    "NONREDU": [
+      "PICKRTR",
+      "PICKRTT",
+      "REGTRCK",
+      "TRKTRAC"
+    ],
+    "OILFILD": [
+      "OGBEDTK",
+      "OGOILSW",
+      "OGSERVC",
+      "OGSRRAH",
+      "TRKTRAC"
+    ],
+    "REDUCBL": [
+      "REGTRCK",
+      "TRKTRAC"
+    ],
+    "SCRAPER": [
+      "TRKTRAC"
+    ],
+    "TOWDISB": [
+      "TOWVEHC"
+    ],
+    "XXXXXXX": [
+      "CONCRET",
+      "CRANEAT",
+      "CRANEMB",
+      "GRADERS",
+      "MUNFITR",
+      "PICKRTR",
+      "PICKRTT",
+      "RBTRLDR",
+      "REGTRCK",
+      "SCRAPER",
+      "TRKTRAC"
+    ]
+  },
+  "trailers": {
+    "BRGBEAM:TRKTRAC": [
+      "JEEPSRG",
+      "POLETRL"
+    ],
+    "EMPTYXX:PICKRTR": [
+      "XXXXXXX"
+    ],
+    "EMPTYXX:PICKRTT": [
+      "EXPANDO",
+      "HIBOEXP",
+      "HIBOFLT",
+      "JEEPSRG",
+      "OGOSFDT",
+      "PLATFRM",
+      "SEMITRL",
+      "STCRANE",
+      "STSDBDK",
+      "STSTEER",
+      "STWHELR",
+      "STWIDWH"
+    ],
+    "EMPTYXX:REGTRCK": [
+      "XXXXXXX"
+    ],
+    "EMPTYXX:TRKTRAC": [
+      "EXPANDO",
+      "HIBOEXP",
+      "HIBOFLT",
+      "JEEPSRG",
+      "OGOSFDT",
+      "PLATFRM",
+      "SEMITRL",
+      "STCRANE",
+      "STSDBDK",
+      "STWHELR",
+      "STWIDWH"
+    ],
+    "FIXEDEQ:REGTRCK": [
+      "FECVYRX",
+      "FEPNYTR",
+      "PONYTRL"
+    ],
+    "FIXEDEQ:TRKTRAC": [
+      "FEBGHSE",
+      "FECVYRX",
+      "FEDRMMX",
+      "FESEMTR",
+      "FEWHELR",
+      "JEEPSRG",
+      "STWDTAN"
+    ],
+    "IMCONWS:TRKTRAC": [
+      "JEEPSRG",
+      "STSDBDK"
+    ],
+    "LAMBEAM:TRKTRAC": [
+      "HIBOEXP",
+      "JEEPSRG",
+      "POLETRL"
+    ],
+    "MFHOMEL:TRKTRAC": [
+      "DOLLIES",
+      "JEEPSRG",
+      "STSDBDK",
+      "STWHELR"
+    ],
+    "NONREDU:PICKRTR": [
+      "XXXXXXX"
+    ],
+    "NONREDU:PICKRTT": [
+      "HIBOEXP",
+      "HIBOFLT",
+      "JEEPSRG",
+      "OGOSFDT",
+      "SEMITRL",
+      "STCRANE",
+      "STSDBDK",
+      "STSTEER",
+      "STWHELR",
+      "STWIDWH"
+    ],
+    "NONREDU:REGTRCK": [
+      "PONYTRL",
+      "XXXXXXX"
+    ],
+    "NONREDU:TRKTRAC": [
+      "HIBOEXP",
+      "HIBOFLT",
+      "JEEPSRG",
+      "PLATFRM",
+      "SEMITRL",
+      "STCRANE",
+      "STSDBDK",
+      "STWDTAN",
+      "STWHELR",
+      "STWIDWH"
+    ],
+    "OILFILD:OGBEDTK": [
+      "JEEPSRG",
+      "OGOSFDT"
+    ],
+    "OILFILD:OGOILSW": [
+      "JEEPSRG",
+      "XXXXXXX"
+    ],
+    "OILFILD:OGSERVC": [
+      "XXXXXXX"
+    ],
+    "OILFILD:OGSRRAH": [
+      "XXXXXXX"
+    ],
+    "OILFILD:TRKTRAC": [
+      "JEEPSRG",
+      "OGOSFDT"
+    ],
+    "REDUCBL:REGTRCK": [
+      "PONYTRL",
+      "XXXXXXX"
+    ],
+    "REDUCBL:TRKTRAC": [
+      "HIBOEXP",
+      "HIBOFLT",
+      "JEEPSRG",
+      "SEMITRL",
+      "STCRANE",
+      "STSDBDK"
+    ],
+    "SCRAPER:TRKTRAC": [
+      "DOLLIES",
+      "JEEPSRG"
+    ],
+    "TOWDISB:TOWVEHC": [
+      "XXXXXXX"
+    ],
+    "XXXXXXX:CONCRET": [
+      "XXXXXXX"
+    ],
+    "XXXXXXX:CRANEAT": [
+      "DOLLIES",
+      "XXXXXXX"
+    ],
+    "XXXXXXX:CRANEMB": [
+      "DOLLIES",
+      "XXXXXXX"
+    ],
+    "XXXXXXX:GRADERS": [
+      "FEPNYTR",
+      "XXXXXXX"
+    ],
+    "XXXXXXX:MUNFITR": [
+      "DOLLIES"
+    ],
+    "XXXXXXX:PICKRTR": [
+      "XXXXXXX"
+    ],
+    "XXXXXXX:PICKRTT": [
+      "JEEPSRG",
+      "STROPRT",
+      "STRSELF",
+      "XXXXXXX"
+    ],
+    "XXXXXXX:RBTRLDR": [
+      "DOLLIES"
+    ],
+    "XXXXXXX:REGTRCK": [
+      "FECVYRX",
+      "FEPNYTR",
+      "MHMBSHG",
+      "XXXXXXX"
+    ],
+    "XXXXXXX:SCRAPER": [
+      "XXXXXXX"
+    ],
+    "XXXXXXX:TRKTRAC": [
+      "FEBGHSE",
+      "FECVYRX",
+      "FEDRMMX",
+      "FESEMTR",
+      "FEWHELR",
+      "JEEPSRG",
+      "REDIMIX",
+      "SEMITRL",
+      "STROPRT",
+      "STRSELF"
+    ]
+  },
+  "nextVehicles": {
+    "BRGBEAM:TRKTRAC:JEEPSRG": [
+      "JEEPSRG",
+      "POLETRL"
+    ],
+    "BRGBEAM:TRKTRAC:POLETRL": [
+      "BOOSTER"
+    ],
+    "EMPTYXX:PICKRTT:EXPANDO": [
+      "BOOSTER"
+    ],
+    "EMPTYXX:PICKRTT:HIBOEXP": [
+      "BOOSTER"
+    ],
+    "EMPTYXX:PICKRTT:HIBOFLT": [
+      "BOOSTER"
+    ],
+    "EMPTYXX:PICKRTT:JEEPSRG": [
+      "HIBOEXP",
+      "JEEPSRG",
+      "OGOSFDT",
+      "PLATFRM",
+      "STWHELR",
+      "STWIDWH"
+    ],
+    "EMPTYXX:PICKRTT:OGOSFDT": [
+      "BOOSTER"
+    ],
+    "EMPTYXX:PICKRTT:SEMITRL": [
+      "BOOSTER"
+    ],
+    "EMPTYXX:PICKRTT:STCRANE": [
+      "BOOSTER"
+    ],
+    "EMPTYXX:PICKRTT:STSDBDK": [
+      "BOOSTER"
+    ],
+    "EMPTYXX:PICKRTT:STSTEER": [
+      "BOOSTER"
+    ],
+    "EMPTYXX:PICKRTT:STWHELR": [
+      "BOOSTER"
+    ],
+    "EMPTYXX:PICKRTT:STWIDWH": [
+      "BOOSTER"
+    ],
+    "EMPTYXX:TRKTRAC:EXPANDO": [
+      "BOOSTER"
+    ],
+    "EMPTYXX:TRKTRAC:HIBOEXP": [
+      "BOOSTER"
+    ],
+    "EMPTYXX:TRKTRAC:HIBOFLT": [
+      "BOOSTER"
+    ],
+    "EMPTYXX:TRKTRAC:JEEPSRG": [
+      "HIBOEXP",
+      "HIBOFLT",
+      "JEEPSRG",
+      "PLATFRM",
+      "STSDBDK",
+      "STWHELR",
+      "STWIDWH"
+    ],
+    "EMPTYXX:TRKTRAC:OGOSFDT": [
+      "BOOSTER"
+    ],
+    "EMPTYXX:TRKTRAC:SEMITRL": [
+      "BOOSTER"
+    ],
+    "EMPTYXX:TRKTRAC:STCRANE": [
+      "BOOSTER"
+    ],
+    "EMPTYXX:TRKTRAC:STSDBDK": [
+      "BOOSTER"
+    ],
+    "EMPTYXX:TRKTRAC:STWHELR": [
+      "BOOSTER"
+    ],
+    "EMPTYXX:TRKTRAC:STWIDWH": [
+      "BOOSTER"
+    ],
+    "FIXEDEQ:REGTRCK:FECVYRX": [
+      "BOOSTER"
+    ],
+    "FIXEDEQ:TRKTRAC:FEBGHSE": [
+      "BOOSTER"
+    ],
+    "FIXEDEQ:TRKTRAC:FECVYRX": [
+      "BOOSTER"
+    ],
+    "FIXEDEQ:TRKTRAC:FEDRMMX": [
+      "BOOSTER"
+    ],
+    "FIXEDEQ:TRKTRAC:FESEMTR": [
+      "BOOSTER"
+    ],
+    "FIXEDEQ:TRKTRAC:FEWHELR": [
+      "BOOSTER"
+    ],
+    "FIXEDEQ:TRKTRAC:JEEPSRG": [
+      "FEBGHSE",
+      "FECVYRX",
+      "FEDRMMX",
+      "FESEMTR",
+      "FEWHELR",
+      "JEEPSRG"
+    ],
+    "IMCONWS:TRKTRAC:JEEPSRG": [
+      "JEEPSRG",
+      "STSDBDK"
+    ],
+    "IMCONWS:TRKTRAC:STSDBDK": [
+      "BOOSTER"
+    ],
+    "LAMBEAM:TRKTRAC:HIBOEXP": [
+      "BOOSTER"
+    ],
+    "LAMBEAM:TRKTRAC:JEEPSRG": [
+      "HIBOEXP",
+      "JEEPSRG",
+      "POLETRL"
+    ],
+    "LAMBEAM:TRKTRAC:POLETRL": [
+      "BOOSTER"
+    ],
+    "MFHOMEL:TRKTRAC:JEEPSRG": [
+      "JEEPSRG",
+      "STSDBDK"
+    ],
+    "MFHOMEL:TRKTRAC:STSDBDK": [
+      "BOOSTER"
+    ],
+    "NONREDU:PICKRTT:HIBOEXP": [
+      "BOOSTER"
+    ],
+    "NONREDU:PICKRTT:HIBOFLT": [
+      "BOOSTER"
+    ],
+    "NONREDU:PICKRTT:JEEPSRG": [
+      "HIBOEXP",
+      "HIBOFLT",
+      "JEEPSRG",
+      "OGOSFDT",
+      "SEMITRL",
+      "STCRANE",
+      "STSDBDK",
+      "STSTEER",
+      "STWHELR",
+      "STWIDWH"
+    ],
+    "NONREDU:PICKRTT:OGOSFDT": [
+      "BOOSTER"
+    ],
+    "NONREDU:PICKRTT:SEMITRL": [
+      "BOOSTER"
+    ],
+    "NONREDU:PICKRTT:STCRANE": [
+      "BOOSTER"
+    ],
+    "NONREDU:PICKRTT:STSDBDK": [
+      "BOOSTER"
+    ],
+    "NONREDU:PICKRTT:STSTEER": [
+      "BOOSTER"
+    ],
+    "NONREDU:PICKRTT:STWHELR": [
+      "BOOSTER"
+    ],
+    "NONREDU:PICKRTT:STWIDWH": [
+      "BOOSTER"
+    ],
+    "NONREDU:TRKTRAC:HIBOEXP": [
+      "BOOSTER"
+    ],
+    "NONREDU:TRKTRAC:HIBOFLT": [
+      "BOOSTER"
+    ],
+    "NONREDU:TRKTRAC:JEEPSRG": [
+      "HIBOEXP",
+      "HIBOFLT",
+      "JEEPSRG",
+      "PLATFRM",
+      "SEMITRL",
+      "STCRANE",
+      "STSDBDK",
+      "STWHELR",
+      "STWIDWH"
+    ],
+    "NONREDU:TRKTRAC:SEMITRL": [
+      "BOOSTER"
+    ],
+    "NONREDU:TRKTRAC:STCRANE": [
+      "BOOSTER"
+    ],
+    "NONREDU:TRKTRAC:STSDBDK": [
+      "BOOSTER"
+    ],
+    "NONREDU:TRKTRAC:STWHELR": [
+      "BOOSTER"
+    ],
+    "NONREDU:TRKTRAC:STWIDWH": [
+      "BOOSTER"
+    ],
+    "OILFILD:OGBEDTK:JEEPSRG": [
+      "JEEPSRG",
+      "OGOSFDT"
+    ],
+    "OILFILD:OGBEDTK:OGOSFDT": [
+      "BOOSTER"
+    ],
+    "OILFILD:TRKTRAC:JEEPSRG": [
+      "JEEPSRG",
+      "OGOSFDT"
+    ],
+    "OILFILD:TRKTRAC:OGOSFDT": [
+      "BOOSTER"
+    ],
+    "REDUCBL:TRKTRAC:HIBOEXP": [
+      "BOOSTER"
+    ],
+    "REDUCBL:TRKTRAC:HIBOFLT": [
+      "BOOSTER"
+    ],
+    "REDUCBL:TRKTRAC:JEEPSRG": [
+      "HIBOEXP",
+      "HIBOFLT",
+      "JEEPSRG",
+      "SEMITRL",
+      "STCRANE",
+      "STSDBDK"
+    ],
+    "REDUCBL:TRKTRAC:SEMITRL": [
+      "BOOSTER"
+    ],
+    "REDUCBL:TRKTRAC:STCRANE": [
+      "BOOSTER"
+    ],
+    "REDUCBL:TRKTRAC:STSDBDK": [
+      "BOOSTER"
+    ],
+    "SCRAPER:TRKTRAC:JEEPSRG": [
+      "DOLLIES",
+      "JEEPSRG"
+    ],
+    "XXXXXXX:PICKRTT:JEEPSRG": [
+      "JEEPSRG",
+      "STROPRT",
+      "STRSELF"
+    ],
+    "XXXXXXX:PICKRTT:STROPRT": [
+      "BOOSTER"
+    ],
+    "XXXXXXX:PICKRTT:STRSELF": [
+      "BOOSTER"
+    ],
+    "XXXXXXX:REGTRCK:FECVYRX": [
+      "BOOSTER"
+    ],
+    "XXXXXXX:TRKTRAC:FEBGHSE": [
+      "BOOSTER"
+    ],
+    "XXXXXXX:TRKTRAC:FECVYRX": [
+      "BOOSTER"
+    ],
+    "XXXXXXX:TRKTRAC:FEDRMMX": [
+      "BOOSTER"
+    ],
+    "XXXXXXX:TRKTRAC:FESEMTR": [
+      "BOOSTER"
+    ],
+    "XXXXXXX:TRKTRAC:FEWHELR": [
+      "BOOSTER"
+    ],
+    "XXXXXXX:TRKTRAC:JEEPSRG": [
+      "FEBGHSE",
+      "FECVYRX",
+      "FEDRMMX",
+      "FESEMTR",
+      "FEWHELR",
+      "JEEPSRG",
+      "REDIMIX",
+      "STROPRT",
+      "STRSELF"
+    ],
+    "XXXXXXX:TRKTRAC:REDIMIX": [
+      "BOOSTER"
+    ],
+    "XXXXXXX:TRKTRAC:SEMITRL": [
+      "BOOSTER"
+    ],
+    "XXXXXXX:TRKTRAC:STROPRT": [
+      "BOOSTER"
+    ],
+    "XXXXXXX:TRKTRAC:STRSELF": [
+      "BOOSTER"
+    ]
+  }
+}

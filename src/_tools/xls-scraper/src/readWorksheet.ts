@@ -4,6 +4,7 @@ export interface SheetConfig {
   sheetName: string;
   headerRow: number;
   firstDataRow?: number;
+  headerColumns?: number;
 }
 
 export type ScrapedCellValue = string | number | boolean | null;
@@ -24,7 +25,11 @@ export function readWorksheetRowEntries(
     throw new Error(`Worksheet not found: ${config.sheetName}`);
   }
 
-  const headers = readHeaders(worksheet, config.headerRow);
+  const headers = readHeaders(
+    worksheet,
+    config.headerRow,
+    config.headerColumns,
+  );
   const firstDataRow = config.firstDataRow ?? config.headerRow + 1;
   const rows: ScrapedWorksheetRow[] = [];
 
@@ -61,9 +66,13 @@ export function readWorksheetRows(
   return readWorksheetRowEntries(workbook, config).map((entry) => entry.row);
 }
 
-function readHeaders(worksheet: Worksheet, headerRowNumber: number): string[] {
+function readHeaders(
+  worksheet: Worksheet,
+  headerRowNumber: number,
+  headerColumns?: number,
+): string[] {
   const headerRow = worksheet.getRow(headerRowNumber);
-  const headerCount = headerRow.actualCellCount;
+  const headerCount = headerColumns ?? headerRow.actualCellCount;
 
   if (headerCount === 0) {
     throw new Error(`Header row ${headerRowNumber} is empty`);

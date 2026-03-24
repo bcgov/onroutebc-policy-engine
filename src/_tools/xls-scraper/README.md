@@ -15,6 +15,7 @@ npm run scrape
 npm run scrape:update-json
 npm run revert-json
 npm run audit:commodity -- --commodity-type=None
+npm run audit:stow-missing
 npm run scrape:apply-generated
 npm run typecheck
 ```
@@ -48,27 +49,58 @@ The generate step is intended to be idempotent. If the workbook does not change,
 
 `npm run audit:commodity -- --commodity-type=None` reads the XLS directly, excludes struck-through rows, compares the XLS-derived rows for that commodity against the current policy engine output, and prints clearly-labelled sections for:
 
-- expected vehicle sub-types from XLS
+- expected vehicle sub-types from `Commodity to Vehicle to Trailer`
 - current permittable vehicle sub-types from `policyEngine.getPermittablePowerUnitTypes(...)`
-- missing vehicle sub-types as `XLS - policyEngine`
+- missing vehicle sub-types as `XLS direct rows - policyEngine`
+- deferred vehicle sub-types such as LCV rows blocked by policy auth
 - extra vehicle sub-types in policy as `policyEngine - XLS`
-- expected trailers from XLS
-- current permittable trailers from `policyEngine.getNextPermittableVehicles(...)`
-- missing trailers as `XLS - policyEngine`
-- extra trailers in policy as `policyEngine - XLS`
+- expected direct trailers from `Commodity to Vehicle to Trailer`
+- current direct trailers from `policyEngine.getNextPermittableVehicles(...)` after `[powerUnit]`
+- missing direct trailers as `XLS direct rows - policyEngine`
+- extra direct trailers in policy as `policyEngine - XLS`
+- expected boosters from `Trailer - Weight Dim. Sets`
+- current boosters from `policyEngine.getNextPermittableVehicles(...)` after `[powerUnit, trailer]`
+- missing boosters as `Trailer - Weight Dim. Sets - policyEngine`
+- extra boosters in policy as `policyEngine - Trailer - Weight Dim. Sets`
 - ignored/unsupported XLS rows
 
 By default it compares against `src/_test/policy-config/_current-config.generated.json`. Override that with `--compare-config=canonical|generated|prefer-generated`.
 
+`npm run audit:stow-missing` runs the same stage-aware comparison across every commodity in the workbook and prints one consolidated list of:
+
+- missing direct power units
+- missing direct trailers
+- missing boosters
+- deferred rows such as LCV
+
+## Policy API Flow
+
+The audit commands compare XLS expectations against the policy engine in the same sequence a consumer would use it:
+
+1. `policyEngine.getCommodities('STOW')`
+2. `policyEngine.getPermittablePowerUnitTypes('STOW', commodityId)`
+3. `policyEngine.getNextPermittableVehicles('STOW', commodityId, [powerUnitId])`
+4. `policyEngine.getNextPermittableVehicles('STOW', commodityId, [powerUnitId, trailerId])`
+5. `policyEngine.isConfigurationValid('STOW', commodityId, configuration)` for final configuration checks
+
+In practice this means:
+
+- power unit gaps are checked at step 2
+- direct trailer gaps are checked at step 3
+- booster gaps are checked at step 4
+
 ## Included
 
 - Sheet: `Commodity to Vehicle to Trailer`
+- Sheet: `Trailer - Weight Dim. Sets` for booster-after-trailer relationships
 - Headers from row 5
 - Data rows from row 6 onward
 - Direct STOW basic `commodity -> power unit -> trailer` combinations
 - No-trailer combinations mapped to trailer id `XXXXXXX`
 - Rows with `Can Add Trailer? = Y` and a blank trailer are also treated as `XXXXXXX`
-- `booster` on supported direct trailer rows from `Can Add Booster?`
+- Rows with a real trailer but blank `Can Add Trailer?` are treated as direct trailer rows
+- `booster` on supported direct trailer rows is additive from `Can Add Booster?`
+- `booster` is also additive from `Trailer - Weight Dim. Sets` for currently `weightPermittable` STOW trailer objects
 - Exact-name lookups plus these explicit overrides:
   - `Scrapers on Dollies` -> `SCRAPER`
   - `Tow Trucks and Disabled Vehicles` -> `TOWDISB`
@@ -79,18 +111,18 @@ By default it compares against `src/_test/policy-config/_current-config.generate
 
 - Jeep rows
 - Standalone booster rows
-- `Force Submit to Queue`
-- `Steer`
-- `Drive`
-- `Wheelbase`
+- Any permit-specific interpretation of `Force Submit to Queue`
+- Any permit-specific interpretation of `Steer`, `Drive`, or `Wheelbase`
+- LCV authorization logic
 
-This means the updater only claims correctness for direct trailer and no-trailer STOW basic combinations that the current policy model can represent cleanly.
+This means the updater claims correctness for direct trailer and no-trailer STOW combinations and for additive booster-after-trailer permissions the current policy model can represent cleanly.
 
 ## What The Updater Changes
 
 - `npm run scrape:update-json` writes only the generated review artifact.
 - It also refreshes the backend example config copy so the running example reflects the generated preview.
 - It preserves existing trailer objects when they already exist.
+- It only adds `weightPermittable` and `booster` capability; it does not clear existing capability in this pass.
 - It prints a summary of supported row count, affected commodity count, skipped-row reasons, the generated file path, and whether the generated output differs from the current canonical config.
 - `npm run scrape:apply-generated` copies the exact reviewed generated JSON into the canonical config and backend example config.
 - `npm run revert-json` copies the canonical config into the generated file and backend example config.

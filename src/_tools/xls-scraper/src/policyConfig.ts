@@ -11,6 +11,7 @@ export interface NamedDefinition {
   id: string;
   name: string;
   category?: string;
+  isLcv?: boolean;
 }
 
 export interface TrailerEntry {

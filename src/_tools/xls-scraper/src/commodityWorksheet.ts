@@ -212,10 +212,6 @@ function parseSupportedRow(
   const trailerCategory = getCellText(row, 'Trailer Category');
   const canAddTrailer = getCellText(row, 'Can Add Trailer?');
   const canAddBooster = getCellText(row, 'Can Add Booster?');
-  const forceSubmitToQueue = getCellText(row, 'Force Submit to Queue');
-  const steer = getCellText(row, 'Steer');
-  const drive = getCellText(row, 'Drive');
-  const wheelbase = getCellText(row, 'Wheelbase');
   const specialInstructions = getCellText(row, 'Special Instructions');
 
   if (!commodityName && !powerUnitName && !trailerName && specialInstructions) {
@@ -225,22 +221,6 @@ function parseSupportedRow(
   if (!commodityName || !powerUnitName) {
     return {
       reason: 'missing-core-columns',
-      rowNumber: rowEntry.rowNumber,
-      row: rowEntry.row,
-    };
-  }
-
-  if (forceSubmitToQueue) {
-    return {
-      reason: 'force-submit-to-queue',
-      rowNumber: rowEntry.rowNumber,
-      row: rowEntry.row,
-    };
-  }
-
-  if (steer || drive || wheelbase) {
-    return {
-      reason: 'steer-drive-wheelbase',
       rowNumber: rowEntry.rowNumber,
       row: rowEntry.row,
     };
@@ -289,7 +269,7 @@ function parseSupportedRow(
     };
   }
 
-  if (canAddTrailer !== 'Y' || !trailerName) {
+  if (!trailerName) {
     return {
       reason: 'unsupported-row-shape',
       rowNumber: rowEntry.rowNumber,
@@ -347,21 +327,21 @@ function normalizeWorksheetRow(row: ScrapedRow): ScrapedRow {
   return normalizedRow;
 }
 
-function resolveCommodityId(
+export function resolveCommodityId(
   commodityName: string,
   lookups: LookupMaps,
 ): string | undefined {
   return COMMODITY_ID_OVERRIDES[commodityName] ?? lookups.commodityNameToId.get(commodityName);
 }
 
-function resolvePowerUnitId(
+export function resolvePowerUnitId(
   powerUnitName: string,
   lookups: LookupMaps,
 ): string | undefined {
   return POWER_UNIT_ID_OVERRIDES[powerUnitName] ?? lookups.powerUnitNameToId.get(powerUnitName);
 }
 
-function resolveTrailerId(
+export function resolveTrailerId(
   trailerName: string,
   lookups: LookupMaps,
 ): string | undefined {
@@ -383,6 +363,10 @@ function resolveAuditTrailerId({
 
   if (canAddTrailer === 'Y' && !trailerName) {
     return NONE_ID;
+  }
+
+  if (!canAddTrailer && trailerName) {
+    return resolveTrailerId(trailerName, lookups);
   }
 
   if (!trailerName) {
