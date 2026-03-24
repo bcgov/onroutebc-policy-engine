@@ -76,6 +76,7 @@ The existing `npm test` command continues to use `src/_test/policy-config/_curre
 - ambiguous trailer-weight booster rows with mixed direct `Can Add Booster?` flags
 - contradictory trailer-weight booster rows where direct rows all say `Can Add Booster? = N`
 - trailer-weight booster rows with no matching direct trailer row
+- standalone `Boosters` rows that are already represented elsewhere by direct rows or by separately reported direct gaps
 - unresolved XLS rows not yet modeled by the updater, including jeep rows, standalone booster rows, `Force Submit to Queue`, and `Steer`/`Drive`/`Wheelbase` rows
 
 By default it compares against `src/_test/policy-config/_current-config.generated.json`. Override that with `--compare-config=canonical|generated|prefer-generated`.
@@ -91,6 +92,7 @@ The audit always compares against a `Policy` instance with LCV authorization ena
 - ambiguous trailer-weight booster rows
 - contradictory trailer-weight booster rows
 - unmatched trailer-weight booster rows
+- it intentionally does not repeat standalone `Boosters` rows when they are already represented by direct booster-capable rows or by separately reported direct power/trailer gaps
 - unresolved XLS rows not yet modeled by the updater, including jeep rows, standalone booster rows, `Force Submit to Queue`, and `Steer`/`Drive`/`Wheelbase` rows
 - deferred rows that remain blocked even with the audit's LCV-enabled comparison
 
@@ -99,6 +101,8 @@ Interpretation:
 - `safe` booster placement rows are verified correlations, not missing work
 - `audit:commodity` shows those safe rows for detailed row-by-row review
 - `audit:stow-missing` hides them so the consolidated report stays focused on unresolved items only
+- `audit:commodity` also shows standalone `Boosters` rows that are already represented elsewhere
+- `audit:stow-missing` hides those standalone booster rows when they add no new actionable gap beyond the direct trailer rows already reported
 
 ## Policy API Flow
 

@@ -108,6 +108,16 @@ export interface IgnoredAuditEntry {
   reasonTags: string[];
 }
 
+export interface CoveredStandaloneBoosterRow {
+  rowNumber: number;
+  commodityName: string;
+  powerUnitName: string;
+  reason:
+    | 'resolved-via-direct-rows'
+    | 'blocked-by-missing-direct-path'
+    | 'represented-by-missing-boosters';
+}
+
 export interface CommodityAuditResult {
   commodityId: string;
   commodityName: string;
@@ -133,6 +143,7 @@ export interface CommodityAuditResult {
   contradictoryTrailerWeightBoosters: CorrelatedTrailerWeightBoosterGroup[];
   directBoostersWithoutSafePlacement: ExpectedBoosterGroup[];
   unmatchedTrailerWeightBoosters: CorrelatedTrailerWeightBoosterGroup[];
+  coveredStandaloneBoosterRows: CoveredStandaloneBoosterRow[];
   ignoredRows: IgnoredAuditEntry[];
 }
 
@@ -328,6 +339,16 @@ function buildCommodityAuditResultFromContext(
   const directBoostersWithoutSafePlacement = expectedBoosters.filter(
     (entry) => !trailerWeightCorrelation.safeTrailerIds.has(entry.trailerId),
   );
+  const coveredStandaloneBoosterRows = buildCoveredStandaloneBoosterRows({
+    commodityEntries,
+    expectedBoosters,
+    currentPowerUnits,
+    currentDirectTrailers,
+    missingBoosters,
+  });
+  const coveredStandaloneBoosterRowNumbers = new Set(
+    coveredStandaloneBoosterRows.map((entry) => entry.rowNumber),
+  );
   const ignoredRows = commodityEntries
     .map((entry) => ({
       rowNumber: entry.rowNumber,
@@ -337,6 +358,13 @@ function buildCommodityAuditResultFromContext(
       reasonTags: filterIgnoredReasonTags(entry.reasonTags),
     }))
     .filter((entry) => entry.reasonTags.length > 0)
+    .filter(
+      (entry) =>
+        !(
+          entry.reasonTags.includes('booster-row') &&
+          coveredStandaloneBoosterRowNumbers.has(entry.rowNumber)
+        ),
+    )
     .sort((left, right) => left.rowNumber - right.rowNumber);
 
   return {
@@ -364,6 +392,7 @@ function buildCommodityAuditResultFromContext(
     contradictoryTrailerWeightBoosters: trailerWeightCorrelation.contradictoryGroups,
     directBoostersWithoutSafePlacement,
     unmatchedTrailerWeightBoosters: trailerWeightCorrelation.unmatchedGroups,
+    coveredStandaloneBoosterRows,
     ignoredRows,
   };
 }
@@ -586,6 +615,78 @@ function buildExtraTrailers(
 
 function buildBoosterKey(powerUnitId: string, trailerId: string): string {
   return `${powerUnitId}:${trailerId}`;
+}
+
+function buildCoveredStandaloneBoosterRows({
+  commodityEntries,
+  expectedBoosters,
+  currentPowerUnits,
+  currentDirectTrailers,
+  missingBoosters,
+}: {
+  commodityEntries: AuditEntry[];
+  expectedBoosters: ExpectedBoosterGroup[];
+  currentPowerUnits: Map<string, string>;
+  currentDirectTrailers: Map<string, CurrentTrailerGroup>;
+  missingBoosters: ExpectedBoosterGroup[];
+}): CoveredStandaloneBoosterRow[] {
+  return commodityEntries
+    .filter((entry) => entry.reasonTags.includes('booster-row'))
+    .filter((entry) => entry.powerUnitId)
+    .map((entry) => {
+      const matchingExpectedBoosters = expectedBoosters.filter(
+        (booster) => booster.powerUnitId === entry.powerUnitId,
+      );
+
+      if (matchingExpectedBoosters.length === 0) {
+        return null;
+      }
+
+      if (!currentPowerUnits.has(entry.powerUnitId as string)) {
+        return {
+          rowNumber: entry.rowNumber,
+          commodityName: entry.commodityName,
+          powerUnitName: entry.powerUnitName,
+          reason: 'blocked-by-missing-direct-path' as const,
+        };
+      }
+
+      const currentTrailers =
+        currentDirectTrailers.get(entry.powerUnitId as string)?.trailers ?? new Map();
+      const hasMissingBooster = matchingExpectedBoosters.some((booster) =>
+        missingBoosters.some(
+          (missing) =>
+            missing.powerUnitId === booster.powerUnitId &&
+            missing.trailerId === booster.trailerId,
+        ),
+      );
+
+      if (hasMissingBooster) {
+        return {
+          rowNumber: entry.rowNumber,
+          commodityName: entry.commodityName,
+          powerUnitName: entry.powerUnitName,
+          reason: 'represented-by-missing-boosters' as const,
+        };
+      }
+
+      const hasMissingDirectTrailer = matchingExpectedBoosters.some(
+        (booster) => !currentTrailers.has(booster.trailerId),
+      );
+
+      return {
+        rowNumber: entry.rowNumber,
+        commodityName: entry.commodityName,
+        powerUnitName: entry.powerUnitName,
+        reason: hasMissingDirectTrailer
+          ? 'blocked-by-missing-direct-path'
+          : 'resolved-via-direct-rows',
+      };
+    })
+    .filter(
+      (entry): entry is CoveredStandaloneBoosterRow => entry !== null,
+    )
+    .sort((left, right) => left.rowNumber - right.rowNumber);
 }
 
 function isDirectPowerEntry(entry: AuditEntry): boolean {

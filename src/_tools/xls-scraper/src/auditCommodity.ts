@@ -1,5 +1,6 @@
 import {
   buildCommodityAuditResult,
+  type CoveredStandaloneBoosterRow,
   type CommodityAuditResult,
   type CorrelatedTrailerWeightBoosterGroup,
   type CurrentBoosterGroup,
@@ -95,6 +96,9 @@ async function main(): Promise<void> {
       '',
       'Unmatched Trailer Weight Booster Rows (Source: XLS Trailer - Weight Dim. Sets rows with no matching direct Commodity trailer rows)',
       ...formatTrailerWeightBoosters(result.unmatchedTrailerWeightBoosters),
+      '',
+      'Standalone Booster Rows Already Represented Elsewhere (Source: XLS Commodity booster rows whose effect is already covered by direct rows or by separately reported direct gaps)',
+      ...formatCoveredStandaloneBoosterRows(result.coveredStandaloneBoosterRows),
       '',
       'Unresolved XLS Rows Not Yet Modeled By The Updater (Source: XLS Commodity to Vehicle to Trailer)',
       ...formatIgnoredRows(result.ignoredRows),
@@ -242,6 +246,18 @@ function formatIgnoredRows(entries: IgnoredAuditEntry[]): string[] {
 
   return entries.map((entry) =>
     `- ${entry.commodityName} - ${entry.powerUnitName} - ${entry.trailerLabel} (Commodity row: ${entry.rowNumber}) [${entry.reasonTags.join(', ')}]`,
+  );
+}
+
+function formatCoveredStandaloneBoosterRows(
+  entries: CoveredStandaloneBoosterRow[],
+): string[] {
+  if (entries.length === 0) {
+    return ['- None'];
+  }
+
+  return entries.map((entry) =>
+    `- ${entry.commodityName} - ${entry.powerUnitName} - Boosters (Commodity row: ${entry.rowNumber}) [${entry.reason}]`,
   );
 }
 
