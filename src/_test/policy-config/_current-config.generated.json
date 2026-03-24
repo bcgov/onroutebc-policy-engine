@@ -3992,7 +3992,7 @@
             {
               "type": "FECVYRX",
               "jeep": true,
-              "booster": false,
+              "booster": true,
               "weightPermittable": true
             },
             {
@@ -4178,6 +4178,12 @@
                 }
               ],
               "weightPermittable": true
+            },
+            {
+              "type": "SEMITRL",
+              "jeep": false,
+              "booster": true,
+              "weightPermittable": true
             }
           ]
         },
@@ -4300,7 +4306,8 @@
                   "h": 4.3,
                   "l": 25
                 }
-              ]
+              ],
+              "weightPermittable": true
             }
           ]
         },
@@ -4321,7 +4328,8 @@
                   "h": 4.3,
                   "l": 25
                 }
-              ]
+              ],
+              "weightPermittable": true
             }
           ]
         },
@@ -4542,6 +4550,12 @@
                   ]
                 }
               ]
+            },
+            {
+              "type": "FECVYRX",
+              "jeep": false,
+              "booster": true,
+              "weightPermittable": true
             }
           ]
         },
@@ -4572,7 +4586,7 @@
             {
               "type": "XXXXXXX",
               "jeep": false,
-              "booster": true,
+              "booster": false,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -4781,7 +4795,7 @@
             {
               "type": "SEMITRL",
               "jeep": false,
-              "booster": false,
+              "booster": true,
               "selfIssue": false,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -4798,7 +4812,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             }
           ]
         },
@@ -4808,7 +4823,7 @@
             {
               "type": "SEMITRL",
               "jeep": false,
-              "booster": false,
+              "booster": true,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -4819,7 +4834,8 @@
                   "h": 4.15,
                   "l": 41
                 }
-              ]
+              ],
+              "weightPermittable": true
             }
           ]
         },
@@ -4841,6 +4857,17 @@
                   "l": 23
                 }
               ]
+            }
+          ]
+        },
+        {
+          "type": "PICKRTR",
+          "trailers": [
+            {
+              "type": "XXXXXXX",
+              "jeep": false,
+              "booster": false,
+              "weightPermittable": true
             }
           ]
         }
@@ -5028,7 +5055,8 @@
                   "h": 4.72,
                   "l": 23
                 }
-              ]
+              ],
+              "weightPermittable": true
             }
           ]
         }
@@ -5493,7 +5521,20 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
+            },
+            {
+              "type": "DOLLIES",
+              "jeep": false,
+              "booster": false,
+              "weightPermittable": true
+            },
+            {
+              "type": "STWHELR",
+              "jeep": false,
+              "booster": false,
+              "weightPermittable": true
             }
           ]
         }
@@ -5744,7 +5785,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STACTRN",
@@ -5810,7 +5852,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "HIBOFLT",
@@ -5832,7 +5875,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STLOGNG",
@@ -5870,7 +5914,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STSTEER",
@@ -5914,7 +5959,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STROPRT",
@@ -6029,7 +6075,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "PONYTRL",
@@ -6051,7 +6098,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             }
           ]
         },
@@ -6226,7 +6274,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             }
           ]
         }
@@ -6497,7 +6546,8 @@
                   "h": 4.3,
                   "l": 27.5
                 }
-              ]
+              ],
+              "weightPermittable": true
             }
           ]
         }
@@ -6604,7 +6654,7 @@
             {
               "type": "PLATFRM",
               "jeep": true,
-              "booster": true,
+              "booster": false,
               "selfIssue": false,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -6615,7 +6665,8 @@
                   "h": 4.15,
                   "l": 27.5
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "HIBOEXP",
@@ -6641,7 +6692,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "HIBOFLT",
@@ -6667,7 +6719,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STSDBDK",
@@ -6693,7 +6746,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STWHELR",
@@ -6719,7 +6773,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STWIDWH",
@@ -6745,7 +6800,32 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
+            },
+            {
+              "type": "EXPANDO",
+              "jeep": false,
+              "booster": true,
+              "weightPermittable": true
+            },
+            {
+              "type": "OGOSFDT",
+              "jeep": false,
+              "booster": true,
+              "weightPermittable": true
+            },
+            {
+              "type": "SEMITRL",
+              "jeep": false,
+              "booster": true,
+              "weightPermittable": true
+            },
+            {
+              "type": "STCRANE",
+              "jeep": false,
+              "booster": true,
+              "weightPermittable": true
             }
           ]
         },
@@ -6766,12 +6846,13 @@
                   "h": 4.15,
                   "l": 23
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "PLATFRM",
               "jeep": true,
-              "booster": true,
+              "booster": false,
               "selfIssue": false,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -6805,7 +6886,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STWHELR",
@@ -6821,7 +6903,8 @@
                   "h": 4.15,
                   "l": 27.5
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STWIDWH",
@@ -6837,7 +6920,44 @@
                   "h": 4.15,
                   "l": 27.5
                 }
-              ]
+              ],
+              "weightPermittable": true
+            },
+            {
+              "type": "EXPANDO",
+              "jeep": false,
+              "booster": true,
+              "weightPermittable": true
+            },
+            {
+              "type": "SEMITRL",
+              "jeep": false,
+              "booster": true,
+              "weightPermittable": true
+            },
+            {
+              "type": "HIBOFLT",
+              "jeep": false,
+              "booster": true,
+              "weightPermittable": true
+            },
+            {
+              "type": "STSDBDK",
+              "jeep": false,
+              "booster": true,
+              "weightPermittable": true
+            },
+            {
+              "type": "STSTEER",
+              "jeep": false,
+              "booster": true,
+              "weightPermittable": true
+            },
+            {
+              "type": "STCRANE",
+              "jeep": false,
+              "booster": true,
+              "weightPermittable": true
             }
           ]
         },
@@ -6859,6 +6979,23 @@
                   "l": 23
                 }
               ]
+            },
+            {
+              "type": "XXXXXXX",
+              "jeep": false,
+              "booster": false,
+              "weightPermittable": true
+            }
+          ]
+        },
+        {
+          "type": "REGTRCK",
+          "trailers": [
+            {
+              "type": "XXXXXXX",
+              "jeep": false,
+              "booster": false,
+              "weightPermittable": true
             }
           ]
         }
@@ -7535,7 +7672,7 @@
             {
               "type": "POLETRL",
               "jeep": true,
-              "booster": false,
+              "booster": true,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -7546,7 +7683,8 @@
                   "h": 4.15,
                   "l": 31
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "SEMITRL",
@@ -7661,7 +7799,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "PONYTRL",
@@ -7751,7 +7890,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "HIBOFLT",
@@ -7773,7 +7913,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STSDBDK",
@@ -7795,7 +7936,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STSTEER",
@@ -7817,7 +7959,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STWHELR",
@@ -7839,7 +7982,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STCRANE",
@@ -7861,7 +8005,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STROPRT",
@@ -7927,7 +8072,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             }
           ]
         },
@@ -7937,7 +8083,7 @@
             {
               "type": "PLATFRM",
               "jeep": true,
-              "booster": true,
+              "booster": false,
               "selfIssue": false,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -7977,7 +8123,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STACTRN",
@@ -8043,7 +8190,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "HIBOFLT",
@@ -8065,7 +8213,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STLOGNG",
@@ -8103,7 +8252,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STSTEER",
@@ -8147,7 +8297,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STCRANE",
@@ -8169,7 +8320,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STROPRT",
@@ -8235,7 +8387,14 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
+            },
+            {
+              "type": "STWDTAN",
+              "jeep": false,
+              "booster": false,
+              "weightPermittable": true
             }
           ]
         },
@@ -8285,6 +8444,17 @@
                   ]
                 }
               ]
+            }
+          ]
+        },
+        {
+          "type": "PICKRTR",
+          "trailers": [
+            {
+              "type": "XXXXXXX",
+              "jeep": false,
+              "booster": false,
+              "weightPermittable": true
             }
           ]
         }
@@ -8497,7 +8667,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "FEDRMMX",
@@ -8518,7 +8689,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "FEBGHSE",
@@ -8539,7 +8711,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "FESEMTR",
@@ -8560,7 +8733,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "FEWHELR",
@@ -8581,7 +8755,14 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
+            },
+            {
+              "type": "STWDTAN",
+              "jeep": false,
+              "booster": false,
+              "weightPermittable": true
             }
           ]
         },
@@ -8591,7 +8772,7 @@
             {
               "type": "FECVYRX",
               "jeep": false,
-              "booster": false,
+              "booster": true,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -8601,7 +8782,8 @@
                   "w": 3.2,
                   "h": 4.3
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "FEDRMMX",
@@ -8637,7 +8819,8 @@
                   "w": 3.2,
                   "h": 4.3
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "FEBGHSE",
@@ -8653,6 +8836,12 @@
                   "h": 4.72
                 }
               ]
+            },
+            {
+              "type": "PONYTRL",
+              "jeep": false,
+              "booster": false,
+              "weightPermittable": true
             }
           ]
         }
