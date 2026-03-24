@@ -80,7 +80,7 @@ async function main(): Promise<void> {
       'Extra Boosters In Policy (Source: computed diff = policyEngine after [powerUnit, trailer] - XLS trailer weight rows)',
       ...formatExpectedBoosters(result.extraBoosters),
       '',
-      'Ignored/Unsupported XLS Rows (Source: XLS Commodity to Vehicle to Trailer)',
+      'Unresolved XLS Rows Not Yet Modeled By The Updater (Source: XLS Commodity to Vehicle to Trailer)',
       ...formatIgnoredRows(result.ignoredRows),
     ].join('\n'),
   );
@@ -241,6 +241,7 @@ function parseCliArgs(args: string[]): CliOptions {
         );
       }
     }
+
   }
 
   return options;

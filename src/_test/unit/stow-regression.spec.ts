@@ -1,6 +1,7 @@
 import { Policy } from '../../policy-engine';
 import currentPolicyConfig from '../policy-config/_current-config.json';
 import expectedSurface from '../policy-config/stow-regression.expected.json';
+import specialAuthLcv from '../policy-config/special-auth-lcv.sample.json';
 
 interface StowRegressionSurface {
   commodities: string[];
@@ -11,6 +12,9 @@ interface StowRegressionSurface {
 
 describe('STOW regression surface', () => {
   const policy = new Policy(currentPolicyConfig);
+  // The audit tools compare against an LCV-authorized policy instance so XLS LCV rows
+  // are not reported as missing, but the default engine behavior should still hide them.
+  const lcvPolicy = new Policy(currentPolicyConfig, specialAuthLcv);
 
   it('should match the canonical STOW API surface', () => {
     expect(collectStowSurface(policy)).toEqual(expectedSurface);
@@ -47,6 +51,38 @@ describe('STOW regression surface', () => {
           'TRKTRAC',
           'FECVYRX',
         ]).keys(),
+      ),
+    ).toContain('BOOSTER');
+  });
+
+  it('should hide LCV power units by default and expose them with LCV auth', () => {
+    expect(
+      Array.from(policy.getPermittablePowerUnitTypes('STOW', 'XXXXXXX').keys()),
+    ).not.toEqual(expect.arrayContaining(['LCVRMDB', 'LCVTPDB']));
+
+    expect(
+      Array.from(lcvPolicy.getPermittablePowerUnitTypes('STOW', 'XXXXXXX').keys()),
+    ).toEqual(expect.arrayContaining(['LCVRMDB', 'LCVTPDB']));
+  });
+
+  it('should require LCV auth before STOW LCV trailers and boosters become selectable', () => {
+    expect(
+      Array.from(
+        policy.getNextPermittableVehicles('STOW', 'XXXXXXX', ['LCVRMDB']).keys(),
+      ),
+    ).toEqual([]);
+
+    expect(
+      Array.from(
+        lcvPolicy.getNextPermittableVehicles('STOW', 'XXXXXXX', ['LCVRMDB']).keys(),
+      ),
+    ).toEqual(expect.arrayContaining(['SEMITRL']));
+
+    expect(
+      Array.from(
+        lcvPolicy
+          .getNextPermittableVehicles('STOW', 'XXXXXXX', ['LCVRMDB', 'SEMITRL'])
+          .keys(),
       ),
     ).toContain('BOOSTER');
   });

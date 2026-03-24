@@ -42,6 +42,11 @@ async function main(): Promise<void> {
       `- ${entry.commodityName} - ${entry.powerUnitName} (${entry.rows.join(', ')}) [lcv-special-authorization-required]`,
     ),
   );
+  const unresolvedRows = results.flatMap((result) =>
+    result.ignoredRows.map((entry) =>
+      `- ${entry.commodityName} - ${entry.powerUnitName} - ${entry.trailerLabel} (${entry.rowNumber}) [${entry.reasonTags.join(', ')}]`,
+    ),
+  );
 
   console.log(
     [
@@ -58,6 +63,9 @@ async function main(): Promise<void> {
       '',
       'Missing Boosters (Source: computed diff = XLS Trailer - Weight Dim. Sets - policyEngine.getNextPermittableVehicles after [powerUnit, trailer])',
       ...formatSection(missingBoosters),
+      '',
+      'Unresolved XLS Rows Not Yet Modeled By The Updater (Source: XLS Commodity to Vehicle to Trailer)',
+      ...formatSection(unresolvedRows),
       '',
       'Deferred (Source: policy constraints or intentionally excluded cases)',
       ...formatSection(deferredPowerUnits),
@@ -100,6 +108,7 @@ function parseCliArgs(args: string[]): CliOptions {
         );
       }
     }
+
   }
 
   return options;

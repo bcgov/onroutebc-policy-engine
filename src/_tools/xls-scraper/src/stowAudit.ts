@@ -46,7 +46,6 @@ interface AuditContext {
   policy: PolicyLike;
   commodityEntries: AuditEntry[];
   boosterEntries: BoosterExpectationEntry[];
-  lcvPowerUnitIds: Set<string>;
 }
 
 export interface ExpectedPowerUnitGroup {
@@ -190,11 +189,6 @@ async function createAuditContext({
     policy: await loadPolicy(configPath),
     commodityEntries: parseAuditEntries(commodityRows, config),
     boosterEntries: parseBoosterExpectationEntries(trailerWeightRows, config),
-    lcvPowerUnitIds: new Set(
-      config.vehicleTypes.powerUnitTypes
-        .filter((entry) => entry.isLcv)
-        .map((entry) => entry.id),
-    ),
   };
 }
 
@@ -225,16 +219,9 @@ function buildCommodityAuditResultFromContext(
     commodityId,
   );
   const currentPowerUnitIds = new Set(currentPowerUnits.keys());
-  const deferredPowerUnits = expectedPowerUnits
-    .filter(
-      (entry) =>
-        Boolean(entry.powerUnitId) &&
-        context.lcvPowerUnitIds.has(entry.powerUnitId as string),
-    )
-    .sort((left, right) => left.rows[0]! - right.rows[0]!);
+  const deferredPowerUnits: ExpectedPowerUnitGroup[] = [];
   const missingPowerUnits = expectedPowerUnits
     .filter((entry) => entry.powerUnitId && !currentPowerUnitIds.has(entry.powerUnitId))
-    .filter((entry) => !context.lcvPowerUnitIds.has(entry.powerUnitId as string))
     .sort((left, right) => left.rows[0]! - right.rows[0]!);
   const expectedPowerUnitIds = new Set(
     expectedPowerUnits
@@ -347,15 +334,22 @@ function buildCommodityAuditResultFromContext(
   };
 }
 
-async function loadPolicy(configPath: string): Promise<PolicyLike> {
+async function loadPolicy(
+  configPath: string,
+): Promise<PolicyLike> {
   const policyModuleUrl = pathToFileURL(
     path.resolve(process.cwd(), '..', '..', 'index.ts'),
   ).href;
   const importedModule = await import(policyModuleUrl);
   const policyModule = (importedModule.default ?? importedModule) as {
-    Policy: new (definition: unknown) => PolicyLike;
+    Policy: new (definition: unknown, authorizations?: unknown) => PolicyLike;
   };
-  return new policyModule.Policy(readPolicyConfigSync(configPath));
+  // Audit comparisons opt into LCV so XLS-backed LCV rows are checked against
+  // the authorized policy surface rather than reported as false-positive gaps.
+  return new policyModule.Policy(
+    readPolicyConfigSync(configPath),
+    { companyId: -1, isLcvAllowed: true, noFeeType: null },
+  );
 }
 
 function buildExpectedPowerUnits(entries: AuditEntry[]): ExpectedPowerUnitGroup[] {
@@ -593,9 +587,7 @@ function isIgnoredAuditEntry(entry: AuditEntry): boolean {
 }
 
 function filterIgnoredReasonTags(reasonTags: string[]): string[] {
-  return reasonTags.filter(
-    (tag) => tag !== 'steer-drive-wheelbase' && tag !== 'force-submit-to-queue',
-  );
+  return reasonTags;
 }
 
 function mergeTags(existing: string[], next: string[]): string[] {

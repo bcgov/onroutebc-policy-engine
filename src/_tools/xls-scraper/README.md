@@ -52,7 +52,7 @@ The generate step is intended to be idempotent. If the workbook does not change,
 - expected vehicle sub-types from `Commodity to Vehicle to Trailer`
 - current permittable vehicle sub-types from `policyEngine.getPermittablePowerUnitTypes(...)`
 - missing vehicle sub-types as `XLS direct rows - policyEngine`
-- deferred vehicle sub-types such as LCV rows blocked by policy auth
+- deferred vehicle sub-types that remain blocked even with the audit's LCV-enabled comparison
 - extra vehicle sub-types in policy as `policyEngine - XLS`
 - expected direct trailers from `Commodity to Vehicle to Trailer`
 - current direct trailers from `policyEngine.getNextPermittableVehicles(...)` after `[powerUnit]`
@@ -62,16 +62,19 @@ The generate step is intended to be idempotent. If the workbook does not change,
 - current boosters from `policyEngine.getNextPermittableVehicles(...)` after `[powerUnit, trailer]`
 - missing boosters as `Trailer - Weight Dim. Sets - policyEngine`
 - extra boosters in policy as `policyEngine - Trailer - Weight Dim. Sets`
-- ignored/unsupported XLS rows
+- unresolved XLS rows not yet modeled by the updater, including jeep rows, standalone booster rows, `Force Submit to Queue`, and `Steer`/`Drive`/`Wheelbase` rows
 
 By default it compares against `src/_test/policy-config/_current-config.generated.json`. Override that with `--compare-config=canonical|generated|prefer-generated`.
+
+The audit always compares against a `Policy` instance with LCV authorization enabled. This avoids reporting LCV XLS rows as false-positive missing items when the config is correct but the runtime caller has not opted into LCV.
 
 `npm run audit:stow-missing` runs the same stage-aware comparison across every commodity in the workbook and prints one consolidated list of:
 
 - missing direct power units
 - missing direct trailers
 - missing boosters
-- deferred rows such as LCV
+- unresolved XLS rows not yet modeled by the updater, including jeep rows, standalone booster rows, `Force Submit to Queue`, and `Steer`/`Drive`/`Wheelbase` rows
+- deferred rows that remain blocked even with the audit's LCV-enabled comparison
 
 ## Policy API Flow
 
@@ -88,6 +91,58 @@ In practice this means:
 - power unit gaps are checked at step 2
 - direct trailer gaps are checked at step 3
 - booster gaps are checked at step 4
+
+LCV is the one important gating exception in this flow:
+
+- the config can contain LCV power units and trailers
+- `policyEngine.getPermittablePowerUnitTypes(...)` and `policyEngine.getNextPermittableVehicles(...)` still filter them out unless `specialAuthorizations.isLcvAllowed` is `true`
+- the audit commands intentionally instantiate `Policy` with LCV authorization enabled so LCV rows are audited as valid opt-in behavior, not as missing rows
+
+## LCV Verification
+
+LCV rows in the STOW XLS are not ordinary "missing" rows. They are opt-in rows gated by client special authorization.
+
+Engine behavior:
+
+- default `Policy(config)` hides LCV vehicles
+- authorized `Policy(config, { companyId, isLcvAllowed: true, noFeeType: null })` exposes them
+- the same behavior applies if you call `policy.setSpecialAuthorizations(...)` after construction
+
+Direct verification commands from `src/_tools/xls-scraper`:
+
+```bash
+node --import tsx --eval "import fs from 'node:fs'; const importedModule = await import('../../index.ts'); const policyModule = importedModule.default ?? importedModule; const config = JSON.parse(fs.readFileSync('../../_test/policy-config/_current-config.json', 'utf8')); const policy = new policyModule.Policy(config); console.log([...policy.getPermittablePowerUnitTypes('STOW', 'XXXXXXX').values()]);"
+```
+
+```bash
+node --import tsx --eval "import fs from 'node:fs'; const importedModule = await import('../../index.ts'); const policyModule = importedModule.default ?? importedModule; const config = JSON.parse(fs.readFileSync('../../_test/policy-config/_current-config.json', 'utf8')); const policy = new policyModule.Policy(config, { companyId: -1, isLcvAllowed: true, noFeeType: null }); console.log([...policy.getPermittablePowerUnitTypes('STOW', 'XXXXXXX').values()]);"
+```
+
+The second command should include:
+
+- `Long Combination Vehicles (LCV) - Rocky Mountain Doubles`
+- `Long Combination Vehicles (LCV) - Turnpike Doubles`
+
+Audit verification commands from `src/_tools/xls-scraper`:
+
+```bash
+npm run audit:commodity -- --commodity-type=None --compare-config=canonical
+```
+
+```bash
+npm run audit:stow-missing -- --compare-config=canonical
+```
+
+Expected audit behavior:
+
+- the audit treats the LCV rows as normal expected policy output
+- the audit should not report the STOW LCV rows as missing when the config exposes them correctly
+
+Important example-app caveat:
+
+- the current node backend example constructs `Policy` with config only
+- there is no existing backend or frontend flag that turns on LCV authorization
+- so the example app will continue to hide LCV until that backend policy instance is created with `specialAuthorizations.isLcvAllowed = true`
 
 ## Included
 
@@ -113,7 +168,8 @@ In practice this means:
 - Standalone booster rows
 - Any permit-specific interpretation of `Force Submit to Queue`
 - Any permit-specific interpretation of `Steer`, `Drive`, or `Wheelbase`
-- LCV authorization logic
+
+These rows are still surfaced by the audit commands in the unresolved XLS section so they remain visible during review and gap analysis. The updater simply does not model them yet.
 
 This means the updater claims correctness for direct trailer and no-trailer STOW combinations and for additive booster-after-trailer permissions the current policy model can represent cleanly.
 
