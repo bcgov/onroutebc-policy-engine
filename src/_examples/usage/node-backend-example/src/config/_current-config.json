@@ -1968,7 +1968,16 @@
           }
         }
       ],
-      "conditions": []
+      "conditions": [
+        {
+          "condition": "CVSE-1070",
+          "mandatory": false
+        },
+        {
+          "condition": "CVSE-1011",
+          "mandatory": false
+        }
+      ]
     },
     {
       "id": "STFR",
