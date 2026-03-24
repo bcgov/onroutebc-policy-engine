@@ -1,6 +1,7 @@
 import {
   buildCommodityAuditResult,
   type CoveredStandaloneBoosterRow,
+  type CoveredStandaloneJeepRow,
   type CommodityAuditResult,
   type CorrelatedTrailerWeightBoosterGroup,
   type CurrentBoosterGroup,
@@ -99,6 +100,9 @@ async function main(): Promise<void> {
       '',
       'Standalone Booster Rows Already Represented Elsewhere (Source: XLS Commodity booster rows whose effect is already covered by direct rows or by separately reported direct gaps)',
       ...formatCoveredStandaloneBoosterRows(result.coveredStandaloneBoosterRows),
+      '',
+      'Standalone Jeep Rows Already Represented Elsewhere (Source: XLS Commodity jeep rows whose effect is already covered by current jeep options or by separately reported direct gaps)',
+      ...formatCoveredStandaloneJeepRows(result.coveredStandaloneJeepRows),
       '',
       'Unresolved XLS Rows Not Yet Modeled By The Updater (Source: XLS Commodity to Vehicle to Trailer)',
       ...formatIgnoredRows(result.ignoredRows),
@@ -258,6 +262,18 @@ function formatCoveredStandaloneBoosterRows(
 
   return entries.map((entry) =>
     `- ${entry.commodityName} - ${entry.powerUnitName} - Boosters (Commodity row: ${entry.rowNumber}) [${entry.reason}]`,
+  );
+}
+
+function formatCoveredStandaloneJeepRows(
+  entries: CoveredStandaloneJeepRow[],
+): string[] {
+  if (entries.length === 0) {
+    return ['- None'];
+  }
+
+  return entries.map((entry) =>
+    `- ${entry.commodityName} - ${entry.powerUnitName} - Jeep (Commodity row: ${entry.rowNumber}) [${entry.reason}]`,
   );
 }
 

@@ -77,6 +77,7 @@ The existing `npm test` command continues to use `src/_test/policy-config/_curre
 - contradictory trailer-weight booster rows where direct rows all say `Can Add Booster? = N`
 - trailer-weight booster rows with no matching direct trailer row
 - standalone `Boosters` rows that are already represented elsewhere by direct rows or by separately reported direct gaps
+- standalone `Jeep` rows that are already represented elsewhere by current jeep options or by separately reported direct gaps
 - unresolved XLS rows not yet modeled by the updater, including jeep rows, standalone booster rows, `Force Submit to Queue`, and `Steer`/`Drive`/`Wheelbase` rows
 
 By default it compares against `src/_test/policy-config/_current-config.generated.json`. Override that with `--compare-config=canonical|generated|prefer-generated`.
@@ -102,7 +103,9 @@ Interpretation:
 - `audit:commodity` shows those safe rows for detailed row-by-row review
 - `audit:stow-missing` hides them so the consolidated report stays focused on unresolved items only
 - `audit:commodity` also shows standalone `Boosters` rows that are already represented elsewhere
+- `audit:commodity` also shows standalone `Jeep` rows that are already represented elsewhere
 - `audit:stow-missing` hides those standalone booster rows when they add no new actionable gap beyond the direct trailer rows already reported
+- `audit:stow-missing` also hides standalone jeep rows when they add no new actionable gap beyond current jeep options or already-reported direct path gaps
 
 ## Policy API Flow
 

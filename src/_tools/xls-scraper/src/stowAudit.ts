@@ -9,6 +9,10 @@ import {
   correlateBoosterPlacements,
   type CorrelatedTrailerWeightBoosterGroup,
 } from './boosterPlacementCorrelation.js';
+import {
+  classifyStandaloneJeepRows,
+  type CoveredStandaloneJeepRow,
+} from './standaloneJeepAudit.js';
 import type {
   CompareConfigMode,
   PolicyConfig,
@@ -29,6 +33,7 @@ import {
 import { loadWorkbook } from './workbook.js';
 
 export type { CorrelatedTrailerWeightBoosterGroup } from './boosterPlacementCorrelation.js';
+export type { CoveredStandaloneJeepRow } from './standaloneJeepAudit.js';
 
 const BOOSTER_ID = 'BOOSTER';
 
@@ -144,6 +149,7 @@ export interface CommodityAuditResult {
   directBoostersWithoutSafePlacement: ExpectedBoosterGroup[];
   unmatchedTrailerWeightBoosters: CorrelatedTrailerWeightBoosterGroup[];
   coveredStandaloneBoosterRows: CoveredStandaloneBoosterRow[];
+  coveredStandaloneJeepRows: CoveredStandaloneJeepRow[];
   ignoredRows: IgnoredAuditEntry[];
 }
 
@@ -349,13 +355,24 @@ function buildCommodityAuditResultFromContext(
   const coveredStandaloneBoosterRowNumbers = new Set(
     coveredStandaloneBoosterRows.map((entry) => entry.rowNumber),
   );
+  const coveredStandaloneJeepRows = classifyStandaloneJeepRows({
+    commodityEntries,
+    currentPowerUnits,
+    currentDirectTrailers,
+  });
+  const coveredStandaloneJeepRowsByNumber = new Map(
+    coveredStandaloneJeepRows.map((entry) => [entry.rowNumber, entry]),
+  );
   const ignoredRows = commodityEntries
     .map((entry) => ({
       rowNumber: entry.rowNumber,
       commodityName: entry.commodityName,
       powerUnitName: entry.powerUnitName,
       trailerLabel: entry.trailerLabel,
-      reasonTags: filterIgnoredReasonTags(entry.reasonTags),
+      reasonTags: filterIgnoredReasonTags(
+        entry.reasonTags,
+        coveredStandaloneJeepRowsByNumber.has(entry.rowNumber),
+      ),
     }))
     .filter((entry) => entry.reasonTags.length > 0)
     .filter(
@@ -393,6 +410,7 @@ function buildCommodityAuditResultFromContext(
     directBoostersWithoutSafePlacement,
     unmatchedTrailerWeightBoosters: trailerWeightCorrelation.unmatchedGroups,
     coveredStandaloneBoosterRows,
+    coveredStandaloneJeepRows,
     ignoredRows,
   };
 }
@@ -701,12 +719,17 @@ function isDirectTrailerEntry(entry: AuditEntry): boolean {
   );
 }
 
-function isIgnoredAuditEntry(entry: AuditEntry): boolean {
-  return filterIgnoredReasonTags(entry.reasonTags).length > 0;
-}
+function filterIgnoredReasonTags(
+  reasonTags: string[],
+  suppressStandaloneJeepTags: boolean,
+): string[] {
+  if (!suppressStandaloneJeepTags) {
+    return reasonTags;
+  }
 
-function filterIgnoredReasonTags(reasonTags: string[]): string[] {
-  return reasonTags;
+  return reasonTags.filter(
+    (tag) => tag !== 'jeep-row' && tag !== 'missing-trailer-mapping',
+  );
 }
 
 function mergeTags(existing: string[], next: string[]): string[] {
