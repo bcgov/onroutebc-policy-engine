@@ -78,7 +78,8 @@ The existing `npm test` command continues to use `src/_test/policy-config/_curre
 - trailer-weight booster rows with no matching direct trailer row
 - standalone `Boosters` rows that are already represented elsewhere by direct rows or by separately reported direct gaps
 - standalone `Jeep` rows that are already represented elsewhere by current jeep options or by separately reported direct gaps
-- unresolved XLS rows not yet modeled by the updater, including jeep rows, standalone booster rows, `Force Submit to Queue`, and `Steer`/`Drive`/`Wheelbase` rows
+- `Force Submit to Queue` rows that are already represented elsewhere by current policy output or by separately reported direct gaps
+- unresolved XLS rows not yet modeled by the updater, including any remaining jeep rows, standalone booster rows, force-submit rows, and `Steer`/`Drive`/`Wheelbase` rows
 
 By default it compares against `src/_test/policy-config/_current-config.generated.json`. Override that with `--compare-config=canonical|generated|prefer-generated`.
 
@@ -94,7 +95,8 @@ The audit always compares against a `Policy` instance with LCV authorization ena
 - contradictory trailer-weight booster rows
 - unmatched trailer-weight booster rows
 - it intentionally does not repeat standalone `Boosters` rows when they are already represented by direct booster-capable rows or by separately reported direct power/trailer gaps
-- unresolved XLS rows not yet modeled by the updater, including jeep rows, standalone booster rows, `Force Submit to Queue`, and `Steer`/`Drive`/`Wheelbase` rows
+- it also does not repeat `Force Submit to Queue` rows when they are already represented by current policy output or by separately reported direct power/trailer gaps
+- unresolved XLS rows not yet modeled by the updater, including any remaining jeep rows, standalone booster rows, force-submit rows, and `Steer`/`Drive`/`Wheelbase` rows
 - deferred rows that remain blocked even with the audit's LCV-enabled comparison
 
 Interpretation:
@@ -104,8 +106,10 @@ Interpretation:
 - `audit:stow-missing` hides them so the consolidated report stays focused on unresolved items only
 - `audit:commodity` also shows standalone `Boosters` rows that are already represented elsewhere
 - `audit:commodity` also shows standalone `Jeep` rows that are already represented elsewhere
+- `audit:commodity` also shows `Force Submit to Queue` rows that are already represented elsewhere
 - `audit:stow-missing` hides those standalone booster rows when they add no new actionable gap beyond the direct trailer rows already reported
 - `audit:stow-missing` also hides standalone jeep rows when they add no new actionable gap beyond current jeep options or already-reported direct path gaps
+- `audit:stow-missing` also hides force-submit rows when they are already represented by current policy output or are only blocked by separately reported direct power/trailer gaps
 
 ## Policy API Flow
 
@@ -199,7 +203,7 @@ Important example-app caveat:
 - Any permit-specific interpretation of `Force Submit to Queue`
 - Any permit-specific interpretation of `Steer`, `Drive`, or `Wheelbase`
 
-These rows are still surfaced by the audit commands in the unresolved XLS section so they remain visible during review and gap analysis. The updater simply does not model them yet.
+These rows are still surfaced by the audit commands when they represent real unresolved work. When a jeep row, standalone booster row, or force-submit row is already covered by current policy behavior or by separately reported direct gaps, the audit moves it out of the unresolved section so the STOW-wide report stays focused on actual remaining issues.
 
 This means the updater claims correctness for direct trailer and no-trailer STOW combinations and for additive booster-after-trailer permissions the current policy model can represent cleanly.
 

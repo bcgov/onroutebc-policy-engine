@@ -1,5 +1,6 @@
 import {
   buildCommodityAuditResult,
+  type CoveredForceSubmitRow,
   type CoveredStandaloneBoosterRow,
   type CoveredStandaloneJeepRow,
   type CommodityAuditResult,
@@ -103,6 +104,9 @@ async function main(): Promise<void> {
       '',
       'Standalone Jeep Rows Already Represented Elsewhere (Source: XLS Commodity jeep rows whose effect is already covered by current jeep options or by separately reported direct gaps)',
       ...formatCoveredStandaloneJeepRows(result.coveredStandaloneJeepRows),
+      '',
+      'Force-Submit Rows Already Represented Elsewhere (Source: XLS Commodity force-submit rows whose effect is already covered by current policy output or by separately reported direct gaps)',
+      ...formatCoveredForceSubmitRows(result.coveredForceSubmitRows),
       '',
       'Unresolved XLS Rows Not Yet Modeled By The Updater (Source: XLS Commodity to Vehicle to Trailer)',
       ...formatIgnoredRows(result.ignoredRows),
@@ -274,6 +278,18 @@ function formatCoveredStandaloneJeepRows(
 
   return entries.map((entry) =>
     `- ${entry.commodityName} - ${entry.powerUnitName} - Jeep (Commodity row: ${entry.rowNumber}) [${entry.reason}]`,
+  );
+}
+
+function formatCoveredForceSubmitRows(
+  entries: CoveredForceSubmitRow[],
+): string[] {
+  if (entries.length === 0) {
+    return ['- None'];
+  }
+
+  return entries.map((entry) =>
+    `- ${entry.commodityName} - ${entry.powerUnitName} - ${entry.trailerLabel} (Commodity row: ${entry.rowNumber}) [${entry.reason}]`,
   );
 }
 

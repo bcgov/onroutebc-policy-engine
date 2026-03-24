@@ -13,6 +13,10 @@ import {
   classifyStandaloneJeepRows,
   type CoveredStandaloneJeepRow,
 } from './standaloneJeepAudit.js';
+import {
+  classifyForceSubmitRows,
+  type CoveredForceSubmitRow,
+} from './forceSubmitAudit.js';
 import type {
   CompareConfigMode,
   PolicyConfig,
@@ -34,6 +38,7 @@ import { loadWorkbook } from './workbook.js';
 
 export type { CorrelatedTrailerWeightBoosterGroup } from './boosterPlacementCorrelation.js';
 export type { CoveredStandaloneJeepRow } from './standaloneJeepAudit.js';
+export type { CoveredForceSubmitRow } from './forceSubmitAudit.js';
 
 const BOOSTER_ID = 'BOOSTER';
 
@@ -150,6 +155,7 @@ export interface CommodityAuditResult {
   unmatchedTrailerWeightBoosters: CorrelatedTrailerWeightBoosterGroup[];
   coveredStandaloneBoosterRows: CoveredStandaloneBoosterRow[];
   coveredStandaloneJeepRows: CoveredStandaloneJeepRow[];
+  coveredForceSubmitRows: CoveredForceSubmitRow[];
   ignoredRows: IgnoredAuditEntry[];
 }
 
@@ -360,8 +366,18 @@ function buildCommodityAuditResultFromContext(
     currentPowerUnits,
     currentDirectTrailers,
   });
+  const coveredForceSubmitRows = classifyForceSubmitRows({
+    commodityEntries,
+    currentPowerUnits,
+    currentDirectTrailers,
+    coveredStandaloneBoosterRows,
+    coveredStandaloneJeepRows,
+  });
   const coveredStandaloneJeepRowsByNumber = new Map(
     coveredStandaloneJeepRows.map((entry) => [entry.rowNumber, entry]),
+  );
+  const coveredForceSubmitRowsByNumber = new Map(
+    coveredForceSubmitRows.map((entry) => [entry.rowNumber, entry]),
   );
   const ignoredRows = commodityEntries
     .map((entry) => ({
@@ -372,6 +388,7 @@ function buildCommodityAuditResultFromContext(
       reasonTags: filterIgnoredReasonTags(
         entry.reasonTags,
         coveredStandaloneJeepRowsByNumber.has(entry.rowNumber),
+        coveredForceSubmitRowsByNumber.has(entry.rowNumber),
       ),
     }))
     .filter((entry) => entry.reasonTags.length > 0)
@@ -411,6 +428,7 @@ function buildCommodityAuditResultFromContext(
     unmatchedTrailerWeightBoosters: trailerWeightCorrelation.unmatchedGroups,
     coveredStandaloneBoosterRows,
     coveredStandaloneJeepRows,
+    coveredForceSubmitRows,
     ignoredRows,
   };
 }
@@ -722,13 +740,16 @@ function isDirectTrailerEntry(entry: AuditEntry): boolean {
 function filterIgnoredReasonTags(
   reasonTags: string[],
   suppressStandaloneJeepTags: boolean,
+  suppressForceSubmitTag: boolean,
 ): string[] {
-  if (!suppressStandaloneJeepTags) {
+  if (!suppressStandaloneJeepTags && !suppressForceSubmitTag) {
     return reasonTags;
   }
 
   return reasonTags.filter(
-    (tag) => tag !== 'jeep-row' && tag !== 'missing-trailer-mapping',
+    (tag) =>
+      !(suppressStandaloneJeepTags && (tag === 'jeep-row' || tag === 'missing-trailer-mapping')) &&
+      !(suppressForceSubmitTag && tag === 'force-submit-to-queue'),
   );
 }
 
