@@ -1,7 +1,6 @@
 import type { CompareConfigMode } from './policyConfig.js';
 import {
   buildAllCommodityAuditResults,
-  type CommodityAuditResult,
 } from './stowAudit.js';
 
 interface CliOptions {
@@ -48,9 +47,6 @@ async function main(): Promise<void> {
       return `- ${entry.commodityName} - ${entry.powerUnitName} - ${entry.trailerName} (${formatCommodityRows(entry.rows)})${reasonTags}`;
     }),
   );
-  const safeTrailerWeightBoosters = results.flatMap((result) =>
-    result.safeTrailerWeightBoosters.map((entry) => formatTrailerWeightLine(entry)),
-  );
   const ambiguousTrailerWeightBoosters = results.flatMap((result) =>
     result.ambiguousTrailerWeightBoosters.map((entry) => formatTrailerWeightLine(entry)),
   );
@@ -86,9 +82,6 @@ async function main(): Promise<void> {
       '',
       'Missing Boosters (Source: computed diff = XLS direct booster-capable rows - policyEngine.getNextPermittableVehicles after [powerUnit, trailer])',
       ...formatSection(missingBoosters),
-      '',
-      'Safe Booster Placement Rows (Source: XLS Trailer - Weight Dim. Sets rows that safely correlate to direct Commodity rows)',
-      ...formatSection(safeTrailerWeightBoosters),
       '',
       'Direct Booster Rows Without Safe Placement Detail (Source: XLS direct booster-capable rows with no safe trailer-weight correlation)',
       ...formatSection(directBoostersWithoutPlacement),

@@ -87,13 +87,18 @@ The audit always compares against a `Policy` instance with LCV authorization ena
 - missing direct power units
 - missing direct trailers
 - missing boosters
-- safe booster placement rows
 - direct booster rows without safe placement detail
 - ambiguous trailer-weight booster rows
 - contradictory trailer-weight booster rows
 - unmatched trailer-weight booster rows
 - unresolved XLS rows not yet modeled by the updater, including jeep rows, standalone booster rows, `Force Submit to Queue`, and `Steer`/`Drive`/`Wheelbase` rows
 - deferred rows that remain blocked even with the audit's LCV-enabled comparison
+
+Interpretation:
+
+- `safe` booster placement rows are verified correlations, not missing work
+- `audit:commodity` shows those safe rows for detailed row-by-row review
+- `audit:stow-missing` hides them so the consolidated report stays focused on unresolved items only
 
 ## Policy API Flow
 
