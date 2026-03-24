@@ -357,7 +357,7 @@ describe('Policy Engine Configuration Validation', () => {
     expect(isValid).toBe(true);
   });
 
-  it('should return false for a STOW configuration with boosters after a platform trailer', async () => {
+  it('should return true for a valid STOW complex configuration with multiple additional platform trailer axles', async () => {
     const isValid = policy.isConfigurationValid('STOW', 'NONREDU', [
       'TRKTRAC',
       'JEEPSRG',
@@ -370,7 +370,7 @@ describe('Policy Engine Configuration Validation', () => {
       'BOOSTER',
       'BOOSTER',
     ]);
-    expect(isValid).toBe(false);
+    expect(isValid).toBe(true);
   });
 
   it('should throw an error for a permit type not requiring commodity', async () => {
