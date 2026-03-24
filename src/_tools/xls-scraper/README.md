@@ -47,6 +47,15 @@ This resets the local preview state back to the canonical config without applyin
 
 The generate step is intended to be idempotent. If the workbook does not change, rerunning it should not produce a diff in the generated file.
 
+To run the repo's Jest unit tests against the generated preview config instead of the canonical config, use:
+
+```bash
+cd /Users/adamcoard/Dev/onroutebc-policy-engine
+npm run test:generated -- --runInBand src/_test/unit/stow-regression.spec.ts
+```
+
+The existing `npm test` command continues to use `src/_test/policy-config/_current-config.json`.
+
 `npm run audit:commodity -- --commodity-type=None` reads the XLS directly, excludes struck-through rows, compares the XLS-derived rows for that commodity against the current policy engine output, and prints clearly-labelled sections for:
 
 - expected vehicle sub-types from `Commodity to Vehicle to Trailer`

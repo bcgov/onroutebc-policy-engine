@@ -25,6 +25,7 @@
   "scripts": {
     "clean": "rimraf dist && rimraf -g *.tgz",
     "test": "jest",
+    "test:generated": "jest --config jest.generated.config.cjs",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "format": "prettier --write \"src/**/*.ts\"",
     "build": "tsc",

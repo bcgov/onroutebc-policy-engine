@@ -1968,16 +1968,7 @@
           }
         }
       ],
-      "conditions": [
-        {
-          "condition": "CVSE-1070",
-          "mandatory": false
-        },
-        {
-          "condition": "CVSE-1011",
-          "mandatory": false
-        }
-      ]
+      "conditions": []
     },
     {
       "id": "STFR",
@@ -4586,7 +4577,7 @@
             {
               "type": "XXXXXXX",
               "jeep": false,
-              "booster": false,
+              "booster": true,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -6654,7 +6645,7 @@
             {
               "type": "PLATFRM",
               "jeep": true,
-              "booster": false,
+              "booster": true,
               "selfIssue": false,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -6852,7 +6843,7 @@
             {
               "type": "PLATFRM",
               "jeep": true,
-              "booster": false,
+              "booster": true,
               "selfIssue": false,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -8083,7 +8074,7 @@
             {
               "type": "PLATFRM",
               "jeep": true,
-              "booster": false,
+              "booster": true,
               "selfIssue": false,
               "sizePermittable": true,
               "sizeDimensions": [
