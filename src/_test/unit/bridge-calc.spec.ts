@@ -38,16 +38,19 @@ describe('Bridge Calculation Results Validation Tests', () => {
     expect(res.length).toBe(3);
     const group12 = res.find((r) => r.startAxleUnit == 1 && r.endAxleUnit == 2);
     expect(group12).not.toBeFalsy();
+    expect(group12?.bcwCm).toBe(510);
     expect(group12?.actualWeight).toBe(18700);
     expect(group12?.maxBridge).toBe(33300);
 
     const group13 = res.find((r) => r.startAxleUnit == 1 && r.endAxleUnit == 3);
     expect(group13).not.toBeFalsy();
+    expect(group13?.bcwCm).toBe(1430);
     expect(group13?.actualWeight).toBe(40700);
     expect(group13?.maxBridge).toBe(60900);
 
     const group23 = res.find((r) => r.startAxleUnit == 2 && r.endAxleUnit == 3);
     expect(group23).not.toBeFalsy();
+    expect(group23?.bcwCm).toBe(1080);
     expect(group23?.actualWeight).toBe(34000);
     expect(group23?.maxBridge).toBe(50400);
   });

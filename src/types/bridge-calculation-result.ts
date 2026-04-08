@@ -9,6 +9,8 @@ export type BridgeCalculationResult = {
   startAxleUnit: number;
   /** Ending axle unit number in the calculation */
   endAxleUnit: number;
+  /** Bridge calculation wheelbase in centimeters */
+  bcwCm: number;
   /** Maximum allowable weight according to bridge formula in kilograms */
   maxBridge: number;
   /** Actual weight being carried in kilograms */

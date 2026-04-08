@@ -1,8 +1,21 @@
-import {
-  classifyForceSubmitRows,
-  type CurrentTrailerGroupLike,
-  type ForceSubmitAuditEntryLike,
-} from '../../_tools/xls-scraper/src/forceSubmitAudit';
+type CurrentTrailerGroupLike = {
+  trailers: Map<string, string>;
+};
+
+type ForceSubmitAuditEntryLike = {
+  rowNumber: number;
+  commodityName: string;
+  powerUnitName: string;
+  powerUnitId: string;
+  trailerLabel: string;
+  trailerId: string | null;
+  reasonTags: string[];
+};
+
+async function loadClassifyForceSubmitRows() {
+  const mod = await import('../../_tools/xls-scraper/src/forceSubmitAudit.js');
+  return mod.classifyForceSubmitRows;
+}
 
 function createEntry(
   overrides: Partial<ForceSubmitAuditEntryLike>,
@@ -27,7 +40,8 @@ function createTrailerGroup(trailerIds: string[]): CurrentTrailerGroupLike {
 }
 
 describe('force-submit audit', () => {
-  it('should mark a direct force-submit row as resolved when policy already exposes the trailer', () => {
+  it('should mark a direct force-submit row as resolved when policy already exposes the trailer', async () => {
+    const classifyForceSubmitRows = await loadClassifyForceSubmitRows();
     const result = classifyForceSubmitRows({
       commodityEntries: [createEntry({ rowNumber: 81 })],
       currentPowerUnits: new Map([['TRKTRAC', 'Truck Tractors']]),
@@ -50,7 +64,8 @@ describe('force-submit audit', () => {
     ]);
   });
 
-  it('should mark a force-submit row as blocked when the direct power unit is still missing', () => {
+  it('should mark a force-submit row as blocked when the direct power unit is still missing', async () => {
+    const classifyForceSubmitRows = await loadClassifyForceSubmitRows();
     const result = classifyForceSubmitRows({
       commodityEntries: [createEntry({ rowNumber: 83, trailerLabel: 'Semi-Trailers - Single Drop, Double Drop, Step Decks, Lowbed, Expandos, etc.', trailerId: 'STSDBDK' })],
       currentPowerUnits: new Map(),
@@ -72,7 +87,8 @@ describe('force-submit audit', () => {
     ]);
   });
 
-  it('should treat a force-submit jeep row as resolved when the jeep row is already covered elsewhere', () => {
+  it('should treat a force-submit jeep row as resolved when the jeep row is already covered elsewhere', async () => {
+    const classifyForceSubmitRows = await loadClassifyForceSubmitRows();
     const result = classifyForceSubmitRows({
       commodityEntries: [
         createEntry({
