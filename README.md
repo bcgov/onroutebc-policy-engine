@@ -252,6 +252,37 @@ npm test
 npm run lint
 ```
 
+## Using npm link for local policy engine changes
+
+Use this when you want to pick up local `onroute-policy-engine` changes without publishing a package. This example is using it with the frontend included in this repo for testing purposes, but should also work with any other third party application that consumes this package.
+
+```bash
+# repo root
+npm run build
+# npm run build -- --watch  # optional for active library development; rebuilds dist on change
+npm link
+
+# this example app
+cd src/_examples/usage/react-frontend-example
+npm link onroute-policy-engine
+npm run dev
+```
+
+If Chrome DevTools shows import/module resolution issues after linking, add this to `vite.config.ts`:
+
+```ts
+export default defineConfig({
+  resolve: {
+    preserveSymlinks: true,
+  },
+  plugins: [react()],
+  server: {
+    port: 3000,
+    host: true,
+  },
+});
+```
+
 ### Project Structure
 
 ```
