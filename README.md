@@ -277,6 +277,8 @@ export default defineConfig({
 
 In practice, use a **JSON-only update** when the current policy engine already knows how to represent and evaluate the change. Use a **new npm package** when the engine code itself has to change.
 
+The npm package is published by CI from `main` using [pipeline.yml](./.github/workflows/pipeline.yml). That workflow calculates the next version from conventional commits, builds and tests the package, then publishes it to npm when a version bump is detected.
+
 Examples of **JSON-only updates**:
 
 - updating permit types, commodities, vehicle combinations, conditions, cost tables, or rule data
@@ -288,7 +290,7 @@ Examples of **npm package updates**:
 - adding new methods, helper behavior, operators, or other runtime functionality
 - introducing a new policy JSON capability that requires engine changes to understand it
 
-Rule of thumb: if you can express the change by updating policy data alone, ship updated JSON. If you need code changes for the engine to behave correctly, publish a new package and update `minPEVersion` if needed.
+Rule of thumb: if you can express the change by updating policy data alone, ship updated JSON. If you need code changes for the engine to behave correctly, publish a new package.
 
 ### Project Structure
 
