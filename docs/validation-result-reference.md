@@ -307,12 +307,6 @@ interface AxleGroupPolicyCheckResult extends PolicyCheckResult {
 }
 ```
 
-For bridge formula results specifically, `AxleGroupPolicyCheckResult` entries now also include:
-
-- `actualWeight`: the axle-group weight PE calculated
-- `thresholdWeight`: the bridge formula maximum weight for that axle group
-- `startAxleUnit` and `endAxleUnit`: the axle-unit range the frontend can use to indicate failing groups
-
 ## Common Validation Scenarios
 
 ### Valid Permit Application

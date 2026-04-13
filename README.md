@@ -135,16 +135,6 @@ interface AxleConfiguration {
   tireSize?: number;
   axleUnitWeight: number;
   axleSpread?: number;
-  interaxleSpacing?: number;
-}
-
-interface BridgeCalculationResult {
-  startAxleUnit: number;
-  endAxleUnit: number;
-  bcwCm: number;
-  maxBridge: number;
-  actualWeight: number;
-  success: boolean;
 }
 ```
 

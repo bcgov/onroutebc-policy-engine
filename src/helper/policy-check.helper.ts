@@ -63,9 +63,7 @@ export function CheckBridgeFormula(
   const policyId = PolicyCheckId.BridgeFormula;
   const bridgeCalcResults = policy.calculateBridge(axleConfiguration);
   bridgeCalcResults.forEach((br) => {
-    const message = br.success
-      ? `Axle group ${br.startAxleUnit} to ${br.endAxleUnit} passes bridge formula.`
-      : `Bridge calculation failed for Axle Group (Axle Unit ${br.startAxleUnit} - Axle Unit ${br.endAxleUnit}) Axle Group Weight is ${br.actualWeight}, Bridge Formula Weight max is ${br.maxBridge}.`;
+    const message = `Axle group ${br.startAxleUnit} to ${br.endAxleUnit} ${br.success ? 'passes' : 'does not pass'} bridge formula.`;
     policyCheckResults.push({
       id: policyId,
       message: message,
@@ -74,8 +72,6 @@ export function CheckBridgeFormula(
         : PolicyCheckResultType.Fail,
       startAxleUnit: br.startAxleUnit,
       endAxleUnit: br.endAxleUnit,
-      actualWeight: br.actualWeight,
-      thresholdWeight: br.maxBridge,
     });
   });
   return policyCheckResults;

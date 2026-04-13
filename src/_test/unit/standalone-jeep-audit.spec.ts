@@ -1,19 +1,8 @@
-type CurrentTrailerGroupLike = {
-  trailers: Map<string, string>;
-};
-
-type StandaloneJeepAuditEntryLike = {
-  rowNumber: number;
-  commodityName: string;
-  powerUnitName: string;
-  powerUnitId: string;
-  reasonTags: string[];
-};
-
-async function loadClassifyStandaloneJeepRows() {
-  const mod = await import('../../_tools/xls-scraper/src/standaloneJeepAudit.js');
-  return mod.classifyStandaloneJeepRows;
-}
+import {
+  classifyStandaloneJeepRows,
+  type CurrentTrailerGroupLike,
+  type StandaloneJeepAuditEntryLike,
+} from '../../_tools/xls-scraper/src/standaloneJeepAudit';
 
 function createEntry(
   overrides: Partial<StandaloneJeepAuditEntryLike>,
@@ -35,8 +24,7 @@ function createTrailerGroup(trailerIds: string[]): CurrentTrailerGroupLike {
 }
 
 describe('standalone jeep audit', () => {
-  it('should mark a standalone jeep row as resolved when policy already exposes JEEPSRG', async () => {
-    const classifyStandaloneJeepRows = await loadClassifyStandaloneJeepRows();
+  it('should mark a standalone jeep row as resolved when policy already exposes JEEPSRG', () => {
     const result = classifyStandaloneJeepRows({
       commodityEntries: [createEntry({ rowNumber: 50 })],
       currentPowerUnits: new Map([['TRKTRAC', 'Truck Tractors']]),
@@ -55,8 +43,7 @@ describe('standalone jeep audit', () => {
     ]);
   });
 
-  it('should mark a standalone jeep row as blocked when the power unit is still missing', async () => {
-    const classifyStandaloneJeepRows = await loadClassifyStandaloneJeepRows();
+  it('should mark a standalone jeep row as blocked when the power unit is still missing', () => {
     const result = classifyStandaloneJeepRows({
       commodityEntries: [createEntry({ rowNumber: 71, commodityName: 'Fixed Equipment' })],
       currentPowerUnits: new Map(),
@@ -73,8 +60,7 @@ describe('standalone jeep audit', () => {
     ]);
   });
 
-  it('should leave a standalone jeep row unresolved when the power unit exists but JEEPSRG is not exposed', async () => {
-    const classifyStandaloneJeepRows = await loadClassifyStandaloneJeepRows();
+  it('should leave a standalone jeep row unresolved when the power unit exists but JEEPSRG is not exposed', () => {
     const result = classifyStandaloneJeepRows({
       commodityEntries: [createEntry({ rowNumber: 105, commodityName: 'None' })],
       currentPowerUnits: new Map([['TRKTRAC', 'Truck Tractors']]),

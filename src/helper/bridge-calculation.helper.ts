@@ -105,7 +105,6 @@ export function runBridgeFormula(
         results.push({
           startAxleUnit: firstAxle,
           endAxleUnit: nextAxle,
-          bcwCm: wheelbase,
           maxBridge: maxBridge,
           actualWeight: totalWeight,
           success: totalWeight <= maxBridge,

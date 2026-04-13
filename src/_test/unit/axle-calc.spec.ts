@@ -59,29 +59,6 @@ describe('Axle Calculation Functions', () => {
     ).toBe(false);
   });
 
-  it('should return bridge failure details including axle group range and weights', async () => {
-    const ac = JSON.parse(
-      JSON.stringify(axleConfiguration),
-    ) as Array<AxleConfiguration>;
-    ac[0].axleUnitWeight = 40000;
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
-    const group12 = results.results.find(
-      (r) =>
-        r.id === PolicyCheckId.BridgeFormula &&
-        'startAxleUnit' in r &&
-        'endAxleUnit' in r &&
-        r.startAxleUnit === 1 &&
-        r.endAxleUnit === 2,
-    );
-    expect(group12).toBeTruthy();
-    expect(group12?.result).toBe(PolicyCheckResultType.Fail);
-    expect(group12?.actualWeight).toBe(52000);
-    expect(group12?.thresholdWeight).toBe(33300);
-    expect(group12?.message).toBe(
-      'Bridge calculation failed for Axle Group (Axle Unit 1 - Axle Unit 2) Axle Group Weight is 52000, Bridge Formula Weight max is 33300.',
-    );
-  });
-
   it('should fail policy check for axle unit over permittable weight', async () => {
     const ac = JSON.parse(
       JSON.stringify(axleConfiguration),
