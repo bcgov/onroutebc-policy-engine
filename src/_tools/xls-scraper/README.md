@@ -196,13 +196,6 @@ Important example-app caveat:
   - `Platform Trailer` -> `PLATFRM`
   - `Semi-Trailers - Widespread Tandem` -> `STWDTAN`
 
-## Not Included
-
-- Jeep rows
-- Standalone booster rows
-- Any permit-specific interpretation of `Force Submit to Queue`
-- Any permit-specific interpretation of `Steer`, `Drive`, or `Wheelbase`
-
 These rows are still surfaced by the audit commands when they represent real unresolved work. When a jeep row, standalone booster row, or force-submit row is already covered by current policy behavior or by separately reported direct gaps, the audit moves it out of the unresolved section so the STOW-wide report stays focused on actual remaining issues.
 
 This means the updater claims correctness for direct trailer and no-trailer STOW combinations and for additive booster-after-trailer permissions the current policy model can represent cleanly.
