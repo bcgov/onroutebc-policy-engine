@@ -127,6 +127,37 @@ npm run build
 
 This creates a production build in the `dist` directory.
 
+## Using npm link for local policy engine changes
+
+Use this when you want this frontend example, including the permit form application flow, to pick up local `onroute-policy-engine` changes without publishing a package.
+
+```bash
+# repo root
+npm run build
+# npm run build -- --watch  # optional for active library development; rebuilds dist on change
+npm link
+
+# this example app
+cd src/_examples/usage/react-frontend-example
+npm link onroute-policy-engine
+npm run dev
+```
+
+If Chrome DevTools shows import/module resolution issues after linking, add this to `vite.config.ts`:
+
+```ts
+export default defineConfig({
+  resolve: {
+    preserveSymlinks: true,
+  },
+  plugins: [react()],
+  server: {
+    port: 3000,
+    host: true,
+  },
+});
+```
+
 ## License
 
 This example is part of the onRouteBC Policy Engine project and follows the same Apache 2.0 license.

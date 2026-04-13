@@ -1,9 +1,11 @@
 import { Policy } from '../../policy-engine';
 import currentPolicyConfig from '../policy-config/_current-config.json';
+import generatedPolicyConfig from '../policy-config/_current-config.generated.json';
 import specialAuth from '../policy-config/special-auth-lcv.sample.json';
 
 describe('Policy Engine Oversize Configuration Functions', () => {
   const policy: Policy = new Policy(currentPolicyConfig);
+  const generatedPolicy: Policy = new Policy(generatedPolicyConfig);
   const lcvPolicy: Policy = new Policy(currentPolicyConfig, specialAuth);
 
   it('should retrieve all permittable power unit types for STOS', async () => {
@@ -18,7 +20,6 @@ describe('Policy Engine Oversize Configuration Functions', () => {
     const puTypesNone = policy.getPermittablePowerUnitTypes('STOW', 'XXXXXXX');
     expect(puTypesNone.keys()).toContain('TRKTRAC');
     expect(puTypesNone.keys()).toContain('CRANEAT');
-    expect(puTypesNone.keys()).not.toContain('MUNFITR');
 
     const puTypesNonredu = policy.getPermittablePowerUnitTypes(
       'STOW',
@@ -27,6 +28,15 @@ describe('Policy Engine Oversize Configuration Functions', () => {
     expect(puTypesNonredu.keys()).toContain('REGTRCK');
     expect(puTypesNonredu.keys()).toContain('PICKRTT');
     expect(puTypesNonredu.keys()).not.toContain('STINGER');
+  });
+
+  it('should retrieve additional generated STOW power unit types from the preview config', async () => {
+    const puTypesNone = generatedPolicy.getPermittablePowerUnitTypes(
+      'STOW',
+      'XXXXXXX',
+    );
+    expect(puTypesNone.keys()).toContain('MUNFITR');
+    expect(puTypesNone.keys()).toContain('RBTRLDR');
   });
 
   it('should throw an error for invalid permit type', async () => {

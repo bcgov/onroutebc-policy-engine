@@ -10,6 +10,12 @@ import './App.css'
 
 const API_BASE_URL = 'http://localhost:3001/api/permits'
 
+declare global {
+  interface Window {
+    policyEngine?: Policy
+  }
+}
+
 function App() {
   const [policy, setPolicy] = useState<Policy | null>(null)
   const [validationResults, setValidationResults] = useState<ValidationResults | null>(null)
@@ -34,16 +40,22 @@ function App() {
         }
         
         const policyInstance = new Policy(result.data)
+        window.policyEngine = policyInstance
         setPolicy(policyInstance)
         setLoading(false)
       } catch (err) {
         // Don't set error state, just log it and set loading to false
         console.error('Failed to initialize policy:', err)
+        delete window.policyEngine
         setLoading(false)
       }
     }
 
     initializePolicy()
+
+    return () => {
+      delete window.policyEngine
+    }
   }, [])
 
   const handleValidation = async (permitData: any, validationMethod: 'local' | 'api') => {

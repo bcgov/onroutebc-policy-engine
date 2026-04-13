@@ -9,6 +9,7 @@ eslint.config.mjs
 .vscode/
 dist/_test/
 dist/_examples/
+dist/_tools/
 dist/tsconfig.tsbuildinfo
 tsconfig.tsbuildinfo
 .prettierrc.json

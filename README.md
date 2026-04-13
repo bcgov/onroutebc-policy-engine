@@ -242,6 +242,56 @@ npm test
 npm run lint
 ```
 
+## Using npm link for local policy engine changes
+
+Use this when you want to pick up local `onroute-policy-engine` changes without publishing a package. This example is using it with the frontend included in this repo for testing purposes, but should also work with any other third party application that consumes this package.
+
+```bash
+# repo root
+npm run build
+# npm run build -- --watch  # optional for active library development; rebuilds dist on change
+npm link
+
+# this example app
+cd src/_examples/usage/react-frontend-example
+npm link onroute-policy-engine
+npm run dev
+```
+
+If Chrome DevTools shows import/module resolution issues after linking, add this to `vite.config.ts`:
+
+```ts
+export default defineConfig({
+  resolve: {
+    preserveSymlinks: true,
+  },
+  plugins: [react()],
+  server: {
+    port: 3000,
+    host: true,
+  },
+});
+```
+
+## When to update JSON vs publish npm
+
+In practice, use a **JSON-only update** when the current policy engine already knows how to represent and evaluate the change. Use a **new npm package** when the engine code itself has to change.
+
+The npm package is published by CI from `main` using [pipeline.yml](./.github/workflows/pipeline.yml). That workflow calculates the next version from conventional commits, builds and tests the package, then publishes it to npm when a version bump is detected.
+
+Examples of **JSON-only updates**:
+
+- updating permit types, commodities, vehicle combinations, conditions, cost tables, or rule data
+- changing `_current-config.json` values without needing new engine behavior
+
+Examples of **npm package updates**:
+
+- changing validation logic or rule interpretation in TypeScript code
+- adding new methods, helper behavior, operators, or other runtime functionality
+- introducing a new policy JSON capability that requires engine changes to understand it
+
+Rule of thumb: if you can express the change by updating policy data alone, ship updated JSON. If you need code changes for the engine to behave correctly, publish a new package.
+
 ### Project Structure
 
 ```
