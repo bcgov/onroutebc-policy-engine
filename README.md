@@ -273,6 +273,23 @@ export default defineConfig({
 });
 ```
 
+## When to update JSON vs publish npm
+
+In practice, use a **JSON-only update** when the current policy engine already knows how to represent and evaluate the change. Use a **new npm package** when the engine code itself has to change.
+
+Examples of **JSON-only updates**:
+
+- updating permit types, commodities, vehicle combinations, conditions, cost tables, or rule data
+- changing `_current-config.json` values without needing new engine behavior
+
+Examples of **npm package updates**:
+
+- changing validation logic or rule interpretation in TypeScript code
+- adding new methods, helper behavior, operators, or other runtime functionality
+- introducing a new policy JSON capability that requires engine changes to understand it
+
+Rule of thumb: if you can express the change by updating policy data alone, ship updated JSON. If you need code changes for the engine to behave correctly, publish a new package and update `minPEVersion` if needed.
+
 ### Project Structure
 
 ```
