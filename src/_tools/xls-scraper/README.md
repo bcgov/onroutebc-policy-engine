@@ -234,6 +234,8 @@ This keeps the canonical tracked config stable while you iterate on content ques
 
 ## Red-Green Verification
 
+(edit: This may be out of date, but this is how I originally validated my changes)
+
 Use the existing running example at `http://localhost:3000`. No frontend code changes are required for this check.
 
 The idea with this is that we would use the _example tools first to show a failure (red), then we update the _current-config.json with changes per the xls file, re-run _example, and then should see a success (green). This way we know our change is working.
