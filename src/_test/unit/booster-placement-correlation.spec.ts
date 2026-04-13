@@ -1,8 +1,12 @@
-import {
-  correlateBoosterPlacements,
-} from '../../_tools/xls-scraper/src/boosterPlacementCorrelation';
-import type { AuditEntry } from '../../_tools/xls-scraper/src/commodityWorksheet';
-import type { BoosterExpectationEntry } from '../../_tools/xls-scraper/src/trailerWeightWorksheet';
+import type { AuditEntry } from '../../_tools/xls-scraper/src/commodityWorksheet' with { "resolution-mode": "import" };
+import type { BoosterExpectationEntry } from '../../_tools/xls-scraper/src/trailerWeightWorksheet' with { "resolution-mode": "import" };
+
+async function loadCorrelateBoosterPlacements() {
+  const mod = await import(
+    '../../_tools/xls-scraper/src/boosterPlacementCorrelation'
+  );
+  return mod.correlateBoosterPlacements;
+}
 
 function createAuditEntry(
   overrides: Partial<AuditEntry>,
@@ -39,7 +43,8 @@ function createBoosterEntry(
 }
 
 describe('booster placement correlation', () => {
-  it('should mark trailer-weight rows as safe when all matching direct rows are booster-capable', () => {
+  it('should mark trailer-weight rows as safe when all matching direct rows are booster-capable', async () => {
+    const correlateBoosterPlacements = await loadCorrelateBoosterPlacements();
     const result = correlateBoosterPlacements({
       commodityName: 'None',
       directTrailerEntries: [
@@ -72,7 +77,8 @@ describe('booster placement correlation', () => {
     expect(result.unmatchedGroups).toHaveLength(0);
   });
 
-  it('should mark trailer-weight rows as contradictory when matching direct rows all disallow boosters', () => {
+  it('should mark trailer-weight rows as contradictory when matching direct rows all disallow boosters', async () => {
+    const correlateBoosterPlacements = await loadCorrelateBoosterPlacements();
     const result = correlateBoosterPlacements({
       commodityName: 'None',
       directTrailerEntries: [
@@ -94,7 +100,8 @@ describe('booster placement correlation', () => {
     ]);
   });
 
-  it('should mark trailer-weight rows as ambiguous when matching direct rows mix booster flags', () => {
+  it('should mark trailer-weight rows as ambiguous when matching direct rows mix booster flags', async () => {
+    const correlateBoosterPlacements = await loadCorrelateBoosterPlacements();
     const result = correlateBoosterPlacements({
       commodityName: 'Reducible Loads',
       directTrailerEntries: [
@@ -130,3 +137,5 @@ describe('booster placement correlation', () => {
     expect(result.safeTrailerIds.size).toBe(0);
   });
 });
+
+export {};

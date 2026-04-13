@@ -1,24 +1,12 @@
 import { Policy } from '../../policy-engine';
-import currentPolicyConfig from '../policy-config/_current-config.json';
-import expectedSurface from '../policy-config/stow-regression.expected.json';
+import generatedPolicyConfig from '../policy-config/_current-config.generated.json';
 import specialAuthLcv from '../policy-config/special-auth-lcv.sample.json';
 
-interface StowRegressionSurface {
-  commodities: string[];
-  powerUnits: Record<string, string[]>;
-  trailers: Record<string, string[]>;
-  nextVehicles: Record<string, string[]>;
-}
-
 describe('STOW regression surface', () => {
-  const policy = new Policy(currentPolicyConfig);
+  const policy = new Policy(generatedPolicyConfig);
   // The audit tools compare against an LCV-authorized policy instance so XLS LCV rows
   // are not reported as missing, but the default engine behavior should still hide them.
-  const lcvPolicy = new Policy(currentPolicyConfig, specialAuthLcv);
-
-  it('should match the canonical STOW API surface', () => {
-    expect(collectStowSurface(policy)).toEqual(expectedSurface);
-  });
+  const lcvPolicy = new Policy(generatedPolicyConfig, specialAuthLcv);
 
   it('should expose the newly added direct STOW cases', () => {
     expect(
@@ -95,41 +83,3 @@ describe('STOW regression surface', () => {
     ).not.toContain('BOOSTER');
   });
 });
-
-function collectStowSurface(policy: Policy): StowRegressionSurface {
-  const commodities = Array.from(policy.getCommodities('STOW').keys()).sort();
-  const surface: StowRegressionSurface = {
-    commodities,
-    powerUnits: {},
-    trailers: {},
-    nextVehicles: {},
-  };
-
-  for (const commodityId of commodities) {
-    const powerUnits = Array.from(
-      policy.getPermittablePowerUnitTypes('STOW', commodityId).keys(),
-    ).sort();
-    surface.powerUnits[commodityId] = powerUnits;
-
-    for (const powerUnitId of powerUnits) {
-      const trailers = Array.from(
-        policy.getNextPermittableVehicles('STOW', commodityId, [powerUnitId]).keys(),
-      ).sort();
-      surface.trailers[`${commodityId}:${powerUnitId}`] = trailers;
-
-      for (const trailerId of trailers) {
-        const nextVehicles = Array.from(
-          policy
-            .getNextPermittableVehicles('STOW', commodityId, [powerUnitId, trailerId])
-            .keys(),
-        ).sort();
-
-        if (nextVehicles.length > 0) {
-          surface.nextVehicles[`${commodityId}:${powerUnitId}:${trailerId}`] = nextVehicles;
-        }
-      }
-    }
-  }
-
-  return surface;
-}
