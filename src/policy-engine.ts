@@ -1205,4 +1205,101 @@ export class Policy {
       vehicleConfiguration,
     );
   }
+
+  /**
+   * Given a commodity and selected power unit subtype for a permit type,
+   * return whether or not axle units can be added to the power unit.
+   * @param permitType The permit type
+   * @param commodityId The commodity id
+   * @param powerUnitSubtype The id representing the power unit subtype
+   * @returns true if the axle units can be added to the power unit, false otherwise
+   */
+  canAddAxleUnitsToPowerUnit(
+    permitTypeId: string,
+    commodityId?: string | null,
+    powerUnitSubtype?: string | null,
+  ) {
+    if (!permitTypeId || !commodityId || !powerUnitSubtype) {
+      throw new Error(
+        'Missing permitTypeId and/or commodityId and/or powerUnitSubtype',
+      );
+    }
+
+    const permitType = this.getPermitTypeDefinition(permitTypeId);
+    if (!permitType) {
+      throw new Error(`Invalid permit type: '${permitTypeId}'`);
+    }
+
+    if (!permitType.commodityRequired) {
+      // If commodity is not required, this method cannot check whether or not
+      // axle units can be added, since they will not be configured.
+      throw new Error(
+        `Permit type '${permitTypeId}' does not require a commodity`,
+      );
+    }
+
+    const commodity = this.getCommodityDefinition(commodityId);
+    if (!commodity) {
+      throw new Error(`Invalid commodity type: '${commodityId}'`);
+    }
+
+    const powerUnit = commodity.powerUnits.find(pu => pu.type === powerUnitSubtype);
+    if (!powerUnit) {
+      throw new Error(`Invalid power unit: '${powerUnitSubtype}'`);
+    }
+
+    return Boolean(powerUnit.canAddAxleUnits);
+  }
+
+  /**
+   * Given a commodity, selected power unit and trailer subtype for a permit type,
+   * return whether or not axle units can be added to the trailer.
+   * @param permitType The permit type
+   * @param commodityId The commodity id
+   * @param powerUnitSubtype The id representing the power unit subtype
+   * @param trailerSubtype The id representing the trailer subtype
+   * @returns true if the axle units can be added to the trailer, false otherwise
+   */
+  canAddAxleUnitsToTrailer(
+    permitTypeId: string,
+    commodityId?: string | null,
+    powerUnitSubtype?: string | null,
+    trailerSubtype?: string | null,
+  ) {
+    if (!permitTypeId || !commodityId || !powerUnitSubtype || !trailerSubtype) {
+      throw new Error(
+        'Missing permitTypeId, commodityId, powerUnitSubtype, and/or trailerSubtype',
+      );
+    }
+
+    const permitType = this.getPermitTypeDefinition(permitTypeId);
+    if (!permitType) {
+      throw new Error(`Invalid permit type: '${permitTypeId}'`);
+    }
+
+    if (!permitType.commodityRequired) {
+      // If commodity is not required, this method cannot check whether or not
+      // axle units can be added, since they will not be configured.
+      throw new Error(
+        `Permit type '${permitTypeId}' does not require a commodity`,
+      );
+    }
+
+    const commodity = this.getCommodityDefinition(commodityId);
+    if (!commodity) {
+      throw new Error(`Invalid commodity type: '${commodityId}'`);
+    }
+
+    const powerUnit = commodity.powerUnits.find(pu => pu.type === powerUnitSubtype);
+    if (!powerUnit) {
+      throw new Error(`Invalid power unit: '${powerUnitSubtype}'`);
+    }
+
+    const trailer = powerUnit.trailers.find(trailer => trailer.type === trailerSubtype);
+    if (!trailer) {
+      throw new Error(`Invalid trailer: '${trailerSubtype}'`);
+    }
+
+    return Boolean(trailer.canAddAxleUnits);
+  }
 }

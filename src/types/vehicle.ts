@@ -30,6 +30,8 @@ export type VehicleDimensions = Vehicle & {
   trailers: Array<TrailerDimensions>;
   /** Array of weight dimensions for this power unit (optional) */
   weightDimensions?: Array<PowerUnitWeightDimension>;
+  /** Whether or not axle units can be added for this power unit (optional) */
+  canAddAxleUnits?: boolean;
 };
 
 /**
@@ -49,4 +51,6 @@ export type TrailerDimensions = Vehicle & {
   weightDimensions?: Array<TrailerWeightDimension>;
   /** Whether weight is permittable for this trailer (optional) */
   weightPermittable?: boolean;
+  /** Whether or not axle units can be added for this trailer (optional) */
+  canAddAxleUnits?: boolean;
 };

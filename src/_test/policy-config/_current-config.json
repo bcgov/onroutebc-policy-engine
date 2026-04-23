@@ -1968,7 +1968,16 @@
           }
         }
       ],
-      "conditions": []
+      "conditions": [
+        {
+          "condition": "CVSE-1070",
+          "mandatory": false
+        },
+        {
+          "condition": "CVSE-1011",
+          "mandatory": false
+        }
+      ]
     },
     {
       "id": "STFR",
@@ -3769,6 +3778,13 @@
         "displayCode": "B"
       },
       {
+        "id": "PLATWHE",
+        "name": "Platform Trailers - Wheelers",
+        "category": "wheeler",
+        "additionalAxleSubType": "PFMAXLE",
+        "displayCode": "B"
+      },
+      {
         "id": "POLETRL",
         "name": "Pole Trailers",
         "category": "semi",
@@ -4128,7 +4144,8 @@
                   "l": 40
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "canAddAxleUnits": true
             },
             {
               "type": "STRSELF",
@@ -4145,7 +4162,8 @@
                   "l": 36
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "canAddAxleUnits": true
             },
             {
               "type": "FEWHELR",
@@ -4169,6 +4187,19 @@
                 }
               ],
               "weightPermittable": true
+            },
+            {
+              "type": "SEMITRL",
+              "jeep": false,
+              "booster": false,
+              "weightPermittable": true
+            },
+            {
+              "type": "PLATWHE",
+              "jeep": true,
+              "booster": true,
+              "weightPermittable": true,
+              "canAddAxleUnits": true
             }
           ]
         },
@@ -4247,7 +4278,8 @@
                   "l": 25
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "canAddAxleUnits": true
             },
             {
               "type": "XXXXXXX",
@@ -4272,7 +4304,8 @@
               ],
               "weightPermittable": true
             }
-          ]
+          ],
+          "canAddAxleUnits": true
         },
         {
           "type": "MUNFITR",
@@ -4291,7 +4324,8 @@
                   "h": 4.3,
                   "l": 25
                 }
-              ]
+              ],
+              "weightPermittable": true
             }
           ]
         },
@@ -4312,7 +4346,8 @@
                   "h": 4.3,
                   "l": 25
                 }
-              ]
+              ],
+              "weightPermittable": true
             }
           ]
         },
@@ -4334,7 +4369,8 @@
                   "l": 25
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "canAddAxleUnits": true
             },
             {
               "type": "XXXXXXX",
@@ -4533,6 +4569,12 @@
                   ]
                 }
               ]
+            },
+            {
+              "type": "FECVYRX",
+              "jeep": false,
+              "booster": false,
+              "weightPermittable": true
             }
           ]
         },
@@ -4577,7 +4619,8 @@
               ],
               "weightPermittable": true
             }
-          ]
+          ],
+          "canAddAxleUnits": true
         },
         {
           "type": "DDCKBUS",
@@ -4675,7 +4718,8 @@
                   ]
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "canAddAxleUnits": true
             },
             {
               "type": "STRSELF",
@@ -4698,7 +4742,15 @@
                   ]
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "canAddAxleUnits": true
+            },
+            {
+              "type": "PLATWHE",
+              "jeep": true,
+              "booster": true,
+              "weightPermittable": true,
+              "canAddAxleUnits": true
             }
           ]
         },
@@ -4789,7 +4841,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             }
           ]
         },
@@ -4810,7 +4863,8 @@
                   "h": 4.15,
                   "l": 41
                 }
-              ]
+              ],
+              "weightPermittable": true
             }
           ]
         },
@@ -4832,6 +4886,17 @@
                   "l": 23
                 }
               ]
+            }
+          ]
+        },
+        {
+          "type": "PICKRTR",
+          "trailers": [
+            {
+              "type": "XXXXXXX",
+              "jeep": false,
+              "booster": false,
+              "weightPermittable": true
             }
           ]
         }
@@ -5019,7 +5084,8 @@
                   "h": 4.72,
                   "l": 23
                 }
-              ]
+              ],
+              "weightPermittable": true
             }
           ]
         }
@@ -5484,7 +5550,21 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
+            },
+            {
+              "type": "DOLLIES",
+              "jeep": false,
+              "booster": false,
+              "weightPermittable": true,
+              "canAddAxleUnits": true
+            },
+            {
+              "type": "STWHELR",
+              "jeep": false,
+              "booster": false,
+              "weightPermittable": true
             }
           ]
         }
@@ -5735,7 +5815,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STACTRN",
@@ -5801,7 +5882,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "HIBOFLT",
@@ -5823,7 +5905,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STLOGNG",
@@ -5861,7 +5944,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STSTEER",
@@ -5905,7 +5989,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STROPRT",
@@ -6020,7 +6105,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "PONYTRL",
@@ -6042,7 +6128,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             }
           ]
         },
@@ -6217,7 +6304,9 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true,
+              "canAddAxleUnits": true
             }
           ]
         }
@@ -6488,7 +6577,8 @@
                   "h": 4.3,
                   "l": 27.5
                 }
-              ]
+              ],
+              "weightPermittable": true
             }
           ]
         }
@@ -6606,7 +6696,16 @@
                   "h": 4.15,
                   "l": 27.5
                 }
-              ]
+              ],
+              "weightPermittable": true,
+              "canAddAxleUnits": true
+            },
+            {
+              "type": "PLATWHE",
+              "jeep": true,
+              "booster": true,
+              "weightPermittable": true,
+              "canAddAxleUnits": true
             },
             {
               "type": "HIBOEXP",
@@ -6632,7 +6731,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "HIBOFLT",
@@ -6658,7 +6758,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STSDBDK",
@@ -6684,7 +6785,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STWHELR",
@@ -6710,7 +6812,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STWIDWH",
@@ -6736,7 +6839,32 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
+            },
+            {
+              "type": "EXPANDO",
+              "jeep": false,
+              "booster": true,
+              "weightPermittable": true
+            },
+            {
+              "type": "OGOSFDT",
+              "jeep": false,
+              "booster": true,
+              "weightPermittable": true
+            },
+            {
+              "type": "SEMITRL",
+              "jeep": false,
+              "booster": true,
+              "weightPermittable": true
+            },
+            {
+              "type": "STCRANE",
+              "jeep": false,
+              "booster": true,
+              "weightPermittable": true
             }
           ]
         },
@@ -6757,7 +6885,8 @@
                   "h": 4.15,
                   "l": 23
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "PLATFRM",
@@ -6774,7 +6903,15 @@
                   "l": 27.5
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "canAddAxleUnits": true
+            },
+            {
+              "type": "PLATWHE",
+              "jeep": true,
+              "booster": true,
+              "weightPermittable": true,
+              "canAddAxleUnits": true
             },
             {
               "type": "HIBOEXP",
@@ -6796,7 +6933,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STWHELR",
@@ -6812,7 +6950,8 @@
                   "h": 4.15,
                   "l": 27.5
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STWIDWH",
@@ -6828,7 +6967,44 @@
                   "h": 4.15,
                   "l": 27.5
                 }
-              ]
+              ],
+              "weightPermittable": true
+            },
+            {
+              "type": "EXPANDO",
+              "jeep": false,
+              "booster": true,
+              "weightPermittable": true
+            },
+            {
+              "type": "SEMITRL",
+              "jeep": false,
+              "booster": true,
+              "weightPermittable": true
+            },
+            {
+              "type": "HIBOFLT",
+              "jeep": false,
+              "booster": true,
+              "weightPermittable": true
+            },
+            {
+              "type": "STSDBDK",
+              "jeep": false,
+              "booster": true,
+              "weightPermittable": true
+            },
+            {
+              "type": "STSTEER",
+              "jeep": false,
+              "booster": true,
+              "weightPermittable": true
+            },
+            {
+              "type": "STCRANE",
+              "jeep": false,
+              "booster": true,
+              "weightPermittable": true
             }
           ]
         },
@@ -6850,6 +7026,23 @@
                   "l": 23
                 }
               ]
+            },
+            {
+              "type": "XXXXXXX",
+              "jeep": false,
+              "booster": false,
+              "weightPermittable": true
+            }
+          ]
+        },
+        {
+          "type": "REGTRCK",
+          "trailers": [
+            {
+              "type": "XXXXXXX",
+              "jeep": false,
+              "booster": false,
+              "weightPermittable": true
             }
           ]
         }
@@ -7526,7 +7719,7 @@
             {
               "type": "POLETRL",
               "jeep": true,
-              "booster": false,
+              "booster": true,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -7537,7 +7730,8 @@
                   "h": 4.15,
                   "l": 31
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "SEMITRL",
@@ -7652,7 +7846,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "PONYTRL",
@@ -7742,7 +7937,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "HIBOFLT",
@@ -7764,7 +7960,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STSDBDK",
@@ -7786,7 +7983,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STSTEER",
@@ -7808,125 +8006,11 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STWHELR",
-              "jeep": true,
-              "booster": true,
-              "selfIssue": false,
-              "sizePermittable": true,
-              "sizeDimensions": [
-                {
-                  "fp": 3,
-                  "rp": 6.5,
-                  "w": 5,
-                  "h": 4.88,
-                  "l": 27.5,
-                  "regions": [
-                    {
-                      "region": "PCE",
-                      "h": 5.33
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "STCRANE",
-              "jeep": true,
-              "booster": true,
-              "selfIssue": true,
-              "sizePermittable": true,
-              "sizeDimensions": [
-                {
-                  "fp": 3,
-                  "rp": 6.5,
-                  "w": 5,
-                  "h": 4.88,
-                  "l": 27.5,
-                  "regions": [
-                    {
-                      "region": "PCE",
-                      "h": 5.33
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "STROPRT",
-              "jeep": true,
-              "booster": true,
-              "selfIssue": true,
-              "sizePermittable": true,
-              "sizeDimensions": [
-                {
-                  "fp": 3,
-                  "rp": 6.5,
-                  "w": 5,
-                  "h": 4.88,
-                  "l": 40,
-                  "regions": [
-                    {
-                      "region": "PCE",
-                      "h": 5.33
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "STRSELF",
-              "jeep": true,
-              "booster": true,
-              "selfIssue": true,
-              "sizePermittable": true,
-              "sizeDimensions": [
-                {
-                  "fp": 3,
-                  "rp": 6.5,
-                  "w": 5,
-                  "h": 4.88,
-                  "l": 36,
-                  "regions": [
-                    {
-                      "region": "PCE",
-                      "h": 5.33
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "STWIDWH",
-              "jeep": true,
-              "booster": true,
-              "selfIssue": true,
-              "sizePermittable": true,
-              "sizeDimensions": [
-                {
-                  "fp": 3,
-                  "rp": 6.5,
-                  "w": 5,
-                  "h": 4.88,
-                  "l": 27.5,
-                  "regions": [
-                    {
-                      "region": "PCE",
-                      "h": 5.33
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "TRKTRAC",
-          "trailers": [
-            {
-              "type": "PLATFRM",
               "jeep": true,
               "booster": true,
               "selfIssue": false,
@@ -7949,6 +8033,159 @@
               "weightPermittable": true
             },
             {
+              "type": "STCRANE",
+              "jeep": true,
+              "booster": true,
+              "selfIssue": true,
+              "sizePermittable": true,
+              "sizeDimensions": [
+                {
+                  "fp": 3,
+                  "rp": 6.5,
+                  "w": 5,
+                  "h": 4.88,
+                  "l": 27.5,
+                  "regions": [
+                    {
+                      "region": "PCE",
+                      "h": 5.33
+                    }
+                  ]
+                }
+              ],
+              "weightPermittable": true
+            },
+            {
+              "type": "STROPRT",
+              "jeep": true,
+              "booster": true,
+              "selfIssue": true,
+              "sizePermittable": true,
+              "sizeDimensions": [
+                {
+                  "fp": 3,
+                  "rp": 6.5,
+                  "w": 5,
+                  "h": 4.88,
+                  "l": 40,
+                  "regions": [
+                    {
+                      "region": "PCE",
+                      "h": 5.33
+                    }
+                  ]
+                }
+              ],
+              "canAddAxleUnits": true
+            },
+            {
+              "type": "STRSELF",
+              "jeep": true,
+              "booster": true,
+              "selfIssue": true,
+              "sizePermittable": true,
+              "sizeDimensions": [
+                {
+                  "fp": 3,
+                  "rp": 6.5,
+                  "w": 5,
+                  "h": 4.88,
+                  "l": 36,
+                  "regions": [
+                    {
+                      "region": "PCE",
+                      "h": 5.33
+                    }
+                  ]
+                }
+              ],
+              "canAddAxleUnits": true
+            },
+            {
+              "type": "STWIDWH",
+              "jeep": true,
+              "booster": true,
+              "selfIssue": true,
+              "sizePermittable": true,
+              "sizeDimensions": [
+                {
+                  "fp": 3,
+                  "rp": 6.5,
+                  "w": 5,
+                  "h": 4.88,
+                  "l": 27.5,
+                  "regions": [
+                    {
+                      "region": "PCE",
+                      "h": 5.33
+                    }
+                  ]
+                }
+              ],
+              "weightPermittable": true
+            },
+            {
+              "type": "PLATWHE",
+              "jeep": true,
+              "booster": true,
+              "selfIssue": true,
+              "weightPermittable": true,
+              "canAddAxleUnits": true
+            }
+          ]
+        },
+        {
+          "type": "TRKTRAC",
+          "trailers": [
+            {
+              "type": "PLATFRM",
+              "jeep": true,
+              "booster": false,
+              "selfIssue": false,
+              "sizePermittable": true,
+              "sizeDimensions": [
+                {
+                  "fp": 3,
+                  "rp": 6.5,
+                  "w": 5,
+                  "h": 4.88,
+                  "l": 27.5,
+                  "regions": [
+                    {
+                      "region": "PCE",
+                      "h": 5.33
+                    }
+                  ]
+                }
+              ],
+              "weightPermittable": true,
+              "canAddAxleUnits": true
+            },
+            {
+              "type": "PLATWHE",
+              "jeep": true,
+              "booster": true,
+              "selfIssue": false,
+              "sizePermittable": true,
+              "sizeDimensions": [
+                {
+                  "fp": 3,
+                  "rp": 6.5,
+                  "w": 5,
+                  "h": 4.88,
+                  "l": 27.5,
+                  "regions": [
+                    {
+                      "region": "PCE",
+                      "h": 5.33
+                    }
+                  ]
+                }
+              ],
+              "weightPermittable": true,
+              "canAddAxleUnits": true
+            },
+            {
               "type": "SEMITRL",
               "jeep": true,
               "booster": true,
@@ -7968,7 +8205,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STACTRN",
@@ -8034,7 +8272,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "HIBOFLT",
@@ -8056,7 +8295,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STLOGNG",
@@ -8094,7 +8334,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STSTEER",
@@ -8138,7 +8379,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STCRANE",
@@ -8160,7 +8402,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "STROPRT",
@@ -8182,7 +8425,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "canAddAxleUnits": true
             },
             {
               "type": "STRSELF",
@@ -8204,7 +8448,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "canAddAxleUnits": true
             },
             {
               "type": "STWIDWH",
@@ -8226,7 +8471,14 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
+            },
+            {
+              "type": "STWDTAN",
+              "jeep": false,
+              "booster": false,
+              "weightPermittable": true
             }
           ]
         },
@@ -8276,6 +8528,17 @@
                   ]
                 }
               ]
+            }
+          ]
+        },
+        {
+          "type": "PICKRTR",
+          "trailers": [
+            {
+              "type": "XXXXXXX",
+              "jeep": false,
+              "booster": false,
+              "weightPermittable": true
             }
           ]
         }
@@ -8488,7 +8751,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "FEDRMMX",
@@ -8509,7 +8773,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "FEBGHSE",
@@ -8530,7 +8795,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "FESEMTR",
@@ -8551,7 +8817,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "FEWHELR",
@@ -8572,7 +8839,14 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "weightPermittable": true
+            },
+            {
+              "type": "STWDTAN",
+              "jeep": false,
+              "booster": false,
+              "weightPermittable": true
             }
           ]
         },
@@ -8592,7 +8866,8 @@
                   "w": 3.2,
                   "h": 4.3
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "FEDRMMX",
@@ -8628,7 +8903,8 @@
                   "w": 3.2,
                   "h": 4.3
                 }
-              ]
+              ],
+              "weightPermittable": true
             },
             {
               "type": "FEBGHSE",
@@ -8644,6 +8920,12 @@
                   "h": 4.72
                 }
               ]
+            },
+            {
+              "type": "PONYTRL",
+              "jeep": false,
+              "booster": false,
+              "weightPermittable": true
             }
           ]
         }
@@ -8699,7 +8981,7 @@
       "conditionLink": ""
     },
     {
-      "description": "Routes - Woods Chips & Residual",
+      "description": "Routes - Woods Chips &amp; Residual",
       "condition": "CVSE-1012",
       "conditionLink": "https://www.th.gov.bc.ca/forms/getForm.aspx?formId=1259"
     },
@@ -8709,7 +8991,7 @@
       "conditionLink": "https://www.th.gov.bc.ca/forms/getForm.aspx?formId=1254"
     },
     {
-      "description": "LCV Operating Conditions & Routes",
+      "description": "LCV Operating Conditions &amp; Routes",
       "condition": "CVSE-1014",
       "conditionLink": "https://www.th.gov.bc.ca/forms/getForm.aspx?formId=1260"
     }
