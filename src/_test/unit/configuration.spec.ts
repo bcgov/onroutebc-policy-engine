@@ -18,7 +18,7 @@ describe('Policy Engine Oversize Configuration Functions', () => {
     const puTypesNone = policy.getPermittablePowerUnitTypes('STOW', 'XXXXXXX');
     expect(puTypesNone.keys()).toContain('TRKTRAC');
     expect(puTypesNone.keys()).toContain('CRANEAT');
-    expect(puTypesNone.keys()).not.toContain('MUNFITR');
+    expect(puTypesNone.keys()).not.toContain('TLSCONV');
 
     const puTypesNonredu = policy.getPermittablePowerUnitTypes(
       'STOW',
@@ -362,7 +362,7 @@ describe('Policy Engine Configuration Validation', () => {
       'JEEPSRG',
       'JEEPSRG',
       'JEEPSRG',
-      'PLATFRM',
+      'PLATWHE',
       'PFMAXLE',
       'PFMAXLE',
       'PFMAXLE',
