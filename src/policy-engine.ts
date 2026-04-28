@@ -30,6 +30,8 @@ import { ValidationResult } from './validation-result';
 import { addRuntimeFacts } from './helper/facts.helper';
 import {
   AccessoryVehicleType,
+  PolicyCheckId,
+  PolicyCheckResultType,
   ValidationResultType,
   ValidationResultCode,
   VehicleTypes,
@@ -56,7 +58,10 @@ import {
   getDefaultTrailerWeightHelper,
 } from './helper/dimensions.helper';
 import { getVehicleDisplayCodeHelper } from './helper/display-code-helper';
-import { policyCheckMap } from './helper/policy-check.helper';
+import {
+  CheckNumberOfAxles,
+  policyCheckMap,
+} from './helper/policy-check.helper';
 
 /** Class representing commercial vehicle policy. */
 export class Policy {
@@ -969,11 +974,6 @@ export class Policy {
     licensedGVW: number,
   ): AxleCalcResults {
     const axleCalcResults: AxleCalcResults = { results: [], totalOverload: 0 };
-    for (const [, func] of policyCheckMap) {
-      axleCalcResults.results.push(
-        ...func(this, vehicleConfiguration, axleConfiguration),
-      );
-    }
     const gvcw = axleConfiguration.reduce(
       (w, curr) => w + curr.axleUnitWeight,
       0,
@@ -982,6 +982,27 @@ export class Policy {
       axleCalcResults.totalOverload,
       gvcw - licensedGVW,
     );
+
+    const axleCountResults = CheckNumberOfAxles(
+      this,
+      vehicleConfiguration,
+      axleConfiguration,
+    );
+    axleCalcResults.results.push(...axleCountResults);
+
+    if (axleCountResults.some((r) => r.result === PolicyCheckResultType.Fail)) {
+      return axleCalcResults;
+    }
+
+    for (const [policyCheckId, policyCheck] of policyCheckMap) {
+      if (policyCheckId === PolicyCheckId.NumberOfAxles) {
+        continue;
+      }
+
+      axleCalcResults.results.push(
+        ...policyCheck(this, vehicleConfiguration, axleConfiguration),
+      );
+    }
     return axleCalcResults;
   }
 
