@@ -9,5 +9,6 @@ export enum PolicyCheckId {
   MaxTireLoad = 'max-tire-load',
   MinDriveAxleWeight = 'minimum-drive-axle-weight',
   MinSteerAxleWeight = 'minimum-steer-axle-weight',
+  NumberOfAxles = 'number-of-axles',
   NumberOfWheelsPerAxle = 'number-of-wheels',
 }

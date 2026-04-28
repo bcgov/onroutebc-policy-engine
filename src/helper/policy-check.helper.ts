@@ -29,6 +29,54 @@ type PolicyCheck = (
 ) => Array<PolicyCheckResult>;
 
 /**
+ * Validates the number of axles in each axle unit.
+ *
+ * Axle unit counts must be whole numbers from 1 to 3. This check runs before
+ * the other axle policy checks because bridge and weight calculations assume a
+ * valid axle count.
+ *
+ * @param _policy - The policy instance (unused in this check, but required by PolicyCheck type)
+ * @param _vehicleConfiguration - Vehicle configuration (unused in this check, but required by PolicyCheck type)
+ * @param axleConfiguration - Array of axle configurations containing axle count information
+ * @returns Array of AxleUnitPolicyCheckResult objects, one for each axle unit tested
+ */
+export function CheckNumberOfAxles(
+  _policy: Policy,
+  _vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+): Array<PolicyCheckResult> {
+  const policyCheckResults = new Array<AxleUnitPolicyCheckResult>();
+  const policyId = PolicyCheckId.NumberOfAxles;
+
+  axleConfiguration.forEach((ac, i) => {
+    const axleUnit = i + 1;
+    const numberOfAxles = ac.numberOfAxles;
+    const validNumber =
+      Number.isFinite(numberOfAxles) && Number.isInteger(numberOfAxles);
+
+    let result = PolicyCheckResultType.Pass;
+    let message = `No. of Axles for Axle Unit ${axleUnit} is permittable.`;
+
+    if (!validNumber || numberOfAxles < 1) {
+      result = PolicyCheckResultType.Fail;
+      message = `No. of Axles for Axle Unit ${axleUnit} cannot be 0.`;
+    } else if (numberOfAxles > 3) {
+      result = PolicyCheckResultType.Fail;
+      message = `No. of Axles for Axle Unit ${axleUnit} is not permittable.`;
+    }
+
+    policyCheckResults.push({
+      id: policyId,
+      message,
+      result,
+      axleUnit,
+    });
+  });
+
+  return policyCheckResults;
+}
+
+/**
  * Performs bridge formula calculations on axle groups and returns policy check results.
  *
  * This function calculates the bridge formula for each axle group in the vehicle configuration
@@ -549,6 +597,7 @@ export function CheckMaxTireLoad(
  * - MaxTireLoad: Validates tire load capacity for each axle unit
  * - MinDriveAxleWeight: Validates minimum weight requirements for drive axles
  * - MinSteerAxleWeight: Validates minimum weight requirements for steer axles
+ * - NumberOfAxles: Validates axle count per axle unit
  * - NumberOfWheelsPerAxle: Validates tire count per axle unit
  *
  * @see PolicyCheck
@@ -556,6 +605,7 @@ export function CheckMaxTireLoad(
  * @see runAxleCalculation
  */
 export const policyCheckMap = new Map<string, PolicyCheck>([
+  [PolicyCheckId.NumberOfAxles, CheckNumberOfAxles],
   [PolicyCheckId.BridgeFormula, CheckBridgeFormula],
   [PolicyCheckId.CheckPermittableWeight, CheckPermittableWeight],
   [PolicyCheckId.MaxTireLoad, CheckMaxTireLoad],

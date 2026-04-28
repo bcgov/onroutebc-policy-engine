@@ -2,7 +2,11 @@ import { Policy } from '../../policy-engine';
 import currentPolicyConfig from '../policy-config/_current-config.json';
 import testStow from '../permit-app/test-stow.json';
 import { PolicyCheckId, PolicyCheckResultType } from '../../enum';
-import { AxleConfiguration } from '../../types';
+import {
+  AxleCalcResults,
+  AxleConfiguration,
+  AxleUnitPolicyCheckResult,
+} from '../../types';
 
 describe('Axle Calculation Functions', () => {
   const policy: Policy = new Policy(currentPolicyConfig);
@@ -40,6 +44,107 @@ describe('Axle Calculation Functions', () => {
     expect(
       numTiresResults.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(false);
+  });
+
+  it('should fail policy check when an axle unit has zero axles', async () => {
+    const ac = JSON.parse(
+      JSON.stringify(axleConfiguration),
+    ) as Array<AxleConfiguration>;
+    ac[1].numberOfAxles = 0;
+
+    let results: AxleCalcResults | undefined;
+    expect(() => {
+      results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    }).not.toThrow();
+    const numberOfAxlesResult = results?.results.find(
+      (r) =>
+        r.id === PolicyCheckId.NumberOfAxles &&
+        r.result === PolicyCheckResultType.Fail,
+    );
+
+    expect(numberOfAxlesResult).toMatchObject({
+      axleUnit: 2,
+      message: 'No. of Axles for Axle Unit 2 cannot be 0.',
+    });
+  });
+
+  it('should fail policy check when an axle unit has negative axles', async () => {
+    const ac = JSON.parse(
+      JSON.stringify(axleConfiguration),
+    ) as Array<AxleConfiguration>;
+    ac[1].numberOfAxles = -1;
+
+    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const numberOfAxlesResult = results.results.find(
+      (r) =>
+        r.id === PolicyCheckId.NumberOfAxles &&
+        r.result === PolicyCheckResultType.Fail,
+    );
+
+    expect(numberOfAxlesResult).toMatchObject({
+      axleUnit: 2,
+      message: 'No. of Axles for Axle Unit 2 cannot be 0.',
+    });
+  });
+
+  it('should fail policy check when an axle unit has four axles', async () => {
+    const ac = JSON.parse(
+      JSON.stringify(axleConfiguration),
+    ) as Array<AxleConfiguration>;
+    ac[1].numberOfAxles = 4;
+
+    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const numberOfAxlesResult = results.results.find(
+      (r) =>
+        r.id === PolicyCheckId.NumberOfAxles &&
+        r.result === PolicyCheckResultType.Fail,
+    );
+
+    expect(numberOfAxlesResult).toMatchObject({
+      axleUnit: 2,
+      message: 'No. of Axles for Axle Unit 2 is not permittable.',
+    });
+  });
+
+  it('should fail policy check when an axle unit exceeds maximum axles', async () => {
+    const ac = JSON.parse(
+      JSON.stringify(axleConfiguration),
+    ) as Array<AxleConfiguration>;
+    ac[1].numberOfAxles = 5;
+
+    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const numberOfAxlesResult = results.results.find(
+      (r) =>
+        r.id === PolicyCheckId.NumberOfAxles &&
+        r.result === PolicyCheckResultType.Fail,
+    );
+
+    expect(numberOfAxlesResult).toMatchObject({
+      axleUnit: 2,
+      message: 'No. of Axles for Axle Unit 2 is not permittable.',
+    });
+  });
+
+  it('should pass policy check when an axle unit has three axles', async () => {
+    const ac = JSON.parse(
+      JSON.stringify(axleConfiguration),
+    ) as Array<AxleConfiguration>;
+    ac[1].numberOfAxles = 3;
+    ac[1].numberOfTires = 12;
+
+    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const numberOfAxlesResult = results.results.find((r) => {
+      const axleUnitResult = r as AxleUnitPolicyCheckResult;
+      return (
+        axleUnitResult.id === PolicyCheckId.NumberOfAxles &&
+        axleUnitResult.axleUnit === 2
+      );
+    });
+
+    expect(numberOfAxlesResult).toMatchObject({
+      result: PolicyCheckResultType.Pass,
+      axleUnit: 2,
+    });
   });
 
   it('should fail policy check for failed bridge calculation', async () => {
