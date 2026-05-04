@@ -82,4 +82,53 @@ describe('STOW regression surface', () => {
       ),
     ).not.toContain('BOOSTER');
   });
+
+  it.each([
+    // xls row: 17, Empty / Picker Truck Tractors / Jeep
+    { commodityId: 'EMPTYXX', powerUnitId: 'PICKRTT' },
+    // xls row: 29, Non-Reducible Loads / Picker Truck Tractors / Jeep
+    { commodityId: 'NONREDU', powerUnitId: 'PICKRTT' },
+    // xls row: 42, None / Picker Truck Tractors / Jeep
+    { commodityId: 'XXXXXXX', powerUnitId: 'PICKRTT' },
+    // xls row: 50, Bridge Beams / Truck Tractors / Jeep
+    { commodityId: 'BRGBEAM', powerUnitId: 'TRKTRAC' },
+    // xls row: 54, Empty / Truck Tractors / Jeep
+    { commodityId: 'EMPTYXX', powerUnitId: 'TRKTRAC' },
+    // xls row: 71, Fixed Equipment / Truck Tractors / Jeep
+    { commodityId: 'FIXEDEQ', powerUnitId: 'TRKTRAC' },
+    // xls row: 74, Intermodal Containers without Sides / Truck Tractors / Jeep
+    { commodityId: 'IMCONWS', powerUnitId: 'TRKTRAC' },
+    // xls row: 77, Laminated Beams / Truck Tractors / Jeep
+    { commodityId: 'LAMBEAM', powerUnitId: 'TRKTRAC' },
+    // xls row: 82, Manufactured Homes, Modular Buildings, Structures and Houseboats (> 5.0 m OAW) / Truck Tractors / Jeep
+    { commodityId: 'MFHOMEL', powerUnitId: 'TRKTRAC' },
+    // xls row: 86, Non-Reducible Loads / Truck Tractors / Jeep
+    { commodityId: 'NONREDU', powerUnitId: 'TRKTRAC' },
+    // xls row: 105, None / Truck Tractors / Jeep
+    { commodityId: 'XXXXXXX', powerUnitId: 'TRKTRAC' },
+    // xls row: 110, Oil Field Equipment / Truck Tractors / Jeep
+    { commodityId: 'OILFILD', powerUnitId: 'TRKTRAC' },
+    // xls row: 113, Reducible Loads / Truck Tractors / Jeep
+    { commodityId: 'REDUCBL', powerUnitId: 'TRKTRAC' },
+    // xls row: 121, Scrapers on Dollies / Truck Tractors / Jeep
+    { commodityId: 'SCRAPER', powerUnitId: 'TRKTRAC' },
+  ])(
+    'should treat Jeep as a valid STOW trailer option for $commodityId / $powerUnitId',
+    ({ commodityId, powerUnitId }) => {
+    expect(
+      Array.from(
+        policy
+          .getNextPermittableVehicles('STOW', commodityId, [powerUnitId])
+          .keys(),
+      ),
+    ).toContain('JEEPSRG');
+
+    expect(
+      policy.isConfigurationValid('STOW', commodityId, [
+        powerUnitId,
+        'JEEPSRG',
+      ]),
+    ).toBe(true);
+    },
+  );
 });
