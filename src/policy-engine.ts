@@ -16,6 +16,8 @@ import {
   StandardTireSize,
   TrailerDimensions,
   AxleCalcResults,
+  AxleGroupPolicyCheckResult,
+  PolicyCheckResult,
   PermitVehicleDetails,
   VehicleConfiguration,
 } from 'onroute-policy-engine/types';
@@ -974,6 +976,30 @@ export class Policy {
     licensedGVW: number,
   ): AxleCalcResults {
     const axleCalcResults: AxleCalcResults = { results: [], totalOverload: 0 };
+
+    // This is a little helper closure that just converts any PolicyCheckResult into an AxleGroupPolicyCheckResult,
+    // basically giving us startAxleUnit and endAxleUnit, which can help with frontend form highlighting.
+    const toAxleGroupPolicyCheckResult = (
+      result: PolicyCheckResult,
+    ): AxleGroupPolicyCheckResult => {
+      if ('startAxleUnit' in result && 'endAxleUnit' in result) {
+        return result as AxleGroupPolicyCheckResult;
+      }
+
+      if ('axleUnit' in result && typeof result.axleUnit === 'number') {
+        return {
+          ...result,
+          startAxleUnit: result.axleUnit,
+          endAxleUnit: result.axleUnit,
+        };
+      }
+
+      return {
+        ...result,
+        startAxleUnit: 1,
+        endAxleUnit: axleConfiguration.length,
+      };
+    };
     const gvcw = axleConfiguration.reduce(
       (w, curr) => w + curr.axleUnitWeight,
       0,
@@ -988,7 +1014,9 @@ export class Policy {
       vehicleConfiguration,
       axleConfiguration,
     );
-    axleCalcResults.results.push(...axleCountResults);
+    axleCalcResults.results.push(
+      ...axleCountResults.map(toAxleGroupPolicyCheckResult),
+    );
 
     if (axleCountResults.some((r) => r.result === PolicyCheckResultType.Fail)) {
       return axleCalcResults;
@@ -1000,7 +1028,9 @@ export class Policy {
       }
 
       axleCalcResults.results.push(
-        ...policyCheck(this, vehicleConfiguration, axleConfiguration),
+        ...policyCheck(this, vehicleConfiguration, axleConfiguration).map(
+          toAxleGroupPolicyCheckResult,
+        ),
       );
     }
     return axleCalcResults;
