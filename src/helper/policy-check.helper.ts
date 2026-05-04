@@ -38,14 +38,14 @@ type PolicyCheck = (
  * @param _policy - The policy instance (unused in this check, but required by PolicyCheck type)
  * @param _vehicleConfiguration - Vehicle configuration (unused in this check, but required by PolicyCheck type)
  * @param axleConfiguration - Array of axle configurations containing axle count information
- * @returns Array of AxleUnitPolicyCheckResult objects, one for each axle unit tested
+ * @returns Array of AxleGroupPolicyCheckResult objects, one for each axle unit tested
  */
 export function CheckNumberOfAxles(
   _policy: Policy,
   _vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
-): Array<PolicyCheckResult> {
-  const policyCheckResults = new Array<AxleUnitPolicyCheckResult>();
+): Array<AxleGroupPolicyCheckResult> {
+  const policyCheckResults = new Array<AxleGroupPolicyCheckResult>();
   const policyId = PolicyCheckId.NumberOfAxles;
 
   axleConfiguration.forEach((ac, i) => {
@@ -69,7 +69,8 @@ export function CheckNumberOfAxles(
       id: policyId,
       message,
       result,
-      axleUnit,
+      startAxleUnit: axleUnit,
+      endAxleUnit: axleUnit,
     });
   });
 

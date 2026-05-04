@@ -11,8 +11,8 @@ import { PolicyCheckResultType } from 'onroute-policy-engine/enum';
  * Complete results from axle calculations including all policy checks and total overload
  */
 export type AxleCalcResults = {
-  /** Array of individual policy check results */
-  results: Array<PolicyCheckResult>;
+  /** Array of individual axle group policy check results */
+  results: Array<AxleGroupPolicyCheckResult>;
   /** Total weight overload across all axles in kilograms */
   totalOverload: number;
 };

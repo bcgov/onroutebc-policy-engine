@@ -5,7 +5,7 @@ import { PolicyCheckId, PolicyCheckResultType } from '../../enum';
 import {
   AxleCalcResults,
   AxleConfiguration,
-  AxleUnitPolicyCheckResult,
+  AxleGroupPolicyCheckResult,
 } from '../../types';
 
 describe('Axle Calculation Functions', () => {
@@ -46,6 +46,24 @@ describe('Axle Calculation Functions', () => {
     ).toBe(false);
   });
 
+  it('should return axle group policy check results from axle calculation', async () => {
+    const ac = JSON.parse(
+      JSON.stringify(axleConfiguration),
+    ) as Array<AxleConfiguration>;
+    ac[0].numberOfTires = 3;
+
+    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const numTiresResult = results.results.find(
+      (r) => r.id === PolicyCheckId.NumberOfWheelsPerAxle,
+    );
+
+    expect(numTiresResult).toMatchObject({
+      result: PolicyCheckResultType.Fail,
+      startAxleUnit: 1,
+      endAxleUnit: 1,
+    });
+  });
+
   it('should fail policy check when an axle unit has zero axles', async () => {
     const ac = JSON.parse(
       JSON.stringify(axleConfiguration),
@@ -63,7 +81,8 @@ describe('Axle Calculation Functions', () => {
     );
 
     expect(numberOfAxlesResult).toMatchObject({
-      axleUnit: 2,
+      startAxleUnit: 2,
+      endAxleUnit: 2,
       message: 'No. of Axles for Axle Unit 2 cannot be 0.',
     });
   });
@@ -82,7 +101,8 @@ describe('Axle Calculation Functions', () => {
     );
 
     expect(numberOfAxlesResult).toMatchObject({
-      axleUnit: 2,
+      startAxleUnit: 2,
+      endAxleUnit: 2,
       message: 'No. of Axles for Axle Unit 2 cannot be 0.',
     });
   });
@@ -101,7 +121,8 @@ describe('Axle Calculation Functions', () => {
     );
 
     expect(numberOfAxlesResult).toMatchObject({
-      axleUnit: 2,
+      startAxleUnit: 2,
+      endAxleUnit: 2,
       message: 'No. of Axles for Axle Unit 2 is not permittable.',
     });
   });
@@ -120,8 +141,59 @@ describe('Axle Calculation Functions', () => {
     );
 
     expect(numberOfAxlesResult).toMatchObject({
-      axleUnit: 2,
+      startAxleUnit: 2,
+      endAxleUnit: 2,
       message: 'No. of Axles for Axle Unit 2 is not permittable.',
+    });
+  });
+
+  it('should return axle group results when an axle unit exceeds maximum axles', async () => {
+    const ac = JSON.parse(
+      JSON.stringify(axleConfiguration),
+    ) as Array<AxleConfiguration>;
+    ac[1].numberOfAxles = 5;
+
+    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+
+    expect(results).toMatchObject({
+      totalOverload: 57700,
+      results: [
+        {
+          id: PolicyCheckId.NumberOfAxles,
+          result: PolicyCheckResultType.Pass,
+          message: 'No. of Axles for Axle Unit 1 is permittable.',
+          startAxleUnit: 1,
+          endAxleUnit: 1,
+        },
+        {
+          id: PolicyCheckId.NumberOfAxles,
+          result: PolicyCheckResultType.Fail,
+          message: 'No. of Axles for Axle Unit 2 is not permittable.',
+          startAxleUnit: 2,
+          endAxleUnit: 2,
+        },
+        {
+          id: PolicyCheckId.NumberOfAxles,
+          result: PolicyCheckResultType.Pass,
+          message: 'No. of Axles for Axle Unit 3 is permittable.',
+          startAxleUnit: 3,
+          endAxleUnit: 3,
+        },
+        {
+          id: PolicyCheckId.NumberOfAxles,
+          result: PolicyCheckResultType.Pass,
+          message: 'No. of Axles for Axle Unit 4 is permittable.',
+          startAxleUnit: 4,
+          endAxleUnit: 4,
+        },
+        {
+          id: PolicyCheckId.NumberOfAxles,
+          result: PolicyCheckResultType.Pass,
+          message: 'No. of Axles for Axle Unit 5 is permittable.',
+          startAxleUnit: 5,
+          endAxleUnit: 5,
+        },
+      ],
     });
   });
 
@@ -134,16 +206,18 @@ describe('Axle Calculation Functions', () => {
 
     const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
     const numberOfAxlesResult = results.results.find((r) => {
-      const axleUnitResult = r as AxleUnitPolicyCheckResult;
+      const axleGroupResult = r as AxleGroupPolicyCheckResult;
       return (
-        axleUnitResult.id === PolicyCheckId.NumberOfAxles &&
-        axleUnitResult.axleUnit === 2
+        axleGroupResult.id === PolicyCheckId.NumberOfAxles &&
+        axleGroupResult.startAxleUnit === 2 &&
+        axleGroupResult.endAxleUnit === 2
       );
     });
 
     expect(numberOfAxlesResult).toMatchObject({
       result: PolicyCheckResultType.Pass,
-      axleUnit: 2,
+      startAxleUnit: 2,
+      endAxleUnit: 2,
     });
   });
 
