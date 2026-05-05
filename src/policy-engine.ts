@@ -702,6 +702,7 @@ export class Policy {
 
     let jeepAllowed: boolean = true;
     let trailerAllowed: boolean = true;
+    let directJeepFinalAllowed: boolean = false;
     let boosterAllowed: boolean = false;
     const powerUnitType = this.getPowerUnitDefinition(powerUnit?.type);
     let additionalAxleType: string = powerUnitType?.additionalAxleSubType || '';
@@ -712,6 +713,9 @@ export class Policy {
           if (!jeepAllowed) {
             return false;
           }
+          const directJeepPermittable = trailerIds.includes(
+            AccessoryVehicleType.Jeep,
+          );
           // Filter allowed trailers to only those that allow jeeps
           trailerIds =
             powerUnit?.trailers
@@ -719,10 +723,13 @@ export class Policy {
               .filter((t) => t.jeep)
               .map((t) => t.type) || [];
 
-          if (trailerIds.length === 0) {
+          if (!directJeepPermittable && trailerIds.length === 0) {
             // The configuration has a jeep, but no trailers allow jeeps
             // for this power unit and commodity. Return false.
             return false;
+          }
+          if (directJeepPermittable) {
+            directJeepFinalAllowed = true;
           }
           additionalAxleType = '';
           break;
@@ -771,7 +778,7 @@ export class Policy {
     // We are still here, so configuration is valid. If there is a trailer
     // it is a valid final configuration, otherwise it is a valid partial
     // configuration.
-    return !trailerAllowed || validatePartial;
+    return !trailerAllowed || directJeepFinalAllowed || validatePartial;
   }
 
   /**

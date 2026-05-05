@@ -3944,6 +3944,13 @@
           "type": "TRKTRAC",
           "trailers": [
             {
+              "type": "JEEPSRG",
+              "jeep": false,
+              "booster": false,
+              "selfIssue": true,
+              "weightPermittable": true
+            },
+            {
               "type": "FEDRMMX",
               "jeep": true,
               "booster": true,
@@ -4644,6 +4651,13 @@
         {
           "type": "PICKRTT",
           "trailers": [
+            {
+              "type": "JEEPSRG",
+              "jeep": false,
+              "booster": false,
+              "selfIssue": true,
+              "weightPermittable": true
+            },
             {
               "type": "XXXXXXX",
               "jeep": false,
