@@ -16,7 +16,6 @@ import {
   StandardTireSize,
   TrailerDimensions,
   AxleCalcResults,
-  AxleCalculationOptions,
   AxleGroupPolicyCheckResult,
   PolicyCheckResult,
   PermitVehicleDetails,
@@ -975,7 +974,6 @@ export class Policy {
     vehicleConfiguration: Array<string>,
     axleConfiguration: Array<AxleConfiguration>,
     licensedGVW: number,
-    options?: AxleCalculationOptions,
   ): AxleCalcResults {
     const axleCalcResults: AxleCalcResults = { results: [], totalOverload: 0 };
 
@@ -1030,12 +1028,9 @@ export class Policy {
       }
 
       axleCalcResults.results.push(
-        ...policyCheck(
-          this,
-          vehicleConfiguration,
-          axleConfiguration,
-          options,
-        ).map(toAxleGroupPolicyCheckResult),
+        ...policyCheck(this, vehicleConfiguration, axleConfiguration).map(
+          toAxleGroupPolicyCheckResult,
+        ),
       );
     }
     return axleCalcResults;
@@ -1164,7 +1159,6 @@ export class Policy {
     configuration: Array<string>,
     axleConfiguration: Array<AxleConfiguration>,
     axleIndex: number,
-    options?: AxleCalculationOptions,
   ): SingleAxleDimension | null {
     return selectCorrectWeightDimensionHelper(
       this,
@@ -1172,7 +1166,6 @@ export class Policy {
       configuration,
       axleConfiguration,
       axleIndex,
-      options,
     );
   }
 

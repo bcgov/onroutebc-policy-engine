@@ -1,6 +1,5 @@
 export {
   AxleCalcResults,
-  AxleCalculationOptions,
   PolicyCheckResult,
   AxleUnitPolicyCheckResult,
   AxleGroupPolicyCheckResult,

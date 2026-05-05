@@ -12,12 +12,8 @@ describe('Multi-Axle Unit Calculation Tests', () => {
     numberOfTires: 2,
     tireSize: 279,
   };
-  const axleCalculationOptions = {
-    permitTypeId: 'STOW',
-    commodityId: 'XXXXXXX',
-  };
 
-  it('should pass when a power unit is configured with three axle units', async () => {
+  it('should pass when a power unit is explicitly configured with three axle units', () => {
     const results = policy.runAxleCalculation(
       ['CONCRET'],
       [
@@ -26,12 +22,12 @@ describe('Multi-Axle Unit Calculation Tests', () => {
           axleUnitWeight: 5000,
           numberOfTires: 2,
           tireSize: 279,
+          vehicleIndex: 0,
         },
-        { ...axleUnit },
-        { ...axleUnit },
+        { ...axleUnit, vehicleIndex: 0 },
+        { ...axleUnit, vehicleIndex: 0 },
       ],
       15000,
-      axleCalculationOptions,
     );
 
     expect(results.totalOverload).toBe(0);
@@ -40,7 +36,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
     ).toBe(true);
   });
 
-  it('should pass when a trailer configuration has an extra axle unit', async () => {
+  it('should pass when a trailer is explicitly configured with an extra axle unit', () => {
     const results = policy.runAxleCalculation(
       ['TRKTRAC', 'STROPRT'],
       [
@@ -49,13 +45,13 @@ describe('Multi-Axle Unit Calculation Tests', () => {
           axleUnitWeight: 5000,
           numberOfTires: 2,
           tireSize: 279,
+          vehicleIndex: 0,
         },
-        { ...axleUnit },
-        { ...axleUnit },
-        { ...axleUnit },
+        { ...axleUnit, vehicleIndex: 0 },
+        { ...axleUnit, vehicleIndex: 1 },
+        { ...axleUnit, vehicleIndex: 1 },
       ],
       20000,
-      axleCalculationOptions,
     );
 
     expect(results.totalOverload).toBe(0);
@@ -64,28 +60,246 @@ describe('Multi-Axle Unit Calculation Tests', () => {
     ).toBe(true);
   });
 
-  it('should pass when trailer and booster configuration has four axle units', async () => {
+  it('should pass when explicit vehicleIndex disambiguates multiple trailer axle units', () => {
     const results = policy.runAxleCalculation(
-      ['TRKTRAC', 'STROPRT', 'BOOSTER'],
+      ['TRKTRAC', 'STROPRT', 'STRSELF'],
       [
         {
           numberOfAxles: 1,
           axleUnitWeight: 5000,
           numberOfTires: 2,
           tireSize: 279,
+          vehicleIndex: 0,
         },
-        { ...axleUnit },
-        { ...axleUnit },
-        { ...axleUnit },
+        { ...axleUnit, vehicleIndex: 0 },
+        { ...axleUnit, vehicleIndex: 1 },
+        { ...axleUnit, vehicleIndex: 2 },
+        { ...axleUnit, vehicleIndex: 2 },
       ],
-      20000,
-      axleCalculationOptions,
+      25000,
     );
 
     expect(results.totalOverload).toBe(0);
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(true);
+  });
+
+  it('should pass for a crane mounted boom with dollies', () => {
+    const results = policy.runAxleCalculation(
+      ['CRANEMB', 'DOLLIES'],
+      [
+        {
+          numberOfAxles: 1,
+          interaxleSpacing: 200,
+          axleUnitWeight: 5000,
+          numberOfTires: 2,
+          tireSize: 279,
+          vehicleIndex: 0,
+        },
+        {
+          numberOfAxles: 1,
+          interaxleSpacing: 200,
+          axleUnitWeight: 5000,
+          numberOfTires: 2,
+          tireSize: 279,
+          vehicleIndex: 0,
+        },
+        {
+          numberOfAxles: 1,
+          interaxleSpacing: 200,
+          axleUnitWeight: 5000,
+          numberOfTires: 2,
+          tireSize: 279,
+          vehicleIndex: 1,
+        },
+      ],
+      15000,
+    );
+
+    expect(results.totalOverload).toBe(0);
+    expect(
+      results.results.every((r) => r.result === PolicyCheckResultType.Pass),
+    ).toBe(true);
+  });
+
+  it('should pass for a pickup truck tractor with a platform wheel trailer', () => {
+    const results = policy.runAxleCalculation(
+      ['PICKRTT', 'PLATWHE'],
+      [
+        {
+          numberOfAxles: 1,
+          interaxleSpacing: 200,
+          axleUnitWeight: 5000,
+          numberOfTires: 2,
+          tireSize: 279,
+          vehicleIndex: 0,
+        },
+        {
+          numberOfAxles: 2,
+          axleSpread: 160,
+          interaxleSpacing: 200,
+          axleUnitWeight: 5000,
+          numberOfTires: 4,
+          tireSize: 279,
+          vehicleIndex: 0,
+        },
+        {
+          numberOfAxles: 2,
+          axleSpread: 160,
+          interaxleSpacing: 200,
+          axleUnitWeight: 5000,
+          numberOfTires: 4,
+          tireSize: 279,
+          vehicleIndex: 1,
+        },
+      ],
+      15000,
+    );
+
+    expect(results.totalOverload).toBe(0);
+    expect(
+      results.results.every((r) => r.result === PolicyCheckResultType.Pass),
+    ).toBe(true);
+  });
+
+  it('should pass for an oilfield bed truck with jeep, trailer, and booster', () => {
+    const results = policy.runAxleCalculation(
+      ['OGBEDTK', 'JEEPSRG', 'FEDRMMX', 'BOOSTER'],
+      [
+        {
+          numberOfAxles: 1,
+          interaxleSpacing: 200,
+          axleUnitWeight: 5000,
+          numberOfTires: 2,
+          tireSize: 279,
+          vehicleIndex: 0,
+        },
+        {
+          numberOfAxles: 2,
+          axleSpread: 160,
+          interaxleSpacing: 200,
+          axleUnitWeight: 5000,
+          numberOfTires: 4,
+          tireSize: 279,
+          vehicleIndex: 0,
+        },
+        {
+          numberOfAxles: 3,
+          axleSpread: 160,
+          interaxleSpacing: 200,
+          axleUnitWeight: 5000,
+          numberOfTires: 12,
+          tireSize: 279,
+          vehicleIndex: 1,
+        },
+        {
+          numberOfAxles: 3,
+          axleSpread: 160,
+          interaxleSpacing: 200,
+          axleUnitWeight: 5000,
+          numberOfTires: 12,
+          tireSize: 279,
+          vehicleIndex: 2,
+        },
+        {
+          numberOfAxles: 3,
+          axleSpread: 160,
+          interaxleSpacing: 200,
+          axleUnitWeight: 5000,
+          numberOfTires: 12,
+          tireSize: 279,
+          vehicleIndex: 3,
+        },
+      ],
+      25000,
+    );
+
+    expect(results.totalOverload).toBe(0);
+    expect(
+      results.results.every((r) => r.result === PolicyCheckResultType.Pass),
+    ).toBe(true);
+  });
+
+  it('should reject multi-axle calculation without vehicleIndex instead of guessing ownership', () => {
+    expect(() =>
+      policy.runAxleCalculation(
+        ['CONCRET'],
+        [
+          {
+            numberOfAxles: 1,
+            axleUnitWeight: 5000,
+            numberOfTires: 2,
+            tireSize: 279,
+          },
+          { ...axleUnit },
+          { ...axleUnit },
+        ],
+        15000,
+      ),
+    ).toThrow('Wrong number of axles configured for vehicle configuration');
+  });
+
+  it('should reject partially supplied vehicleIndex values from runAxleCalculation', () => {
+    expect(() =>
+      policy.runAxleCalculation(
+        ['TRKTRAC', 'STROPRT'],
+        [
+          {
+            numberOfAxles: 1,
+            axleUnitWeight: 5000,
+            numberOfTires: 2,
+            tireSize: 279,
+            vehicleIndex: 0,
+          },
+          { ...axleUnit, vehicleIndex: 0 },
+          { ...axleUnit },
+          { ...axleUnit, vehicleIndex: 1 },
+        ],
+        20000,
+      ),
+    ).toThrow('All axle units must include vehicleIndex');
+  });
+
+  it('should reject vehicleIndex values that contradict steer and drive axle ownership', () => {
+    expect(() =>
+      policy.runAxleCalculation(
+        ['TRKTRAC', 'STROPRT'],
+        [
+          {
+            numberOfAxles: 1,
+            axleUnitWeight: 5000,
+            numberOfTires: 2,
+            tireSize: 279,
+            vehicleIndex: 0,
+          },
+          { ...axleUnit, vehicleIndex: 1 },
+          { ...axleUnit, vehicleIndex: 1 },
+        ],
+        15000,
+      ),
+    ).toThrow('First two axle units must belong to the power unit');
+  });
+
+  it('should reject vehicleIndex values that point backward in physical axle order', () => {
+    expect(() =>
+      policy.runAxleCalculation(
+        ['TRKTRAC', 'STROPRT'],
+        [
+          {
+            numberOfAxles: 1,
+            axleUnitWeight: 5000,
+            numberOfTires: 2,
+            tireSize: 279,
+            vehicleIndex: 0,
+          },
+          { ...axleUnit, vehicleIndex: 0 },
+          { ...axleUnit, vehicleIndex: 1 },
+          { ...axleUnit, vehicleIndex: 0 },
+        ],
+        20000,
+      ),
+    ).toThrow('Axle unit vehicleIndex values must be in vehicle order');
   });
 });
 
@@ -98,170 +312,137 @@ describe('Multi-Axle Unit Vehicle Mapping Tests', () => {
     numberOfTires: 2,
     tireSize: 279,
   };
-  const axleCalculationOptions = {
-    permitTypeId: 'STOW',
-    commodityId: 'XXXXXXX',
-  };
 
-  it('should map legacy configurations to two power unit axle units and one trailer axle unit', () => {
+  it('should map explicit vehicleIndex values for additional power unit axle units', () => {
     const axleConfiguration = [
-      { ...axleUnit },
-      { ...axleUnit },
-      { ...axleUnit },
-    ];
-
-    const axleUnitVehicleIndexes = getAxleUnitVehicleIndexes(
-      policy,
-      ['TRKTRAC', 'SEMITRL'],
-      axleConfiguration,
-    );
-
-    expect(axleUnitVehicleIndexes).toEqual([0, 0, 1]);
-  });
-
-  it('should assign surplus axle units to the power unit when only the power unit can add axle units', () => {
-    const axleConfiguration = [
-      { ...axleUnit },
-      { ...axleUnit },
-      { ...axleUnit },
+      { ...axleUnit, vehicleIndex: 0 },
+      { ...axleUnit, vehicleIndex: 0 },
+      { ...axleUnit, vehicleIndex: 0 },
     ];
 
     const axleUnitVehicleIndexes = getAxleUnitVehicleIndexes(
       policy,
       ['CONCRET'],
       axleConfiguration,
-      axleCalculationOptions,
     );
 
-    // This is not ambiguous: the configuration has no trailers, and CONCRET is
-    // configured to accept additional axle units. The surplus unit must belong
-    // to vehicleConfiguration[0].
     expect(axleUnitVehicleIndexes).toEqual([0, 0, 0]);
   });
 
-  it('should assign surplus axle units to the trailer when only the trailer can add axle units', () => {
+  it('should map explicit vehicleIndex values for additional trailer axle units', () => {
     const axleConfiguration = [
-      { ...axleUnit },
-      { ...axleUnit },
-      { ...axleUnit },
-      { ...axleUnit },
+      { ...axleUnit, vehicleIndex: 0 },
+      { ...axleUnit, vehicleIndex: 0 },
+      { ...axleUnit, vehicleIndex: 1 },
+      { ...axleUnit, vehicleIndex: 1 },
     ];
 
     const axleUnitVehicleIndexes = getAxleUnitVehicleIndexes(
       policy,
       ['TRKTRAC', 'STROPRT'],
       axleConfiguration,
-      axleCalculationOptions,
     );
 
-    // This is not ambiguous under current config: TRKTRAC cannot add axle units
-    // for STOW/XXXXXXX, while STROPRT can. The surplus unit is assigned to
-    // vehicleConfiguration[1].
     expect(axleUnitVehicleIndexes).toEqual([0, 0, 1, 1]);
   });
 
-  it('should document the current ambiguity when the power unit and trailer can both add axle units', () => {
+  it('should map explicit vehicleIndex values across multiple trailers', () => {
     const axleConfiguration = [
-      { ...axleUnit },
-      { ...axleUnit },
-      { ...axleUnit },
-      { ...axleUnit },
-    ];
-
-    const axleUnitVehicleIndexes = getAxleUnitVehicleIndexes(
-      policy,
-      ['CRANEAT', 'DOLLIES'],
-      axleConfiguration,
-      axleCalculationOptions,
-    );
-
-    // This is ambiguous: both CRANEAT and DOLLIES can add axle units for this
-    // commodity, and the axleConfiguration array does not tell us which vehicle
-    // the surplus axle unit belongs to. Current logic resolves this by assigning
-    // surplus axle units to the first eligible vehicle, so CRANEAT gets it:
-    // [0, 0, 0, 1].
-    //
-    // That could be wrong if the consuming application intended the extra axle
-    // unit to belong to DOLLIES instead: [0, 0, 1, 1]. A future API may need to
-    // accept explicit axle-unit ownership from the consuming application.
-    expect(axleUnitVehicleIndexes).toEqual([0, 0, 0, 1]);
-  });
-
-  it('should document ambiguity when multiple STOW/XXXXXXX trailers can both add axle units', () => {
-    const axleConfiguration = [
-      { ...axleUnit },
-      { ...axleUnit },
-      { ...axleUnit },
-      { ...axleUnit },
-      { ...axleUnit },
+      { ...axleUnit, vehicleIndex: 0 },
+      { ...axleUnit, vehicleIndex: 0 },
+      { ...axleUnit, vehicleIndex: 1 },
+      { ...axleUnit, vehicleIndex: 2 },
+      { ...axleUnit, vehicleIndex: 2 },
     ];
 
     const axleUnitVehicleIndexes = getAxleUnitVehicleIndexes(
       policy,
       ['TRKTRAC', 'STROPRT', 'STRSELF'],
       axleConfiguration,
-      axleCalculationOptions,
     );
 
-    // This is ambiguous: both STROPRT and STRSELF can add axle units for
-    // STOW/XXXXXXX. The axleConfiguration array only tells us there is one
-    // surplus axle unit; it does not tell us whether the user added it to
-    // STROPRT or STRSELF in the consuming application.
-    //
-    // Current logic assigns the surplus axle unit to the first eligible trailer:
-    // [0, 0, 1, 1, 2]. That could be wrong if the intended ownership was
-    // [0, 0, 1, 2, 2].
-    expect(axleUnitVehicleIndexes).toEqual([0, 0, 1, 1, 2]);
+    expect(axleUnitVehicleIndexes).toEqual([0, 0, 1, 2, 2]);
   });
 
-  it('should document ambiguity when multiple STOW/EMPTYXX trailers can both add axle units', () => {
+  it('should reject axle unit mapping without vehicleIndex instead of guessing ownership', () => {
     const axleConfiguration = [
-      { ...axleUnit },
       { ...axleUnit },
       { ...axleUnit },
       { ...axleUnit },
       { ...axleUnit },
     ];
 
-    const axleUnitVehicleIndexes = getAxleUnitVehicleIndexes(
-      policy,
-      ['TRKTRAC', 'PLATFRM', 'PLATWHE'],
-      axleConfiguration,
-      { permitTypeId: 'STOW', commodityId: 'EMPTYXX' },
-    );
-
-    // This is ambiguous for the same reason: PLATFRM and PLATWHE can both add
-    // axle units. Current logic maps the surplus unit to PLATFRM because it is
-    // the first eligible trailer: [0, 0, 1, 1, 2].
-    //
-    // If the consuming app intended the extra axle unit to belong to PLATWHE,
-    // the desired mapping would be [0, 0, 1, 2, 2].
-    expect(axleUnitVehicleIndexes).toEqual([0, 0, 1, 1, 2]);
+    expect(() =>
+      getAxleUnitVehicleIndexes(
+        policy,
+        ['CRANEAT', 'DOLLIES'],
+        axleConfiguration,
+      ),
+    ).toThrow('All axle units must include vehicleIndex');
   });
 
-  it('should document ambiguity when several STOW/NONREDU trailers can add axle units', () => {
+  it('should reject partially supplied vehicleIndex values', () => {
     const axleConfiguration = [
-      { ...axleUnit },
-      { ...axleUnit },
-      { ...axleUnit },
-      { ...axleUnit },
-      { ...axleUnit },
+      { ...axleUnit, vehicleIndex: 0 },
+      { ...axleUnit, vehicleIndex: 0 },
       { ...axleUnit },
     ];
 
-    const axleUnitVehicleIndexes = getAxleUnitVehicleIndexes(
-      policy,
-      ['TRKTRAC', 'PLATFRM', 'PLATWHE', 'STROPRT'],
-      axleConfiguration,
-      { permitTypeId: 'STOW', commodityId: 'NONREDU' },
-    );
+    expect(() =>
+      getAxleUnitVehicleIndexes(
+        policy,
+        ['TRKTRAC', 'SEMITRL'],
+        axleConfiguration,
+      ),
+    ).toThrow('All axle units must include vehicleIndex');
+  });
 
-    // This is even more ambiguous: PLATFRM, PLATWHE, and STROPRT can all add
-    // axle units for STOW/NONREDU. With one surplus axle unit, current logic
-    // assigns it to the first eligible trailer, PLATFRM: [0, 0, 1, 1, 2, 3].
-    //
-    // The same axleConfiguration length could also represent an extra axle on
-    // PLATWHE ([0, 0, 1, 2, 2, 3]) or STROPRT ([0, 0, 1, 2, 3, 3]).
-    expect(axleUnitVehicleIndexes).toEqual([0, 0, 1, 1, 2, 3]);
+  it('should reject invalid vehicleIndex values', () => {
+    const axleConfiguration = [
+      { ...axleUnit, vehicleIndex: 0 },
+      { ...axleUnit, vehicleIndex: 0 },
+      { ...axleUnit, vehicleIndex: 2 },
+    ];
+
+    expect(() =>
+      getAxleUnitVehicleIndexes(
+        policy,
+        ['TRKTRAC', 'SEMITRL'],
+        axleConfiguration,
+      ),
+    ).toThrow('Invalid vehicleIndex in axle configuration');
+  });
+
+  it('should reject vehicleIndex values that point backward in physical axle order', () => {
+    const axleConfiguration = [
+      { ...axleUnit, vehicleIndex: 0 },
+      { ...axleUnit, vehicleIndex: 0 },
+      { ...axleUnit, vehicleIndex: 2 },
+      { ...axleUnit, vehicleIndex: 1 },
+    ];
+
+    expect(() =>
+      getAxleUnitVehicleIndexes(
+        policy,
+        ['TRKTRAC', 'STROPRT', 'STRSELF'],
+        axleConfiguration,
+      ),
+    ).toThrow('Axle unit vehicleIndex values must be in vehicle order');
+  });
+
+  it('should reject mappings where the first two axle units are not power-unit-owned', () => {
+    const axleConfiguration = [
+      { ...axleUnit, vehicleIndex: 0 },
+      { ...axleUnit, vehicleIndex: 1 },
+      { ...axleUnit, vehicleIndex: 1 },
+    ];
+
+    expect(() =>
+      getAxleUnitVehicleIndexes(
+        policy,
+        ['TRKTRAC', 'SEMITRL'],
+        axleConfiguration,
+      ),
+    ).toThrow('First two axle units must belong to the power unit');
   });
 });

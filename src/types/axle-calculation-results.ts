@@ -18,16 +18,6 @@ export type AxleCalcResults = {
 };
 
 /**
- * Optional policy context for axle calculations that need commodity-specific configuration.
- */
-export type AxleCalculationOptions = {
-  /** Permit type ID used to resolve commodity-level vehicle configuration */
-  permitTypeId?: string;
-  /** Commodity ID used to resolve commodity-level vehicle configuration */
-  commodityId?: string;
-};
-
-/**
  * Individual policy check result for a specific validation rule
  */
 export type PolicyCheckResult = {

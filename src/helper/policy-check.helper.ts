@@ -1,10 +1,10 @@
 import {
-  AxleCalculationOptions,
   PolicyCheckResult,
   AxleConfiguration,
   AxleUnitPolicyCheckResult,
   AxleGroupPolicyCheckResult,
   WeightDimension,
+  SingleAxleDimension,
 } from 'onroute-policy-engine/types';
 import { Policy } from 'onroute-policy-engine';
 import { PolicyCheckId, PolicyCheckResultType } from '../enum';
@@ -27,7 +27,6 @@ type PolicyCheck = (
   policy: Policy,
   vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
-  options?: AxleCalculationOptions,
 ) => Array<PolicyCheckResult>;
 
 /**
@@ -201,9 +200,8 @@ export function CheckNumTiresPerAxle(
  * This function performs weight validation for each axle unit in a vehicle configuration.
  * It maps axle units to their owning vehicles, retrieves the default weight dimensions for
  * those vehicles based on vehicle type and axle count, then compares actual axle unit
- * weights against the permittable weight limits. The function supports the legacy mapping
- * of two power-unit axle units plus one axle unit per following vehicle, and can use
- * commodity-specific axle calculation options to support configured additional axle units.
+ * weights against the permittable weight limits. Additional axle units require explicit
+ * vehicleIndex values on the axle configuration so ownership is not inferred.
  *
  * @param policy - The policy instance containing weight dimension configurations and validation rules
  * @param vehicleConfiguration - Array of vehicle type identifiers representing the vehicle configuration.
@@ -211,7 +209,6 @@ export function CheckNumTiresPerAxle(
  * @param axleConfiguration - Array of axle configurations containing weight and axle count information.
  *                           For power units, this includes steer, drive, and any configured additional
  *                           axle units.
- * @param options - Optional permit and commodity context used to resolve configured additional axle units.
  * @returns Array of AxleUnitPolicyCheckResult objects, one for each axle unit tested.
  *          Each result indicates whether the axle unit's weight is within permittable limits.
  *
@@ -238,11 +235,10 @@ export function CheckNumTiresPerAxle(
  *   policy,
  *   ['CONCRET'],
  *   [
- *     { numberOfAxles: 1, axleUnitWeight: 5000 },
- *     { numberOfAxles: 1, axleUnitWeight: 5000 },
- *     { numberOfAxles: 1, axleUnitWeight: 5000 }
- *   ],
- *   { permitTypeId: 'STOW', commodityId: 'XXXXXXX' }
+ *     { numberOfAxles: 1, axleUnitWeight: 5000, vehicleIndex: 0 },
+ *     { numberOfAxles: 1, axleUnitWeight: 5000, vehicleIndex: 0 },
+ *     { numberOfAxles: 1, axleUnitWeight: 5000, vehicleIndex: 0 }
+ *   ]
  * );
  * // Returns results for all configured power-unit axle units.
  *
@@ -255,39 +251,104 @@ export function CheckPermittableWeight(
   policy: Policy,
   vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
-  options?: AxleCalculationOptions,
 ): Array<PolicyCheckResult> {
   const policyCheckResults = new Array<AxleUnitPolicyCheckResult>();
   const policyId = PolicyCheckId.CheckPermittableWeight;
+  const hasVehicleIndexes = axleConfiguration.some(
+    (axleUnit) => axleUnit.vehicleIndex !== undefined,
+  );
 
+  // Legacy John Fletcher implementation, restored from:
+  // git show e4a9d6badd025dec844df43379f776a4995ad75b^:src/helper/policy-check.helper.ts
+  if (!hasVehicleIndexes) {
+    const singleAxleDimensions: Array<SingleAxleDimension> = [];
+
+    vehicleConfiguration.forEach((vc, i) => {
+      let weight: Array<WeightDimension>;
+      if (i === 0) {
+        const powerUnitAxles =
+          axleConfiguration[0].numberOfAxles * 10 +
+          axleConfiguration[1].numberOfAxles;
+
+        weight = policy.getDefaultPowerUnitWeight(vc, powerUnitAxles);
+        const steerAxleDimension =
+          policy.selectCorrectWeightDimension(
+            weight,
+            vehicleConfiguration,
+            axleConfiguration,
+            0,
+          ) || {};
+        singleAxleDimensions.push(steerAxleDimension);
+        const driveAxleDimension =
+          policy.selectCorrectWeightDimension(
+            weight,
+            vehicleConfiguration,
+            axleConfiguration,
+            1,
+          ) || {};
+        singleAxleDimensions.push(driveAxleDimension);
+      } else if (i + 1 < axleConfiguration.length) {
+        weight = policy.getDefaultTrailerWeight(
+          vc,
+          axleConfiguration[i + 1].numberOfAxles,
+        );
+        const trailerDimension =
+          policy.selectCorrectWeightDimension(
+            weight,
+            vehicleConfiguration,
+            axleConfiguration,
+            i + 1,
+          ) || {};
+        singleAxleDimensions.push(trailerDimension);
+      }
+    });
+
+    axleConfiguration.forEach((ac, i) => {
+      const actualWeight = ac.axleUnitWeight;
+      const permittableWeight = singleAxleDimensions[i].permittable || 0;
+      const result = actualWeight <= permittableWeight;
+      const axleUnit = i + 1;
+      const message = `Weight for axle unit ${axleUnit} ${result ? 'is permittable' : `must not exceed ${permittableWeight} kgs`}`;
+      policyCheckResults.push({
+        id: policyId,
+        message: message,
+        result: result
+          ? PolicyCheckResultType.Pass
+          : PolicyCheckResultType.Fail,
+        axleUnit: axleUnit,
+        actualWeight: actualWeight,
+        thresholdWeight: permittableWeight,
+      });
+    });
+
+    return policyCheckResults;
+  }
+
+  // Explicit multi-axle ownership path supplied by the consuming application.
+  // This is the new way, using { vehicleIndex: num }
   const axleUnitVehicleIndexes = getAxleUnitVehicleIndexes(
     policy,
     vehicleConfiguration,
     axleConfiguration,
-    options,
   );
 
   axleConfiguration.forEach((ac, i) => {
     const vehicleIndex = axleUnitVehicleIndexes[i];
     const vehicleType = vehicleConfiguration[vehicleIndex];
-    let weight: Array<WeightDimension>;
-
-    if (vehicleIndex === 0) {
-      const powerUnitAxles =
-        axleConfiguration[0].numberOfAxles * 10 +
-        axleConfiguration[1].numberOfAxles;
-      weight = policy.getDefaultPowerUnitWeight(vehicleType, powerUnitAxles);
-    } else {
-      weight = policy.getDefaultTrailerWeight(vehicleType, ac.numberOfAxles);
-    }
-
+    const weight =
+      vehicleIndex === 0
+        ? policy.getDefaultPowerUnitWeight(
+            vehicleType,
+            axleConfiguration[0].numberOfAxles * 10 +
+              axleConfiguration[1].numberOfAxles,
+          )
+        : policy.getDefaultTrailerWeight(vehicleType, ac.numberOfAxles);
     const axleDimension =
       policy.selectCorrectWeightDimension(
         weight,
         vehicleConfiguration,
         axleConfiguration,
         i,
-        options,
       ) || {};
     const actualWeight = ac.axleUnitWeight;
     const permittableWeight = axleDimension.permittable || 0;

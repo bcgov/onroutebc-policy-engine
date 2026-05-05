@@ -1,7 +1,6 @@
 import { RelativePosition, VehicleCategory } from 'onroute-policy-engine/enum';
 import { Policy } from 'onroute-policy-engine';
 import {
-  AxleCalculationOptions,
   AxleConfiguration,
   PowerUnitWeightDimension,
   RegionSizeOverride,
@@ -382,7 +381,6 @@ export function selectCorrectWeightDimensionHelper(
   configuration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
   axleIndex: number,
-  options?: AxleCalculationOptions,
 ): SingleAxleDimension | null {
   let matchingDimension: SingleAxleDimension | null = null;
 
@@ -402,15 +400,28 @@ export function selectCorrectWeightDimensionHelper(
     throw new Error('Invalid axle index value');
   }
 
-  const axleUnitVehicleIndexes = getAxleUnitVehicleIndexes(
-    policy,
-    configuration,
-    axleConfiguration,
-    options,
+  const hasVehicleIndexes = axleConfiguration.some(
+    (axleUnit) => axleUnit.vehicleIndex !== undefined,
   );
-  const powerUnitAxleUnitCount = axleUnitVehicleIndexes.filter(
-    (vehicleIndex) => vehicleIndex === 0,
-  ).length;
+  const axleUnitVehicleIndexes = hasVehicleIndexes
+    ? getAxleUnitVehicleIndexes(policy, configuration, axleConfiguration)
+    : undefined;
+  const powerUnitAxleUnitCount = axleUnitVehicleIndexes
+    ? axleUnitVehicleIndexes.filter((vehicleIndex) => vehicleIndex === 0).length
+    : 2;
+
+  if (!axleUnitVehicleIndexes) {
+    const realVehicleConfig = configuration.filter((v) => {
+      const vehicleDef = policy.getVehicleDefinition(v);
+      return !vehicleDef?.ignoreForAxleCalculation;
+    });
+
+    if (realVehicleConfig.length !== axleConfiguration.length - 1) {
+      throw new Error(
+        'Wrong number of axles configured for vehicle configuration',
+      );
+    }
+  }
 
   const relatives = getVehicleRelatives(
     policy,
@@ -597,37 +608,34 @@ export function getVehicleRelatives(
 /**
  * Maps each axle unit to the vehicle configuration index that owns it.
  *
- * The legacy axle calculation model assumes the power unit owns two axle units
- * and every following non-ignored vehicle owns one. When commodity configuration
- * allows additional axle units, any surplus axle units are assigned to the first
- * configured vehicle in order that permits them.
+ * Every axle unit must supply vehicleIndex and the values must be valid,
+ * front-to-back vehicle configuration indexes. This lets the consuming
+ * application state axle ownership explicitly instead of relying on
+ * policy-engine inference.
  *
  * @example
- * // Legacy mapping: power unit owns axle units 1 and 2; trailer owns axle unit 3.
- * getAxleUnitVehicleIndexes(policy, ['TRKTRAC', 'SEMITRL'], axleConfig);
- * // Returns [0, 0, 1]
- *
- * @example
- * // Additional power-unit axle: CONCRET owns all three axle units when configured.
- * getAxleUnitVehicleIndexes(policy, ['CONCRET'], axleConfig, {
- *   permitTypeId: 'STOW',
- *   commodityId: 'XXXXXXX',
- * });
+ * // Additional power-unit axle: CONCRET owns all three axle units explicitly.
+ * getAxleUnitVehicleIndexes(policy, ['CONCRET'], [
+ *   { ...axleUnit, vehicleIndex: 0 },
+ *   { ...axleUnit, vehicleIndex: 0 },
+ *   { ...axleUnit, vehicleIndex: 0 },
+ * ]);
  * // Returns [0, 0, 0]
  *
  * @example
- * // Additional trailer axle: trailer owns the surplus axle unit when configured.
- * getAxleUnitVehicleIndexes(policy, ['TRKTRAC', 'STROPRT'], axleConfig, {
- *   permitTypeId: 'STOW',
- *   commodityId: 'XXXXXXX',
- * });
+ * // Additional trailer axle: the trailer owns both trailer axle units explicitly.
+ * getAxleUnitVehicleIndexes(policy, ['TRKTRAC', 'STROPRT'], [
+ *   { ...axleUnit, vehicleIndex: 0 },
+ *   { ...axleUnit, vehicleIndex: 0 },
+ *   { ...axleUnit, vehicleIndex: 1 },
+ *   { ...axleUnit, vehicleIndex: 1 },
+ * ]);
  * // Returns [0, 0, 1, 1]
  */
 export function getAxleUnitVehicleIndexes(
   policy: Policy,
   configuration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
-  options?: AxleCalculationOptions,
 ): Array<number> {
   if (!configuration || configuration.length === 0) {
     throw new Error('Missing configuration');
@@ -637,144 +645,47 @@ export function getAxleUnitVehicleIndexes(
     throw new Error('Missing axle configuration');
   }
 
-  // Start with the base case: 2 axle units for the power unit,
-  // 1 axle unit for each following vehicle, and none for ignored pseudo vehicles.
-  const baseAxleUnitCounts: Array<number> = configuration.map(
-    (vehicleId, vehicleIndex) => {
-      const vehicleDef = policy.getVehicleDefinition(vehicleId);
-      if (vehicleDef?.ignoreForAxleCalculation) {
-        return 0;
-      }
-      return vehicleIndex === 0 ? 2 : 1;
-    },
-  );
-  const baseAxleUnitCount = baseAxleUnitCounts.reduce(
-    (total, count) => total + count,
-    0,
-  );
-  const extraAxleUnitCount = axleConfiguration.length - baseAxleUnitCount;
+  const vehicleIndexCount = axleConfiguration.filter(
+    (axleUnit) => axleUnit.vehicleIndex !== undefined,
+  ).length;
 
-  if (extraAxleUnitCount < 0) {
-    throw new Error(
-      'Wrong number of axles configured for vehicle configuration',
-    );
+  if (vehicleIndexCount !== axleConfiguration.length) {
+    throw new Error('All axle units must include vehicleIndex');
   }
 
-  const axleUnitCounts = [...baseAxleUnitCounts];
-  if (extraAxleUnitCount > 0) {
-    // Surplus axle units are only valid with permit/commodity context proving
-    // that the selected vehicle can add axle units in policy JSON.
-    const additionalAxleVehicleIndex = getAdditionalAxleVehicleIndex(
-      policy,
-      configuration,
-      options,
-    );
-
-    if (additionalAxleVehicleIndex === null) {
-      throw new Error(
-        'Wrong number of axles configured for vehicle configuration',
-      );
+  const axleUnitVehicleIndexes = axleConfiguration.map((axleUnit) => {
+    const vehicleIndex = axleUnit.vehicleIndex;
+    if (
+      vehicleIndex === undefined ||
+      !Number.isInteger(vehicleIndex) ||
+      vehicleIndex < 0 ||
+      vehicleIndex >= configuration.length
+    ) {
+      throw new Error('Invalid vehicleIndex in axle configuration');
     }
 
-    axleUnitCounts[additionalAxleVehicleIndex] += extraAxleUnitCount;
+    const vehicleDef = policy.getVehicleDefinition(configuration[vehicleIndex]);
+    if (vehicleDef?.ignoreForAxleCalculation) {
+      throw new Error('vehicleIndex cannot reference ignored vehicle');
+    }
+
+    return vehicleIndex;
+  });
+
+  if (
+    axleUnitVehicleIndexes.length >= 2 &&
+    (axleUnitVehicleIndexes[0] !== 0 || axleUnitVehicleIndexes[1] !== 0)
+  ) {
+    throw new Error('First two axle units must belong to the power unit');
   }
 
-  // Expand vehicle-level axle counts into one owner index per axle unit.
-  const axleUnitVehicleIndexes = axleUnitCounts.reduce(
-    (indexes, count, vehicleIndex) => {
-      for (let i = 0; i < count; i++) {
-        indexes.push(vehicleIndex);
-      }
-      return indexes;
-    },
-    new Array<number>(),
-  );
-
-  if (axleUnitVehicleIndexes.length !== axleConfiguration.length) {
-    throw new Error(
-      'Wrong number of axles configured for vehicle configuration',
-    );
+  for (let i = 1; i < axleUnitVehicleIndexes.length; i++) {
+    if (axleUnitVehicleIndexes[i] < axleUnitVehicleIndexes[i - 1]) {
+      throw new Error('Axle unit vehicleIndex values must be in vehicle order');
+    }
   }
 
   return axleUnitVehicleIndexes;
-}
-
-function getAdditionalAxleVehicleIndex(
-  policy: Policy,
-  configuration: Array<string>,
-  options?: AxleCalculationOptions,
-): number | null {
-  if (!options?.permitTypeId || !options?.commodityId) {
-    return null;
-  }
-
-  if (
-    canAddAxleUnitsToPowerUnit(
-      policy,
-      options.permitTypeId,
-      options.commodityId,
-      configuration[0],
-    )
-  ) {
-    return 0;
-  }
-
-  for (let i = 1; i < configuration.length; i++) {
-    const vehicleDef = policy.getVehicleDefinition(configuration[i]);
-    if (vehicleDef?.ignoreForAxleCalculation) {
-      continue;
-    }
-
-    if (
-      canAddAxleUnitsToTrailer(
-        policy,
-        options.permitTypeId,
-        options.commodityId,
-        configuration[0],
-        configuration[i],
-      )
-    ) {
-      return i;
-    }
-  }
-
-  return null;
-}
-
-function canAddAxleUnitsToPowerUnit(
-  policy: Policy,
-  permitTypeId: string,
-  commodityId: string,
-  powerUnitSubtype: string,
-): boolean {
-  try {
-    return policy.canAddAxleUnitsToPowerUnit(
-      permitTypeId,
-      commodityId,
-      powerUnitSubtype,
-    );
-  } catch {
-    return false;
-  }
-}
-
-function canAddAxleUnitsToTrailer(
-  policy: Policy,
-  permitTypeId: string,
-  commodityId: string,
-  powerUnitSubtype: string,
-  trailerSubtype: string,
-): boolean {
-  try {
-    return policy.canAddAxleUnitsToTrailer(
-      permitTypeId,
-      commodityId,
-      powerUnitSubtype,
-      trailerSubtype,
-    );
-  } catch {
-    return false;
-  }
 }
 
 /**
