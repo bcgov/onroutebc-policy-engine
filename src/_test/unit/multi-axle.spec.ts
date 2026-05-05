@@ -186,4 +186,82 @@ describe('Multi-Axle Unit Vehicle Mapping Tests', () => {
     // accept explicit axle-unit ownership from the consuming application.
     expect(axleUnitVehicleIndexes).toEqual([0, 0, 0, 1]);
   });
+
+  it('should document ambiguity when multiple STOW/XXXXXXX trailers can both add axle units', () => {
+    const axleConfiguration = [
+      { ...axleUnit },
+      { ...axleUnit },
+      { ...axleUnit },
+      { ...axleUnit },
+      { ...axleUnit },
+    ];
+
+    const axleUnitVehicleIndexes = getAxleUnitVehicleIndexes(
+      policy,
+      ['TRKTRAC', 'STROPRT', 'STRSELF'],
+      axleConfiguration,
+      axleCalculationOptions,
+    );
+
+    // This is ambiguous: both STROPRT and STRSELF can add axle units for
+    // STOW/XXXXXXX. The axleConfiguration array only tells us there is one
+    // surplus axle unit; it does not tell us whether the user added it to
+    // STROPRT or STRSELF in the consuming application.
+    //
+    // Current logic assigns the surplus axle unit to the first eligible trailer:
+    // [0, 0, 1, 1, 2]. That could be wrong if the intended ownership was
+    // [0, 0, 1, 2, 2].
+    expect(axleUnitVehicleIndexes).toEqual([0, 0, 1, 1, 2]);
+  });
+
+  it('should document ambiguity when multiple STOW/EMPTYXX trailers can both add axle units', () => {
+    const axleConfiguration = [
+      { ...axleUnit },
+      { ...axleUnit },
+      { ...axleUnit },
+      { ...axleUnit },
+      { ...axleUnit },
+    ];
+
+    const axleUnitVehicleIndexes = getAxleUnitVehicleIndexes(
+      policy,
+      ['TRKTRAC', 'PLATFRM', 'PLATWHE'],
+      axleConfiguration,
+      { permitTypeId: 'STOW', commodityId: 'EMPTYXX' },
+    );
+
+    // This is ambiguous for the same reason: PLATFRM and PLATWHE can both add
+    // axle units. Current logic maps the surplus unit to PLATFRM because it is
+    // the first eligible trailer: [0, 0, 1, 1, 2].
+    //
+    // If the consuming app intended the extra axle unit to belong to PLATWHE,
+    // the desired mapping would be [0, 0, 1, 2, 2].
+    expect(axleUnitVehicleIndexes).toEqual([0, 0, 1, 1, 2]);
+  });
+
+  it('should document ambiguity when several STOW/NONREDU trailers can add axle units', () => {
+    const axleConfiguration = [
+      { ...axleUnit },
+      { ...axleUnit },
+      { ...axleUnit },
+      { ...axleUnit },
+      { ...axleUnit },
+      { ...axleUnit },
+    ];
+
+    const axleUnitVehicleIndexes = getAxleUnitVehicleIndexes(
+      policy,
+      ['TRKTRAC', 'PLATFRM', 'PLATWHE', 'STROPRT'],
+      axleConfiguration,
+      { permitTypeId: 'STOW', commodityId: 'NONREDU' },
+    );
+
+    // This is even more ambiguous: PLATFRM, PLATWHE, and STROPRT can all add
+    // axle units for STOW/NONREDU. With one surplus axle unit, current logic
+    // assigns it to the first eligible trailer, PLATFRM: [0, 0, 1, 1, 2, 3].
+    //
+    // The same axleConfiguration length could also represent an extra axle on
+    // PLATWHE ([0, 0, 1, 2, 2, 3]) or STROPRT ([0, 0, 1, 2, 3, 3]).
+    expect(axleUnitVehicleIndexes).toEqual([0, 0, 1, 1, 2, 3]);
+  });
 });
