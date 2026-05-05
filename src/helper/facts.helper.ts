@@ -269,10 +269,19 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
         {},
         PermitAppInfo.VehicleDetails,
       );
+      const permitTypeId: string = await almanac.factValue(
+        PermitAppInfo.PermitType,
+      );
+      const commodityId: string = await almanac.factValue(
+        PermitAppInfo.PermitData,
+        {},
+        PermitAppInfo.Commodity,
+      );
       const results = policy.runAxleCalculation(
         vehicleConfiguration,
         axleConfiguration,
         vehicleDetails.licensedGVW || 0,
+        { permitTypeId, commodityId },
       );
       const violations = results.results.filter(
         (r) => r.result === PolicyCheckResultType.Fail,

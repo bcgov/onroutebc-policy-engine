@@ -29,6 +29,125 @@ describe('Axle Calculation Functions', () => {
     ).toBe(true);
   });
 
+  it('should pass when a power unit is configured with three axle units', async () => {
+    const results = policy.runAxleCalculation(
+      ['CONCRET'],
+      [
+        {
+          numberOfAxles: 1,
+          axleUnitWeight: 5000,
+          numberOfTires: 2,
+          tireSize: 279,
+        },
+        {
+          numberOfAxles: 1,
+          interaxleSpacing: 200,
+          axleUnitWeight: 5000,
+          numberOfTires: 2,
+          tireSize: 279,
+        },
+        {
+          numberOfAxles: 1,
+          interaxleSpacing: 200,
+          axleUnitWeight: 5000,
+          numberOfTires: 2,
+          tireSize: 279,
+        },
+      ],
+      15000,
+      { permitTypeId: 'STOW', commodityId: 'XXXXXXX' },
+    );
+
+    expect(results.totalOverload).toBe(0);
+    expect(
+      results.results.every((r) => r.result === PolicyCheckResultType.Pass),
+    ).toBe(true);
+  });
+
+  it('should pass when a trailer configuration has an extra axle unit', async () => {
+    const results = policy.runAxleCalculation(
+      ['TRKTRAC', 'STROPRT'],
+      [
+        {
+          numberOfAxles: 1,
+          axleUnitWeight: 5000,
+          numberOfTires: 2,
+          tireSize: 279,
+        },
+        {
+          numberOfAxles: 1,
+          interaxleSpacing: 200,
+          axleUnitWeight: 5000,
+          numberOfTires: 2,
+          tireSize: 279,
+        },
+        {
+          numberOfAxles: 1,
+          interaxleSpacing: 200,
+          axleUnitWeight: 5000,
+          numberOfTires: 2,
+          tireSize: 279,
+        },
+        {
+          numberOfAxles: 1,
+          interaxleSpacing: 200,
+          axleUnitWeight: 5000,
+          numberOfTires: 2,
+          tireSize: 279,
+        },
+      ],
+      20000,
+      { permitTypeId: 'STOW', commodityId: 'XXXXXXX' },
+    );
+
+    expect(results.totalOverload).toBe(0);
+    expect(
+      results.results.every((r) => r.result === PolicyCheckResultType.Pass),
+    ).toBe(true);
+  });
+
+  it('should pass when trailer and booster configuration has four axle units', async () => {
+    const results = policy.runAxleCalculation(
+      ['TRKTRAC', 'STROPRT', 'BOOSTER'],
+      [
+        {
+          numberOfAxles: 1,
+          axleUnitWeight: 5000,
+          numberOfTires: 2,
+          tireSize: 279,
+        },
+        {
+          numberOfAxles: 1,
+          interaxleSpacing: 200,
+          axleUnitWeight: 5000,
+          numberOfTires: 2,
+          tireSize: 279,
+        },
+        {
+          numberOfAxles: 1,
+          interaxleSpacing: 200,
+          axleUnitWeight: 5000,
+          numberOfTires: 2,
+          tireSize: 279,
+        },
+        {
+          numberOfAxles: 1,
+          interaxleSpacing: 200,
+          axleUnitWeight: 5000,
+          numberOfTires: 2,
+          tireSize: 279,
+        },
+      ],
+      20000,
+      { permitTypeId: 'STOW', commodityId: 'XXXXXXX' },
+    );
+
+    expect(results.totalOverload).toBe(0);
+    expect(
+      results.results.every((r) => r.result === PolicyCheckResultType.Pass),
+    ).toBe(true);
+  });
+
   it('should fail policy check for invalid number of tires', async () => {
     const ac = JSON.parse(
       JSON.stringify(axleConfiguration),
