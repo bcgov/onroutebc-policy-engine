@@ -1357,14 +1357,7 @@ export const data: PolicyDefinition = {
     },
     {
       conditions: {
-        all: [
-          {
-            not: {
-              fact: 'permitType',
-              operator: 'equal',
-              value: 'HC',
-            },
-          },
+        any: [
           {
             fact: 'permitData',
             path: '$.startDate',
@@ -1386,14 +1379,7 @@ export const data: PolicyDefinition = {
     },
     {
       conditions: {
-        all: [
-          {
-            not: {
-              fact: 'permitType',
-              operator: 'equal',
-              value: 'HC',
-            },
-          },
+        any: [
           {
             fact: 'daysBetween',
             operator: 'greaterThan',

@@ -41,21 +41,4 @@ describe('Highway Crossing Permit (HC) Validation Tests', () => {
     expect(conditions[0].condition).toBe('CVSE-1070');
     expect(conditions[0].mandatory).toBe(true);
   });
-
-  it('should leave HC start-date windows to the consuming application', async () => {
-    const permit = getPermit();
-    permit.permitData.startDate = dayjs()
-      .subtract(90, 'day')
-      .format(PermitAppInfo.PermitDateFormat.toString());
-
-    const pastValidationResult = await policy.validate(permit);
-    expect(pastValidationResult.violations).toHaveLength(0);
-
-    permit.permitData.startDate = dayjs()
-      .add(120, 'day')
-      .format(PermitAppInfo.PermitDateFormat.toString());
-
-    const futureValidationResult = await policy.validate(permit);
-    expect(futureValidationResult.violations).toHaveLength(0);
-  });
 });
