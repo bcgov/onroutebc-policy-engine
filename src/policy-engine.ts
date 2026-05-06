@@ -1346,6 +1346,13 @@ export class Policy {
       throw new Error(`Invalid power unit: '${powerUnitSubtype}'`);
     }
 
+    if (
+      trailerSubtype === AccessoryVehicleType.Jeep ||
+      trailerSubtype === AccessoryVehicleType.Booster
+    ) {
+      return false;
+    }
+
     const trailer = powerUnit.trailers.find(trailer => trailer.type === trailerSubtype);
     if (!trailer) {
       throw new Error(`Invalid trailer: '${trailerSubtype}'`);
