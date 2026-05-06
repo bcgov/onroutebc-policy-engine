@@ -1355,7 +1355,14 @@
     },
     {
       "conditions": {
-        "any": [
+        "all": [
+          {
+            "not": {
+              "fact": "permitType",
+              "operator": "equal",
+              "value": "HCP"
+            }
+          },
           {
             "fact": "permitData",
             "path": "$.startDate",
@@ -1377,7 +1384,14 @@
     },
     {
       "conditions": {
-        "any": [
+        "all": [
+          {
+            "not": {
+              "fact": "permitType",
+              "operator": "equal",
+              "value": "HCP"
+            }
+          },
           {
             "fact": "daysBetween",
             "operator": "greaterThan",
@@ -1496,6 +1510,28 @@
   ],
   "permitTypes": [
     {
+      "id": "HCP",
+      "name": "Highway Crossing Permit",
+      "routingRequired": false,
+      "weightDimensionRequired": false,
+      "sizeDimensionRequired": false,
+      "commodityRequired": false,
+      "costRules": [
+        {
+          "fact": "fixedCost",
+          "params": {
+            "cost": 30
+          }
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "CVSE-1070",
+          "mandatory": true
+        }
+      ]
+    },
+    {
       "id": "TROS",
       "name": "Term Oversize",
       "routingRequired": false,
@@ -1572,19 +1608,7 @@
                   "fact": "permitData",
                   "path": "permitDuration",
                   "operator": "in",
-                  "value": [
-                    30,
-                    60,
-                    90,
-                    120,
-                    150,
-                    180,
-                    210,
-                    240,
-                    270,
-                    300,
-                    330
-                  ]
+                  "value": [30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330]
                 }
               },
               {
@@ -1704,19 +1728,7 @@
                   "fact": "permitData",
                   "path": "permitDuration",
                   "operator": "in",
-                  "value": [
-                    30,
-                    60,
-                    90,
-                    120,
-                    150,
-                    180,
-                    210,
-                    240,
-                    270,
-                    300,
-                    330
-                  ]
+                  "value": [30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330]
                 }
               },
               {
@@ -2133,10 +2145,7 @@
               "fact": "permitData",
               "path": "thirdPartyLiability",
               "operator": "in",
-              "value": [
-                "GENERAL_GOODS",
-                "DANGEROUS_GOODS"
-              ]
+              "value": ["GENERAL_GOODS", "DANGEROUS_GOODS"]
             }
           },
           "event": {
@@ -2309,10 +2318,7 @@
             "not": {
               "fact": "permitData",
               "operator": "in",
-              "value": [
-                "GENERAL_GOODS",
-                "DANGEROUS_GOODS"
-              ],
+              "value": ["GENERAL_GOODS", "DANGEROUS_GOODS"],
               "path": "thirdPartyLiability"
             }
           },

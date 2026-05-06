@@ -1357,7 +1357,14 @@ export const data: PolicyDefinition = {
     },
     {
       conditions: {
-        any: [
+        all: [
+          {
+            not: {
+              fact: 'permitType',
+              operator: 'equal',
+              value: 'HCP',
+            },
+          },
           {
             fact: 'permitData',
             path: '$.startDate',
@@ -1379,7 +1386,14 @@ export const data: PolicyDefinition = {
     },
     {
       conditions: {
-        any: [
+        all: [
+          {
+            not: {
+              fact: 'permitType',
+              operator: 'equal',
+              value: 'HCP',
+            },
+          },
           {
             fact: 'daysBetween',
             operator: 'greaterThan',
@@ -1499,6 +1513,28 @@ export const data: PolicyDefinition = {
     },
   ],
   permitTypes: [
+    {
+      id: 'HCP',
+      name: 'Highway Crossing Permit',
+      routingRequired: false,
+      weightDimensionRequired: false,
+      sizeDimensionRequired: false,
+      commodityRequired: false,
+      costRules: [
+        {
+          fact: 'fixedCost',
+          params: {
+            cost: 30,
+          },
+        },
+      ],
+      conditions: [
+        {
+          condition: 'CVSE-1070',
+          mandatory: true,
+        },
+      ],
+    },
     {
       id: 'TROS',
       name: 'Term Oversize',
@@ -2579,7 +2615,12 @@ export const data: PolicyDefinition = {
                 fact: 'permitData',
                 path: 'conditionalLicensingFee',
                 operator: 'in',
-                value: ['conditional', 'none', 'x-plated', 'commercial-passenger'],
+                value: [
+                  'conditional',
+                  'none',
+                  'x-plated',
+                  'commercial-passenger',
+                ],
               },
             ],
           },
@@ -2732,7 +2773,7 @@ export const data: PolicyDefinition = {
                 'x-plated',
                 'farm-vehicle',
                 'farm-tractor',
-                'commercial-passenger'
+                'commercial-passenger',
               ],
             },
           },
@@ -2872,7 +2913,12 @@ export const data: PolicyDefinition = {
                 fact: 'permitData',
                 path: 'conditionalLicensingFee',
                 operator: 'in',
-                value: ['conditional', 'none', 'x-plated', 'commercial-passenger'],
+                value: [
+                  'conditional',
+                  'none',
+                  'x-plated',
+                  'commercial-passenger',
+                ],
               },
             ],
           },
@@ -3025,7 +3071,7 @@ export const data: PolicyDefinition = {
                 'x-plated',
                 'farm-vehicle',
                 'farm-tractor',
-                'commercial-passenger'
+                'commercial-passenger',
               ],
             },
           },
