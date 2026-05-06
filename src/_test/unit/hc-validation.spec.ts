@@ -1,28 +1,28 @@
 import { Policy } from 'onroute-policy-engine';
 import currentConfig from '../policy-config/_current-config.json';
-import validHcp from '../permit-app/valid-hcp.json';
+import validHc from '../permit-app/valid-hcp.json';
 import dayjs from 'dayjs';
 import { PermitAppInfo } from '../../enum/permit-app-info';
 
-describe('Highway Crossing Permit (HCP) Validation Tests', () => {
+describe('Highway Crossing Permit (HC) Validation Tests', () => {
   const policy: Policy = new Policy(currentConfig);
 
   const getPermit = () => {
-    const permit = JSON.parse(JSON.stringify(validHcp));
+    const permit = JSON.parse(JSON.stringify(validHc));
     permit.permitData.startDate = dayjs().format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
     return permit;
   };
 
-  it('should validate HCP successfully', async () => {
+  it('should validate HC successfully', async () => {
     const permit = getPermit();
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(0);
   });
 
-  it('should calculate HCP as a flat $30 permit', async () => {
+  it('should calculate HC as a flat $30 permit', async () => {
     const permit = getPermit();
 
     const validationResult = await policy.validate(permit);
@@ -33,7 +33,7 @@ describe('Highway Crossing Permit (HCP) Validation Tests', () => {
     expect(cost).toBe(30);
   });
 
-  it('should return only mandatory CVSE-1070 for HCP conditions', () => {
+  it('should return only mandatory CVSE-1070 for HC conditions', () => {
     const permit = getPermit();
 
     const conditions = policy.getConditionsForPermit(permit);
@@ -42,7 +42,7 @@ describe('Highway Crossing Permit (HCP) Validation Tests', () => {
     expect(conditions[0].mandatory).toBe(true);
   });
 
-  it('should leave HCP start-date windows to the consuming application', async () => {
+  it('should leave HC start-date windows to the consuming application', async () => {
     const permit = getPermit();
     permit.permitData.startDate = dayjs()
       .subtract(90, 'day')

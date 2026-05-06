@@ -1360,7 +1360,7 @@
             "not": {
               "fact": "permitType",
               "operator": "equal",
-              "value": "HCP"
+              "value": "HC"
             }
           },
           {
@@ -1389,7 +1389,7 @@
             "not": {
               "fact": "permitType",
               "operator": "equal",
-              "value": "HCP"
+              "value": "HC"
             }
           },
           {
@@ -1510,7 +1510,7 @@
   ],
   "permitTypes": [
     {
-      "id": "HCP",
+      "id": "HC",
       "name": "Highway Crossing Permit",
       "routingRequired": false,
       "weightDimensionRequired": false,

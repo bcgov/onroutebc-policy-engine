@@ -1362,7 +1362,7 @@ export const data: PolicyDefinition = {
             not: {
               fact: 'permitType',
               operator: 'equal',
-              value: 'HCP',
+              value: 'HC',
             },
           },
           {
@@ -1391,7 +1391,7 @@ export const data: PolicyDefinition = {
             not: {
               fact: 'permitType',
               operator: 'equal',
-              value: 'HCP',
+              value: 'HC',
             },
           },
           {
@@ -1514,7 +1514,7 @@ export const data: PolicyDefinition = {
   ],
   permitTypes: [
     {
-      id: 'HCP',
+      id: 'HC',
       name: 'Highway Crossing Permit',
       routingRequired: false,
       weightDimensionRequired: false,
