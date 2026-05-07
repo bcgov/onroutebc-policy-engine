@@ -339,7 +339,7 @@ function getDefaultVehicleWeightHelper(
     const overridesForAxle = vehicleCategory.defaultWeightDimensions?.filter(
       (w) => w.axles === axles,
     );
-    if (overridesForAxle) {
+    if (overridesForAxle && overridesForAxle.length > 0) {
       return JSON.parse(JSON.stringify(overridesForAxle));
     }
   }
@@ -350,7 +350,7 @@ function getDefaultVehicleWeightHelper(
     : policy.policyDefinition.globalWeightDefaults?.trailers;
 
   const vehicleDefaults = globalDefaults?.filter((w) => w.axles === axles);
-  if (vehicleDefaults) {
+  if (vehicleDefaults && vehicleDefaults.length > 0) {
     // Return a copy of the vehicle weights
     return JSON.parse(JSON.stringify(vehicleDefaults));
   } else {

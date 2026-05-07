@@ -1,5 +1,5 @@
 import { Policy } from '../../policy-engine';
-import { PolicyCheckResultType } from '../../enum';
+import { PolicyCheckId, PolicyCheckResultType } from '../../enum';
 import { getAxleUnitVehicleIndexes } from '../../helper/dimensions.helper';
 import currentPolicyConfig from '../policy-config/_current-config.json';
 
@@ -58,6 +58,52 @@ describe('Multi-Axle Unit Calculation Tests', () => {
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(true);
+  });
+
+  it('should calculate PICKRTT and PLATFRM with one-axle trailer defaults and report tire failures', () => {
+    const results = policy.runAxleCalculation(
+      ['PICKRTT', 'PLATFRM'],
+      [
+        {
+          numberOfAxles: 1,
+          axleUnitWeight: 5000,
+          numberOfTires: 1,
+          tireSize: 279,
+          vehicleIndex: 0,
+        },
+        {
+          numberOfAxles: 1,
+          interaxleSpacing: 200,
+          axleUnitWeight: 5000,
+          numberOfTires: 1,
+          tireSize: 279,
+          vehicleIndex: 0,
+        },
+        {
+          numberOfAxles: 1,
+          interaxleSpacing: 200,
+          axleUnitWeight: 5000,
+          numberOfTires: 1,
+          tireSize: 279,
+          vehicleIndex: 1,
+        },
+      ],
+      15000,
+    );
+
+    expect(results.totalOverload).toBe(0);
+    expect(results.results).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: PolicyCheckId.NumberOfWheelsPerAxle,
+          result: PolicyCheckResultType.Fail,
+        }),
+        expect.objectContaining({
+          id: PolicyCheckId.MaxTireLoad,
+          result: PolicyCheckResultType.Fail,
+        }),
+      ]),
+    );
   });
 
   it('should pass when explicit vehicleIndex disambiguates multiple trailer axle units', () => {
