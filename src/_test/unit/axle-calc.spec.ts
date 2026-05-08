@@ -7,6 +7,7 @@ import {
   AxleConfiguration,
   AxleGroupPolicyCheckResult,
 } from '../../types';
+import { CheckBoosterAxleLimit } from '../../helper/policy-check.helper';
 
 describe('Axle Calculation Functions', () => {
   const policy: Policy = new Policy(currentPolicyConfig);
@@ -273,6 +274,154 @@ describe('Axle Calculation Functions', () => {
         (r) => r.result === PolicyCheckResultType.Pass,
       ),
     ).toBe(true);
+  });
+
+  it('should pass booster axle limit when booster has no more axles than trailer', async () => {
+    const ac = JSON.parse(
+      JSON.stringify(axleConfiguration),
+    ) as Array<AxleConfiguration>;
+
+    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const boosterAxleLimitResults = results.results.filter(
+      (r) => r.id === PolicyCheckId.BoosterAxleLimit,
+    );
+
+    expect(boosterAxleLimitResults).toHaveLength(1);
+    expect(boosterAxleLimitResults[0]).toMatchObject({
+      result: PolicyCheckResultType.Pass,
+      message: '',
+      startAxleUnit: 4,
+      endAxleUnit: 5,
+    });
+  });
+
+  it('should fail booster axle limit through axle calculation results when booster has more axles than trailer', async () => {
+    const vc = ['TRKTRAC', 'DOLLIES', 'BOOSTER'];
+    const ac = [
+      {
+        numberOfAxles: 1,
+        axleUnitWeight: 6700,
+        numberOfTires: 2,
+        tireSize: 355,
+      },
+      {
+        numberOfAxles: 2,
+        axleSpread: 160,
+        interaxleSpacing: 350,
+        axleUnitWeight: 12000,
+        numberOfTires: 4,
+        tireSize: 330,
+      },
+      {
+        numberOfAxles: 1,
+        interaxleSpacing: 300,
+        axleUnitWeight: 9000,
+        numberOfTires: 2,
+        tireSize: 330,
+      },
+      {
+        numberOfAxles: 2,
+        axleSpread: 160,
+        interaxleSpacing: 350,
+        axleUnitWeight: 10000,
+        numberOfTires: 4,
+        tireSize: 330,
+      },
+    ];
+
+    const results = policy.runAxleCalculation(vc, ac, 0);
+    const boosterAxleLimitResult = results.results.find(
+      (r) => r.id === PolicyCheckId.BoosterAxleLimit,
+    );
+
+    expect(boosterAxleLimitResult).toMatchObject({
+      result: PolicyCheckResultType.Fail,
+      message:
+        'No. of Axles for Axle Unit 4 must be less than or equal to No. of Axles for Axle Unit 3',
+      startAxleUnit: 3,
+      endAxleUnit: 4,
+    });
+  });
+
+  it('should fail booster axle limit when booster has more axles than trailer', async () => {
+    const ac = JSON.parse(
+      JSON.stringify(axleConfiguration),
+    ) as Array<AxleConfiguration>;
+    ac[3].numberOfAxles = 2;
+    ac[4].numberOfAxles = 3;
+    ac[4].numberOfTires = 12;
+
+    const results = CheckBoosterAxleLimit(policy, vehicleConfiguration, ac);
+    const boosterAxleLimitResult = results.find(
+      (r) => r.id === PolicyCheckId.BoosterAxleLimit,
+    );
+
+    expect(boosterAxleLimitResult).toMatchObject({
+      result: PolicyCheckResultType.Fail,
+      message:
+        'No. of Axles for Axle Unit 5 must be less than or equal to No. of Axles for Axle Unit 4',
+      startAxleUnit: 4,
+      endAxleUnit: 5,
+    });
+  });
+
+  it('should not return booster axle limit results when there is no booster', async () => {
+    const vc = vehicleConfiguration.slice(0, -1);
+    const ac = JSON.parse(
+      JSON.stringify(axleConfiguration.slice(0, -1)),
+    ) as Array<AxleConfiguration>;
+
+    const results = CheckBoosterAxleLimit(policy, vc, ac);
+
+    expect(results.some((r) => r.id === PolicyCheckId.BoosterAxleLimit)).toBe(
+      false,
+    );
+  });
+
+  it('should not treat a booster without a preceding trailer as an axle limit violation', async () => {
+    const results = CheckBoosterAxleLimit(policy, ['TRKTRAC', 'BOOSTER'], [
+      { numberOfAxles: 1, axleUnitWeight: 6700 },
+      { numberOfAxles: 2, axleUnitWeight: 12000 },
+      { numberOfAxles: 2, axleUnitWeight: 10000 },
+    ]);
+
+    expect(results).toHaveLength(0);
+  });
+
+  it('should ignore booster entries that have no matching axle configuration', async () => {
+    const results = CheckBoosterAxleLimit(
+      policy,
+      ['TRKTRAC', 'DOLLIES', 'BOOSTER'],
+      [
+        { numberOfAxles: 1, axleUnitWeight: 6700 },
+        { numberOfAxles: 2, axleUnitWeight: 12000 },
+        { numberOfAxles: 1, axleUnitWeight: 9000 },
+      ],
+    );
+
+    expect(results).toHaveLength(0);
+  });
+
+  it('should compare booster axles to the real trailer before additional axle units', async () => {
+    const vc = ['TRKTRAC', 'PLATFRM', 'PFMAXLE', 'PFMAXLE', 'BOOSTER'];
+    const ac = [
+      { numberOfAxles: 1, axleUnitWeight: 6700 },
+      { numberOfAxles: 3, axleUnitWeight: 12000 },
+      { numberOfAxles: 2, axleUnitWeight: 18000 },
+      { numberOfAxles: 3, axleUnitWeight: 10000 },
+      { numberOfAxles: 3, axleUnitWeight: 10000 },
+      { numberOfAxles: 3, axleUnitWeight: 10000 },
+    ];
+
+    const results = CheckBoosterAxleLimit(policy, vc, ac);
+
+    expect(results[0]).toMatchObject({
+      result: PolicyCheckResultType.Fail,
+      message:
+        'No. of Axles for Axle Unit 6 must be less than or equal to No. of Axles for Axle Unit 3',
+      startAxleUnit: 3,
+      endAxleUnit: 6,
+    });
   });
 
   it('should fail policy check for steer axle tire size too large', async () => {
