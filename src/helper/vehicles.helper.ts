@@ -1,5 +1,7 @@
 import { VehicleCategory } from 'onroute-policy-engine/enum';
 import {
+  AxleConfiguration,
+  IndexedAxleConfiguration,
   PermitVehicleDetails,
   VehicleConfiguration,
   VehicleInConfiguration,
@@ -137,4 +139,47 @@ export function getSimplifiedVehicleConfigurationHelper(
     fullVehicleConfiguration.push(...trailerList.map((t) => t.vehicleSubType));
   }
   return fullVehicleConfiguration;
+}
+
+/**
+ * Combines axle configurations from a power unit and its trailers into a single
+ * array, adding the vehicle index to each axle configuration.
+ *
+ * @param powerUnitAxleConfiguration - Axle configuration for the power unit
+ * @param trailers - Trailer configurations that may include axle configuration
+ * @returns Combined axle configurations in vehicle order, where vehicleIndex 0
+ *          represents the power unit and trailer indexes start at 1.
+ */
+export function combineAxleConfigurationsHelper(
+  powerUnitAxleConfiguration: Array<AxleConfiguration>,
+  trailers: Array<VehicleInConfiguration>,
+): Array<IndexedAxleConfiguration> {
+  const powerUnitAxles = powerUnitAxleConfiguration.map((axle) => ({
+    ...axle,
+    vehicleIndex: 0,
+  }));
+
+  const trailerAxles = trailers.flatMap((trailer, trailerIndex) =>
+    (trailer.axleConfiguration ?? []).map((axle) => ({
+      ...axle,
+      vehicleIndex: trailerIndex + 1,
+    })),
+  );
+
+  return [...powerUnitAxles, ...trailerAxles];
+}
+
+/**
+ * Calculates the Gross Combined Vehicle Weight (GCVW) from axle unit weights.
+ *
+ * @param axleConfiguration - Axle configuration to total
+ * @returns Sum of axle unit weights, treating missing weights as 0.
+ */
+export function calculateGCVWHelper(
+  axleConfiguration: Array<AxleConfiguration>,
+): number {
+  return axleConfiguration.reduce((totalWeight, axleUnit) => {
+    const axleUnitWeight = axleUnit.axleUnitWeight ?? 0;
+    return totalWeight + axleUnitWeight;
+  }, 0);
 }
