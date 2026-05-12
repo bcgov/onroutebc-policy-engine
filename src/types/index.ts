@@ -4,7 +4,10 @@ export {
   AxleUnitPolicyCheckResult,
   AxleGroupPolicyCheckResult,
 } from './axle-calculation-results';
-export { AxleConfiguration } from './axle-configuration';
+export {
+  AxleConfiguration,
+  IndexedAxleConfiguration,
+} from './axle-configuration';
 export { BridgeCalculationConstants } from './bridge-calculation-constants';
 export { BridgeCalculationResult } from './bridge-calculation-result';
 export { Commodity } from './commodity';
