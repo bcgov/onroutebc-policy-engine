@@ -19,6 +19,29 @@ import { policyCheckMap } from './policy-check.helper';
 
 dayjs.extend(quarterOfYear);
 
+async function getNormalizedAxleConfiguration(
+  almanac: any,
+  policy: Policy,
+): Promise<Array<AxleConfiguration>> {
+  const permitVehicleConfiguration: VehicleConfiguration =
+    await almanac.factValue(
+      PermitAppInfo.PermitData,
+      {},
+      PermitAppInfo.VehicleConfiguration,
+    );
+  const axleConfiguration = permitVehicleConfiguration?.axleConfiguration ?? [];
+  const trailers = permitVehicleConfiguration?.trailers ?? [];
+  const hasNestedTrailerAxles = trailers.some(
+    (trailer) => (trailer.axleConfiguration?.length ?? 0) > 0,
+  );
+
+  if (!hasNestedTrailerAxles) {
+    return axleConfiguration;
+  }
+
+  return policy.combineAxleConfigurations(axleConfiguration, trailers);
+}
+
 /**
  * Adds runtime facts for the validation. For example, adds the
  * validation date for comparison against startDate of the permit.
@@ -187,13 +210,10 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
   engine.addFact(
     PolicyFacts.GrossVehicleCombinationWeight,
     async function (params, almanac) {
-      // Retrieve the axle configuration from permit data
-      const axleConfiguration: Array<AxleConfiguration> =
-        await almanac.factValue(
-          PermitAppInfo.PermitData,
-          {},
-          PermitAppInfo.AxleConfiguration,
-        );
+      const axleConfiguration = await getNormalizedAxleConfiguration(
+        almanac,
+        policy,
+      );
       return axleConfiguration.reduce((w, curr) => w + curr.axleUnitWeight, 0);
     },
   );
@@ -210,13 +230,10 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
       const vehicleConfiguration: Array<string> = await almanac.factValue(
         PolicyFacts.VehicleConfiguration,
       );
-      // Retrieve the axle configuration from permit data
-      const axleConfiguration: Array<AxleConfiguration> =
-        await almanac.factValue(
-          PermitAppInfo.PermitData,
-          {},
-          PermitAppInfo.AxleConfiguration,
-        );
+      const axleConfiguration = await getNormalizedAxleConfiguration(
+        almanac,
+        policy,
+      );
       // Get the specific policy check ID from parameters
       const policyCheckId = params.policyId;
 
@@ -256,13 +273,10 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
       const vehicleConfiguration: Array<string> = await almanac.factValue(
         PolicyFacts.VehicleConfiguration,
       );
-      // Retrieve the axle configuration from permit data
-      const axleConfiguration: Array<AxleConfiguration> =
-        await almanac.factValue(
-          PermitAppInfo.PermitData,
-          {},
-          PermitAppInfo.AxleConfiguration,
-        );
+      const axleConfiguration = await getNormalizedAxleConfiguration(
+        almanac,
+        policy,
+      );
       // Retrieve licensed GVW from permit data
       const vehicleDetails: PermitVehicleDetails = await almanac.factValue(
         PermitAppInfo.PermitData,
