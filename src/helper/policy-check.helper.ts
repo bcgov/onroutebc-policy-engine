@@ -33,6 +33,31 @@ type PolicyCheck = (
   axleConfiguration: Array<AxleConfiguration>,
 ) => Array<PolicyCheckResult>;
 
+export class PolicyCheckCannotEvaluateError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'PolicyCheckCannotEvaluateError';
+  }
+}
+
+function assertWeightDimensions(
+  policy: Policy,
+  weight: Array<WeightDimension>,
+  vehicleType: string,
+  axles: number,
+  isPowerUnit: boolean,
+): void {
+  if (weight.length > 0) {
+    return;
+  }
+
+  const vehicleName =
+    policy.getVehicleDefinition(vehicleType)?.name ?? vehicleType;
+  throw new PolicyCheckCannotEvaluateError(
+    `Missing weight dimensions for ${vehicleName} ${isPowerUnit ? 'power unit axle code' : 'trailer axle count'} ${axles}`,
+  );
+}
+
 /**
  * Validates the number of axles in each axle unit.
  *
@@ -256,6 +281,7 @@ export function CheckPermittableWeight(
         axleConfiguration[1].numberOfAxles;
 
       weight = policy.getDefaultPowerUnitWeight(vc, powerUnitAxles);
+      assertWeightDimensions(policy, weight, vc, powerUnitAxles, true);
       const steerAxleDimension =
         policy.selectCorrectWeightDimension(
           weight,
@@ -280,6 +306,13 @@ export function CheckPermittableWeight(
         weight = policy.getDefaultTrailerWeight(
           vc,
           axleConfiguration[i + 1].numberOfAxles,
+        );
+        assertWeightDimensions(
+          policy,
+          weight,
+          vc,
+          axleConfiguration[i + 1].numberOfAxles,
+          false,
         );
         const trailerDimension =
           policy.selectCorrectWeightDimension(

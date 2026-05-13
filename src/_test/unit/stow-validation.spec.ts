@@ -3,6 +3,7 @@ import currentConfig from '../policy-config/_current-config.json';
 import testStow from '../permit-app/test-stow.json';
 import dayjs from 'dayjs';
 import { PermitAppInfo } from '../../enum/permit-app-info';
+import { PolicyCheckResultType } from '../../enum';
 
 describe('Single Trip Overweight Policy Configuration Validator', () => {
   const policy: Policy = new Policy(currentConfig);
@@ -130,6 +131,26 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     return permit;
   };
 
+  const getAxleValidationViolation = (validationResult: any) =>
+    validationResult.violations.find(
+      (violation: any) =>
+        violation.message ===
+        'Vehicle configuration failed axle calculation policy checks',
+    );
+
+  const getRunAxleCalculationInputs = (permit: any) => {
+    const vehicleConfiguration = policy.getSimplifiedVehicleConfiguration(
+      permit.permitData.vehicleDetails,
+      permit.permitData.vehicleConfiguration,
+    );
+    const axleConfiguration = policy.combineAxleConfigurations(
+      permit.permitData.vehicleConfiguration.axleConfiguration,
+      permit.permitData.vehicleConfiguration.trailers ?? [],
+    );
+
+    return { vehicleConfiguration, axleConfiguration };
+  };
+
   it('should validate STOW successfully', async () => {
     const permit = getDatedPermit();
 
@@ -172,9 +193,62 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
   it('should validate submitted STOW evaluation failure payload', async () => {
     const permit = JSON.parse(JSON.stringify(evaluationFailurePermit));
 
-    await expect(policy.validate(permit)).rejects.toThrow(
-      'Missing weight dimensions',
+    const validationResult = await policy.validate(permit);
+
+    expect({
+      violations: validationResult.violations,
+      warnings: validationResult.warnings,
+      requirements: validationResult.requirements,
+      information: validationResult.information,
+    }).toMatchSnapshot();
+  });
+
+  it('should return a failed axle calculation result when a policy check cannot be evaluated', () => {
+    const permit = JSON.parse(JSON.stringify(evaluationFailurePermit));
+    const { vehicleConfiguration, axleConfiguration } =
+      getRunAxleCalculationInputs(permit);
+
+    const axleCalcResults = policy.runAxleCalculation(
+      vehicleConfiguration,
+      axleConfiguration,
+      permit.permitData.vehicleDetails.licensedGVW,
     );
+
+    expect(axleConfiguration).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ vehicleIndex: 0 }),
+        expect.objectContaining({ vehicleIndex: 1 }),
+      ]),
+    );
+    expect(axleCalcResults.results).toContainEqual(
+      expect.objectContaining({
+        result: PolicyCheckResultType.Fail,
+        message:
+          'check-permittable-weight could not be evaluated: Missing weight dimensions for Expando Semi-Trailers trailer axle count 1',
+      }),
+    );
+  });
+
+  it('should match validate axle violation details to runAxleCalculation failed results', async () => {
+    const permit = JSON.parse(JSON.stringify(evaluationFailurePermit));
+    const { vehicleConfiguration, axleConfiguration } =
+      getRunAxleCalculationInputs(permit);
+
+    const axleCalcResults = policy.runAxleCalculation(
+      vehicleConfiguration,
+      axleConfiguration,
+      permit.permitData.vehicleDetails.licensedGVW,
+    );
+    const validationResult = await policy.validate(permit);
+
+    const failedAxleCalcMessages = axleCalcResults.results
+      .filter((result) => result.result === PolicyCheckResultType.Fail)
+      .map((result) => result.message);
+    const axleValidationViolation =
+      getAxleValidationViolation(validationResult);
+
+    expect(axleValidationViolation).toBeDefined();
+    expect(axleValidationViolation.details).toEqual(failedAxleCalcMessages);
   });
 
   it('should validate submitted STOW evaluation failure payload differently without trailers', async () => {

@@ -66,6 +66,7 @@ import {
 import { getVehicleDisplayCodeHelper } from './helper/display-code-helper';
 import {
   CheckNumberOfAxles,
+  PolicyCheckCannotEvaluateError,
   policyCheckMap,
 } from './helper/policy-check.helper';
 
@@ -1031,11 +1032,25 @@ export class Policy {
         continue;
       }
 
-      axleCalcResults.results.push(
-        ...policyCheck(this, vehicleConfiguration, axleConfiguration).map(
-          toAxleGroupPolicyCheckResult,
-        ),
-      );
+      try {
+        axleCalcResults.results.push(
+          ...policyCheck(this, vehicleConfiguration, axleConfiguration).map(
+            toAxleGroupPolicyCheckResult,
+          ),
+        );
+      } catch (e) {
+        if (!(e instanceof PolicyCheckCannotEvaluateError)) {
+          throw e;
+        }
+
+        axleCalcResults.results.push(
+          toAxleGroupPolicyCheckResult({
+            id: policyCheckId as PolicyCheckId,
+            result: PolicyCheckResultType.Fail,
+            message: `${policyCheckId} could not be evaluated: ${e.message}`,
+          }),
+        );
+      }
     }
     return axleCalcResults;
   }

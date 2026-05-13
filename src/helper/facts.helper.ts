@@ -41,7 +41,6 @@ async function getNormalizedAxleConfiguration(
 
   return policy.combineAxleConfigurations(axleConfiguration, trailers);
 }
-
 /**
  * Adds runtime facts for the validation. For example, adds the
  * validation date for comparison against startDate of the permit.
@@ -106,11 +105,12 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
           {},
           PermitAppInfo.PowerUnitType,
         );
-        const trailerList: Array<any> = await almanac.factValue(
-          PermitAppInfo.PermitData,
-          {},
-          PermitAppInfo.TrailerList,
-        );
+        const trailerList: Array<any> =
+          (await almanac.factValue(
+            PermitAppInfo.PermitData,
+            {},
+            PermitAppInfo.TrailerList,
+          )) ?? [];
         let fullVehicleConfiguration = [];
         fullVehicleConfiguration.push(powerUnit);
         fullVehicleConfiguration = fullVehicleConfiguration.concat(
