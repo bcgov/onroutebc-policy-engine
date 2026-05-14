@@ -301,6 +301,46 @@ npm test -- --coverage
 npm test -- validate-tros.spec.ts
 ```
 
+
+## Using npm link for local policy engine changes
+
+Use this when you want this frontend example, including the permit form application flow, to pick up local `onroute-policy-engine` changes without publishing a package.
+
+```bash
+# policy engine repo route
+# note: linking only works the BUILT files! so you must run `npm run build` after pulling down any PR, making any code changes, etc, to the policy engine
+npm run build
+# npm run build -- --watch  # optional for active library development; rebuilds dist on change
+npm link
+
+# this example app
+cd src/_examples/usage/react-frontend-example
+npm link onroute-policy-engine
+npm run dev
+
+
+# OPTIONAL - Now assume you have further changes to make to policy engine, or are switching policy engine branches, etc. To bring those changes in, you would:
+
+# in PE repo, after changes are made
+npm run build
+
+# in application repo, after build is done
+kill the npm run dev
+npm run dev
+
+# now that you've built + restarted the dev server, changes should be represented.
+```
+
+If Chrome DevTools shows import/module resolution issues after linking, add this to `vite.config.ts`:
+
+```ts
+export default defineConfig({
+  resolve: {
+    preserveSymlinks: true,
+  },
+});
+```
+
 ## License
 
 This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.

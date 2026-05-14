@@ -339,7 +339,7 @@ function getDefaultVehicleWeightHelper(
     const overridesForAxle = vehicleCategory.defaultWeightDimensions?.filter(
       (w) => w.axles === axles,
     );
-    if (overridesForAxle) {
+    if (overridesForAxle && overridesForAxle.length > 0) {
       return JSON.parse(JSON.stringify(overridesForAxle));
     }
   }
@@ -350,7 +350,7 @@ function getDefaultVehicleWeightHelper(
     : policy.policyDefinition.globalWeightDefaults?.trailers;
 
   const vehicleDefaults = globalDefaults?.filter((w) => w.axles === axles);
-  if (vehicleDefaults) {
+  if (vehicleDefaults && vehicleDefaults.length > 0) {
     // Return a copy of the vehicle weights
     return JSON.parse(JSON.stringify(vehicleDefaults));
   } else {
@@ -400,28 +400,42 @@ export function selectCorrectWeightDimensionHelper(
     throw new Error('Invalid axle index value');
   }
 
-  const realVehicleConfig = configuration.filter((v) => {
-    const vehicleDef = policy.getVehicleDefinition(v);
-    return !vehicleDef?.ignoreForAxleCalculation;
-  });
+  const hasVehicleIndexes = axleConfiguration.some(
+    (axleUnit) => axleUnit.vehicleIndex !== undefined,
+  );
+  const axleUnitVehicleIndexes = hasVehicleIndexes
+    ? getAxleUnitVehicleIndexes(policy, configuration, axleConfiguration)
+    : undefined;
+  const powerUnitAxleUnitCount = axleUnitVehicleIndexes
+    ? axleUnitVehicleIndexes.filter((vehicleIndex) => vehicleIndex === 0).length
+    : 2;
 
-  if (realVehicleConfig.length !== axleConfiguration.length - 1) {
-    // We expect the axle configuration array length to be one more
-    // than the real configuration length because the power unit has two
-    // axle units.
-    throw new Error(
-      'Wrong number of axles configured for vehicle configuration',
-    );
+  if (!axleUnitVehicleIndexes) {
+    const realVehicleConfig = configuration.filter((v) => {
+      const vehicleDef = policy.getVehicleDefinition(v);
+      return !vehicleDef?.ignoreForAxleCalculation;
+    });
+
+    if (realVehicleConfig.length !== axleConfiguration.length - 1) {
+      throw new Error(
+        'Wrong number of axles configured for vehicle configuration',
+      );
+    }
   }
 
-  const relatives = getVehicleRelatives(policy, configuration, axleIndex);
+  const relatives = getVehicleRelatives(
+    policy,
+    configuration,
+    axleIndex,
+    axleUnitVehicleIndexes,
+  );
 
   for (const weightDimension of weightDimensions) {
     // Just renaming this for conciseness
     const m = weightDimension.modifier;
     if (!m) {
       // This dimension has no modifiers, so it is the default
-      if (axleIndex <= 1) {
+      if (axleIndex < powerUnitAxleUnitCount) {
         const pwd = weightDimension as PowerUnitWeightDimension;
         matchingDimension = {
           legal: axleIndex === 0 ? pwd.saLegal : pwd.daLegal,
@@ -540,6 +554,7 @@ export function getVehicleRelatives(
   policy: Policy,
   configuration: Array<string>,
   axleIndex: number,
+  axleUnitVehicleIndexes?: Array<number>,
 ): VehicleRelatives {
   if (!configuration || configuration.length === 0) {
     throw new Error('Cannot get relatives with an empty configuration');
@@ -558,24 +573,22 @@ export function getVehicleRelatives(
     lastCategory: lastVehicle?.category,
   };
 
-  if (axleIndex <= 1) {
+  const vehicleIndex = axleUnitVehicleIndexes?.[axleIndex] ?? axleIndex - 1;
+
+  if (vehicleIndex <= 0) {
     // First two axles are for the power unit which has no
     // previous type (it is first in the configuration always)
     vehicleRelatives.prevType = null;
     vehicleRelatives.prevCategory = null;
   } else {
-    // Subtract 2 from the configuration index to account for
-    // the fact that the power unit has two axles. We walk the
-    // configuration here to jump over any pseudo vehicles like
-    // additional axle units.
-    const prevVehicleType = walk(policy, configuration, axleIndex - 2, -1);
+    const prevVehicleType = walk(policy, configuration, vehicleIndex - 1, -1);
     vehicleRelatives.prevType = prevVehicleType?.id;
     vehicleRelatives.prevCategory = policy.getVehicleDefinition(
       vehicleRelatives.prevType,
     )?.category;
   }
 
-  if (configuration.length === 1 || axleIndex === configuration.length) {
+  if (configuration.length === 1 || vehicleIndex >= configuration.length - 1) {
     // The axleIndex is for the last vehicle in the configuration,
     // so it has no next type.
     vehicleRelatives.nextType = null;
@@ -583,7 +596,7 @@ export function getVehicleRelatives(
   } else {
     // Walk the configuration towards the rear, to jump over any
     // pseudo vehicle in the line.
-    const nextVehicleType = walk(policy, configuration, axleIndex, 1);
+    const nextVehicleType = walk(policy, configuration, vehicleIndex + 1, 1);
     vehicleRelatives.nextType = nextVehicleType?.id;
     vehicleRelatives.nextCategory = policy.getVehicleDefinition(
       vehicleRelatives.nextType,
@@ -591,6 +604,89 @@ export function getVehicleRelatives(
   }
 
   return vehicleRelatives;
+}
+
+/**
+ * Maps each axle unit to the vehicle configuration index that owns it.
+ *
+ * Every axle unit must supply vehicleIndex and the values must be valid,
+ * front-to-back vehicle configuration indexes. This lets the consuming
+ * application state axle ownership explicitly instead of relying on
+ * policy-engine inference.
+ *
+ * @example
+ * // Additional power-unit axle: CONCRET owns all three axle units explicitly.
+ * getAxleUnitVehicleIndexes(policy, ['CONCRET'], [
+ *   { ...axleUnit, vehicleIndex: 0 },
+ *   { ...axleUnit, vehicleIndex: 0 },
+ *   { ...axleUnit, vehicleIndex: 0 },
+ * ]);
+ * // Returns [0, 0, 0]
+ *
+ * @example
+ * // Additional trailer axle: the trailer owns both trailer axle units explicitly.
+ * getAxleUnitVehicleIndexes(policy, ['TRKTRAC', 'STROPRT'], [
+ *   { ...axleUnit, vehicleIndex: 0 },
+ *   { ...axleUnit, vehicleIndex: 0 },
+ *   { ...axleUnit, vehicleIndex: 1 },
+ *   { ...axleUnit, vehicleIndex: 1 },
+ * ]);
+ * // Returns [0, 0, 1, 1]
+ */
+export function getAxleUnitVehicleIndexes(
+  policy: Policy,
+  configuration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+): Array<number> {
+  if (!configuration || configuration.length === 0) {
+    throw new Error('Missing configuration');
+  }
+
+  if (!axleConfiguration || axleConfiguration.length === 0) {
+    throw new Error('Missing axle configuration');
+  }
+
+  const vehicleIndexCount = axleConfiguration.filter(
+    (axleUnit) => axleUnit.vehicleIndex !== undefined,
+  ).length;
+
+  if (vehicleIndexCount !== axleConfiguration.length) {
+    throw new Error('All axle units must include vehicleIndex');
+  }
+
+  const axleUnitVehicleIndexes = axleConfiguration.map((axleUnit) => {
+    const vehicleIndex = axleUnit.vehicleIndex;
+    if (
+      vehicleIndex === undefined ||
+      !Number.isInteger(vehicleIndex) ||
+      vehicleIndex < 0 ||
+      vehicleIndex >= configuration.length
+    ) {
+      throw new Error('Invalid vehicleIndex in axle configuration');
+    }
+
+    const vehicleDef = policy.getVehicleDefinition(configuration[vehicleIndex]);
+    if (vehicleDef?.ignoreForAxleCalculation) {
+      throw new Error('vehicleIndex cannot reference ignored vehicle');
+    }
+
+    return vehicleIndex;
+  });
+
+  if (
+    axleUnitVehicleIndexes.length >= 2 &&
+    (axleUnitVehicleIndexes[0] !== 0 || axleUnitVehicleIndexes[1] !== 0)
+  ) {
+    throw new Error('First two axle units must belong to the power unit');
+  }
+
+  for (let i = 1; i < axleUnitVehicleIndexes.length; i++) {
+    if (axleUnitVehicleIndexes[i] < axleUnitVehicleIndexes[i - 1]) {
+      throw new Error('Axle unit vehicleIndex values must be in vehicle order');
+    }
+  }
+
+  return axleUnitVehicleIndexes;
 }
 
 /**
