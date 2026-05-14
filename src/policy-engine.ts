@@ -1327,7 +1327,9 @@ export class Policy {
       throw new Error(`Invalid commodity type: '${commodityId}'`);
     }
 
-    const powerUnit = commodity.powerUnits.find(pu => pu.type === powerUnitSubtype);
+    const powerUnit = commodity.powerUnits.find(
+      (pu) => pu.type === powerUnitSubtype,
+    );
     if (!powerUnit) {
       throw new Error(`Invalid power unit: '${powerUnitSubtype}'`);
     }
@@ -1374,7 +1376,9 @@ export class Policy {
       throw new Error(`Invalid commodity type: '${commodityId}'`);
     }
 
-    const powerUnit = commodity.powerUnits.find(pu => pu.type === powerUnitSubtype);
+    const powerUnit = commodity.powerUnits.find(
+      (pu) => pu.type === powerUnitSubtype,
+    );
     if (!powerUnit) {
       throw new Error(`Invalid power unit: '${powerUnitSubtype}'`);
     }
@@ -1387,6 +1391,7 @@ export class Policy {
     }
 
     const trailer = powerUnit.trailers.find(trailer => trailer.type === trailerSubtype);
+      
     if (!trailer) {
       throw new Error(`Invalid trailer: '${trailerSubtype}'`);
     }
