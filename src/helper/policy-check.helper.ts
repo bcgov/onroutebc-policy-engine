@@ -11,9 +11,8 @@ import { getAxleUnitVehicleIndexes } from './dimensions.helper';
 import {
   AccessoryVehicleType,
   PolicyCheckId,
-  PolicyCheckResultType,
   VehicleCategory,
-  PolicyCheckResultType,
+  PolicyCheckResultType
 } from '../enum';
 
 
