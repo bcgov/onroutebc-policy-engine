@@ -7,8 +7,15 @@ import {
   SingleAxleDimension,
 } from 'onroute-policy-engine/types';
 import { Policy } from 'onroute-policy-engine';
-import { PolicyCheckId, PolicyCheckResultType } from '../enum';
 import { getAxleUnitVehicleIndexes } from './dimensions.helper';
+import {
+  AccessoryVehicleType,
+  PolicyCheckId,
+  PolicyCheckResultType,
+  VehicleCategory,
+  PolicyCheckResultType,
+} from '../enum';
+
 
 /**
  * Type definition for policy check functions.
@@ -646,6 +653,77 @@ export function CheckMaxTireLoad(
 }
 
 /**
+ * Validates that each booster has no more axles than the trailer it follows.
+ *
+ * Vehicle configuration has one power unit entry, while axle configuration has
+ * separate steer and drive entries for the power unit. For vehicle entries after
+ * the power unit, the matching axle unit index is therefore vehicle index + 1.
+ *
+ * @param _policy - The policy instance (unused in this check, but required by PolicyCheck type)
+ * @param vehicleConfiguration - Array of vehicle type identifiers representing the vehicle configuration
+ * @param axleConfiguration - Array of axle configurations containing axle count information
+ * @returns Array of AxleGroupPolicyCheckResult objects, one for each booster tested
+ */
+export function CheckBoosterAxleLimit(
+  _policy: Policy,
+  vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+): Array<PolicyCheckResult> {
+  const policyCheckResults = new Array<AxleGroupPolicyCheckResult>();
+  const policyId = PolicyCheckId.BoosterAxleLimit;
+  let trailerAxleConfigIndex: number | undefined;
+
+  vehicleConfiguration.forEach((vehicleSubType, vehicleIndex) => {
+    if (vehicleIndex === 0) {
+      return;
+    }
+
+    const axleConfigIndex = vehicleIndex + 1;
+    if (axleConfigIndex >= axleConfiguration.length) {
+      return;
+    }
+
+    if (vehicleSubType === AccessoryVehicleType.Booster) {
+      if (trailerAxleConfigIndex === undefined) {
+        return;
+      }
+
+      const boosterAxleUnit = axleConfigIndex + 1;
+      const trailerAxleUnit = trailerAxleConfigIndex + 1;
+      const result =
+        axleConfiguration[axleConfigIndex].numberOfAxles <=
+        axleConfiguration[trailerAxleConfigIndex].numberOfAxles;
+
+      policyCheckResults.push({
+        id: policyId,
+        result: result
+          ? PolicyCheckResultType.Pass
+          : PolicyCheckResultType.Fail,
+        message: result
+          ? ''
+          : `No. of Axles for Axle Unit ${boosterAxleUnit} must be less than or equal to No. of Axles for Axle Unit ${trailerAxleUnit}`,
+        startAxleUnit: trailerAxleUnit,
+        endAxleUnit: boosterAxleUnit,
+      });
+      return;
+    }
+
+    const vehicleDefinition = _policy.getTrailerDefinition(vehicleSubType);
+    // Trailer definitions mark additionalAxleSubType entries as category "pseudo"
+    // (for example PFMAXLE), so keep comparing boosters to the last real trailer.
+    // Basically, skip pseudo axle units when deciding which trailer the booster follows.
+    if (
+      vehicleSubType !== AccessoryVehicleType.Jeep &&
+      vehicleDefinition?.category !== VehicleCategory.Pseudo
+    ) {
+      trailerAxleConfigIndex = axleConfigIndex;
+    }
+  });
+
+  return policyCheckResults;
+}
+
+/**
  * Map of policy check functions keyed by their corresponding PolicyCheckId.
  *
  * This map contains all the registered policy check functions that are executed
@@ -661,6 +739,7 @@ export function CheckMaxTireLoad(
  * - MinSteerAxleWeight: Validates minimum weight requirements for steer axles
  * - NumberOfAxles: Validates axle count per axle unit
  * - NumberOfWheelsPerAxle: Validates tire count per axle unit
+ * - BoosterAxleLimit: Validates booster axle count against the preceding trailer
  *
  * @see PolicyCheck
  * @see PolicyCheckId
@@ -674,4 +753,5 @@ export const policyCheckMap = new Map<string, PolicyCheck>([
   [PolicyCheckId.MinDriveAxleWeight, CheckMinDriveAxleWeight],
   [PolicyCheckId.MinSteerAxleWeight, CheckMinSteerAxleWeight],
   [PolicyCheckId.NumberOfWheelsPerAxle, CheckNumTiresPerAxle],
+  [PolicyCheckId.BoosterAxleLimit, CheckBoosterAxleLimit],
 ]);

@@ -5,7 +5,7 @@
  * Used for validating vehicle configurations against weight and axle requirements.
  */
 
-import { PolicyCheckResultType } from 'onroute-policy-engine/enum';
+import { PolicyCheckId, PolicyCheckResultType } from 'onroute-policy-engine/enum';
 
 /**
  * Complete results from axle calculations including all policy checks and total overload
@@ -26,7 +26,8 @@ export type PolicyCheckResult = {
   /** Maximum allowed weight threshold in kilograms */
   thresholdWeight?: number;
   /** Unique identifier for the policy check */
-  id: string;
+  // id: string;
+  id: PolicyCheckId
   /** Result of the policy check (pass/fail) */
   result: PolicyCheckResultType;
   /** Human-readable message describing the check result */

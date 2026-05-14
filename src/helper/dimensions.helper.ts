@@ -446,7 +446,8 @@ export function selectCorrectWeightDimensionHelper(
         const { legal, permittable } = twd;
         matchingDimension = { legal, permittable };
       }
-      console.log('Using default weight dimension, no modifiers specified');
+      // Temporarily disabled, doesn't seem this is required.
+      // console.log('Using default weight dimension, no modifiers specified');
     } else {
       let isMatch = false;
       // We can match by vehicle type or vehicle category

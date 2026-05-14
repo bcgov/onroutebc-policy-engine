@@ -25,3 +25,8 @@ export type AxleConfiguration = {
    */
   vehicleIndex?: number;
 };
+
+export type IndexedAxleConfiguration = AxleConfiguration & {
+  /** Index of the vehicle carrying this axle unit, where 0 is the power unit */
+  vehicleIndex: number;
+};
