@@ -170,7 +170,7 @@ export function CheckNumTiresPerAxle(
   _vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
 ): Array<PolicyCheckResult> {
-  const policyCheckResults = new Array<AxleUnitPolicyCheckResult>();
+  const policyCheckResults = new Array<AxleGroupPolicyCheckResult>();
   const policyId = PolicyCheckId.NumberOfWheelsPerAxle;
   let axleNum = 1;
   axleConfiguration.forEach((ac) => {
@@ -186,15 +186,18 @@ export function CheckNumTiresPerAxle(
       const checkResult = [numAxles * 2, numAxles * 4, numAxles * 8].includes(
         numTires,
       );
-      message = `Number of wheels for axle unit ${axleNum} is ${checkResult ? '' : 'not '}permittable.`;
+      message = checkResult
+        ? `No. of Wheels for Axle Unit ${axleNum} is permittable.`
+        : `No. of Wheels for Axle Unit ${axleNum} is not permittable.`;
       if (checkResult) result = PolicyCheckResultType.Pass;
     }
     policyCheckResults.push({
       id: policyId,
-      message: message,
-      result: result,
-      axleUnit: axleNum,
-    });
+      message,
+      result,
+      startAxleUnit: axleNum,
+      endAxleUnit: axleNum,
+    } as AxleGroupPolicyCheckResult);
     axleNum++;
   });
   return policyCheckResults;
