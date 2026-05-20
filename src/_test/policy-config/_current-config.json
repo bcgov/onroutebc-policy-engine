@@ -1535,26 +1535,6 @@
       "rules": [
         {
           "conditions": {
-            "not": {
-              "fact": "permitData",
-              "path": "expiryDate",
-              "operator": "equal",
-              "value": {
-                "fact": "endOfPermitYear"
-              }
-            }
-          },
-          "event": {
-            "type": "violation",
-            "params": {
-              "message": "Permit end date must be the end of the year in which the permit starts",
-              "code": "field-validation-error",
-              "fieldReference": "permitData.expiryDate"
-            }
-          }
-        },
-        {
-          "conditions": {
             "all": [
               {
                 "not": {
@@ -1751,6 +1731,26 @@
               "message": "Vehicle subtype not permittable for Vehicle Type 'Other'.",
               "code": "field-validation-error",
               "fieldReference": "permitData.vehicleDetails.vehicleSubType"
+            }
+          }
+        },
+        {
+          "conditions": {
+            "not": {
+              "fact": "permitData",
+              "path": "expiryDate",
+              "operator": "equal",
+              "value": {
+                "fact": "endOfPermitYear"
+              }
+            }
+          },
+          "event": {
+            "type": "violation",
+            "params": {
+              "message": "Permit end date must be the end of the year in which the permit starts",
+              "code": "field-validation-error",
+              "fieldReference": "permitData.expiryDate"
             }
           }
         }
