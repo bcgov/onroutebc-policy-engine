@@ -18,4 +18,15 @@ export type AxleConfiguration = {
   numberOfTires?: number;
   /** Tire size in centimetres */
   tireSize?: number;
+  /**
+   * Index of the owning vehicle in the vehicleConfiguration array.
+   * Index 0 is the power unit; following indexes map to the same positions
+   * in vehicleConfiguration.
+   */
+  vehicleIndex?: number;
+};
+
+export type IndexedAxleConfiguration = AxleConfiguration & {
+  /** Index of the vehicle carrying this axle unit, where 0 is the power unit */
+  vehicleIndex: number;
 };

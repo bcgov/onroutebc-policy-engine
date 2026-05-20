@@ -165,6 +165,8 @@ export type PermittedCommodity = {
 export type VehicleInConfiguration = {
   /** Subtype of the vehicle */
   vehicleSubType: string;
+  /** Axle configuration details for this vehicle (optional) */
+  axleConfiguration?: Array<AxleConfiguration> | null;
 };
 
 /**

@@ -5,6 +5,7 @@ import {
   VehicleType,
   SizeDimension,
   AxleConfiguration,
+  IndexedAxleConfiguration,
   BridgeCalculationResult,
   ConditionForPermit,
   TrailerType,
@@ -20,6 +21,7 @@ import {
   PolicyCheckResult,
   PermitVehicleDetails,
   VehicleConfiguration,
+  VehicleInConfiguration,
 } from 'onroute-policy-engine/types';
 import {
   extractIdentifiedObjects,
@@ -48,6 +50,8 @@ import { SpecialAuthorizations } from './types/special-authorizations';
 import {
   filterOutLcv,
   filterVehiclesByType,
+  calculateGCVWHelper,
+  combineAxleConfigurationsHelper,
   getSimplifiedVehicleConfigurationHelper,
 } from './helper/vehicles.helper';
 import { getConditionsForPermitHelper } from './helper/conditions.helper';
@@ -1258,6 +1262,35 @@ export class Policy {
   }
 
   /**
+   * Combines axle configurations from a power unit and its trailers into a
+   * single axle configuration array, adding a vehicle index to each axle unit.
+   *
+   * @param powerUnitAxleConfiguration - Axle configuration for the power unit
+   * @param trailers - Trailer configurations that may include axle configuration
+   * @returns Combined axle configurations in vehicle order, where vehicleIndex 0
+   *          represents the power unit and trailer indexes start at 1.
+   */
+  combineAxleConfigurations(
+    powerUnitAxleConfiguration: Array<AxleConfiguration>,
+    trailers: Array<VehicleInConfiguration>,
+  ): Array<IndexedAxleConfiguration> {
+    return combineAxleConfigurationsHelper(
+      powerUnitAxleConfiguration,
+      trailers,
+    );
+  }
+
+  /**
+   * Calculates the Gross Combined Vehicle Weight (GCVW) from axle unit weights.
+   *
+   * @param axleConfiguration - Axle configuration to total
+   * @returns Sum of axle unit weights, treating missing weights as 0.
+   */
+  calculateGCVW(axleConfiguration: Array<AxleConfiguration>): number {
+    return calculateGCVWHelper(axleConfiguration);
+  }
+
+  /**
    * Given a commodity and selected power unit subtype for a permit type,
    * return whether or not axle units can be added to the power unit.
    * @param permitType The permit type
@@ -1294,7 +1327,9 @@ export class Policy {
       throw new Error(`Invalid commodity type: '${commodityId}'`);
     }
 
-    const powerUnit = commodity.powerUnits.find(pu => pu.type === powerUnitSubtype);
+    const powerUnit = commodity.powerUnits.find(
+      (pu) => pu.type === powerUnitSubtype,
+    );
     if (!powerUnit) {
       throw new Error(`Invalid power unit: '${powerUnitSubtype}'`);
     }
@@ -1341,7 +1376,9 @@ export class Policy {
       throw new Error(`Invalid commodity type: '${commodityId}'`);
     }
 
-    const powerUnit = commodity.powerUnits.find(pu => pu.type === powerUnitSubtype);
+    const powerUnit = commodity.powerUnits.find(
+      (pu) => pu.type === powerUnitSubtype,
+    );
     if (!powerUnit) {
       throw new Error(`Invalid power unit: '${powerUnitSubtype}'`);
     }
@@ -1354,6 +1391,7 @@ export class Policy {
     }
 
     const trailer = powerUnit.trailers.find(trailer => trailer.type === trailerSubtype);
+      
     if (!trailer) {
       throw new Error(`Invalid trailer: '${trailerSubtype}'`);
     }

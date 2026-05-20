@@ -58,6 +58,91 @@ describe('Policy Engine Oversize Configuration Functions', () => {
   });
 });
 
+describe('Policy Engine Vehicle Configuration Helpers', () => {
+  const policy: Policy = new Policy(currentPolicyConfig);
+
+  it('should combine power unit and trailer axle configurations with vehicle indexes', () => {
+    const combinedAxleConfiguration = policy.combineAxleConfigurations(
+      [
+        {
+          numberOfAxles: 1,
+          axleUnitWeight: 5000,
+        },
+        {
+          numberOfAxles: 2,
+          axleUnitWeight: 12000,
+        },
+      ],
+      [
+        {
+          vehicleSubType: 'SEMITRL',
+          axleConfiguration: [
+            {
+              numberOfAxles: 2,
+              axleUnitWeight: 10000,
+            },
+          ],
+        },
+        {
+          vehicleSubType: 'BOOSTER',
+          axleConfiguration: null,
+        },
+        {
+          vehicleSubType: 'DOLLIES',
+          axleConfiguration: [
+            {
+              numberOfAxles: 1,
+              axleUnitWeight: 4000,
+            },
+          ],
+        },
+      ],
+    );
+
+    expect(combinedAxleConfiguration).toEqual([
+      {
+        numberOfAxles: 1,
+        axleUnitWeight: 5000,
+        vehicleIndex: 0,
+      },
+      {
+        numberOfAxles: 2,
+        axleUnitWeight: 12000,
+        vehicleIndex: 0,
+      },
+      {
+        numberOfAxles: 2,
+        axleUnitWeight: 10000,
+        vehicleIndex: 1,
+      },
+      {
+        numberOfAxles: 1,
+        axleUnitWeight: 4000,
+        vehicleIndex: 3,
+      },
+    ]);
+  });
+
+  it('should calculate GCVW from axle unit weights', () => {
+    const gcvw = policy.calculateGCVW([
+      {
+        numberOfAxles: 1,
+        axleUnitWeight: 5000,
+      },
+      {
+        numberOfAxles: 2,
+        axleUnitWeight: 12000,
+      },
+      {
+        numberOfAxles: 1,
+        axleUnitWeight: 4000,
+      },
+    ]);
+
+    expect(gcvw).toBe(21000);
+  });
+});
+
 describe('Policy Engine Get Next Permittable Vehicles', () => {
   const policy: Policy = new Policy(currentPolicyConfig);
   const lcvPolicy: Policy = new Policy(currentPolicyConfig, specialAuth);
