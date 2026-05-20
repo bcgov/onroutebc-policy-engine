@@ -1,13 +1,21 @@
 import { Policy } from '../../policy-engine';
 import currentPolicyConfig from '../policy-config/_current-config.json';
 import testStow from '../permit-app/test-stow.json';
-import { PolicyCheckId, PolicyCheckResultType } from '../../enum';
+import {
+  PermitAppInfo,
+  PolicyCheckId,
+  PolicyCheckResultType,
+} from '../../enum';
 import {
   AxleCalcResults,
   AxleConfiguration,
   AxleGroupPolicyCheckResult,
 } from '../../types';
-import { CheckBoosterAxleLimit } from '../../helper/policy-check.helper';
+import {
+  CheckBoosterAxleLimit,
+  CheckTruckTractorWheelbase,
+} from '../../helper/policy-check.helper';
+import dayjs from 'dayjs';
 
 describe('Axle Calculation Functions', () => {
   const policy: Policy = new Policy(currentPolicyConfig);
@@ -18,6 +26,34 @@ describe('Axle Calculation Functions', () => {
   );
   const axleConfiguration =
     permit.permitData.vehicleConfiguration.axleConfiguration;
+
+  const getTruckTractorWheelbaseAxles = (
+    interaxleSpacing: number,
+    axleSpread: number,
+  ) => {
+    const ac = JSON.parse(
+      JSON.stringify(axleConfiguration),
+    ) as Array<AxleConfiguration>;
+    ac[0].numberOfAxles = 1;
+    ac[1].numberOfAxles = 2;
+    ac[1].axleSpread = axleSpread;
+    ac[1].interaxleSpacing = interaxleSpacing;
+    return ac;
+  };
+
+  const getTruckTractorWheelbasePermit = (
+    interaxleSpacing: number,
+    axleSpread: number,
+  ) => {
+    const p = JSON.parse(JSON.stringify(testStow));
+    p.permitData.startDate = dayjs().format(
+      PermitAppInfo.PermitDateFormat.toString(),
+    );
+    p.permitData.vehicleDetails.vehicleSubType = 'TRKTRAC';
+    p.permitData.vehicleConfiguration.axleConfiguration =
+      getTruckTractorWheelbaseAxles(interaxleSpacing, axleSpread);
+    return p;
+  };
 
   it('should return no failing policy checks for valid STOW', async () => {
     const results = policy.runAxleCalculation(
@@ -379,11 +415,15 @@ describe('Axle Calculation Functions', () => {
   });
 
   it('should not treat a booster without a preceding trailer as an axle limit violation', async () => {
-    const results = CheckBoosterAxleLimit(policy, ['TRKTRAC', 'BOOSTER'], [
-      { numberOfAxles: 1, axleUnitWeight: 6700 },
-      { numberOfAxles: 2, axleUnitWeight: 12000 },
-      { numberOfAxles: 2, axleUnitWeight: 10000 },
-    ]);
+    const results = CheckBoosterAxleLimit(
+      policy,
+      ['TRKTRAC', 'BOOSTER'],
+      [
+        { numberOfAxles: 1, axleUnitWeight: 6700 },
+        { numberOfAxles: 2, axleUnitWeight: 12000 },
+        { numberOfAxles: 2, axleUnitWeight: 10000 },
+      ],
+    );
 
     expect(results).toHaveLength(0);
   });
@@ -422,6 +462,219 @@ describe('Axle Calculation Functions', () => {
       startAxleUnit: 3,
       endAxleUnit: 6,
     });
+  });
+
+  it('should pass truck tractor wheelbase at the maximum allowed value', async () => {
+    const results = CheckTruckTractorWheelbase(
+      policy,
+      ['TRKTRAC', 'SEMITRL'],
+      [
+        { numberOfAxles: 1, axleUnitWeight: 6700 },
+        {
+          numberOfAxles: 2,
+          axleSpread: 140,
+          interaxleSpacing: 650,
+          axleUnitWeight: 12000,
+        },
+        { numberOfAxles: 3, axleUnitWeight: 10000 },
+      ],
+    );
+
+    expect(results[0]).toMatchObject({
+      id: PolicyCheckId.TruckTractorWheelbase,
+      result: PolicyCheckResultType.Pass,
+      message:
+        'Wheelbase for Axle Unit 1 and Axle Unit 2 is between 6.2m and 7.2m. See CTPM 5.3.7.A.',
+      startAxleUnit: 1,
+      endAxleUnit: 2,
+    });
+  });
+
+  it('should fail truck tractor wheelbase above the maximum allowed value', async () => {
+    const results = CheckTruckTractorWheelbase(
+      policy,
+      ['TRKTRAC', 'SEMITRL'],
+      [
+        { numberOfAxles: 1, axleUnitWeight: 6700 },
+        {
+          numberOfAxles: 2,
+          axleSpread: 140,
+          interaxleSpacing: 660,
+          axleUnitWeight: 12000,
+        },
+        { numberOfAxles: 3, axleUnitWeight: 10000 },
+      ],
+    );
+
+    expect(results[0]).toMatchObject({
+      id: PolicyCheckId.TruckTractorWheelbase,
+      result: PolicyCheckResultType.Fail,
+      message:
+        'Wheelbase for Axle Unit 1 and Axle Unit 2 is greater than 7.2m.',
+      startAxleUnit: 1,
+      endAxleUnit: 2,
+    });
+  });
+
+  it('should pass truck tractor wheelbase below the minimum restricted value', async () => {
+    const results = CheckTruckTractorWheelbase(
+      policy,
+      ['TRKTRAC', 'JEEPSRG', 'BOOSTER'],
+      [
+        { numberOfAxles: 1, axleUnitWeight: 6700 },
+        {
+          numberOfAxles: 2,
+          axleSpread: 40,
+          interaxleSpacing: 580,
+          axleUnitWeight: 12000,
+        },
+        { numberOfAxles: 2, axleUnitWeight: 10000 },
+        { numberOfAxles: 2, axleUnitWeight: 10000 },
+      ],
+    );
+
+    expect(results[0]).toMatchObject({
+      result: PolicyCheckResultType.Pass,
+      message: '',
+      startAxleUnit: 1,
+      endAxleUnit: 2,
+    });
+  });
+
+  it('should fail truck tractor wheelbase between 6.2m and 7.2m with jeep or booster selected', async () => {
+    const jeepResults = CheckTruckTractorWheelbase(
+      policy,
+      ['TRKTRAC', 'JEEPSRG'],
+      [
+        { numberOfAxles: 1, axleUnitWeight: 6700 },
+        {
+          numberOfAxles: 2,
+          axleSpread: 140,
+          interaxleSpacing: 550,
+          axleUnitWeight: 12000,
+        },
+        { numberOfAxles: 2, axleUnitWeight: 10000 },
+      ],
+    );
+    const boosterResults = CheckTruckTractorWheelbase(
+      policy,
+      ['TRKTRAC', 'SEMITRL', 'BOOSTER'],
+      [
+        { numberOfAxles: 1, axleUnitWeight: 6700 },
+        {
+          numberOfAxles: 2,
+          axleSpread: 140,
+          interaxleSpacing: 550,
+          axleUnitWeight: 12000,
+        },
+        { numberOfAxles: 3, axleUnitWeight: 10000 },
+        { numberOfAxles: 2, axleUnitWeight: 10000 },
+      ],
+    );
+
+    expect(jeepResults[0]).toMatchObject({
+      result: PolicyCheckResultType.Fail,
+      message:
+        'Wheelbase for Axle Unit 1 and Axle Unit 2 is between 6.2m and 7.2m. See CTPM 5.3.7.A.',
+    });
+    expect(boosterResults[0]).toMatchObject({
+      result: PolicyCheckResultType.Fail,
+      message:
+        'Wheelbase for Axle Unit 1 and Axle Unit 2 is between 6.2m and 7.2m. See CTPM 5.3.7.A.',
+    });
+  });
+
+  it('should include truck tractor wheelbase in axle calculation results', async () => {
+    const vc = [...vehicleConfiguration];
+    const ac = JSON.parse(
+      JSON.stringify(axleConfiguration),
+    ) as Array<AxleConfiguration>;
+    ac[1].axleSpread = 140;
+    ac[1].interaxleSpacing = 650;
+
+    const results = policy.runAxleCalculation(vc, ac, 0);
+    const wheelbaseResult = results.results.find(
+      (r) => r.id === PolicyCheckId.TruckTractorWheelbase,
+    );
+
+    expect(wheelbaseResult).toMatchObject({
+      startAxleUnit: 1,
+      endAxleUnit: 2,
+    });
+  });
+
+  it('should return the same truck tractor wheelbase result from runAxleCalculation as the direct policy check', async () => {
+    const scenarios = [
+      { interaxleSpacing: 660, axleSpread: 140 },
+      { interaxleSpacing: 550, axleSpread: 140 },
+      { interaxleSpacing: 580, axleSpread: 40 },
+    ];
+
+    scenarios.forEach(({ interaxleSpacing, axleSpread }) => {
+      const ac = getTruckTractorWheelbaseAxles(interaxleSpacing, axleSpread);
+      const directResult = CheckTruckTractorWheelbase(
+        policy,
+        vehicleConfiguration,
+        ac,
+      )[0];
+      const runAxleCalculationResult = policy
+        .runAxleCalculation(vehicleConfiguration, ac, 0)
+        .results.find((r) => r.id === PolicyCheckId.TruckTractorWheelbase);
+
+      expect(runAxleCalculationResult).toMatchObject(directResult);
+    });
+  });
+
+  it('should include failed truck tractor wheelbase results from validate matching the direct policy check', async () => {
+    const scenarios = [
+      { interaxleSpacing: 660, axleSpread: 140 },
+      { interaxleSpacing: 550, axleSpread: 140 },
+    ];
+
+    for (const { interaxleSpacing, axleSpread } of scenarios) {
+      const permit = getTruckTractorWheelbasePermit(
+        interaxleSpacing,
+        axleSpread,
+      );
+      const directResult = CheckTruckTractorWheelbase(
+        policy,
+        vehicleConfiguration,
+        permit.permitData.vehicleConfiguration.axleConfiguration,
+      )[0];
+
+      expect(directResult.result).toBe(PolicyCheckResultType.Fail);
+
+      const validationResult = await policy.validate(permit);
+      expect(validationResult.violations[0]).toMatchObject({
+        message: 'Vehicle configuration failed axle calculation policy checks',
+      });
+      expect(validationResult.violations[0].details).toContain(
+        directResult.message,
+      );
+    }
+  });
+
+  it('should not include a truck tractor wheelbase validation violation when the direct policy check passes below 6.2m', async () => {
+    const permit = getTruckTractorWheelbasePermit(580, 40);
+    const directResult = CheckTruckTractorWheelbase(
+      policy,
+      vehicleConfiguration,
+      permit.permitData.vehicleConfiguration.axleConfiguration,
+    )[0];
+
+    expect(directResult).toMatchObject({
+      result: PolicyCheckResultType.Pass,
+      message: '',
+    });
+
+    const validationResult = await policy.validate(permit);
+    const axleCalcViolation = validationResult.violations.find(
+      (v) =>
+        v.message ===
+        'Vehicle configuration failed axle calculation policy checks',
+    );
+
+    expect(axleCalcViolation).toBeUndefined();
   });
 
   it('should fail policy check for steer axle tire size too large', async () => {
