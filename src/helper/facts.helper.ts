@@ -28,6 +28,11 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
   const today: string = dayjs().format(PermitAppInfo.PermitDateFormat);
   engine.addFact(PolicyFacts.ValidationDate, today);
 
+  engine.addFact('testFunction', async function () {
+    console.log('Calculating testFunction fact');
+    return 100 + 100;
+  });
+
   /**
    * Add runtime fact for number of days in the permit year.
    * Will be either 365 or 366, for use when comparing against
