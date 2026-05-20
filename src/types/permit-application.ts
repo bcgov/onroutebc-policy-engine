@@ -77,6 +77,8 @@ export type PermitVehicleDetails = {
   licensedGVW?: number | null;
   /** Whether to save this vehicle to the inventory (optional) */
   saveVehicle?: boolean | null;
+  /** Vehicle description (optional) */
+  vehicleDescription?: string | null;
 };
 
 /**
@@ -93,6 +95,16 @@ export type PermitCommodity = {
   checked: boolean;
   /** Whether this commodity option is disabled */
   disabled: boolean;
+};
+
+/**
+ * ICBC certificate information for the permit application
+ */
+export type ICBCInsuranceCertificate = {
+  /** Whether or not an ICBC insurance certificate is to be applied to the permit */
+  haveCertificate: boolean;
+  /** Certificate number */
+  certificateNumber?: string | null;
 };
 
 /**
@@ -133,6 +145,8 @@ export type PermitData = {
   thirdPartyLiability?: string | null;
   /** Conditional licensing fee information (optional) */
   conditionalLicensingFee?: string | null;
+  /** ICBC insurance certificate information (optional) */
+  icbcInsuranceCertificate?: ICBCInsuranceCertificate | null;
 };
 
 /**

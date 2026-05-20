@@ -41,12 +41,17 @@
       "year": 2010,
       "countryCode": "CA",
       "provinceCode": "BC",
-      "vehicleType": "powerUnit",
-      "vehicleSubType": "TRKTRAC",
-      "saveVehicle": false
+      "vehicleType": "other",
+      "vehicleSubType": "",
+      "saveVehicle": false,
+      "vehicleDescription": "Example Vehicle Description"
     },
     "feeSummary": "30",
-    "startDate": "2024-05-10",
-    "expiryDate": "2024-12-31"
+    "icbcInsuranceCertificate": {
+      "haveCertificate": true,
+      "certificateNumber": "D654321"
+    },
+    "startDate": "2026-05-15",
+    "expiryDate": "2026-12-31"
   }
 }
