@@ -1555,7 +1555,7 @@
           "event": {
             "type": "violation",
             "params": {
-              "message": "Vehicle description should not exist unless the permit vehicle type is 'Other'.",
+              "message": "Vehicle description should not exist unless the permit vehicle type is Other.",
               "code": "field-validation-error",
               "fieldReference": "permitData.vehicleDetails.vehicleDescription"
             }
@@ -1583,7 +1583,7 @@
           "event": {
             "type": "violation",
             "params": {
-              "message": "Vehicle description must be present if the permit vehicle type is 'Other'.",
+              "message": "Vehicle description must be present if the permit vehicle type is Other.",
               "code": "field-validation-error",
               "fieldReference": "permitData.vehicleDetails.vehicleDescription"
             }
@@ -1728,7 +1728,7 @@
           "event": {
             "type": "violation",
             "params": {
-              "message": "Vehicle subtype not permittable for Vehicle Type 'Other'.",
+              "message": "Vehicle subtype not permittable for Vehicle Type Other.",
               "code": "field-validation-error",
               "fieldReference": "permitData.vehicleDetails.vehicleSubType"
             }
