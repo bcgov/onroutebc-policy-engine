@@ -69,6 +69,27 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
   );
 
   /**
+   * Add runtime fact to get the last day of the year
+   * that the permit start date falls in. Returns the date
+   * formatted as a string in the standard permit date format.
+   */
+  engine.addFact(
+    PolicyFacts.EndOfPermitYear,
+    async function (params, almanac) {
+      const startDate: string = await almanac.factValue(
+        PermitAppInfo.PermitData,
+        {},
+        PermitAppInfo.PermitStartDate,
+      );
+
+      const dateFrom = dayjs(startDate, PermitAppInfo.PermitDateFormat);
+      const endOfYear = dateFrom.endOf('year').format(PermitAppInfo.PermitDateFormat);
+
+      return endOfYear;
+    },
+  );
+
+  /**
    * Adds a runtime fact specifying whether the vehicle configuration
    * in the permit application is valid for the permit type and
    * commodity. Will return true or false.
