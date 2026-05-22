@@ -5,6 +5,7 @@ export enum PolicyFacts {
   DaysBetween = 'daysBetween',
   DaysInPermitYear = 'daysInPermitYear',
   EndOfPermitQuarter = 'endOfPermitQuarter',
+  EndOfPermitYear = 'endOfPermitYear',
   GrossVehicleCombinationWeight = 'gvcw',
   PolicyCheckPassed = 'policyCheckPassed',
   ValidationDate = 'validationDate',
