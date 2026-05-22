@@ -1,21 +1,28 @@
 ---
 name: CI/CD Pipleine For Simple Package Publishing
+
 on:
   push:
     branches: [main]
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-24.04
+
     permissions:
       contents: write
       packages: write
+
     steps:
       - uses: actions/checkout@v4
+
   semver:
     runs-on: ubuntu-24.04
+
     outputs:
       next-version: ${{ steps.semver.outputs.next }}
+
     permissions:
       contents: write
       packages: write
@@ -36,10 +43,14 @@ jobs:
       - name: Log if No Version Bump
         if: ${{ !steps.semver.outputs.next }}
         run: echo "No version bump detected. Skipping deploy."
+
   deploy:
     needs: semver
+
     if: ${{ needs.semver.outputs.next-version }}
+
     runs-on: ubuntu-24.04
+
     permissions:
       id-token: write # needed for provenance data generation
       contents: write
@@ -49,37 +60,43 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Inject Semver Into Package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - run: npm ci
+
+      - name: Injecting Semver Into Package.json
         run: |
-          jq --arg version "${{ needs.semver.outputs.next-version }}" \
-            '.version = $version' \
-            package.json > package.tmp.json
+          npm version "${{ needs.semver.outputs.next-version }}" --no-git-tag-version
 
-          mv package.tmp.json package.json
+      - name: Fix package.json
+        run: npm pkg fix
 
-          cat package.json
+      - name: Verify npm auth
+        run: npm whoami
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-            - uses: actions/setup-node@v4
-              with:
-                node-version: '20.x'
-                registry-url: 'https://registry.npmjs.org'
+      - run: npm install genversion --save-dev
 
-            - run: npm ci
-            - run: npm install genversion --save-dev
-            - run: npx genversion -e src/version.ts
-            - run: tsc
-            - run: npm test
-            
-            - name: Publish Package
-              run: npm publish --provenance --access public
-              env:
-                NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: npx genversion -e src/version.ts
 
-            - name: Create Release 
-              env:
-                GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              run: |
-                gh release create "${{ needs.semver.outputs.next-version }}" \
-                --repo="${{ github.repository }}" \
-                --title="${{ needs.semver.outputs.next-version }}" \
-                --generate-notes
+      - run: npm run build
+
+      - run: npm test
+
+      - name: Publish Package
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ needs.semver.outputs.next-version }}" \
+          --repo="${{ github.repository }}" \
+          --title="${{ needs.semver.outputs.next-version }}" \
+          --generate-notes
