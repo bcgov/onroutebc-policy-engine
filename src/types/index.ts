@@ -1,23 +1,23 @@
-export {
+export type {
   AxleCalcResults,
   PolicyCheckResult,
   AxleUnitPolicyCheckResult,
   AxleGroupPolicyCheckResult,
 } from './axle-calculation-results';
-export {
+export type {
   AxleConfiguration,
   IndexedAxleConfiguration,
 } from './axle-configuration';
-export { BridgeCalculationConstants } from './bridge-calculation-constants';
-export { BridgeCalculationResult } from './bridge-calculation-result';
-export { Commodity } from './commodity';
-export { CostRule } from './cost-rule';
-export { DimensionModifier, VehicleRelatives } from './dimension-modifier';
-export { VehicleDisplayCodeDefaults } from './display-code-defaults';
-export { PermitFacts } from './facts';
-export { GeographicRegion } from './geographic-region';
-export { IdentifiedObject } from './identified-object';
-export {
+export type { BridgeCalculationConstants } from './bridge-calculation-constants';
+export type { BridgeCalculationResult } from './bridge-calculation-result';
+export type { Commodity } from './commodity';
+export type { CostRule } from './cost-rule';
+export type { DimensionModifier, VehicleRelatives } from './dimension-modifier';
+export type { VehicleDisplayCodeDefaults } from './display-code-defaults';
+export type { PermitFacts } from './facts';
+export type { GeographicRegion } from './geographic-region';
+export type { IdentifiedObject } from './identified-object';
+export type {
   PermitMailingAddress,
   PermitContactDetails,
   PermitVehicleDetails,
@@ -30,33 +30,33 @@ export {
   ManualRoute,
   PermitApplication,
 } from './permit-application';
-export {
+export type {
   PermitConditionDefinition,
   ConditionRequirement,
   ConditionForPermit,
 } from './permit-condition';
-export { PermitType } from './permit-type';
-export { PolicyDefinition } from './policy-definition';
-export { Matrix, RangeMatrix } from './range-matrix';
-export { RegionSizeOverride } from './region-size-override';
-export { SelfIssuable } from './self-issuable';
-export { SizeDimension } from './size-dimension';
-export { SpecialAuthorizations } from './special-authorizations';
-export { StandardTireSize } from './standard-tire-size';
-export {
+export type { PermitType } from './permit-type';
+export type { PolicyDefinition } from './policy-definition';
+export type { Matrix, RangeMatrix } from './range-matrix';
+export type { RegionSizeOverride } from './region-size-override';
+export type { SelfIssuable } from './self-issuable';
+export type { SizeDimension } from './size-dimension';
+export type { SpecialAuthorizations } from './special-authorizations';
+export type { StandardTireSize } from './standard-tire-size';
+export type {
   VehicleCategory,
   PowerUnitCategory,
   TrailerCategory,
   VehicleCategories,
 } from './vehicle-category';
-export {
+export type {
   VehicleType,
   PowerUnitType,
   TrailerType,
   VehicleTypes,
 } from './vehicle-type';
-export { TrailerDimensions, Vehicle, VehicleDimensions } from './vehicle';
-export {
+export type { TrailerDimensions, Vehicle, VehicleDimensions } from './vehicle';
+export type {
   WeightDimension,
   PowerUnitWeightDimension,
   TrailerWeightDimension,

@@ -1500,6 +1500,281 @@ export const data: PolicyDefinition = {
   ],
   permitTypes: [
     {
+      id: 'HC',
+      name: 'Highway Crossing Permit',
+      routingRequired: false,
+      weightDimensionRequired: false,
+      sizeDimensionRequired: false,
+      commodityRequired: false,
+      allowedVehicles: [
+        "BUSCRUM",
+        "CONCRET",
+        "CRANEAT",
+        "CRANEMB",
+        "DDCKBUS",
+        "FARMTRC",
+        "GRADERS",
+        "LOGGING",
+        "LOGOFFH",
+        "LCVRMDB",
+        "LCVTPDB",
+        "LWBTRCT",
+        "MUNFITR",
+        "OGBEDTK",
+        "OGOILSW",
+        "OGSERVC",
+        "OGSRRAH",
+        "PICKRTR",
+        "PICKRTT",
+        "RBTRLDR",
+        "SCRAPER",
+        "PUTAXIS",
+        "TLSCONV",
+        "TOWVEHC",
+        "TRKTRAC",
+        "STINGER",
+        "REGTRCK",
+        "PLOWBLD"
+      ],
+      rules: [
+        {
+          conditions: {
+            not: {
+              fact: "permitData",
+              path: "expiryDate",
+              operator: "equal",
+              value: {
+                fact: "endOfPermitYear"
+              }
+            }
+          },
+          event: {
+            type: "violation",
+            params: {
+              message: "Permit end date must be the end of the year in which the permit starts",
+              code: "field-validation-error",
+              fieldReference: "permitData.expiryDate"
+            }
+          }
+        },
+        {
+          conditions: {
+            all: [
+              {
+                not: {
+                  fact: "permitData",
+                  path: "vehicleDetails.vehicleType",
+                  operator: "equal",
+                  value: "other"
+                }
+              },
+              {
+                fact: "permitData",
+                path: "vehicleDetails.vehicleDescription",
+                operator: "stringMinimumLength",
+                value: 1
+              }
+            ]
+          },
+          event: {
+            type: "violation",
+            params: {
+              message: "Vehicle description should not exist unless the permit vehicle type is 'Other'.",
+              code: "field-validation-error",
+              fieldReference: "permitData.vehicleDetails.vehicleDescription"
+            }
+          }
+        },
+        {
+          conditions: {
+            all: [
+              {
+                not: {
+                  fact: "permitData",
+                  path: "vehicleDetails.vehicleDescription",
+                  operator: "stringMinimumLength",
+                  value: 1
+                }
+              },
+              {
+                fact: "permitData",
+                path: "vehicleDetails.vehicleType",
+                operator: "equal",
+                value: "other"
+              }
+            ]
+          },
+          event: {
+            type: "violation",
+            params: {
+              message: "Vehicle description must be present if the permit vehicle type is 'Other'.",
+              code: "field-validation-error",
+              fieldReference: "permitData.vehicleDetails.vehicleDescription"
+            }
+          }
+        },
+        {
+          conditions: {
+            all: [
+              {
+                not: {
+                  fact: "permitData",
+                  path: "icbcInsuranceCertificate.haveCertificate",
+                  operator: "equal",
+                  value: true
+                }
+              },
+              {
+                fact: "permitData",
+                path: "icbcInsuranceCertificate.certificateNumber",
+                operator: "stringMinimumLength",
+                value: 1
+              }
+            ]
+          },
+          event: {
+            type: "violation",
+            params: {
+              message: "ICBC certificate number should not exist if no certificate is being used.",
+              code: "field-validation-error",
+              fieldReference: "permitData.icbcInsuranceCertificate.certificateNumber"
+            }
+          }
+        },
+        {
+          conditions: {
+            all: [
+              {
+                fact: "permitData",
+                path: "icbcInsuranceCertificate.haveCertificate",
+                operator: "equal",
+                value: true
+              },
+              {
+                not: {
+                  fact: "permitData",
+                  path: "icbcInsuranceCertificate.certificateNumber",
+                  operator: "stringMinimumLength",
+                  value: 1
+                }
+              }
+            ]
+          },
+          event: {
+            type: "violation",
+            params: {
+              message: "ICBC certificate number is required if certificate is being used.",
+              code: "field-validation-error",
+              fieldReference: "permitData.icbcInsuranceCertificate.certificateNumber"
+            }
+          }
+        },
+        {
+          conditions: {
+            all: [
+              {
+                fact: "permitData",
+                path: "icbcInsuranceCertificate.haveCertificate",
+                operator: "equal",
+                value: true
+              },
+              {
+                not: {
+                  fact: "permitData",
+                  path: "icbcInsuranceCertificate.certificateNumber",
+                  operator: "equal",
+                  value: {
+                    fact: "permitData",
+                    path: "vehicleDetails.plate"  
+                  }
+                }
+              }
+            ]
+          },
+          event: {
+            type: "violation",
+            params: {
+              message: "ICBC certificate number must match the vehicle plate number.",
+              code: "field-validation-error",
+              fieldReference: "permitData.icbcInsuranceCertificate.certificateNumber"
+            }
+          }
+        },
+        {
+          conditions: {
+            all: [
+              {
+                not: {
+                  fact: "permitData",
+                  path: "vehicleDetails.vehicleType",
+                  operator: "equal",
+                  value: "other"
+                }
+              },
+              {
+                not: {
+                  fact: "permitData",
+                  path: "vehicleDetails.vehicleSubType",
+                  operator: "in",
+                  value: {
+                    fact: "allowedVehicles"
+                  }
+                }
+              }
+            ]
+          },
+          event: {
+            type: "violation",
+            params: {
+              message: "Vehicle type not permittable for this permit type",
+              code: "field-validation-error",
+              fieldReference: "permitData.vehicleDetails.vehicleSubType"
+            }
+          }
+        },
+        {
+          conditions: {
+            all: [
+              {
+                fact: "permitData",
+                path: "vehicleDetails.vehicleType",
+                operator: "equal",
+                value: "other"
+              },
+              {
+                fact: "permitData",
+                path: "vehicleDetails.vehicleSubType",
+                operator: "stringMinimumLength",
+                value: 1
+              }
+            ]
+          },
+          event: {
+            type: "violation",
+            params: {
+              message: "Vehicle subtype not permittable for Vehicle Type 'Other'.",
+              code: "field-validation-error",
+              fieldReference: "permitData.vehicleDetails.vehicleSubType"
+            }
+          }
+        }
+      ],
+      costRules: [
+        {
+          fact: 'fixedCost',
+          params: {
+            cost: 30,
+          },
+        },
+      ],
+      conditions: [
+        {
+          condition: 'CVSE-1070',
+          mandatory: true,
+        },
+      ],
+    },
+    {
       id: 'TROS',
       name: 'Term Oversize',
       routingRequired: false,
@@ -2579,7 +2854,12 @@ export const data: PolicyDefinition = {
                 fact: 'permitData',
                 path: 'conditionalLicensingFee',
                 operator: 'in',
-                value: ['conditional', 'none', 'x-plated', 'commercial-passenger'],
+                value: [
+                  'conditional',
+                  'none',
+                  'x-plated',
+                  'commercial-passenger',
+                ],
               },
             ],
           },
@@ -2732,7 +3012,7 @@ export const data: PolicyDefinition = {
                 'x-plated',
                 'farm-vehicle',
                 'farm-tractor',
-                'commercial-passenger'
+                'commercial-passenger',
               ],
             },
           },
@@ -2872,7 +3152,12 @@ export const data: PolicyDefinition = {
                 fact: 'permitData',
                 path: 'conditionalLicensingFee',
                 operator: 'in',
-                value: ['conditional', 'none', 'x-plated', 'commercial-passenger'],
+                value: [
+                  'conditional',
+                  'none',
+                  'x-plated',
+                  'commercial-passenger',
+                ],
               },
             ],
           },
@@ -3025,7 +3310,7 @@ export const data: PolicyDefinition = {
                 'x-plated',
                 'farm-vehicle',
                 'farm-tractor',
-                'commercial-passenger'
+                'commercial-passenger',
               ],
             },
           },
@@ -3417,6 +3702,11 @@ export const data: PolicyDefinition = {
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
+      },
+      {
+        id: 'LWBTRCT',
+        name: 'Long Wheelbase Truck Tractors Exceeding 6.2 m up to 7.25 m',
+        category: 'powerunit'
       },
       {
         id: 'MUNFITR',

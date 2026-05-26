@@ -11,7 +11,8 @@
     "esModuleInterop": true,
     "rootDir": "./src",
     "resolveJsonModule": true,
-    "types": ["jest"]
+    "types": ["jest"],
+    "isolatedModules": true
   },
   "include": [
     "src/**/*",
