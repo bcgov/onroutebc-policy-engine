@@ -287,4 +287,22 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
       ),
     ).not.toThrow();
   });
+
+  it('should raise STOW axle calculation violation when drive and jeep axle units are not load equalized', async () => {
+    const permit = getDatedPermit();
+    permit.permitData.vehicleConfiguration.axleConfiguration[1].axleUnitWeight =
+      12000;
+    permit.permitData.vehicleConfiguration.axleConfiguration[2].axleUnitWeight =
+      10999;
+
+    const validationResult = await policy.validate(permit);
+
+    expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.violations[0].message).toBe(
+      'Vehicle configuration failed axle calculation policy checks',
+    );
+    expect(validationResult.violations[0].details).toContain(
+      'Axle Unit 2 and Axle Unit 3 must be load equalized within 1000 kg.',
+    );
+  });
 });
