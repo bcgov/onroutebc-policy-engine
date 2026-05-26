@@ -12,10 +12,8 @@ import {
   AccessoryVehicleType,
   PolicyCheckId,
   VehicleCategory,
-  PolicyCheckResultType
+  PolicyCheckResultType,
 } from '../enum';
-
-
 
 /**
  * Type definition for policy check functions.
@@ -727,6 +725,86 @@ export function CheckBoosterAxleLimit(
 }
 
 /**
+ * Validates derived wheelbase for single steer, tandem drive truck tractors.
+ *
+ * Wheelbase is derived from the spacing between axle units 1 and 2 plus half
+ * of axle unit 2 spread. Axle dimensions are stored in centimetres.
+ */
+export function CheckTruckTractorWheelbase(
+  policy: Policy,
+  vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+): Array<PolicyCheckResult> {
+  const policyId = PolicyCheckId.TruckTractorWheelbase;
+  const powerUnitSubtype = vehicleConfiguration[0];
+  const steerAxle = axleConfiguration[0];
+  const driveAxle = axleConfiguration[1];
+
+  if (
+    powerUnitSubtype !== 'TRKTRAC' ||
+    !steerAxle ||
+    !driveAxle ||
+    steerAxle.numberOfAxles !== 1 ||
+    driveAxle.numberOfAxles !== 2 ||
+    driveAxle.interaxleSpacing === undefined ||
+    driveAxle.axleSpread === undefined
+  ) {
+    return [];
+  }
+
+  const wheelbase = driveAxle.interaxleSpacing + driveAxle.axleSpread / 2;
+  const resultBase = {
+    id: policyId,
+    startAxleUnit: 1,
+    endAxleUnit: 2,
+  };
+
+  if (wheelbase > 720) {
+    return [
+      {
+        ...resultBase,
+        result: PolicyCheckResultType.Fail,
+        message:
+          'Wheelbase for Axle Unit 1 and Axle Unit 2 is greater than 7.2m.',
+      },
+    ];
+  }
+
+  if (wheelbase >= 620) {
+    const hasDisallowedTrailer = vehicleConfiguration.slice(1).some((v) => {
+      if (
+        v === AccessoryVehicleType.Jeep ||
+        v === AccessoryVehicleType.Booster
+      ) {
+        return true;
+      }
+
+      const trailer = policy.getTrailerDefinition(v);
+      return trailer?.category !== 'semi';
+    });
+
+    return [
+      {
+        ...resultBase,
+        result: hasDisallowedTrailer
+          ? PolicyCheckResultType.Fail
+          : PolicyCheckResultType.Pass,
+        message:
+          'Wheelbase for Axle Unit 1 and Axle Unit 2 is between 6.2m and 7.2m. See CTPM 5.3.7.A.',
+      },
+    ];
+  }
+
+  return [
+    {
+      ...resultBase,
+      result: PolicyCheckResultType.Pass,
+      message: '',
+    },
+  ];
+}
+
+/**
  * Map of policy check functions keyed by their corresponding PolicyCheckId.
  *
  * This map contains all the registered policy check functions that are executed
@@ -743,6 +821,7 @@ export function CheckBoosterAxleLimit(
  * - NumberOfAxles: Validates axle count per axle unit
  * - NumberOfWheelsPerAxle: Validates tire count per axle unit
  * - BoosterAxleLimit: Validates booster axle count against the preceding trailer
+ * - TruckTractorWheelbase: Validates derived wheelbase for single steer, tandem drive truck tractors
  *
  * @see PolicyCheck
  * @see PolicyCheckId
@@ -757,4 +836,5 @@ export const policyCheckMap = new Map<string, PolicyCheck>([
   [PolicyCheckId.MinSteerAxleWeight, CheckMinSteerAxleWeight],
   [PolicyCheckId.NumberOfWheelsPerAxle, CheckNumTiresPerAxle],
   [PolicyCheckId.BoosterAxleLimit, CheckBoosterAxleLimit],
+  [PolicyCheckId.TruckTractorWheelbase, CheckTruckTractorWheelbase],
 ]);

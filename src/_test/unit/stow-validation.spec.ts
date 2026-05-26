@@ -146,6 +146,20 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
   const getReportedPermit = () =>
     JSON.parse(JSON.stringify(reportedTrailerCrashInput.currentFormData));
 
+  const setTruckTractorWheelbaseScenario = (
+    permit: any,
+    interaxleSpacing: number,
+    axleSpread: number,
+  ) => {
+    permit.permitData.vehicleDetails.vehicleSubType = 'TRKTRAC';
+    permit.permitData.vehicleConfiguration.axleConfiguration[0].numberOfAxles = 1;
+    permit.permitData.vehicleConfiguration.axleConfiguration[1].numberOfAxles = 2;
+    permit.permitData.vehicleConfiguration.axleConfiguration[1].axleSpread =
+      axleSpread;
+    permit.permitData.vehicleConfiguration.axleConfiguration[1].interaxleSpacing =
+      interaxleSpacing;
+  };
+
   it('should validate STOW successfully', async () => {
     const permit = getDatedPermit();
 
@@ -155,8 +169,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
 
   it('should raise STOW axle calculation violation when an axle unit has zero axles', async () => {
     const permit = getDatedPermit();
-    permit.permitData.vehicleConfiguration.axleConfiguration[1].numberOfAxles =
-      0;
+    permit.permitData.vehicleConfiguration.axleConfiguration[1].numberOfAxles = 0;
 
     const validationResult = await policy.validate(permit);
 
@@ -171,8 +184,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
 
   it('should raise STOW axle calculation violation when an axle unit exceeds maximum axles', async () => {
     const permit = getDatedPermit();
-    permit.permitData.vehicleConfiguration.axleConfiguration[1].numberOfAxles =
-      5;
+    permit.permitData.vehicleConfiguration.axleConfiguration[1].numberOfAxles = 5;
 
     const validationResult = await policy.validate(permit);
 
@@ -183,8 +195,38 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     expect(validationResult.violations[0].details).toContain(
       'No. of Axles for Axle Unit 2 is not permittable.',
     );
-  })
+  });
 
+  it('should raise STOW axle calculation violation when truck tractor wheelbase exceeds 7.2m', async () => {
+    const permit = getDatedPermit();
+    setTruckTractorWheelbaseScenario(permit, 660, 140);
+
+    const validationResult = await policy.validate(permit);
+
+    expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.violations[0].message).toBe(
+      'Vehicle configuration failed axle calculation policy checks',
+    );
+    expect(validationResult.violations[0].details).toContain(
+      'Wheelbase for Axle Unit 1 and Axle Unit 2 is greater than 7.2m.',
+    );
+  });
+
+  it('should raise STOW axle calculation violation when truck tractor wheelbase is between 6.2m and 7.2m with jeep and booster selected', async () => {
+    const permit = getDatedPermit();
+    setTruckTractorWheelbaseScenario(permit, 550, 140);
+
+    const validationResult = await policy.validate(permit);
+
+    expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.violations[0].message).toBe(
+      'Vehicle configuration failed axle calculation policy checks',
+    );
+    expect(validationResult.violations[0].details).toContain(
+      'Wheelbase for Axle Unit 1 and Axle Unit 2 is between 6.2m and 7.2m. See CTPM 5.3.7.A.',
+    );
+    expect(validationResult.warnings).toHaveLength(0);
+  });
 
   // The below four tests were written to validate a reported error by Glen, but unfortunately
   // I'm unable to replicate the error. I've added below tests to ensure we don't regress.
