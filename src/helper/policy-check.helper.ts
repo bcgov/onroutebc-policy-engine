@@ -444,9 +444,9 @@ export function CheckMinSteerAxleWeight(
  * Validates minimum drive axle weight requirements for tandem and tridem drive power units.
  *
  * This function checks that the drive axle meets minimum weight requirements based on the
- * Gross Vehicle Combination Weight (GVCW). For tandem drive axles, the minimum is 20% of GVCW
- * or 23,000 lbs (whichever is smaller). For tridem drive axles, the minimum is 20% of GVCW
- * or 28,000 lbs (whichever is smaller).
+ * Gross Combined Vehicle Weight (GCVW). For tandem drive axles, the minimum is 20% of GCVW
+ * or 23,000 kg (whichever is smaller). For tridem drive axles, the minimum is 20% of GCVW
+ * or 28,000 kg (whichever is smaller).
  *
  * @param _policy - The policy instance (unused in this check, but required by PolicyCheck type)
  * @param _vehicleConfiguration - Vehicle configuration (unused in this check, but required by PolicyCheck type)
@@ -454,12 +454,12 @@ export function CheckMinSteerAxleWeight(
  * @returns Array of AxleGroupPolicyCheckResult objects with validation results
  *
  * @example
- * // For a tandem drive configuration with GVCW of 120,000 kgs
+ * // For a tandem drive configuration with GCVW of 120,000 kg
  * const results = CheckMinDriveAxleWeight(policy, ['TRKTRAC'], [
  *   { numberOfAxles: 1, axleUnitWeight: 12000 },  // Steer axle
  *   { numberOfAxles: 2, axleUnitWeight: 24000 }   // Tandem drive axle
  * ]);
- * // Returns pass if drive axle weight >= min(20% of GVCW, 23,000 kgs)
+ * // Returns pass if drive axle weight >= min(20% of GCVW, 23,000 kg)
  *
  * @see PolicyCheck
  * @see AxleGroupPolicyCheckResult

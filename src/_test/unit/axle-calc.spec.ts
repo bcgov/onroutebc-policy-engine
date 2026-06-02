@@ -13,6 +13,7 @@ import {
 } from '../../types';
 import {
   CheckBoosterAxleLimit,
+  CheckMinDriveAxleWeight,
   CheckTruckTractorWheelbase,
 } from '../../helper/policy-check.helper';
 import dayjs from 'dayjs';
@@ -54,6 +55,199 @@ describe('Axle Calculation Functions', () => {
       getTruckTractorWheelbaseAxles(interaxleSpacing, axleSpread);
     return p;
   };
+
+  const getDriveAxleWeightAxles = (
+    gcvw: number,
+    driveAxleCount: number,
+    driveAxleWeight: number,
+  ): Array<AxleConfiguration> => [
+    {
+      numberOfAxles: 1,
+      axleUnitWeight: gcvw - driveAxleWeight,
+    },
+    {
+      numberOfAxles: driveAxleCount,
+      axleUnitWeight: driveAxleWeight,
+    },
+  ];
+
+  // ORV2-5374 examples and expected pass/fail states come from:
+  // onRouteBCSpecification/Applying for Permits/Single Trip Overweight/ASW Tridem Drive AU 20% of Actual GCVW.feature
+  describe('minimum drive axle weight policy check', () => {
+    const tandemPassExamples = [
+      {
+        gcvw: 100000,
+        driveAxleWeight: 20000,
+      },
+      {
+        gcvw: 100000,
+        driveAxleWeight: 20500,
+      },
+      {
+        gcvw: 130000,
+        driveAxleWeight: 23000,
+      },
+      {
+        gcvw: 150000,
+        driveAxleWeight: 23000,
+      },
+    ];
+
+    const tandemFailExamples = [
+      {
+        gcvw: 100000,
+        driveAxleWeight: 19999,
+      },
+      {
+        gcvw: 130000,
+        driveAxleWeight: 22999,
+      },
+      {
+        gcvw: 150000,
+        driveAxleWeight: 22999,
+      },
+      {
+        gcvw: 90000,
+        driveAxleWeight: 15000,
+      },
+    ];
+
+    const tridemPassExamples = [
+      {
+        gcvw: 100000,
+        driveAxleWeight: 20000,
+      },
+      {
+        gcvw: 100000,
+        driveAxleWeight: 20500,
+      },
+      {
+        gcvw: 150000,
+        driveAxleWeight: 28000,
+      },
+      {
+        gcvw: 160000,
+        driveAxleWeight: 28000,
+      },
+    ];
+
+    const tridemFailExamples = [
+      {
+        gcvw: 100000,
+        driveAxleWeight: 19999,
+      },
+      {
+        gcvw: 150000,
+        driveAxleWeight: 27999,
+      },
+      {
+        gcvw: 160000,
+        driveAxleWeight: 27999,
+      },
+      {
+        gcvw: 90000,
+        driveAxleWeight: 15000,
+      },
+    ];
+
+    const expectMinDriveAxleWeightResult = (
+      gcvw: number,
+      driveAxleCount: number,
+      driveAxleWeight: number,
+      expectedResult: PolicyCheckResultType,
+    ) => {
+      const [result] = CheckMinDriveAxleWeight(
+        policy,
+        vehicleConfiguration,
+        getDriveAxleWeightAxles(gcvw, driveAxleCount, driveAxleWeight),
+      );
+
+      expect(result).toMatchObject({
+        id: PolicyCheckId.MinDriveAxleWeight,
+        result: expectedResult,
+      });
+    };
+
+    describe('tandem drive axle unit meets threshold', () => {
+      it.each(tandemPassExamples)(
+        'passes for GCVW $gcvw kg and drive axle weight $driveAxleWeight kg',
+        ({ gcvw, driveAxleWeight }) => {
+          expectMinDriveAxleWeightResult(
+            gcvw,
+            2,
+            driveAxleWeight,
+            PolicyCheckResultType.Pass,
+          );
+        },
+      );
+    });
+
+    describe('tandem drive axle unit is below threshold', () => {
+      it.each(tandemFailExamples)(
+        'fails for GCVW $gcvw kg and drive axle weight $driveAxleWeight kg',
+        ({ gcvw, driveAxleWeight }) => {
+          expectMinDriveAxleWeightResult(
+            gcvw,
+            2,
+            driveAxleWeight,
+            PolicyCheckResultType.Fail,
+          );
+        },
+      );
+    });
+
+    describe('tridem drive axle unit meets threshold', () => {
+      it.each(tridemPassExamples)(
+        'passes for GCVW $gcvw kg and drive axle weight $driveAxleWeight kg',
+        ({ gcvw, driveAxleWeight }) => {
+          expectMinDriveAxleWeightResult(
+            gcvw,
+            3,
+            driveAxleWeight,
+            PolicyCheckResultType.Pass,
+          );
+        },
+      );
+    });
+
+    describe('tridem drive axle unit is below threshold', () => {
+      it.each(tridemFailExamples)(
+        'fails for GCVW $gcvw kg and drive axle weight $driveAxleWeight kg',
+        ({ gcvw, driveAxleWeight }) => {
+          expectMinDriveAxleWeightResult(
+            gcvw,
+            3,
+            driveAxleWeight,
+            PolicyCheckResultType.Fail,
+          );
+        },
+      );
+    });
+
+    it('preserves the existing full axle configuration target range', () => {
+      const [result] = CheckMinDriveAxleWeight(policy, vehicleConfiguration, [
+        {
+          numberOfAxles: 1,
+          axleUnitWeight: 60000,
+        },
+        {
+          numberOfAxles: 2,
+          axleUnitWeight: 19999,
+        },
+        {
+          numberOfAxles: 3,
+          axleUnitWeight: 20001,
+        },
+      ]);
+
+      expect(result).toMatchObject({
+        id: PolicyCheckId.MinDriveAxleWeight,
+        result: PolicyCheckResultType.Fail,
+        startAxleUnit: 1,
+        endAxleUnit: 3,
+      });
+    });
+  });
 
   it('should return no failing policy checks for valid STOW', async () => {
     const results = policy.runAxleCalculation(
