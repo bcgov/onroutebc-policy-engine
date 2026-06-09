@@ -871,21 +871,46 @@ describe('Axle Calculation Functions', () => {
     expect(axleCalcViolation).toBeUndefined();
   });
 
-  it('should fail policy check for steer axle tire size too large', async () => {
+  it('should not include a truck tractor wheelbase validation violation when the direct policy check passes below 6.2m', async () => {
+    const permit = getTruckTractorWheelbasePermit(580, 40);
+    const directResult = CheckTruckTractorWheelbase(
+      policy,
+      vehicleConfiguration,
+      permit.permitData.vehicleConfiguration.axleConfiguration,
+    )[0];
+
+    expect(directResult).toMatchObject({
+      result: PolicyCheckResultType.Pass,
+      message: '',
+    });
+
+    const validationResult = await policy.validate(permit);
+    const axleCalcViolation = validationResult.violations.find(
+      (v) =>
+        v.message ===
+        'Vehicle configuration failed axle calculation policy checks',
+    );
+
+    expect(axleCalcViolation).toBeUndefined();
+  });
+
+  // ==========================================
+  // ORV2-5472: UPDATED TIRE LOAD MAX TESTS
+  // ==========================================
+
+  it('should pass policy check for steer axle tire size >= 445mm if under 9100kg cap', async () => {
     const ac = JSON.parse(
       JSON.stringify(axleConfiguration),
     ) as Array<AxleConfiguration>;
-    ac[0].tireSize = 460;
+    ac[0].tireSize = 460; // 460mm is now legal under new STOW rules
+    ac[0].axleUnitWeight = 9000;
     const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
-    expect(
-      results.results.every((r) => r.result === PolicyCheckResultType.Pass),
-    ).toBe(false);
     const maxTireResults = results.results.filter(
       (r) => r.id === PolicyCheckId.MaxTireLoad,
     );
     expect(
       maxTireResults.every((r) => r.result === PolicyCheckResultType.Pass),
-    ).toBe(false);
+    ).toBe(true);
   });
 
   it('should fail policy check for steer axle too heavy with 445 tires', async () => {
@@ -911,7 +936,7 @@ describe('Axle Calculation Functions', () => {
       JSON.stringify(axleConfiguration),
     ) as Array<AxleConfiguration>;
     ac[0].tireSize = 330;
-    ac[0].axleUnitWeight = 6700;
+    ac[0].axleUnitWeight = 6700; // 330/10 * 100 * 2 = 6600kg max. 6700 fails.
     const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
@@ -924,46 +949,42 @@ describe('Axle Calculation Functions', () => {
     ).toBe(false);
   });
 
-  it('should fail policy check for missing steer axle tire size', async () => {
+  it('should skip (pass) policy check for missing steer axle tire size', async () => {
     const ac = JSON.parse(
       JSON.stringify(axleConfiguration),
     ) as Array<AxleConfiguration>;
     delete ac[0].tireSize;
     const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
-    expect(
-      results.results.every((r) => r.result === PolicyCheckResultType.Pass),
-    ).toBe(false);
     const maxTireResults = results.results.filter(
       (r) => r.id === PolicyCheckId.MaxTireLoad,
     );
+    // The new logic uses `if (!tireSize || !numberOfTires) { return; }`, returning a Pass.
     expect(
       maxTireResults.every((r) => r.result === PolicyCheckResultType.Pass),
-    ).toBe(false);
+    ).toBe(true);
   });
 
-  it('should fail policy check for missing trailer axle tire size', async () => {
+  it('should skip (pass) policy check for missing trailer axle tire size', async () => {
     const ac = JSON.parse(
       JSON.stringify(axleConfiguration),
     ) as Array<AxleConfiguration>;
     delete ac[2].tireSize;
     const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
-    expect(
-      results.results.every((r) => r.result === PolicyCheckResultType.Pass),
-    ).toBe(false);
     const maxTireResults = results.results.filter(
       (r) => r.id === PolicyCheckId.MaxTireLoad,
     );
     expect(
       maxTireResults.every((r) => r.result === PolicyCheckResultType.Pass),
-    ).toBe(false);
+    ).toBe(true);
   });
 
-  it('should fail policy check for axle too heavy with 445 tires', async () => {
+  it('should fail policy check for axle too heavy with 445 tires based on new 4550kg limit', async () => {
     const ac = JSON.parse(
       JSON.stringify(axleConfiguration),
     ) as Array<AxleConfiguration>;
     ac[2].tireSize = 445;
-    ac[2].axleUnitWeight = 3850 * (ac[2].numberOfTires || 0) + 1;
+    // Updated to reflect the new 4,550 kg/tire cap
+    ac[2].axleUnitWeight = 4550 * (ac[2].numberOfTires || 0) + 1;
     const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),

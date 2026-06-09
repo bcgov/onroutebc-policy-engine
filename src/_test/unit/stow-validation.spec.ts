@@ -228,6 +228,142 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     expect(validationResult.warnings).toHaveLength(0);
   });
 
+  // =========================================================================
+  // MAXIMUM TIRE LOAD VALIDATION
+  // =========================================================================
+  describe('STOW Axle Calculation - Maximum Tire Load', () => {
+    const testTireLoadResult = async (
+      vehicleSubType: string,
+      axleIndex: number,
+      tireSize: number,
+      numberOfTires: number,
+      axleWeight: number,
+      shouldFail: boolean,
+    ) => {
+      const permit = getDatedPermit();
+      permit.permitData.vehicleDetails.vehicleSubType = vehicleSubType;
+
+      // Clear trailers to simplify payload and prevent cross-validation structure errors
+      permit.permitData.vehicleConfiguration.trailers = [];
+
+      // Create a simplified two-axle unit configuration with valid bridge formula spacing
+      permit.permitData.vehicleConfiguration.axleConfiguration = [
+        {
+          numberOfAxles: 1,
+          numberOfTires: 2,
+          tireSize: 330,
+          axleUnitWeight: 5000,
+        },
+        {
+          numberOfAxles: 2,
+          numberOfTires: 4,
+          tireSize: 330,
+          axleUnitWeight: 10000,
+          axleSpread: 150,
+          interaxleSpacing: 500,
+        },
+      ];
+
+      permit.permitData.vehicleConfiguration.axleConfiguration[
+        axleIndex
+      ].tireSize = tireSize;
+      permit.permitData.vehicleConfiguration.axleConfiguration[
+        axleIndex
+      ].numberOfTires = numberOfTires;
+      permit.permitData.vehicleConfiguration.axleConfiguration[
+        axleIndex
+      ].axleUnitWeight = axleWeight;
+
+      const validationResult = await policy.validate(permit);
+
+      const axleViolation = validationResult.violations.find(
+        (v: any) =>
+          v.message ===
+          'Vehicle configuration failed axle calculation policy checks',
+      );
+
+      const targetMessage = `Tire Size for Axle Unit ${axleIndex + 1} exceeds its load capacity.`;
+
+      if (shouldFail) {
+        expect(axleViolation).toBeDefined();
+        expect(axleViolation?.details).toContain(targetMessage);
+      } else {
+        if (axleViolation && axleViolation.details) {
+          expect(axleViolation.details).not.toContain(targetMessage);
+        }
+      }
+    };
+
+    describe('Standard Vehicle Steer Axle (Rate Limit & Single Steer Cap)', () => {
+      it('should pass exactly at 100 kg/cm rate limit - 445mm', async () => {
+        await testTireLoadResult('TRKTRAC', 0, 445, 2, 8900, false);
+      });
+      it('should fail just above 100 kg/cm rate limit - 445mm', async () => {
+        await testTireLoadResult('TRKTRAC', 0, 445, 2, 8901, true);
+      });
+      it('should pass at 9,100 kg/axle single steer cap limit - 457mm', async () => {
+        await testTireLoadResult('TRKTRAC', 0, 457, 2, 9100, false);
+      });
+      it('should fail just above 9,100 kg/axle single steer cap limit - 457mm', async () => {
+        await testTireLoadResult('TRKTRAC', 0, 457, 2, 9101, true);
+      });
+    });
+
+    describe('Standard Vehicle Non-Steering Axle (>=445mm and <=444mm)', () => {
+      it('should pass at limit for tires >=445mm (rate limit binding)', async () => {
+        await testTireLoadResult('TRKTRAC', 1, 445, 4, 17800, false);
+      });
+      it('should fail just above limit for tires >=445mm (rate limit binding)', async () => {
+        await testTireLoadResult('TRKTRAC', 1, 445, 4, 17801, true);
+      });
+      it('should pass at limit for tires >=445mm (cap binding - 4,550 kg/tire)', async () => {
+        await testTireLoadResult('TRKTRAC', 1, 457, 4, 18200, false);
+      });
+      it('should fail just above limit for tires >=445mm (cap binding - 4,550 kg/tire)', async () => {
+        await testTireLoadResult('TRKTRAC', 1, 457, 4, 18201, true);
+      });
+      it('should pass at cap limit for tires <=444mm (3,000 kg/tire)', async () => {
+        await testTireLoadResult('TRKTRAC', 1, 385, 4, 12000, false);
+      });
+      it('should fail just above cap limit for tires <=444mm (3,000 kg/tire)', async () => {
+        await testTireLoadResult('TRKTRAC', 1, 385, 4, 12001, true);
+      });
+    });
+
+    describe('Crane - All Terrain (CRANEAT)', () => {
+      it('should pass at limit for tires >=520mm', async () => {
+        await testTireLoadResult('CRANEAT', 0, 550, 2, 11000, false);
+      });
+      it('should fail just above limit for tires >=520mm', async () => {
+        await testTireLoadResult('CRANEAT', 0, 550, 2, 11001, true);
+      });
+    });
+
+    describe('Crane - Mobile (CRANEMB)', () => {
+      it('should pass at limit for non-steer axle tires >=520mm', async () => {
+        await testTireLoadResult('CRANEMB', 1, 550, 2, 11000, false);
+      });
+      it('should fail just above limit for non-steer axle tires >=520mm', async () => {
+        await testTireLoadResult('CRANEMB', 1, 550, 2, 11001, true);
+      });
+    });
+
+    describe('Rubber Tired Loaders (RBTRLDR)', () => {
+      it('should pass at 11,000 kg/axle limit for tires >=520mm and <600mm', async () => {
+        await testTireLoadResult('RBTRLDR', 0, 550, 2, 11000, false);
+      });
+      it('should fail just above 11,000 kg/axle limit for tires >=520mm and <600mm', async () => {
+        await testTireLoadResult('RBTRLDR', 0, 550, 2, 11001, true);
+      });
+      it('should pass at 12,000 kg/axle limit for tires >=600mm', async () => {
+        await testTireLoadResult('RBTRLDR', 0, 609, 2, 12000, false);
+      });
+      it('should fail just above 12,000 kg/axle limit for tires >=600mm', async () => {
+        await testTireLoadResult('RBTRLDR', 0, 609, 2, 12001, true);
+      });
+    });
+  });
+
   // The below four tests were written to validate a reported error by Glen, but unfortunately
   // I'm unable to replicate the error. I've added below tests to ensure we don't regress.
   it('should not crash validating the reported STOW input with trailers', async () => {
