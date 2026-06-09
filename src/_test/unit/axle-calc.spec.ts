@@ -15,6 +15,7 @@ import {
   CheckBoosterAxleLimit,
   CheckMinDriveAxleWeight,
   CheckTruckTractorWheelbase,
+  CheckDriveJeepLoadEqualization,
 } from '../../helper/policy-check.helper';
 import dayjs from 'dayjs';
 

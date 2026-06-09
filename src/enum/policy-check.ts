@@ -7,6 +7,7 @@ export enum PolicyCheckId {
   BoosterAxleLimit = 'booster-axle-limit',
   BridgeFormula = 'bridge-formula',
   CheckPermittableWeight = 'check-permittable-weight',
+  DriveJeepLoadEqualization = 'drive-jeep-load-equalization',
   MaxTireLoad = 'max-tire-load',
   MinDriveAxleWeight = 'minimum-drive-axle-weight',
   MinSteerAxleWeight = 'minimum-steer-axle-weight',

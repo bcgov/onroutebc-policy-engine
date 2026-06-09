@@ -898,6 +898,69 @@ export function CheckTruckTractorWheelbase(
 }
 
 /**
+ * Validates that the drive axle unit and first jeep axle unit are load equalized
+ * within 1000 kg when they have the same number of axles.
+ *
+ * Vehicle configuration has one power unit entry, while axle configuration has
+ * separate steer and drive entries for the power unit. For vehicle entries after
+ * the power unit, the matching axle unit index is therefore vehicle index + 1.
+ *
+ * @param _policy - The policy instance (unused in this check, but required by PolicyCheck type)
+ * @param vehicleConfiguration - Array of vehicle type identifiers representing the vehicle configuration
+ * @param axleConfiguration - Array of axle configurations containing axle count and weight information
+ * @returns Array of AxleGroupPolicyCheckResult objects for the applicable drive/jeep pair
+ */
+export function CheckDriveJeepLoadEqualization(
+  _policy: Policy,
+  vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+): Array<PolicyCheckResult> {
+  const policyCheckResults = new Array<AxleGroupPolicyCheckResult>();
+  const policyId = PolicyCheckId.DriveJeepLoadEqualization;
+  const maxWeightDifferenceKg = 1000;
+  const driveAxleConfigIndex = 1;
+  const jeepVehicleIndex = vehicleConfiguration.findIndex(
+    (vehicleSubType) => vehicleSubType === AccessoryVehicleType.Jeep,
+  );
+
+  if (jeepVehicleIndex < 1) {
+    return policyCheckResults;
+  }
+
+  const jeepAxleConfigIndex = jeepVehicleIndex + 1;
+  const driveAxle = axleConfiguration[driveAxleConfigIndex];
+  const jeepAxle = axleConfiguration[jeepAxleConfigIndex];
+
+  if (
+    !driveAxle ||
+    !jeepAxle ||
+    driveAxle.numberOfAxles !== jeepAxle.numberOfAxles ||
+    !Number.isFinite(driveAxle.axleUnitWeight) ||
+    !Number.isFinite(jeepAxle.axleUnitWeight)
+  ) {
+    return policyCheckResults;
+  }
+
+  const driveAxleUnit = driveAxleConfigIndex + 1;
+  const jeepAxleUnit = jeepAxleConfigIndex + 1;
+  const result =
+    Math.abs(driveAxle.axleUnitWeight - jeepAxle.axleUnitWeight) <=
+    maxWeightDifferenceKg;
+
+  policyCheckResults.push({
+    id: policyId,
+    result: result ? PolicyCheckResultType.Pass : PolicyCheckResultType.Fail,
+    message: result
+      ? ''
+      : `Axle Unit ${driveAxleUnit} and Axle Unit ${jeepAxleUnit} must be load equalized within ${maxWeightDifferenceKg} kg.`,
+    startAxleUnit: driveAxleUnit,
+    endAxleUnit: jeepAxleUnit,
+  });
+
+  return policyCheckResults;
+}
+
+/**
  * Map of policy check functions keyed by their corresponding PolicyCheckId.
  *
  * This map contains all the registered policy check functions that are executed
@@ -915,6 +978,7 @@ export function CheckTruckTractorWheelbase(
  * - NumberOfWheelsPerAxle: Validates tire count per axle unit
  * - BoosterAxleLimit: Validates booster axle count against the preceding trailer
  * - TruckTractorWheelbase: Validates derived wheelbase for single steer, tandem drive truck tractors
+ * - DriveJeepLoadEqualization: Validates drive and jeep axle unit load equalization
  *
  * @see PolicyCheck
  * @see PolicyCheckId
@@ -930,4 +994,5 @@ export const policyCheckMap = new Map<string, PolicyCheck>([
   [PolicyCheckId.NumberOfWheelsPerAxle, CheckNumTiresPerAxle],
   [PolicyCheckId.BoosterAxleLimit, CheckBoosterAxleLimit],
   [PolicyCheckId.TruckTractorWheelbase, CheckTruckTractorWheelbase],
+  [PolicyCheckId.DriveJeepLoadEqualization, CheckDriveJeepLoadEqualization],
 ]);
