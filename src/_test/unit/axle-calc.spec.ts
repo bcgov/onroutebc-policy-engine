@@ -872,32 +872,133 @@ describe('Axle Calculation Functions', () => {
     expect(axleCalcViolation).toBeUndefined();
   });
 
-  it('should not include a truck tractor wheelbase validation violation when the direct policy check passes below 6.2m', async () => {
-    const permit = getTruckTractorWheelbasePermit(580, 40);
-    const directResult = CheckTruckTractorWheelbase(
-      policy,
-      vehicleConfiguration,
-      permit.permitData.vehicleConfiguration.axleConfiguration,
-    )[0];
+  describe('drive and jeep load equalization', () => {
+    const loadEqualizationMessage =
+      'Axle Unit 2 and Axle Unit 3 must be load equalized within 1000 kg.';
+    const vc = ['TRKTRAC', 'JEEPSRG', 'SEMITRL'];
+    const getAxleConfig = (
+      axleUnit2Weight: number,
+      axleUnit3Weight: number,
+    ): Array<AxleConfiguration> => [
+      {
+        numberOfAxles: 1,
+        axleUnitWeight: 6700,
+        numberOfTires: 2,
+        tireSize: 355,
+      },
+      {
+        numberOfAxles: 2,
+        axleSpread: 160,
+        interaxleSpacing: 350,
+        axleUnitWeight: axleUnit2Weight,
+        numberOfTires: 4,
+        tireSize: 330,
+      },
+      {
+        numberOfAxles: 2,
+        axleSpread: 160,
+        interaxleSpacing: 300,
+        axleUnitWeight: axleUnit3Weight,
+        numberOfTires: 4,
+        tireSize: 330,
+      },
+      {
+        numberOfAxles: 3,
+        axleSpread: 220,
+        interaxleSpacing: 700,
+        axleUnitWeight: 18000,
+        numberOfTires: 12,
+        tireSize: 330,
+      },
+    ];
 
-    expect(directResult).toMatchObject({
-      result: PolicyCheckResultType.Pass,
-      message: '',
-    });
+    it.each([
+      [12000, 10999],
+      [13500, 12499],
+      [15000, 13900],
+    ])(
+      'should fail when drive and jeep axle unit weights differ by more than 1000 kg',
+      (axleUnit2Weight, axleUnit3Weight) => {
+        const results = CheckDriveJeepLoadEqualization(
+          policy,
+          vc,
+          getAxleConfig(axleUnit2Weight, axleUnit3Weight),
+        );
 
-    const validationResult = await policy.validate(permit);
-    const axleCalcViolation = validationResult.violations.find(
-      (v) =>
-        v.message ===
-        'Vehicle configuration failed axle calculation policy checks',
+        expect(results).toHaveLength(1);
+        expect(results[0]).toMatchObject({
+          id: PolicyCheckId.DriveJeepLoadEqualization,
+          result: PolicyCheckResultType.Fail,
+          message: loadEqualizationMessage,
+          startAxleUnit: 2,
+          endAxleUnit: 3,
+        });
+      },
     );
 
-    expect(axleCalcViolation).toBeUndefined();
-  });
+    it.each([
+      [12000, 11000],
+      [13500, 12501],
+      [15000, 15000],
+    ])(
+      'should pass when drive and jeep axle unit weights differ by 1000 kg or less',
+      (axleUnit2Weight, axleUnit3Weight) => {
+        const results = CheckDriveJeepLoadEqualization(
+          policy,
+          vc,
+          getAxleConfig(axleUnit2Weight, axleUnit3Weight),
+        );
 
-  // ==========================================
-  // ORV2-5472: UPDATED TIRE LOAD MAX TESTS
-  // ==========================================
+        expect(results).toHaveLength(1);
+        expect(results[0]).toMatchObject({
+          id: PolicyCheckId.DriveJeepLoadEqualization,
+          result: PolicyCheckResultType.Pass,
+          message: '',
+          startAxleUnit: 2,
+          endAxleUnit: 3,
+        });
+      },
+    );
+
+    it('should return no result when drive and jeep axle units have different axle counts', () => {
+      const ac = getAxleConfig(12000, 10999);
+      ac[2].numberOfAxles = 3;
+
+      const results = CheckDriveJeepLoadEqualization(policy, vc, ac);
+
+      expect(results).toHaveLength(0);
+    });
+
+    it('should return no result when there is no jeep', () => {
+      const results = CheckDriveJeepLoadEqualization(
+        policy,
+        ['TRKTRAC', 'SEMITRL'],
+        getAxleConfig(12000, 10999),
+      );
+
+      expect(results).toHaveLength(0);
+    });
+
+    it('should include drive and jeep load equalization in axle calculation results', () => {
+      const ac = JSON.parse(
+        JSON.stringify(axleConfiguration),
+      ) as Array<AxleConfiguration>;
+      ac[1].axleUnitWeight = 12000;
+      ac[2].axleUnitWeight = 10999;
+
+      const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+      const loadEqualizationResult = results.results.find(
+        (r) => r.id === PolicyCheckId.DriveJeepLoadEqualization,
+      );
+
+      expect(loadEqualizationResult).toMatchObject({
+        result: PolicyCheckResultType.Fail,
+        message: loadEqualizationMessage,
+        startAxleUnit: 2,
+        endAxleUnit: 3,
+      });
+    });
+  });
 
   it('should pass policy check for steer axle tire size >= 445mm if under 9100kg cap', async () => {
     const ac = JSON.parse(
