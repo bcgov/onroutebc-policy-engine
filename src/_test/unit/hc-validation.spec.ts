@@ -97,7 +97,7 @@ describe('Highway Crossing Permit (HC) Validation Tests', () => {
     expect(validationResult.violations).toHaveLength(1);
   });
 
-  it('should have allowable vehicle subtype if vehicle type is not Other', async () => {
+  it('should have allowable vehicle subtype if vehicle type is Power Unit', async () => {
     const permit = getPermit();
     permit.permitData.vehicleDetails.vehicleType = "powerUnit";
     permit.permitData.vehicleDetails.vehicleSubType = "TRKTRAC";
@@ -107,9 +107,29 @@ describe('Highway Crossing Permit (HC) Validation Tests', () => {
     expect(validationResult.violations).toHaveLength(0);
   });
 
-  it('should not have invalid vehicle subtype if vehicle type is not Other', async () => {
+  it('should not have invalid vehicle subtype if vehicle type is Power Unit', async () => {
     const permit = getPermit();
     permit.permitData.vehicleDetails.vehicleType = "powerUnit";
+    permit.permitData.vehicleDetails.vehicleSubType = "__INVALID";
+    permit.permitData.vehicleDetails.vehicleDescription = "";
+
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.violations).toHaveLength(1);
+  });
+
+  it('should have allowable vehicle subtype if vehicle type is Trailer', async () => {
+    const permit = getPermit();
+    permit.permitData.vehicleDetails.vehicleType = "trailer";
+    permit.permitData.vehicleDetails.vehicleSubType = "FULLLTL";
+    permit.permitData.vehicleDetails.vehicleDescription = "";
+
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.violations).toHaveLength(0);
+  });
+
+  it('should not have invalid vehicle subtype if vehicle type is Trailer', async () => {
+    const permit = getPermit();
+    permit.permitData.vehicleDetails.vehicleType = "trailer";
     permit.permitData.vehicleDetails.vehicleSubType = "__INVALID";
     permit.permitData.vehicleDetails.vehicleDescription = "";
 
