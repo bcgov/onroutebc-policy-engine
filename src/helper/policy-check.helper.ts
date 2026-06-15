@@ -608,7 +608,13 @@ export function CheckMaxTireLoad(
     const numberOfTires = ac.numberOfTires ?? 0;
     const axleWeight = ac.axleUnitWeight ?? 0;
 
-    if (!tireSize || !numberOfTires) {
+    if (!tireSize) {
+      addFailResult(axleUnit);
+      return;
+    }
+
+    if (!numberOfTires) {
+      addFailResult(axleUnit);
       return;
     }
 

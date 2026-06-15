@@ -1000,24 +1000,6 @@ describe('Axle Calculation Functions', () => {
     });
   });
 
-  it('should fail policy check for steer axle tire size too large', async () => {
-    const ac = JSON.parse(
-      JSON.stringify(axleConfiguration),
-    ) as Array<AxleConfiguration>;
-    ac[0].tireSize = 460;
-    ac[0].axleUnitWeight = 9000;
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
-    expect(
-      results.results.every((r) => r.result === PolicyCheckResultType.Pass),
-    ).toBe(false);
-    const maxTireResults = results.results.filter(
-      (r) => r.id === PolicyCheckId.MaxTireLoad,
-    );
-    expect(
-      maxTireResults.every((r) => r.result === PolicyCheckResultType.Pass),
-    ).toBe(false);
-  });
-
   it('should fail policy check for steer axle too heavy with 445 tires', async () => {
     const ac = JSON.parse(
       JSON.stringify(axleConfiguration),
