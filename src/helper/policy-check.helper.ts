@@ -136,9 +136,9 @@ export function CheckBridgeFormula(
  * Validates the number of tires per axle unit against regulatory requirements.
  *
  * This function checks that each axle unit has a valid number of tires based on
- * the number of axles in that unit. The validation allows for 2, 4, or 8 tires
- * per axle (2, 4, or 8 * number of axles). This ensures compliance with tire
- * count regulations for commercial vehicles.
+ * the number of axles in that unit and the axle unit position. Axle unit 1 is
+ * the steer axle unit, axle unit 2 is the drive axle unit, and axle units 3+
+ * use the generic axle unit allowance.
  *
  * @param _policy - The policy instance (unused in this check, but required by PolicyCheck type)
  * @param _vehicleConfiguration - Vehicle configuration (unused in this check, but required by PolicyCheck type)
@@ -148,15 +148,15 @@ export function CheckBridgeFormula(
  * @example
  * // For a vehicle with 2 axle units
  * const results = CheckNumTiresPerAxle(policy, ['TRKTRAC'], [
- *   { numberOfAxles: 2, numberOfTires: 4 },  // 2 axles × 2 tires = 4 (valid)
- *   { numberOfAxles: 3, numberOfTires: 12 }  // 3 axles × 4 tires = 12 (valid)
+ *   { numberOfAxles: 2, numberOfTires: 4 },  // tandem steer: 4 (valid)
+ *   { numberOfAxles: 3, numberOfTires: 12 }  // tridem drive: 12 (valid)
  * ]);
  * // Returns pass results for both axle units
  *
  * @example
  * // Invalid tire count example
  * const results = CheckNumTiresPerAxle(policy, ['TRKTRAC'], [
- *   { numberOfAxles: 2, numberOfTires: 6 }  // 2 axles × 3 tires = 6 (invalid - not 2, 4, or 8 per axle)
+ *   { numberOfAxles: 1, numberOfTires: 8 }  // single drive: 8 (invalid)
  * ]);
  * // Returns fail result for the axle unit
  *
@@ -182,9 +182,11 @@ export function CheckNumTiresPerAxle(
       // Invalid number of axles, cannot calculate
       message = `Number of axles for axle unit ${axleNum} is not permittable.`;
     } else {
-      const checkResult = [numAxles * 2, numAxles * 4, numAxles * 8].includes(
-        numTires,
-      );
+      const multipliers =
+        axleNum === 1 ? [2] : axleNum === 2 ? [2, 4] : [2, 4, 8];
+      const checkResult = multipliers
+        .map((multiplier) => numAxles * multiplier)
+        .includes(numTires);
       message = checkResult
         ? `No. of Wheels for Axle Unit ${axleNum} is permittable.`
         : `No. of Wheels for Axle Unit ${axleNum} is not permittable.`;
