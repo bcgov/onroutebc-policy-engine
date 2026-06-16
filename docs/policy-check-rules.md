@@ -23,14 +23,16 @@ The policy engine performs several validation checks on vehicle configurations t
 
 **What it does:** Ensures each axle unit has a valid number of tires.
 
-**How it works:** Each axle must have either 2, 4, or 8 tires per axle. This rule multiplies the number of axles by these valid tire counts.
+**How it works:** Axle unit 1 is treated as the steer axle unit, axle unit 2 is treated as the drive axle unit, and axle units 3+ use the generic axle unit allowance.
 
 **What it checks:**
-- For each axle unit, calculates valid tire counts: (number of axles × 2), (number of axles × 4), or (number of axles × 8)
+- For steer axle unit 1, valid tire counts are number of axles × 2
+- For drive axle unit 2, valid tire counts are number of axles × 2 or number of axles × 4
+- For axle units 3+, valid tire counts are number of axles × 2, number of axles × 4, or number of axles × 8
 - Validates that the actual tire count matches one of these calculations
 - Verifies that the applicant has not mis-entered the number of wheels
 
-**Example:** A 2-axle unit can have 4, 8, or 16 tires. A 3-axle unit can have 6, 12, or 24 tires.
+**Example:** A single steer axle unit can have 2 tires, a single drive axle unit can have 2 or 4 tires, and a single axle unit in position 3 or later can have 2, 4, or 8 tires.
 
 ## Rule 3: Permittable Weight Check
 
