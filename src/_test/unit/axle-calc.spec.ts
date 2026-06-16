@@ -13,6 +13,7 @@ import {
 } from '../../types';
 import {
   CheckBoosterAxleLimit,
+  CheckNumTiresPerAxle,
   CheckMinDriveAxleWeight,
   CheckTruckTractorWheelbase,
   CheckDriveJeepLoadEqualization,
@@ -71,6 +72,141 @@ describe('Axle Calculation Functions', () => {
       axleUnitWeight: driveAxleWeight,
     },
   ];
+
+  describe('number of wheels per axle unit policy check', () => {
+    type WheelCountCase = [number, number, number];
+
+    const getWheelCountAxles = (
+      axleUnit: number,
+      numberOfAxles: number,
+      numberOfTires: number,
+    ): Array<AxleConfiguration> =>
+      Array.from({ length: axleUnit }, (_, i) => ({
+        numberOfAxles: i + 1 === axleUnit ? numberOfAxles : 1,
+        axleUnitWeight: 5000,
+        numberOfTires: i + 1 === axleUnit ? numberOfTires : 2,
+        tireSize: 279,
+      }));
+
+    const expectWheelCountResult = (
+      axleUnit: number,
+      numberOfAxles: number,
+      numberOfTires: number,
+      expectedResult: PolicyCheckResultType,
+    ) => {
+      const results = CheckNumTiresPerAxle(
+        policy,
+        vehicleConfiguration,
+        getWheelCountAxles(axleUnit, numberOfAxles, numberOfTires),
+      );
+      const isPermittable =
+        expectedResult === PolicyCheckResultType.Pass
+          ? 'permittable'
+          : 'not permittable';
+
+      expect(results[axleUnit - 1]).toMatchObject({
+        id: PolicyCheckId.NumberOfWheelsPerAxle,
+        result: expectedResult,
+        message: `No. of Wheels for Axle Unit ${axleUnit} is ${isPermittable}.`,
+        startAxleUnit: axleUnit,
+        endAxleUnit: axleUnit,
+      });
+    };
+
+    // These are the explicit examples from:
+    // https://github.com/bcgov/onRouteBCSpecification/blob/main/Applying%20for%20Permits/Single%20Trip%20Overweight/ASW%20No.%20of%20Wheels%20per%20Axle.feature
+    // The struck example row `single | axleUnit 2 | wheels 6` is intentionally
+    // omitted because BA confirmed it was a table glitch.
+    const specPassExamples: Array<WheelCountCase> = [
+      [3, 1, 2],
+      [3, 1, 4],
+      [3, 1, 8],
+      [3, 2, 4],
+      [3, 2, 8],
+      [3, 2, 16],
+      [3, 3, 6],
+      [3, 3, 12],
+      [3, 3, 24],
+    ];
+
+    const specFailExamples: Array<WheelCountCase> = [
+      [1, 1, 4],
+      [2, 1, 8],
+      [3, 2, 10],
+      [4, 3, 8],
+    ];
+
+    it.each(specPassExamples)(
+      'passes explicit spec example for axle unit %i with %i axles and %i wheels',
+      (axleUnit, numberOfAxles, numberOfTires) => {
+        expectWheelCountResult(
+          axleUnit,
+          numberOfAxles,
+          numberOfTires,
+          PolicyCheckResultType.Pass,
+        );
+      },
+    );
+
+    it.each(specFailExamples)(
+      'fails explicit spec example for axle unit %i with %i axles and %i wheels',
+      (axleUnit, numberOfAxles, numberOfTires) => {
+        expectWheelCountResult(
+          axleUnit,
+          numberOfAxles,
+          numberOfTires,
+          PolicyCheckResultType.Fail,
+        );
+      },
+    );
+
+    // These cases are inferred from the rules rather than copied from example rows.
+    // They complete the steer/drive matrix:
+    // - steer unit 1 allows numberOfAxles * 2
+    // - drive unit 2 allows numberOfAxles * 2 or * 4
+    const ruleDerivedPassExamples: Array<WheelCountCase> = [
+      [1, 1, 2],
+      [1, 2, 4],
+      [1, 3, 6],
+      [2, 1, 2],
+      [2, 1, 4],
+      [2, 2, 4],
+      [2, 2, 8],
+      [2, 3, 6],
+      [2, 3, 12],
+    ];
+
+    const ruleDerivedFailExamples: Array<WheelCountCase> = [
+      [1, 2, 8],
+      [1, 3, 12],
+      [2, 2, 16],
+      [2, 3, 24],
+    ];
+
+    it.each(ruleDerivedPassExamples)(
+      'passes derived rule case for axle unit %i with %i axles and %i wheels',
+      (axleUnit, numberOfAxles, numberOfTires) => {
+        expectWheelCountResult(
+          axleUnit,
+          numberOfAxles,
+          numberOfTires,
+          PolicyCheckResultType.Pass,
+        );
+      },
+    );
+
+    it.each(ruleDerivedFailExamples)(
+      'fails derived rule case for axle unit %i with %i axles and %i wheels',
+      (axleUnit, numberOfAxles, numberOfTires) => {
+        expectWheelCountResult(
+          axleUnit,
+          numberOfAxles,
+          numberOfTires,
+          PolicyCheckResultType.Fail,
+        );
+      },
+    );
+  });
 
   // ORV2-5374 examples and expected pass/fail states come from:
   // onRouteBCSpecification/Applying for Permits/Single Trip Overweight/ASW Tridem Drive AU 20% of Actual GCVW.feature
@@ -293,6 +429,48 @@ describe('Axle Calculation Functions', () => {
       result: PolicyCheckResultType.Fail,
       startAxleUnit: 1,
       endAxleUnit: 1,
+    });
+  });
+
+  it('should fail axle calculation when steer axle unit has a drive-only wheel count', async () => {
+    const ac = JSON.parse(
+      JSON.stringify(axleConfiguration),
+    ) as Array<AxleConfiguration>;
+    ac[0].numberOfAxles = 1;
+    ac[0].numberOfTires = 4;
+
+    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const numTiresResult = results.results.find(
+      (r) => r.id === PolicyCheckId.NumberOfWheelsPerAxle,
+    );
+
+    expect(numTiresResult).toMatchObject({
+      result: PolicyCheckResultType.Fail,
+      message: 'No. of Wheels for Axle Unit 1 is not permittable.',
+      startAxleUnit: 1,
+      endAxleUnit: 1,
+    });
+  });
+
+  it('should fail axle calculation when drive axle unit has a trailer-only wheel count', async () => {
+    const ac = JSON.parse(
+      JSON.stringify(axleConfiguration),
+    ) as Array<AxleConfiguration>;
+    ac[1].numberOfAxles = 1;
+    ac[1].numberOfTires = 8;
+
+    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const numTiresResult = results.results.find(
+      (r) =>
+        r.id === PolicyCheckId.NumberOfWheelsPerAxle &&
+        r.startAxleUnit === 2,
+    );
+
+    expect(numTiresResult).toMatchObject({
+      result: PolicyCheckResultType.Fail,
+      message: 'No. of Wheels for Axle Unit 2 is not permittable.',
+      startAxleUnit: 2,
+      endAxleUnit: 2,
     });
   });
 

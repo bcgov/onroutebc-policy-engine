@@ -197,6 +197,38 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     );
   });
 
+  it('should raise STOW axle calculation violation when steer axle unit has an invalid wheel count', async () => {
+    const permit = getDatedPermit();
+    permit.permitData.vehicleConfiguration.axleConfiguration[0].numberOfAxles = 1;
+    permit.permitData.vehicleConfiguration.axleConfiguration[0].numberOfTires = 4;
+
+    const validationResult = await policy.validate(permit);
+
+    expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.violations[0].message).toBe(
+      'Vehicle configuration failed axle calculation policy checks',
+    );
+    expect(validationResult.violations[0].details).toContain(
+      'No. of Wheels for Axle Unit 1 is not permittable.',
+    );
+  });
+
+  it('should raise STOW axle calculation violation when drive axle unit has an invalid wheel count', async () => {
+    const permit = getDatedPermit();
+    permit.permitData.vehicleConfiguration.axleConfiguration[1].numberOfAxles = 1;
+    permit.permitData.vehicleConfiguration.axleConfiguration[1].numberOfTires = 8;
+
+    const validationResult = await policy.validate(permit);
+
+    expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.violations[0].message).toBe(
+      'Vehicle configuration failed axle calculation policy checks',
+    );
+    expect(validationResult.violations[0].details).toContain(
+      'No. of Wheels for Axle Unit 2 is not permittable.',
+    );
+  });
+
   it('should raise STOW axle calculation violation when truck tractor wheelbase exceeds 7.2m', async () => {
     const permit = getDatedPermit();
     setTruckTractorWheelbaseScenario(permit, 660, 140);
