@@ -558,86 +558,185 @@ export function CheckMinDriveAxleWeight(
  */
 export function CheckMaxTireLoad(
   _policy: Policy,
-  _vehicleConfiguration: Array<string>,
-  axleConfiguration: Array<AxleConfiguration>,
-): Array<PolicyCheckResult> {
+  _vehicleConfiguration: string[],
+  axleConfiguration: AxleConfiguration[],
+): PolicyCheckResult[] {
   const policyCheckResults = new Array<PolicyCheckResult>();
   const policyId = PolicyCheckId.MaxTireLoad;
 
-  // Steer axle tire load check
-  const steerTireSize = axleConfiguration[0].tireSize;
-  if (!steerTireSize) {
-    policyCheckResults.push({
-      id: policyId,
-      result: PolicyCheckResultType.Fail,
-      message: `Steer axle tire size is invalid`,
-      axleUnit: 1,
-    } as AxleUnitPolicyCheckResult);
-  } else if (steerTireSize > 455) {
-    policyCheckResults.push({
-      id: policyId,
-      result: PolicyCheckResultType.Fail,
-      message: `Steer axle tire size must not exceed 455mm`,
-      axleUnit: 1,
-    } as AxleUnitPolicyCheckResult);
-  } else if (steerTireSize >= 445) {
-    if (axleConfiguration[0].axleUnitWeight > 9100) {
-      policyCheckResults.push({
-        id: policyId,
-        result: PolicyCheckResultType.Fail,
-        message: `Steer axle weight exceeds maximum of 9100kg for ${steerTireSize}mm tire size`,
-        axleUnit: 1,
-      } as AxleUnitPolicyCheckResult);
-    }
-  } else {
-    const maxWeightOnSteerAxle =
-      (axleConfiguration[0].numberOfTires || 0) * (steerTireSize * 10);
-    if (axleConfiguration[0].axleUnitWeight > maxWeightOnSteerAxle) {
-      policyCheckResults.push({
-        id: policyId,
-        result: PolicyCheckResultType.Fail,
-        message: `Steer axle weight exceeds maximum of ${maxWeightOnSteerAxle}kg for ${steerTireSize}mm tire size`,
-        axleUnit: 1,
-      } as AxleUnitPolicyCheckResult);
-    }
-  }
+  const powerUnitType = _vehicleConfiguration[0];
 
-  // Non-steer axle tire load checks
-  axleConfiguration.slice(1).forEach((a, i) => {
-    const tireSize = a.tireSize;
-    const numberOfTires = a.numberOfTires;
-    const axleUnitNum = i + 2;
-    let maxWeight = 0;
+  const isRubberTiredLoader = powerUnitType === 'RBTRLDR';
+  const isAllTerrainCrane = powerUnitType === 'CRANEAT';
+  const isMobileCrane = powerUnitType === 'CRANEMB';
+
+  const addFailResult = (axleUnit: number) => {
+    policyCheckResults.push({
+      id: policyId,
+      result: PolicyCheckResultType.Fail,
+      message: `Tire Size for Axle Unit ${axleUnit} exceeds its load capacity.`,
+      axleUnit,
+    } as AxleUnitPolicyCheckResult);
+  };
+
+  /**
+   * Both the kg/cm rate and the explicit axle cap apply for all axle types.
+   * The lower of the two is the binding limit:
+   *   maxAllowedWeight = min((tireSize / 10) * rateKgPerCm * numberOfTires, capWeight)
+   *
+   * When capWeight is omitted, only the rate applies.
+   */
+  const exceedsRateOrCapLimit = (
+    axleWeight: number,
+    tireSize: number,
+    numberOfTires: number,
+    rateKgPerCm: number,
+    capWeight?: number,
+  ): boolean => {
+    const rateLimitWeight = (tireSize / 10) * rateKgPerCm * numberOfTires;
+    const maxAllowedWeight =
+      capWeight !== undefined
+        ? Math.min(rateLimitWeight, capWeight)
+        : rateLimitWeight;
+    return axleWeight > maxAllowedWeight;
+  };
+
+  axleConfiguration.forEach((ac, index) => {
+    const axleUnit = index + 1;
+
+    const tireSize = ac.tireSize;
+    const numberOfTires = ac.numberOfTires ?? 0;
+    const axleWeight = ac.axleUnitWeight ?? 0;
+
     if (!tireSize) {
-      policyCheckResults.push({
-        id: policyId,
-        result: PolicyCheckResultType.Fail,
-        message: `Axle unit ${axleUnitNum} tire size is invalid`,
-        axleUnit: axleUnitNum,
-      } as AxleUnitPolicyCheckResult);
-    } else if (!numberOfTires) {
-      policyCheckResults.push({
-        id: policyId,
-        result: PolicyCheckResultType.Fail,
-        message: `Axle unit ${axleUnitNum} number of wheels is invalid`,
-        axleUnit: axleUnitNum,
-      } as AxleUnitPolicyCheckResult);
-    } else {
-      if (tireSize >= 445) {
-        maxWeight = numberOfTires * 3850;
-      } else if (tireSize > 300) {
-        maxWeight = numberOfTires * 3000;
-      } else {
-        maxWeight = numberOfTires * tireSize * 10;
+      addFailResult(axleUnit);
+      return;
+    }
+
+    if (!numberOfTires) {
+      addFailResult(axleUnit);
+      return;
+    }
+
+    const isSteeringAxle = index === 0;
+
+    /**
+     * Rubber Tired Loader
+     *
+     * All axle units — rate 110 kg/cm; lower of rate or cap is binding:
+     *   >=600 mm => min(110 kg/cm rate, 12,000 kg/axle)
+     *   >=520 mm => min(110 kg/cm rate, 11,000 kg/axle)
+     *
+     * For RTL the 110 kg/cm rate always yields more than the cap at these
+     * tire sizes (e.g. 520mm * 110 * 2 = 11,440 > 11,000), so the cap
+     * will always be the binding constraint in practice.
+     */
+    if (isRubberTiredLoader) {
+      if (tireSize >= 600) {
+        if (
+          exceedsRateOrCapLimit(axleWeight, tireSize, numberOfTires, 110, 12000)
+        ) {
+          addFailResult(axleUnit);
+        }
+      } else if (tireSize >= 520) {
+        if (
+          exceedsRateOrCapLimit(axleWeight, tireSize, numberOfTires, 110, 11000)
+        ) {
+          addFailResult(axleUnit);
+        }
       }
-      if (a.axleUnitWeight > maxWeight) {
-        policyCheckResults.push({
-          id: policyId,
-          result: PolicyCheckResultType.Fail,
-          message: `Axle unit ${axleUnitNum} weight exceeds maximum of ${maxWeight}kg for ${numberOfTires} ${tireSize}mm tires`,
-          axleUnit: axleUnitNum,
-        } as AxleUnitPolicyCheckResult);
+
+      return;
+    }
+
+    /**
+     * Crane - All Terrain
+     *
+     * All axle units — rate 100 kg/cm; lower of rate or cap is binding:
+     *   >=520 mm => min(100 kg/cm rate, 11,000 kg/axle)
+     *
+     * For tires where the rate yields less than the cap
+     * (e.g. 520mm * 100 * 2 = 10,400 < 11,000), the rate is binding.
+     * For tires where the rate yields more than the cap
+     * (e.g. 609mm * 100 * 2 = 12,180 > 11,000), the cap is binding.
+     */
+    if (isAllTerrainCrane) {
+      if (tireSize >= 520) {
+        if (
+          exceedsRateOrCapLimit(axleWeight, tireSize, numberOfTires, 100, 11000)
+        ) {
+          addFailResult(axleUnit);
+        }
       }
+
+      return;
+    }
+
+    /**
+     * Mobile Crane
+     *
+     * Non-steering axle units only — rate 100 kg/cm; lower of rate or cap is binding:
+     *   >=520 mm => min(100 kg/cm rate, 11,000 kg/axle)
+     *
+     * Same rate/cap interaction as Crane - All Terrain above.
+     * Steering axle falls through to the standard steer axle rules below.
+     */
+    if (isMobileCrane && !isSteeringAxle) {
+      if (tireSize >= 520) {
+        if (
+          exceedsRateOrCapLimit(axleWeight, tireSize, numberOfTires, 100, 11000)
+        ) {
+          addFailResult(axleUnit);
+        }
+      }
+
+      return;
+    }
+
+    /**
+     * Steer axle — all vehicles except Crane - All Terrain, Mobile Crane
+     * (steering), Rubber Tired Loader
+     *
+     * Rate 100 kg/cm; lower of rate or cap is binding:
+     *   <445 mm  => rate only (no cap)
+     *   >=445 mm => min(100 kg/cm rate, 9,100 kg/axle)
+     *
+     * e.g. 445mm * 2 tires => min(8,900, 9,100) = 8,900 kg  <- rate binding
+     * e.g. 457mm * 2 tires => min(9,140, 9,100) = 9,100 kg  <- cap  binding
+     */
+    if (isSteeringAxle) {
+      const capWeight = tireSize >= 445 ? 9100 : undefined;
+
+      if (
+        exceedsRateOrCapLimit(
+          axleWeight,
+          tireSize,
+          numberOfTires,
+          100,
+          capWeight,
+        )
+      ) {
+        addFailResult(axleUnit);
+      }
+
+      return;
+    }
+
+    /**
+     * Standard non-steering axle — all vehicles except Crane - All Terrain,
+     * Mobile Crane (non-steering), Rubber Tired Loader
+     *
+     * Rate 100 kg/cm; lower of rate or per-tire cap is binding:
+     *   >=445 mm => min(100 kg/cm rate, 4,550 kg/tire * numberOfTires)
+     *   <=444 mm => min(100 kg/cm rate, 3,000 kg/tire * numberOfTires)
+     */
+    const perTireCap = tireSize >= 445 ? 4550 : 3000;
+    const axleCap = perTireCap * numberOfTires;
+
+    if (
+      exceedsRateOrCapLimit(axleWeight, tireSize, numberOfTires, 100, axleCap)
+    ) {
+      addFailResult(axleUnit);
     }
   });
 

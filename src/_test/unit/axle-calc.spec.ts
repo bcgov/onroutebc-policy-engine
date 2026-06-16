@@ -986,11 +986,7 @@ describe('Axle Calculation Functions', () => {
       ac[1].axleUnitWeight = 12000;
       ac[2].axleUnitWeight = 10999;
 
-      const results = policy.runAxleCalculation(
-        vehicleConfiguration,
-        ac,
-        0,
-      );
+      const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
       const loadEqualizationResult = results.results.find(
         (r) => r.id === PolicyCheckId.DriveJeepLoadEqualization,
       );
@@ -1002,23 +998,6 @@ describe('Axle Calculation Functions', () => {
         endAxleUnit: 3,
       });
     });
-  });
-
-  it('should fail policy check for steer axle tire size too large', async () => {
-    const ac = JSON.parse(
-      JSON.stringify(axleConfiguration),
-    ) as Array<AxleConfiguration>;
-    ac[0].tireSize = 460;
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
-    expect(
-      results.results.every((r) => r.result === PolicyCheckResultType.Pass),
-    ).toBe(false);
-    const maxTireResults = results.results.filter(
-      (r) => r.id === PolicyCheckId.MaxTireLoad,
-    );
-    expect(
-      maxTireResults.every((r) => r.result === PolicyCheckResultType.Pass),
-    ).toBe(false);
   });
 
   it('should fail policy check for steer axle too heavy with 445 tires', async () => {
@@ -1096,7 +1075,7 @@ describe('Axle Calculation Functions', () => {
       JSON.stringify(axleConfiguration),
     ) as Array<AxleConfiguration>;
     ac[2].tireSize = 445;
-    ac[2].axleUnitWeight = 3850 * (ac[2].numberOfTires || 0) + 1;
+    ac[2].axleUnitWeight = 4550 * (ac[2].numberOfTires || 0) + 1;
     const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
