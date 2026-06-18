@@ -15,6 +15,8 @@ import {
   CheckBoosterAxleLimit,
   CheckNumTiresPerAxle,
   CheckMinDriveAxleWeight,
+  CheckMinSteerAxleWeight,
+  CheckMinTandemSteerAxleWeight,
   CheckTruckTractorWheelbase,
   CheckDriveJeepLoadEqualization,
 } from '../../helper/policy-check.helper';
@@ -208,6 +210,265 @@ describe('Axle Calculation Functions', () => {
     );
   });
 
+  const getSteerDriveAxleWeightAxles = (
+    steerAxleCount: number,
+    driveAxleCount: number,
+    steerAxleWeight: number,
+    driveAxleWeight: number,
+  ): Array<AxleConfiguration> => [
+    {
+      numberOfAxles: steerAxleCount,
+      axleUnitWeight: steerAxleWeight,
+    },
+    {
+      numberOfAxles: driveAxleCount,
+      axleUnitWeight: driveAxleWeight,
+    },
+  ];
+
+  // ORV2-5366 is only for single steer axle units with tridem drive axle units.
+  describe('minimum single steer axle weight policy check', () => {
+    const passExamples = [
+      {
+        tridemDriveAxleWeight: 20000,
+        steerAxleWeight: 5400,
+      },
+      {
+        tridemDriveAxleWeight: 20000,
+        steerAxleWeight: 6000,
+      },
+      {
+        tridemDriveAxleWeight: 18000,
+        steerAxleWeight: 4860,
+      },
+    ];
+
+    const failExamples = [
+      {
+        tridemDriveAxleWeight: 20000,
+        steerAxleWeight: 5399,
+      },
+      {
+        tridemDriveAxleWeight: 18000,
+        steerAxleWeight: 4859,
+      },
+      {
+        tridemDriveAxleWeight: 15000,
+        steerAxleWeight: 4000,
+      },
+    ];
+
+    const expectMinSingleSteerAxleWeightResult = (
+      tridemDriveAxleWeight: number,
+      steerAxleWeight: number,
+      expectedResult: PolicyCheckResultType,
+    ) => {
+      const [result] = CheckMinSteerAxleWeight(
+        policy,
+        vehicleConfiguration,
+        getSteerDriveAxleWeightAxles(
+          1,
+          3,
+          steerAxleWeight,
+          tridemDriveAxleWeight,
+        ),
+      );
+
+      expect(result).toMatchObject({
+        id: PolicyCheckId.MinSteerAxleWeight,
+        result: expectedResult,
+        startAxleUnit: 1,
+        endAxleUnit: 2,
+      });
+    };
+
+    it.each(passExamples)(
+      'passes for tridem drive axle weight $tridemDriveAxleWeight kg and single steer axle weight $steerAxleWeight kg',
+      ({ tridemDriveAxleWeight, steerAxleWeight }) => {
+        expectMinSingleSteerAxleWeightResult(
+          tridemDriveAxleWeight,
+          steerAxleWeight,
+          PolicyCheckResultType.Pass,
+        );
+      },
+    );
+
+    it.each(failExamples)(
+      'fails for tridem drive axle weight $tridemDriveAxleWeight kg and single steer axle weight $steerAxleWeight kg',
+      ({ tridemDriveAxleWeight, steerAxleWeight }) => {
+        expectMinSingleSteerAxleWeightResult(
+          tridemDriveAxleWeight,
+          steerAxleWeight,
+          PolicyCheckResultType.Fail,
+        );
+      },
+    );
+
+    it('does not apply to tandem steer axle units', () => {
+      const [result] = CheckMinSteerAxleWeight(
+        policy,
+        vehicleConfiguration,
+        getSteerDriveAxleWeightAxles(2, 3, 4000, 20000),
+      );
+
+      expect(result).toMatchObject({
+        id: PolicyCheckId.MinSteerAxleWeight,
+        result: PolicyCheckResultType.Pass,
+        message: 'Policy check does not apply to this configuration',
+      });
+    });
+  });
+
+  // ORV2-5506 is only for tandem steer axle units with tandem or tridem drive axle units.
+  describe('minimum tandem steer axle weight policy check', () => {
+    const tandemDrivePassExamples = [
+      {
+        driveAxleWeight: 17000,
+        steerAxleWeight: 6800,
+      },
+      {
+        driveAxleWeight: 17000,
+        steerAxleWeight: 7000,
+      },
+      {
+        driveAxleWeight: 15000,
+        steerAxleWeight: 6000,
+      },
+    ];
+
+    const tandemDriveFailExamples = [
+      {
+        driveAxleWeight: 17000,
+        steerAxleWeight: 6799,
+      },
+      {
+        driveAxleWeight: 15000,
+        steerAxleWeight: 5999,
+      },
+      {
+        driveAxleWeight: 17000,
+        steerAxleWeight: 5000,
+      },
+    ];
+
+    const tridemDrivePassExamples = [
+      {
+        driveAxleWeight: 20000,
+        steerAxleWeight: 8000,
+      },
+      {
+        driveAxleWeight: 20000,
+        steerAxleWeight: 8500,
+      },
+      {
+        driveAxleWeight: 18000,
+        steerAxleWeight: 7200,
+      },
+    ];
+
+    const tridemDriveFailExamples = [
+      {
+        driveAxleWeight: 20000,
+        steerAxleWeight: 7999,
+      },
+      {
+        driveAxleWeight: 18000,
+        steerAxleWeight: 7199,
+      },
+      {
+        driveAxleWeight: 15000,
+        steerAxleWeight: 5000,
+      },
+    ];
+
+    const expectMinTandemSteerAxleWeightResult = (
+      driveAxleCount: number,
+      driveAxleWeight: number,
+      steerAxleWeight: number,
+      expectedResult: PolicyCheckResultType,
+    ) => {
+      const [result] = CheckMinTandemSteerAxleWeight(
+        policy,
+        vehicleConfiguration,
+        getSteerDriveAxleWeightAxles(
+          2,
+          driveAxleCount,
+          steerAxleWeight,
+          driveAxleWeight,
+        ),
+      );
+
+      expect(result).toMatchObject({
+        id: PolicyCheckId.MinTandemSteerAxleWeight,
+        result: expectedResult,
+        startAxleUnit: 1,
+        endAxleUnit: 2,
+      });
+    };
+
+    it.each(tandemDrivePassExamples)(
+      'passes for tandem drive axle weight $driveAxleWeight kg and tandem steer axle weight $steerAxleWeight kg',
+      ({ driveAxleWeight, steerAxleWeight }) => {
+        expectMinTandemSteerAxleWeightResult(
+          2,
+          driveAxleWeight,
+          steerAxleWeight,
+          PolicyCheckResultType.Pass,
+        );
+      },
+    );
+
+    it.each(tandemDriveFailExamples)(
+      'fails for tandem drive axle weight $driveAxleWeight kg and tandem steer axle weight $steerAxleWeight kg',
+      ({ driveAxleWeight, steerAxleWeight }) => {
+        expectMinTandemSteerAxleWeightResult(
+          2,
+          driveAxleWeight,
+          steerAxleWeight,
+          PolicyCheckResultType.Fail,
+        );
+      },
+    );
+
+    it.each(tridemDrivePassExamples)(
+      'passes for tridem drive axle weight $driveAxleWeight kg and tandem steer axle weight $steerAxleWeight kg',
+      ({ driveAxleWeight, steerAxleWeight }) => {
+        expectMinTandemSteerAxleWeightResult(
+          3,
+          driveAxleWeight,
+          steerAxleWeight,
+          PolicyCheckResultType.Pass,
+        );
+      },
+    );
+
+    it.each(tridemDriveFailExamples)(
+      'fails for tridem drive axle weight $driveAxleWeight kg and tandem steer axle weight $steerAxleWeight kg',
+      ({ driveAxleWeight, steerAxleWeight }) => {
+        expectMinTandemSteerAxleWeightResult(
+          3,
+          driveAxleWeight,
+          steerAxleWeight,
+          PolicyCheckResultType.Fail,
+        );
+      },
+    );
+
+    it('does not apply to single steer axle units', () => {
+      const [result] = CheckMinTandemSteerAxleWeight(
+        policy,
+        vehicleConfiguration,
+        getSteerDriveAxleWeightAxles(1, 3, 5000, 20000),
+      );
+
+      expect(result).toMatchObject({
+        id: PolicyCheckId.MinTandemSteerAxleWeight,
+        result: PolicyCheckResultType.Pass,
+        message: 'Policy check does not apply to this configuration',
+      });
+    });
+  });
+
   // ORV2-5374 examples and expected pass/fail states come from:
   // onRouteBCSpecification/Applying for Permits/Single Trip Overweight/ASW Tridem Drive AU 20% of Actual GCVW.feature
   describe('minimum drive axle weight policy check', () => {
@@ -397,6 +658,56 @@ describe('Axle Calculation Functions', () => {
     ).toBe(true);
   });
 
+  it('should include failed minimum single steer axle weight results from axle calculation', async () => {
+    const ac = JSON.parse(
+      JSON.stringify(axleConfiguration),
+    ) as Array<AxleConfiguration>;
+    ac[0].numberOfAxles = 1;
+    ac[0].axleUnitWeight = 5399;
+    ac[1].numberOfAxles = 3;
+    ac[1].numberOfTires = 12;
+    ac[1].axleUnitWeight = 20000;
+
+    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const minSteerResult = results.results.find(
+      (r) => r.id === PolicyCheckId.MinSteerAxleWeight,
+    );
+
+    expect(minSteerResult).toMatchObject({
+      result: PolicyCheckResultType.Fail,
+      message:
+        'Single steer axle must be a minimum of 27% of tridem drive axle weight',
+      startAxleUnit: 1,
+      endAxleUnit: 2,
+    });
+  });
+
+  it('should include failed minimum tandem steer axle weight results from axle calculation', async () => {
+    const ac = JSON.parse(
+      JSON.stringify(axleConfiguration),
+    ) as Array<AxleConfiguration>;
+    ac[0].numberOfAxles = 2;
+    ac[0].numberOfTires = 4;
+    ac[0].axleSpread = 160;
+    ac[0].axleUnitWeight = 7999;
+    ac[1].numberOfAxles = 3;
+    ac[1].numberOfTires = 12;
+    ac[1].axleUnitWeight = 20000;
+
+    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const minTandemSteerResult = results.results.find(
+      (r) => r.id === PolicyCheckId.MinTandemSteerAxleWeight,
+    );
+
+    expect(minTandemSteerResult).toMatchObject({
+      result: PolicyCheckResultType.Fail,
+      message:
+        'Tandem steer axle must be a minimum of 40% of drive axle weight',
+      startAxleUnit: 1,
+      endAxleUnit: 2,
+    });
+  });
+
   it('should fail policy check for invalid number of tires', async () => {
     const ac = JSON.parse(
       JSON.stringify(axleConfiguration),
@@ -462,8 +773,7 @@ describe('Axle Calculation Functions', () => {
     const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
     const numTiresResult = results.results.find(
       (r) =>
-        r.id === PolicyCheckId.NumberOfWheelsPerAxle &&
-        r.startAxleUnit === 2,
+        r.id === PolicyCheckId.NumberOfWheelsPerAxle && r.startAxleUnit === 2,
     );
 
     expect(numTiresResult).toMatchObject({

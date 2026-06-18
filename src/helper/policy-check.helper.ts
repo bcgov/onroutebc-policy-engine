@@ -34,6 +34,16 @@ type PolicyCheck = (
   axleConfiguration: Array<AxleConfiguration>,
 ) => Array<PolicyCheckResult>;
 
+function meetsMinimumSteerPercentageOfDriveAxleWeight(
+  steerAxle: AxleConfiguration,
+  driveAxle: AxleConfiguration,
+  minimumPercentage: number,
+): boolean {
+  return (
+    steerAxle.axleUnitWeight >= driveAxle.axleUnitWeight * minimumPercentage
+  );
+}
+
 /**
  * Validates the number of axles in each axle unit.
  *
@@ -393,7 +403,7 @@ export function CheckPermittableWeight(
  * @example
  * // For a single steer, tridem drive configuration
  * const results = CheckMinSteerAxleWeight(policy, ['TRKTRAC'], [
- *   { numberOfAxles: 1, axleUnitWeight: 8000 },  // Steer axle
+ *   { numberOfAxles: 1, axleUnitWeight: 8000 },  // Single steer axle
  *   { numberOfAxles: 3, axleUnitWeight: 30000 }  // Tridem drive axle
  * ]);
  * // Returns pass if steer axle weight >= 27% of drive axle weight (8100 kgs)
@@ -416,14 +426,17 @@ export function CheckMinSteerAxleWeight(
   ) {
     // Check minimum load on steer axle
     if (
-      axleConfiguration[0].axleUnitWeight >=
-      axleConfiguration[1].axleUnitWeight * 0.27
+      meetsMinimumSteerPercentageOfDriveAxleWeight(
+        axleConfiguration[0],
+        axleConfiguration[1],
+        0.27,
+      )
     ) {
-      message = 'Steer axle meets minimum weight requirements';
+      message = 'Single steer axle meets minimum weight requirements';
       result = PolicyCheckResultType.Pass;
     } else {
       message =
-        'Steer axle must be a minimum of 27% of tridem drive axle weight';
+        'Single steer axle must be a minimum of 27% of tridem drive axle weight';
       result = PolicyCheckResultType.Fail;
     }
   } else {
@@ -431,6 +444,57 @@ export function CheckMinSteerAxleWeight(
     message = 'Policy check does not apply to this configuration';
     result = PolicyCheckResultType.Pass;
   }
+  policyCheckResults.push({
+    id: policyId,
+    message: message,
+    result: result,
+    startAxleUnit: 1,
+    endAxleUnit: 2,
+  });
+
+  return policyCheckResults;
+}
+
+/**
+ * Validates minimum tandem steer axle weight requirements for tandem steer
+ * power units with tandem or tridem drive axle units. The tandem steer axle
+ * unit must carry at least 40% of the drive axle unit weight.
+ *
+ * @param _policy - The policy instance (unused in this check, but required by PolicyCheck type)
+ * @param _vehicleConfiguration - Vehicle configuration (unused in this check, but required by PolicyCheck type)
+ * @param axleConfiguration - Array of axle configurations containing weight and axle count information
+ * @returns Array of AxleGroupPolicyCheckResult objects with validation results
+ */
+export function CheckMinTandemSteerAxleWeight(
+  _policy: Policy,
+  _vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+): Array<PolicyCheckResult> {
+  const policyCheckResults = new Array<AxleGroupPolicyCheckResult>();
+  const policyId = PolicyCheckId.MinTandemSteerAxleWeight;
+  const steerAxle = axleConfiguration[0];
+  const driveAxle = axleConfiguration[1];
+
+  let message, result;
+  if (
+    steerAxle.numberOfAxles === 2 &&
+    (driveAxle.numberOfAxles === 2 || driveAxle.numberOfAxles === 3)
+  ) {
+    if (
+      meetsMinimumSteerPercentageOfDriveAxleWeight(steerAxle, driveAxle, 0.4)
+    ) {
+      message = 'Tandem steer axle meets minimum weight requirements';
+      result = PolicyCheckResultType.Pass;
+    } else {
+      message =
+        'Tandem steer axle must be a minimum of 40% of drive axle weight';
+      result = PolicyCheckResultType.Fail;
+    }
+  } else {
+    message = 'Policy check does not apply to this configuration';
+    result = PolicyCheckResultType.Pass;
+  }
+
   policyCheckResults.push({
     id: policyId,
     message: message,
@@ -982,6 +1046,7 @@ export function CheckDriveJeepLoadEqualization(
  * - MaxTireLoad: Validates tire load capacity for each axle unit
  * - MinDriveAxleWeight: Validates minimum weight requirements for drive axles
  * - MinSteerAxleWeight: Validates minimum weight requirements for steer axles
+ * - MinTandemSteerAxleWeight: Validates tandem steer minimum weight requirements
  * - NumberOfAxles: Validates axle count per axle unit
  * - NumberOfWheelsPerAxle: Validates tire count per axle unit
  * - BoosterAxleLimit: Validates booster axle count against the preceding trailer
@@ -999,6 +1064,7 @@ export const policyCheckMap = new Map<string, PolicyCheck>([
   [PolicyCheckId.MaxTireLoad, CheckMaxTireLoad],
   [PolicyCheckId.MinDriveAxleWeight, CheckMinDriveAxleWeight],
   [PolicyCheckId.MinSteerAxleWeight, CheckMinSteerAxleWeight],
+  [PolicyCheckId.MinTandemSteerAxleWeight, CheckMinTandemSteerAxleWeight],
   [PolicyCheckId.NumberOfWheelsPerAxle, CheckNumTiresPerAxle],
   [PolicyCheckId.BoosterAxleLimit, CheckBoosterAxleLimit],
   [PolicyCheckId.TruckTractorWheelbase, CheckTruckTractorWheelbase],
