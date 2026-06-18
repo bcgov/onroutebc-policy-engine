@@ -160,6 +160,31 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
       interaxleSpacing;
   };
 
+  const setMinimumSteerWeightScenario = (
+    permit: any,
+    steerAxleCount: number,
+    steerAxleTireCount: number,
+    steerAxleWeight: number,
+    driveAxleCount: number,
+    driveAxleTireCount: number,
+    driveAxleWeight: number,
+  ) => {
+    permit.permitData.vehicleConfiguration.axleConfiguration[0].numberOfAxles =
+      steerAxleCount;
+    permit.permitData.vehicleConfiguration.axleConfiguration[0].axleSpread =
+      steerAxleCount > 1 ? 160 : undefined;
+    permit.permitData.vehicleConfiguration.axleConfiguration[0].numberOfTires =
+      steerAxleTireCount;
+    permit.permitData.vehicleConfiguration.axleConfiguration[0].axleUnitWeight =
+      steerAxleWeight;
+    permit.permitData.vehicleConfiguration.axleConfiguration[1].numberOfAxles =
+      driveAxleCount;
+    permit.permitData.vehicleConfiguration.axleConfiguration[1].numberOfTires =
+      driveAxleTireCount;
+    permit.permitData.vehicleConfiguration.axleConfiguration[1].axleUnitWeight =
+      driveAxleWeight;
+  };
+
   it('should validate STOW successfully', async () => {
     const permit = getDatedPermit();
 
@@ -258,6 +283,36 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
       'Wheelbase for Axle Unit 1 and Axle Unit 2 is between 6.2m and 7.2m. See CTPM 5.3.7.A.',
     );
     expect(validationResult.warnings).toHaveLength(0);
+  });
+
+  it('should raise STOW axle calculation violation when single steer axle weight is below 27% of tridem drive axle weight', async () => {
+    const permit = getDatedPermit();
+    setMinimumSteerWeightScenario(permit, 1, 2, 5399, 3, 12, 20000);
+
+    const validationResult = await policy.validate(permit);
+
+    expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.violations[0].message).toBe(
+      'Vehicle configuration failed axle calculation policy checks',
+    );
+    expect(validationResult.violations[0].details).toContain(
+      'Single steer axle must be a minimum of 27% of tridem drive axle weight',
+    );
+  });
+
+  it('should raise STOW axle calculation violation when tandem steer axle weight is below 40% of tridem drive axle weight', async () => {
+    const permit = getDatedPermit();
+    setMinimumSteerWeightScenario(permit, 2, 4, 7999, 3, 12, 20000);
+
+    const validationResult = await policy.validate(permit);
+
+    expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.violations[0].message).toBe(
+      'Vehicle configuration failed axle calculation policy checks',
+    );
+    expect(validationResult.violations[0].details).toContain(
+      'Tandem steer axle must be a minimum of 40% of drive axle weight',
+    );
   });
 
   // =========================================================================
@@ -458,10 +513,8 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
 
   it('should raise STOW axle calculation violation when drive and jeep axle units are not load equalized', async () => {
     const permit = getDatedPermit();
-    permit.permitData.vehicleConfiguration.axleConfiguration[1].axleUnitWeight =
-      12000;
-    permit.permitData.vehicleConfiguration.axleConfiguration[2].axleUnitWeight =
-      10999;
+    permit.permitData.vehicleConfiguration.axleConfiguration[1].axleUnitWeight = 12000;
+    permit.permitData.vehicleConfiguration.axleConfiguration[2].axleUnitWeight = 10999;
 
     const validationResult = await policy.validate(permit);
 
