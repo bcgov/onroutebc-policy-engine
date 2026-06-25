@@ -14,5 +14,6 @@ export enum PolicyCheckId {
   MinTandemSteerAxleWeight = 'minimum-tandem-steer-axle-weight',
   NumberOfAxles = 'number-of-axles',
   NumberOfWheelsPerAxle = 'number-of-wheels',
+  PickerTruckTractorWeightRestrictions = 'picker-truck-tractor-weight-restrictions',
   TruckTractorWheelbase = 'truck-tractor-wheelbase',
 }
