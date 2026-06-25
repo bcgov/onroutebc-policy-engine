@@ -507,6 +507,127 @@ export function CheckMinTandemSteerAxleWeight(
 }
 
 /**
+ * Applies the restricted weight rules for non-standard tandem steer/tridem
+ * drive picker truck tractors.
+ */
+export function CheckPickerTruckTractorWeightRestrictions(
+  policy: Policy,
+  vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+): Array<AxleGroupPolicyCheckResult> {
+  const policyId = PolicyCheckId.PickerTruckTractorWeightRestrictions;
+  const steerAxle = axleConfiguration[0];
+  const driveAxle = axleConfiguration[1];
+  const doesNotApply = (
+    message = 'Policy check does not apply to this configuration',
+  ): Array<AxleGroupPolicyCheckResult> => [
+    {
+      id: policyId,
+      message,
+      result: PolicyCheckResultType.Pass,
+      startAxleUnit: 1,
+      endAxleUnit: 2,
+    },
+  ];
+
+  if (
+    vehicleConfiguration[0] !== 'PICKRTT' ||
+    !steerAxle ||
+    !driveAxle ||
+    steerAxle.numberOfAxles !== 2 ||
+    driveAxle.numberOfAxles !== 3
+  ) {
+    return doesNotApply();
+  }
+
+  const hasWheelbaseDimensions =
+    Number.isFinite(steerAxle.axleSpread) &&
+    Number.isFinite(driveAxle.interaxleSpacing) &&
+    Number.isFinite(driveAxle.axleSpread);
+  const wheelbase = hasWheelbaseDimensions
+    ? (steerAxle.axleSpread as number) / 2 +
+      (driveAxle.interaxleSpacing as number) +
+      (driveAxle.axleSpread as number) / 2
+    : undefined;
+  const isNonStandard =
+    (wheelbase !== undefined && wheelbase < 660) ||
+    (steerAxle.axleSpread !== undefined && steerAxle.axleSpread < 100) ||
+    (driveAxle.axleSpread !== undefined && driveAxle.axleSpread < 240);
+
+  if (!isNonStandard) {
+    return doesNotApply();
+  }
+
+  const powerUnitWeights = policy.getDefaultPowerUnitWeight('PICKRTT', 23);
+  const steerWeightDimension = policy.selectCorrectWeightDimension(
+    powerUnitWeights,
+    vehicleConfiguration,
+    axleConfiguration,
+    0,
+  );
+  const driveWeightDimension = policy.selectCorrectWeightDimension(
+    powerUnitWeights,
+    vehicleConfiguration,
+    axleConfiguration,
+    1,
+  );
+  const steerPermittable = steerWeightDimension?.permittable;
+  const drivePermittable = driveWeightDimension?.permittable;
+
+  if (
+    steerPermittable === undefined ||
+    drivePermittable === undefined ||
+    steerAxle.axleUnitWeight > steerPermittable ||
+    driveAxle.axleUnitWeight > drivePermittable
+  ) {
+    return doesNotApply(
+      'Policy check does not apply outside configured permittable axle weights',
+    );
+  }
+
+  const ratioPasses = meetsMinimumSteerPercentageOfDriveAxleWeight(
+    steerAxle,
+    driveAxle,
+    0.5,
+  );
+  const hasRealTrailer = vehicleConfiguration.slice(1).some((vehicleType) => {
+    const vehicleDefinition = policy.getVehicleDefinition(vehicleType);
+    return !vehicleDefinition?.ignoreForAxleCalculation;
+  });
+  const exceedsLegalWeight =
+    (steerWeightDimension?.legal !== undefined &&
+      steerAxle.axleUnitWeight > steerWeightDimension.legal) ||
+    (driveWeightDimension?.legal !== undefined &&
+      driveAxle.axleUnitWeight > driveWeightDimension.legal);
+  const trailerPasses = !hasRealTrailer || !exceedsLegalWeight;
+
+  return [
+    {
+      id: policyId,
+      message: ratioPasses
+        ? ''
+        : 'Axle Unit 1 must carry a minimum 50% of Axle Unit 2 axle unit weight.',
+      result: ratioPasses
+        ? PolicyCheckResultType.Pass
+        : PolicyCheckResultType.Fail,
+      startAxleUnit: 1,
+      endAxleUnit: 2,
+    },
+    {
+      id: policyId,
+      message: trailerPasses
+        ? ''
+        : 'Cannot tow a trailer if Axle Unit 1 and Axle Unit 2 are exceeding legal axle weights.',
+      result: trailerPasses
+        ? PolicyCheckResultType.Pass
+        : PolicyCheckResultType.Fail,
+      startAxleUnit: 1,
+      endAxleUnit: 2,
+    },
+  ];
+}
+
+/**
  * Validates minimum drive axle weight requirements for tandem and tridem drive power units.
  *
  * This function checks that the drive axle meets minimum weight requirements based on the
@@ -1047,6 +1168,7 @@ export function CheckDriveJeepLoadEqualization(
  * - MinDriveAxleWeight: Validates minimum weight requirements for drive axles
  * - MinSteerAxleWeight: Validates minimum weight requirements for steer axles
  * - MinTandemSteerAxleWeight: Validates tandem steer minimum weight requirements
+ * - PickerTruckTractorWeightRestrictions: Validates non-standard picker truck tractor restrictions
  * - NumberOfAxles: Validates axle count per axle unit
  * - NumberOfWheelsPerAxle: Validates tire count per axle unit
  * - BoosterAxleLimit: Validates booster axle count against the preceding trailer
@@ -1065,6 +1187,10 @@ export const policyCheckMap = new Map<string, PolicyCheck>([
   [PolicyCheckId.MinDriveAxleWeight, CheckMinDriveAxleWeight],
   [PolicyCheckId.MinSteerAxleWeight, CheckMinSteerAxleWeight],
   [PolicyCheckId.MinTandemSteerAxleWeight, CheckMinTandemSteerAxleWeight],
+  [
+    PolicyCheckId.PickerTruckTractorWeightRestrictions,
+    CheckPickerTruckTractorWeightRestrictions,
+  ],
   [PolicyCheckId.NumberOfWheelsPerAxle, CheckNumTiresPerAxle],
   [PolicyCheckId.BoosterAxleLimit, CheckBoosterAxleLimit],
   [PolicyCheckId.TruckTractorWheelbase, CheckTruckTractorWheelbase],

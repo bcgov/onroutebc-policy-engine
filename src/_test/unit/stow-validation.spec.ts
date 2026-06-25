@@ -185,6 +185,34 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
       driveAxleWeight;
   };
 
+  const setPickerTruckTractorScenario = (
+    permit: any,
+    steerAxleWeight: number,
+    driveAxleWeight: number,
+  ) => {
+    permit.permitData.vehicleDetails.vehicleSubType = 'PICKRTT';
+    permit.permitData.vehicleConfiguration.trailers = [];
+    permit.permitData.vehicleConfiguration.axleConfiguration = [
+      {
+        numberOfAxles: 2,
+        numberOfTires: 4,
+        tireSize: 330,
+        axleSpread: 100,
+        axleUnitWeight: steerAxleWeight,
+        vehicleIndex: 0,
+      },
+      {
+        numberOfAxles: 3,
+        numberOfTires: 12,
+        tireSize: 330,
+        axleSpread: 240,
+        interaxleSpacing: 485,
+        axleUnitWeight: driveAxleWeight,
+        vehicleIndex: 0,
+      },
+    ];
+  };
+
   it('should validate STOW successfully', async () => {
     const permit = getDatedPermit();
 
@@ -312,6 +340,52 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     );
     expect(validationResult.violations[0].details).toContain(
       'Tandem steer axle must be a minimum of 40% of drive axle weight',
+    );
+  });
+
+  it('should raise STOW axle calculation violation for the picker truck tractor 50% rule', async () => {
+    const permit = getDatedPermit();
+    setPickerTruckTractorScenario(permit, 9000, 20000);
+
+    const validationResult = await policy.validate(permit);
+    const axleViolation = validationResult.violations.find(
+      (violation: any) =>
+        violation.message ===
+        'Vehicle configuration failed axle calculation policy checks',
+    );
+
+    expect(axleViolation?.details).toContain(
+      'Axle Unit 1 must carry a minimum 50% of Axle Unit 2 axle unit weight.',
+    );
+  });
+
+  it('should raise STOW axle calculation violation for the picker truck tractor trailer restriction', async () => {
+    const permit = getDatedPermit();
+    setPickerTruckTractorScenario(permit, 14000, 24001);
+    permit.permitData.vehicleConfiguration.trailers = [
+      {
+        vehicleSubType: 'STACTRN',
+      },
+    ];
+    permit.permitData.vehicleConfiguration.axleConfiguration.push({
+      numberOfAxles: 3,
+      numberOfTires: 12,
+      tireSize: 330,
+      axleSpread: 240,
+      interaxleSpacing: 300,
+      axleUnitWeight: 18000,
+      vehicleIndex: 1,
+    });
+
+    const validationResult = await policy.validate(permit);
+    const axleViolation = validationResult.violations.find(
+      (violation: any) =>
+        violation.message ===
+        'Vehicle configuration failed axle calculation policy checks',
+    );
+
+    expect(axleViolation?.details).toContain(
+      'Cannot tow a trailer if Axle Unit 1 and Axle Unit 2 are exceeding legal axle weights.',
     );
   });
 

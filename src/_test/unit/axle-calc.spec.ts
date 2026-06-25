@@ -17,6 +17,7 @@ import {
   CheckMinDriveAxleWeight,
   CheckMinSteerAxleWeight,
   CheckMinTandemSteerAxleWeight,
+  CheckPickerTruckTractorWeightRestrictions,
   CheckTruckTractorWheelbase,
   CheckDriveJeepLoadEqualization,
 } from '../../helper/policy-check.helper';
@@ -469,6 +470,240 @@ describe('Axle Calculation Functions', () => {
     });
   });
 
+  describe('picker truck tractor weight restrictions policy check', () => {
+    const ratioMessage =
+      'Axle Unit 1 must carry a minimum 50% of Axle Unit 2 axle unit weight.';
+    const trailerMessage =
+      'Cannot tow a trailer if Axle Unit 1 and Axle Unit 2 are exceeding legal axle weights.';
+    const getPickerTruckTractorAxles = (
+      steerAxleWeight: number,
+      driveAxleWeight: number,
+      steerAxleSpread = 100,
+      driveAxleSpread = 240,
+      interaxleSpacing = 485,
+    ): Array<AxleConfiguration> => [
+      {
+        numberOfAxles: 2,
+        numberOfTires: 4,
+        tireSize: 330,
+        axleSpread: steerAxleSpread,
+        axleUnitWeight: steerAxleWeight,
+        vehicleIndex: 0,
+      },
+      {
+        numberOfAxles: 3,
+        numberOfTires: 12,
+        tireSize: 330,
+        axleSpread: driveAxleSpread,
+        interaxleSpacing,
+        axleUnitWeight: driveAxleWeight,
+        vehicleIndex: 0,
+      },
+    ];
+    const getResults = (
+      steerAxleWeight: number,
+      driveAxleWeight: number,
+      vehicleTypes = ['PICKRTT'],
+      steerAxleSpread = 100,
+      driveAxleSpread = 240,
+      interaxleSpacing = 485,
+    ) =>
+      CheckPickerTruckTractorWeightRestrictions(
+        policy,
+        vehicleTypes,
+        getPickerTruckTractorAxles(
+          steerAxleWeight,
+          driveAxleWeight,
+          steerAxleSpread,
+          driveAxleSpread,
+          interaxleSpacing,
+        ),
+      );
+
+    it.each([
+      { steerAxleWeight: 10000, driveAxleWeight: 20000 },
+      { steerAxleWeight: 14000, driveAxleWeight: 28000 },
+    ])(
+      'passes the 50% rule for $steerAxleWeight kg steer and $driveAxleWeight kg drive',
+      ({ steerAxleWeight, driveAxleWeight }) => {
+        const [ratioResult] = getResults(steerAxleWeight, driveAxleWeight);
+
+        expect(ratioResult).toMatchObject({
+          id: PolicyCheckId.PickerTruckTractorWeightRestrictions,
+          result: PolicyCheckResultType.Pass,
+          message: '',
+          startAxleUnit: 1,
+          endAxleUnit: 2,
+        });
+      },
+    );
+
+    it('fails the feature example below the 50% requirement', () => {
+      const [ratioResult] = getResults(9000, 20000);
+
+      expect(ratioResult).toMatchObject({
+        id: PolicyCheckId.PickerTruckTractorWeightRestrictions,
+        result: PolicyCheckResultType.Fail,
+        message: ratioMessage,
+      });
+    });
+
+    it.each([
+      {
+        description: 'wheelbase below 6.6m',
+        steerAxleSpread: 100,
+        driveAxleSpread: 240,
+        interaxleSpacing: 485,
+      },
+      {
+        description: 'steer spread below 1.0m',
+        steerAxleSpread: 99,
+        driveAxleSpread: 240,
+        interaxleSpacing: 491,
+      },
+      {
+        description: 'drive spread below 2.4m',
+        steerAxleSpread: 100,
+        driveAxleSpread: 239,
+        interaxleSpacing: 491,
+      },
+    ])(
+      'applies when $description',
+      ({ steerAxleSpread, driveAxleSpread, interaxleSpacing }) => {
+        const [ratioResult] = getResults(
+          9000,
+          20000,
+          ['PICKRTT'],
+          steerAxleSpread,
+          driveAxleSpread,
+          interaxleSpacing,
+        );
+
+        expect(ratioResult).toMatchObject({
+          result: PolicyCheckResultType.Fail,
+          message: ratioMessage,
+        });
+      },
+    );
+
+    it('does not apply when all dimensional thresholds are met', () => {
+      const [result] = getResults(9000, 20000, ['PICKRTT'], 100, 240, 490);
+
+      expect(result).toMatchObject({
+        result: PolicyCheckResultType.Pass,
+        message: 'Policy check does not apply to this configuration',
+      });
+    });
+
+    it.each([
+      {
+        description: 'another power unit subtype',
+        vehicleTypes: ['TRKTRAC'],
+        steerAxleCount: 2,
+        driveAxleCount: 3,
+      },
+      {
+        description: 'single steer',
+        vehicleTypes: ['PICKRTT'],
+        steerAxleCount: 1,
+        driveAxleCount: 3,
+      },
+      {
+        description: 'tandem drive',
+        vehicleTypes: ['PICKRTT'],
+        steerAxleCount: 2,
+        driveAxleCount: 2,
+      },
+    ])(
+      'does not apply to $description',
+      ({ vehicleTypes, steerAxleCount, driveAxleCount }) => {
+        const axles = getPickerTruckTractorAxles(9000, 20000);
+        axles[0].numberOfAxles = steerAxleCount;
+        axles[1].numberOfAxles = driveAxleCount;
+
+        const [result] = CheckPickerTruckTractorWeightRestrictions(
+          policy,
+          vehicleTypes,
+          axles,
+        );
+
+        expect(result).toMatchObject({
+          result: PolicyCheckResultType.Pass,
+          message: 'Policy check does not apply to this configuration',
+        });
+      },
+    );
+
+    it.each([
+      { steerAxleWeight: 15201, driveAxleWeight: 20000 },
+      { steerAxleWeight: 14000, driveAxleWeight: 28001 },
+    ])(
+      'defers weights above configured permit limits to the permittable weight check',
+      ({ steerAxleWeight, driveAxleWeight }) => {
+        const [result] = getResults(steerAxleWeight, driveAxleWeight);
+
+        expect(result).toMatchObject({
+          result: PolicyCheckResultType.Pass,
+          message:
+            'Policy check does not apply outside configured permittable axle weights',
+        });
+      },
+    );
+
+    it('allows a trailer while both axle units remain at legal maximums', () => {
+      const trailerResult = getResults(12000, 24000, ['PICKRTT', 'SEMITRL'])[1];
+
+      expect(trailerResult).toMatchObject({
+        result: PolicyCheckResultType.Pass,
+        message: '',
+      });
+    });
+
+    it.each([
+      { steerAxleWeight: 13601, driveAxleWeight: 24000 },
+      { steerAxleWeight: 14000, driveAxleWeight: 24001 },
+    ])(
+      'rejects a trailer when an axle unit exceeds its legal maximum',
+      ({ steerAxleWeight, driveAxleWeight }) => {
+        const trailerResult = getResults(steerAxleWeight, driveAxleWeight, [
+          'PICKRTT',
+          'SEMITRL',
+        ])[1];
+
+        expect(trailerResult).toMatchObject({
+          result: PolicyCheckResultType.Fail,
+          message: trailerMessage,
+        });
+      },
+    );
+
+    it('does not treat the None pseudo trailer as towing', () => {
+      const trailerResult = getResults(14000, 24001, ['PICKRTT', 'XXXXXXX'])[1];
+
+      expect(trailerResult).toMatchObject({
+        result: PolicyCheckResultType.Pass,
+        message: '',
+      });
+    });
+
+    it('returns both failures when the ratio and trailer rules fail', () => {
+      const results = getResults(13000, 28000, ['PICKRTT', 'SEMITRL']);
+
+      expect(results).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            result: PolicyCheckResultType.Fail,
+            message: ratioMessage,
+          }),
+          expect.objectContaining({
+            result: PolicyCheckResultType.Fail,
+            message: trailerMessage,
+          }),
+        ]),
+      );
+    });
+  });
+
   // ORV2-5374 examples and expected pass/fail states come from:
   // onRouteBCSpecification/Applying for Permits/Single Trip Overweight/ASW Tridem Drive AU 20% of Actual GCVW.feature
   describe('minimum drive axle weight policy check', () => {
@@ -706,6 +941,75 @@ describe('Axle Calculation Functions', () => {
       startAxleUnit: 1,
       endAxleUnit: 2,
     });
+  });
+
+  it('should include picker truck tractor weight restriction results from axle calculation', () => {
+    const ac: Array<AxleConfiguration> = [
+      {
+        numberOfAxles: 2,
+        numberOfTires: 4,
+        tireSize: 330,
+        axleSpread: 100,
+        axleUnitWeight: 9000,
+      },
+      {
+        numberOfAxles: 3,
+        numberOfTires: 12,
+        tireSize: 330,
+        axleSpread: 240,
+        interaxleSpacing: 485,
+        axleUnitWeight: 20000,
+      },
+    ];
+
+    const results = policy.runAxleCalculation(['PICKRTT'], ac, 0);
+    const pickerTruckResult = results.results.find(
+      (result) =>
+        result.id === PolicyCheckId.PickerTruckTractorWeightRestrictions &&
+        result.result === PolicyCheckResultType.Fail,
+    );
+
+    expect(pickerTruckResult).toMatchObject({
+      message:
+        'Axle Unit 1 must carry a minimum 50% of Axle Unit 2 axle unit weight.',
+      startAxleUnit: 1,
+      endAxleUnit: 2,
+    });
+  });
+
+  it('should preserve both the 40% and 50% picker truck tractor checks', () => {
+    const ac: Array<AxleConfiguration> = [
+      {
+        numberOfAxles: 2,
+        numberOfTires: 4,
+        tireSize: 330,
+        axleSpread: 100,
+        axleUnitWeight: 10000,
+      },
+      {
+        numberOfAxles: 3,
+        numberOfTires: 12,
+        tireSize: 330,
+        axleSpread: 240,
+        interaxleSpacing: 485,
+        axleUnitWeight: 28000,
+      },
+    ];
+
+    const results = policy.runAxleCalculation(['PICKRTT'], ac, 0);
+
+    expect(results.results).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: PolicyCheckId.MinTandemSteerAxleWeight,
+          result: PolicyCheckResultType.Fail,
+        }),
+        expect.objectContaining({
+          id: PolicyCheckId.PickerTruckTractorWeightRestrictions,
+          result: PolicyCheckResultType.Fail,
+        }),
+      ]),
+    );
   });
 
   it('should fail policy check for invalid number of tires', async () => {
