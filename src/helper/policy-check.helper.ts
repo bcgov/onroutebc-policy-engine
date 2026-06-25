@@ -516,6 +516,9 @@ export function CheckPickerTruckTractorWeightRestrictions(
   axleConfiguration: Array<AxleConfiguration>,
 ): Array<AxleGroupPolicyCheckResult> {
   const policyId = PolicyCheckId.PickerTruckTractorWeightRestrictions;
+  const MINIMUM_WHEELBASE_CM = 660;
+  const MINIMUM_STEER_AXLE_SPREAD_CM = 100;
+  const MINIMUM_DRIVE_AXLE_SPREAD_CM = 240;
   const steerAxle = axleConfiguration[0];
   const driveAxle = axleConfiguration[1];
   const doesNotApply = (
@@ -550,9 +553,11 @@ export function CheckPickerTruckTractorWeightRestrictions(
       (driveAxle.axleSpread as number) / 2
     : undefined;
   const isNonStandard =
-    (wheelbase !== undefined && wheelbase < 660) ||
-    (steerAxle.axleSpread !== undefined && steerAxle.axleSpread < 100) ||
-    (driveAxle.axleSpread !== undefined && driveAxle.axleSpread < 240);
+    (wheelbase !== undefined && wheelbase < MINIMUM_WHEELBASE_CM) ||
+    (steerAxle.axleSpread !== undefined &&
+      steerAxle.axleSpread < MINIMUM_STEER_AXLE_SPREAD_CM) ||
+    (driveAxle.axleSpread !== undefined &&
+      driveAxle.axleSpread < MINIMUM_DRIVE_AXLE_SPREAD_CM);
 
   if (!isNonStandard) {
     return doesNotApply();
