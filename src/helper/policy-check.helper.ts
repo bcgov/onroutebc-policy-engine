@@ -364,12 +364,14 @@ export function CheckPermittableWeight(
           )
         : policy.getDefaultTrailerWeight(vehicleType, ac.numberOfAxles);
     const axleDimension =
-      policy.selectCorrectWeightDimension(
-        weight,
-        vehicleConfiguration,
-        axleConfiguration,
-        i,
-      ) || {};
+      weight.length > 0
+        ? policy.selectCorrectWeightDimension(
+            weight,
+            vehicleConfiguration,
+            axleConfiguration,
+            i,
+          ) || {}
+        : {};
     const actualWeight = ac.axleUnitWeight;
     const permittableWeight = axleDimension.permittable || 0;
     const result = actualWeight <= permittableWeight;

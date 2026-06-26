@@ -2,6 +2,7 @@ import { Policy } from '../../policy-engine';
 import { PolicyCheckId, PolicyCheckResultType } from '../../enum';
 import { getAxleUnitVehicleIndexes } from '../../helper/dimensions.helper';
 import currentPolicyConfig from '../policy-config/_current-config.json';
+import { AxleCalcResults } from '../../types';
 
 describe('Multi-Axle Unit Calculation Tests', () => {
   const policy: Policy = new Policy(currentPolicyConfig);
@@ -34,6 +35,57 @@ describe('Multi-Axle Unit Calculation Tests', () => {
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(true);
+  });
+
+  it('should return policy results for a concrete truck with unsupported tandem steer and single drive weights', () => {
+    let results: AxleCalcResults | undefined;
+
+    expect(() => {
+      results = policy.runAxleCalculation(
+        ['CONCRET'],
+        [
+          {
+            numberOfAxles: 2,
+            axleSpread: 200,
+            axleUnitWeight: 2000,
+            numberOfTires: 2,
+            tireSize: 279,
+            vehicleIndex: 0,
+          },
+          {
+            numberOfAxles: 1,
+            interaxleSpacing: 200,
+            axleUnitWeight: 2000,
+            numberOfTires: 2,
+            tireSize: 279,
+            vehicleIndex: 0,
+          },
+        ],
+        4000,
+      );
+    }).not.toThrow();
+
+    expect(results!.totalOverload).toBe(0);
+    expect(results!.results).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: PolicyCheckId.CheckPermittableWeight,
+          result: PolicyCheckResultType.Fail,
+          startAxleUnit: 1,
+          endAxleUnit: 1,
+          actualWeight: 2000,
+          thresholdWeight: 0,
+        }),
+        expect.objectContaining({
+          id: PolicyCheckId.CheckPermittableWeight,
+          result: PolicyCheckResultType.Fail,
+          startAxleUnit: 2,
+          endAxleUnit: 2,
+          actualWeight: 2000,
+          thresholdWeight: 0,
+        }),
+      ]),
+    );
   });
 
   it('should pass when a trailer is explicitly configured with an extra axle unit', () => {
