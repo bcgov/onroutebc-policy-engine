@@ -162,6 +162,16 @@ export class Policy {
 
       // Wrap the json-rules-engine result in a ValidationResult object
       const validationResults = new ValidationResults(engineResult);
+      const shouldIncludeAxleCalculationResults =
+        permit.permitType === 'STOW' &&
+        permit.permitData?.vehicleConfiguration?.axleConfiguration;
+
+      if (shouldIncludeAxleCalculationResults) {
+        validationResults.axleCalculationResults =
+          await engineResult.almanac.factValue<AxleCalcResults>(
+            'axleCalcResults',
+          );
+      }
 
       // Include an informational message if the client is an LCV carrier
       if (this.specialAuthorizations?.isLcvAllowed) {

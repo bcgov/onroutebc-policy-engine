@@ -3,6 +3,7 @@ import currentConfig from '../policy-config/_current-config.json';
 import testStow from '../permit-app/test-stow.json';
 import dayjs from 'dayjs';
 import { PermitAppInfo } from '../../enum/permit-app-info';
+import { PolicyCheckId, PolicyCheckResultType } from '../../enum/policy-check';
 
 const reportedTrailerCrashInput = {
   currentFormData: {
@@ -280,6 +281,46 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     expect(validationResult.violations[0].details).toContain(
       'No. of Wheels for Axle Unit 2 is not permittable.',
     );
+  });
+
+  it('should return structured axle calculation results from validate for nested trailer axle configuration', async () => {
+    const permit = getDatedPermit();
+    const axleConfiguration =
+      permit.permitData.vehicleConfiguration.axleConfiguration;
+    permit.permitData.vehicleConfiguration.axleConfiguration =
+      axleConfiguration.slice(0, 2);
+    permit.permitData.vehicleConfiguration.trailers[0].axleConfiguration = [
+      {
+        ...axleConfiguration[2],
+        numberOfTires: 3,
+      },
+    ];
+    permit.permitData.vehicleConfiguration.trailers[1].axleConfiguration = [
+      axleConfiguration[3],
+    ];
+    permit.permitData.vehicleConfiguration.trailers[2].axleConfiguration = [
+      axleConfiguration[4],
+    ];
+
+    const validationResult = await policy.validate(permit);
+    const wheelCountFailure =
+      validationResult.axleCalculationResults?.results.find(
+        (result) =>
+          result.id === PolicyCheckId.NumberOfWheelsPerAxle &&
+          result.result === PolicyCheckResultType.Fail,
+      );
+
+    expect(validationResult.violations[0].message).toBe(
+      'Vehicle configuration failed axle calculation policy checks',
+    );
+    expect(validationResult.violations[0].details).toContain(
+      'No. of Wheels for Axle Unit 3 is not permittable.',
+    );
+    expect(wheelCountFailure).toMatchObject({
+      message: 'No. of Wheels for Axle Unit 3 is not permittable.',
+      startAxleUnit: 3,
+      endAxleUnit: 3,
+    });
   });
 
   it('should raise STOW axle calculation violation when truck tractor wheelbase exceeds 7.2m', async () => {
