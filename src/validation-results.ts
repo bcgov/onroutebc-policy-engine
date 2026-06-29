@@ -2,6 +2,7 @@ import { EngineResult } from 'json-rules-engine';
 import { ValidationResultType } from './enum/validation-result-type';
 import { ValidationResultCode } from './enum/validation-result-code';
 import { ValidationResult } from './validation-result';
+import { AxleCalcResults } from './types/axle-calculation-results';
 
 /** Represents the results of a permit application validation against policy */
 export class ValidationResults {
@@ -26,6 +27,13 @@ export class ValidationResults {
    * one cost message, all should be summed to get the total permit cost.
    */
   cost: Array<ValidationResult> = [];
+
+  /**
+   * Structured axle-spacing-and-weights policy-check results. This mirrors
+   * runAxleCalculation() so consumers can highlight ASW fields while
+   * violations remains the coarse validation-gating signal.
+   */
+  axleCalculationResults?: AxleCalcResults;
 
   /**
    * Creates a new ValidationResults from the json-rules-engine result.
