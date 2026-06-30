@@ -31,7 +31,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
       15000,
     );
 
-    expect(results.totalOverload).toBe(0);
+    expect(results.overload).toBe(0);
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(true);
@@ -65,7 +65,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
       );
     }).not.toThrow();
 
-    expect(results!.totalOverload).toBe(0);
+    expect(results!.overload).toBe(0);
     expect(results!.results).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -106,7 +106,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
       20000,
     );
 
-    expect(results.totalOverload).toBe(0);
+    expect(results.overload).toBe(0);
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(true);
@@ -143,7 +143,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
       15000,
     );
 
-    expect(results.totalOverload).toBe(0);
+    expect(results.overload).toBe(0);
     expect(results.results).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -177,7 +177,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
       25000,
     );
 
-    expect(results.totalOverload).toBe(0);
+    expect(results.overload).toBe(0);
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(true);
@@ -215,7 +215,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
       15000,
     );
 
-    expect(results.totalOverload).toBe(0);
+    expect(results.overload).toBe(0);
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(true);
@@ -255,7 +255,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
       15000,
     );
 
-    expect(results.totalOverload).toBe(0);
+    expect(results.overload).toBe(0);
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(true);
@@ -313,7 +313,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
       25000,
     );
 
-    expect(results.totalOverload).toBe(0);
+    expect(results.overload).toBe(0);
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(true);

@@ -50,7 +50,6 @@ import { SpecialAuthorizations } from './types/special-authorizations';
 import {
   filterOutLcv,
   filterVehiclesByType,
-  calculateGCVWHelper,
   combineAxleConfigurationsHelper,
   getSimplifiedVehicleConfigurationHelper,
 } from './helper/vehicles.helper';
@@ -989,7 +988,11 @@ export class Policy {
     axleConfiguration: Array<AxleConfiguration>,
     licensedGVW: number,
   ): AxleCalcResults {
-    const axleCalcResults: AxleCalcResults = { results: [], totalOverload: 0 };
+    const axleCalcResults: AxleCalcResults = {
+      results: [],
+      overload: 0,
+      totalGCVW: 0,
+    };
 
     // This is a little helper closure that just converts any PolicyCheckResult into an AxleGroupPolicyCheckResult,
     // basically giving us startAxleUnit and endAxleUnit, which can help with frontend form highlighting.
@@ -1018,11 +1021,11 @@ export class Policy {
       (w, curr) => w + curr.axleUnitWeight,
       0,
     );
-    axleCalcResults.totalOverload = Math.max(
-      axleCalcResults.totalOverload,
+    axleCalcResults.overload = Math.max(
+      axleCalcResults.overload,
       gvcw - licensedGVW,
     );
-
+    axleCalcResults.totalGCVW = gvcw;
     const axleCountResults = CheckNumberOfAxles(
       this,
       vehicleConfiguration,
@@ -1291,16 +1294,6 @@ export class Policy {
   }
 
   /**
-   * Calculates the Gross Combined Vehicle Weight (GCVW) from axle unit weights.
-   *
-   * @param axleConfiguration - Axle configuration to total
-   * @returns Sum of axle unit weights, treating missing weights as 0.
-   */
-  calculateGCVW(axleConfiguration: Array<AxleConfiguration>): number {
-    return calculateGCVWHelper(axleConfiguration);
-  }
-
-  /**
    * Given a commodity and selected power unit subtype for a permit type,
    * return whether or not axle units can be added to the power unit.
    * @param permitType The permit type
@@ -1400,8 +1393,10 @@ export class Policy {
       return false;
     }
 
-    const trailer = powerUnit.trailers.find(trailer => trailer.type === trailerSubtype);
-      
+    const trailer = powerUnit.trailers.find(
+      (trailer) => trailer.type === trailerSubtype,
+    );
+
     if (!trailer) {
       throw new Error(`Invalid trailer: '${trailerSubtype}'`);
     }

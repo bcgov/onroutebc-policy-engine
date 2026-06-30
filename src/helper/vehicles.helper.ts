@@ -168,18 +168,3 @@ export function combineAxleConfigurationsHelper(
 
   return [...powerUnitAxles, ...trailerAxles];
 }
-
-/**
- * Calculates the Gross Combined Vehicle Weight (GCVW) from axle unit weights.
- *
- * @param axleConfiguration - Axle configuration to total
- * @returns Sum of axle unit weights, treating missing weights as 0.
- */
-export function calculateGCVWHelper(
-  axleConfiguration: Array<AxleConfiguration>,
-): number {
-  return axleConfiguration.reduce((totalWeight, axleUnit) => {
-    const axleUnitWeight = axleUnit.axleUnitWeight ?? 0;
-    return totalWeight + axleUnitWeight;
-  }, 0);
-}
