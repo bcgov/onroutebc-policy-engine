@@ -5,7 +5,10 @@
  * Used for validating vehicle configurations against weight and axle requirements.
  */
 
-import { PolicyCheckId, PolicyCheckResultType } from 'onroute-policy-engine/enum';
+import {
+  PolicyCheckId,
+  PolicyCheckResultType,
+} from 'onroute-policy-engine/enum';
 
 /**
  * Complete results from axle calculations including all policy checks and total overload
@@ -14,7 +17,9 @@ export type AxleCalcResults = {
   /** Array of individual axle group policy check results */
   results: Array<AxleGroupPolicyCheckResult>;
   /** Total weight overload across all axles in kilograms */
-  totalOverload: number;
+  overload: number;
+  /** Total Gross Combined Vehicle Weight across all axles in kilograms */
+  totalGCVW: number;
 };
 
 /**
@@ -27,7 +32,7 @@ export type PolicyCheckResult = {
   thresholdWeight?: number;
   /** Unique identifier for the policy check */
   // id: string;
-  id: PolicyCheckId
+  id: PolicyCheckId;
   /** Result of the policy check (pass/fail) */
   result: PolicyCheckResultType;
   /** Human-readable message describing the check result */
