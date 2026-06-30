@@ -122,25 +122,6 @@ describe('Policy Engine Vehicle Configuration Helpers', () => {
       },
     ]);
   });
-
-  it('should calculate GCVW from axle unit weights', () => {
-    const gcvw = policy.calculateGCVW([
-      {
-        numberOfAxles: 1,
-        axleUnitWeight: 5000,
-      },
-      {
-        numberOfAxles: 2,
-        axleUnitWeight: 12000,
-      },
-      {
-        numberOfAxles: 1,
-        axleUnitWeight: 4000,
-      },
-    ]);
-
-    expect(gcvw).toBe(21000);
-  });
 });
 
 describe('Policy Engine Get Next Permittable Vehicles', () => {
@@ -478,32 +459,68 @@ describe('Policy Engine Configuration Validation', () => {
   });
 
   it('should allow axle units to be added for allowed power units', async () => {
-    const canAddAxleUnits1 = policy.canAddAxleUnitsToPowerUnit('STOW', 'XXXXXXX', 'CONCRET');
-    const canAddAxleUnits2 = policy.canAddAxleUnitsToPowerUnit('STOW', 'XXXXXXX', 'CRANEAT');
-    
+    const canAddAxleUnits1 = policy.canAddAxleUnitsToPowerUnit(
+      'STOW',
+      'XXXXXXX',
+      'CONCRET',
+    );
+    const canAddAxleUnits2 = policy.canAddAxleUnitsToPowerUnit(
+      'STOW',
+      'XXXXXXX',
+      'CRANEAT',
+    );
+
     expect(canAddAxleUnits1).toBe(true);
     expect(canAddAxleUnits2).toBe(true);
   });
 
   it('should not allow axle units to be added for non-allowable power units', async () => {
-    const canAddAxleUnits1 = policy.canAddAxleUnitsToPowerUnit('STOW', 'XXXXXXX', 'CRANEMB');
-    const canAddAxleUnits2 = policy.canAddAxleUnitsToPowerUnit('STOW', 'EMPTYXX', 'TRKTRAC');
-    
+    const canAddAxleUnits1 = policy.canAddAxleUnitsToPowerUnit(
+      'STOW',
+      'XXXXXXX',
+      'CRANEMB',
+    );
+    const canAddAxleUnits2 = policy.canAddAxleUnitsToPowerUnit(
+      'STOW',
+      'EMPTYXX',
+      'TRKTRAC',
+    );
+
     expect(canAddAxleUnits1).toBe(false);
     expect(canAddAxleUnits2).toBe(false);
   });
 
   it('should allow axle units to be added for allowed trailers', async () => {
-    const canAddAxleUnits1 = policy.canAddAxleUnitsToTrailer('STOW', 'XXXXXXX', 'CRANEMB', 'DOLLIES');
-    const canAddAxleUnits2 = policy.canAddAxleUnitsToTrailer('STOW', 'XXXXXXX', 'PICKRTT', 'PLATWHE');
+    const canAddAxleUnits1 = policy.canAddAxleUnitsToTrailer(
+      'STOW',
+      'XXXXXXX',
+      'CRANEMB',
+      'DOLLIES',
+    );
+    const canAddAxleUnits2 = policy.canAddAxleUnitsToTrailer(
+      'STOW',
+      'XXXXXXX',
+      'PICKRTT',
+      'PLATWHE',
+    );
 
     expect(canAddAxleUnits1).toBe(true);
     expect(canAddAxleUnits2).toBe(true);
   });
 
   it('should not allow axle units to be added for non-allowable trailers', async () => {
-    const canAddAxleUnits1 = policy.canAddAxleUnitsToTrailer('STOW', 'EMPTYXX', 'PICKRTT', 'SEMITRL');
-    const canAddAxleUnits2 = policy.canAddAxleUnitsToTrailer('STOW', 'NONREDU', 'PICKRTT', 'SEMITRL');
+    const canAddAxleUnits1 = policy.canAddAxleUnitsToTrailer(
+      'STOW',
+      'EMPTYXX',
+      'PICKRTT',
+      'SEMITRL',
+    );
+    const canAddAxleUnits2 = policy.canAddAxleUnitsToTrailer(
+      'STOW',
+      'NONREDU',
+      'PICKRTT',
+      'SEMITRL',
+    );
 
     expect(canAddAxleUnits1).toBe(false);
     expect(canAddAxleUnits2).toBe(false);

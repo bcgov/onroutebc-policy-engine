@@ -50,7 +50,6 @@ import { SpecialAuthorizations } from './types/special-authorizations';
 import {
   filterOutLcv,
   filterVehiclesByType,
-  calculateGCVWHelper,
   combineAxleConfigurationsHelper,
   getSimplifiedVehicleConfigurationHelper,
 } from './helper/vehicles.helper';
@@ -1292,16 +1291,6 @@ export class Policy {
       powerUnitAxleConfiguration,
       trailers,
     );
-  }
-
-  /**
-   * Calculates the Gross Combined Vehicle Weight (GCVW) from axle unit weights.
-   *
-   * @param axleConfiguration - Axle configuration to total
-   * @returns Sum of axle unit weights, treating missing weights as 0.
-   */
-  calculateGCVW(axleConfiguration: Array<AxleConfiguration>): number {
-    return calculateGCVWHelper(axleConfiguration);
   }
 
   /**
