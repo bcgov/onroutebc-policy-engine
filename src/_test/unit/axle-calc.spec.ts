@@ -1180,7 +1180,7 @@ describe('Axle Calculation Functions', () => {
     const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
 
     expect(results).toMatchObject({
-      totalOverload: 57700,
+      overload: 57700,
       results: [
         {
           id: PolicyCheckId.NumberOfAxles,
