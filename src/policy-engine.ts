@@ -965,7 +965,8 @@ export class Policy {
    * @param licensedGVW Licensed GVW of the vehicle being permitted.
    * @returns AxleCalcResults object containing:
    *          - results: Array of PolicyCheckResult objects, each representing the outcome of a specific policy check
-   *          - totalOverload: Numeric value representing the total overload across all axle calculations
+   *          - overload: Numeric value representing the total overload across all axle calculations
+   *          - totalGCVW: Total Gross Combined Vehicle Weight across all axles
    *
    * @example
    * // For a truck-tractor with 2-axle steer, 3-axle drive, and a 3-axle semi-trailer
