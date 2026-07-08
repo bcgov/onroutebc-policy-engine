@@ -996,6 +996,7 @@ export function CheckBoosterAxleLimit(
         message: result
           ? ''
           : `No. of Axles for Axle Unit ${boosterAxleUnit} must be less than or equal to No. of Axles for Axle Unit ${trailerAxleUnit}`,
+        // startAxleUnit and endAxleUnit should be the same for field highlighting purposes
         startAxleUnit: boosterAxleUnit,
         endAxleUnit: boosterAxleUnit,
       });
