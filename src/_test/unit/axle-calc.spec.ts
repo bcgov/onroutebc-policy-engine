@@ -1313,7 +1313,7 @@ describe('Axle Calculation Functions', () => {
     expect(boosterAxleLimitResults[0]).toMatchObject({
       result: PolicyCheckResultType.Pass,
       message: '',
-      startAxleUnit: 4,
+      startAxleUnit: 5,
       endAxleUnit: 5,
     });
   });
@@ -1361,7 +1361,7 @@ describe('Axle Calculation Functions', () => {
       result: PolicyCheckResultType.Fail,
       message:
         'No. of Axles for Axle Unit 4 must be less than or equal to No. of Axles for Axle Unit 3',
-      startAxleUnit: 3,
+      startAxleUnit: 4,
       endAxleUnit: 4,
     });
   });
@@ -1383,7 +1383,7 @@ describe('Axle Calculation Functions', () => {
       result: PolicyCheckResultType.Fail,
       message:
         'No. of Axles for Axle Unit 5 must be less than or equal to No. of Axles for Axle Unit 4',
-      startAxleUnit: 4,
+      startAxleUnit: 5,
       endAxleUnit: 5,
     });
   });
@@ -1446,7 +1446,7 @@ describe('Axle Calculation Functions', () => {
       result: PolicyCheckResultType.Fail,
       message:
         'No. of Axles for Axle Unit 6 must be less than or equal to No. of Axles for Axle Unit 3',
-      startAxleUnit: 3,
+      startAxleUnit: 6,
       endAxleUnit: 6,
     });
   });
