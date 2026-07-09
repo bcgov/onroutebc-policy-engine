@@ -672,6 +672,7 @@ export function CheckMinDriveAxleWeight(
   );
 
   let message, result;
+  // TODO this check should only be applied to certain vehicle subtypes, await spec update
   if (
     axleConfiguration[1].numberOfAxles === 2 ||
     axleConfiguration[1].numberOfAxles === 3
@@ -698,6 +699,7 @@ export function CheckMinDriveAxleWeight(
     id: policyId,
     message: message,
     result: result,
+    // TODO both start and end axle units should be the drive axle, is this always the second axle unit in the configuration? Or is it the last axle unit of the power unit configuration?
     startAxleUnit: 1,
     endAxleUnit: axleConfiguration.length,
   });
