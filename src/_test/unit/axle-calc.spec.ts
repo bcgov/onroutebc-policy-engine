@@ -18,7 +18,7 @@ import {
   CheckMinSteerAxleWeight,
   CheckMinTandemSteerAxleWeight,
   CheckPickerTruckTractorWeightRestrictions,
-  CheckTruckTractorWheelbase,
+  CheckTruckTractorWheelbaseLegalLimits,
   CheckDriveJeepLoadEqualization,
 } from '../../helper/policy-check.helper';
 import dayjs from 'dayjs';
@@ -1452,7 +1452,7 @@ describe('Axle Calculation Functions', () => {
   });
 
   it('should pass truck tractor wheelbase at the maximum allowed value', async () => {
-    const results = CheckTruckTractorWheelbase(
+    const results = CheckTruckTractorWheelbaseLegalLimits(
       policy,
       ['TRKTRAC', 'SEMITRL'],
       [
@@ -1468,7 +1468,7 @@ describe('Axle Calculation Functions', () => {
     );
 
     expect(results[0]).toMatchObject({
-      id: PolicyCheckId.TruckTractorWheelbase,
+      id: PolicyCheckId.TruckTractorWheelbaseLegalLimits,
       result: PolicyCheckResultType.Pass,
       message:
         'Wheelbase for Axle Unit 1 and Axle Unit 2 is between 6.2m and 7.2m. See CTPM 5.3.7.A.',
@@ -1478,7 +1478,7 @@ describe('Axle Calculation Functions', () => {
   });
 
   it('should fail truck tractor wheelbase above the maximum allowed value', async () => {
-    const results = CheckTruckTractorWheelbase(
+    const results = CheckTruckTractorWheelbaseLegalLimits(
       policy,
       ['TRKTRAC', 'SEMITRL'],
       [
@@ -1494,7 +1494,7 @@ describe('Axle Calculation Functions', () => {
     );
 
     expect(results[0]).toMatchObject({
-      id: PolicyCheckId.TruckTractorWheelbase,
+      id: PolicyCheckId.TruckTractorWheelbaseLegalLimits,
       result: PolicyCheckResultType.Fail,
       message:
         'Wheelbase for Axle Unit 1 and Axle Unit 2 is greater than 7.2m.',
@@ -1504,7 +1504,7 @@ describe('Axle Calculation Functions', () => {
   });
 
   it('should pass truck tractor wheelbase below the minimum restricted value', async () => {
-    const results = CheckTruckTractorWheelbase(
+    const results = CheckTruckTractorWheelbaseLegalLimits(
       policy,
       ['TRKTRAC', 'JEEPSRG', 'BOOSTER'],
       [
@@ -1529,7 +1529,7 @@ describe('Axle Calculation Functions', () => {
   });
 
   it('should fail truck tractor wheelbase between 6.2m and 7.2m with jeep or booster selected', async () => {
-    const jeepResults = CheckTruckTractorWheelbase(
+    const jeepResults = CheckTruckTractorWheelbaseLegalLimits(
       policy,
       ['TRKTRAC', 'JEEPSRG'],
       [
@@ -1543,7 +1543,7 @@ describe('Axle Calculation Functions', () => {
         { numberOfAxles: 2, axleUnitWeight: 10000 },
       ],
     );
-    const boosterResults = CheckTruckTractorWheelbase(
+    const boosterResults = CheckTruckTractorWheelbaseLegalLimits(
       policy,
       ['TRKTRAC', 'SEMITRL', 'BOOSTER'],
       [
@@ -1581,7 +1581,7 @@ describe('Axle Calculation Functions', () => {
 
     const results = policy.runAxleCalculation(vc, ac, 0);
     const wheelbaseResult = results.results.find(
-      (r) => r.id === PolicyCheckId.TruckTractorWheelbase,
+      (r) => r.id === PolicyCheckId.TruckTractorWheelbaseLegalLimits,
     );
 
     expect(wheelbaseResult).toMatchObject({
@@ -1599,14 +1599,16 @@ describe('Axle Calculation Functions', () => {
 
     scenarios.forEach(({ interaxleSpacing, axleSpread }) => {
       const ac = getTruckTractorWheelbaseAxles(interaxleSpacing, axleSpread);
-      const directResult = CheckTruckTractorWheelbase(
+      const directResult = CheckTruckTractorWheelbaseLegalLimits(
         policy,
         vehicleConfiguration,
         ac,
       )[0];
       const runAxleCalculationResult = policy
         .runAxleCalculation(vehicleConfiguration, ac, 0)
-        .results.find((r) => r.id === PolicyCheckId.TruckTractorWheelbase);
+        .results.find(
+          (r) => r.id === PolicyCheckId.TruckTractorWheelbaseLegalLimits,
+        );
 
       expect(runAxleCalculationResult).toMatchObject(directResult);
     });
@@ -1623,7 +1625,7 @@ describe('Axle Calculation Functions', () => {
         interaxleSpacing,
         axleSpread,
       );
-      const directResult = CheckTruckTractorWheelbase(
+      const directResult = CheckTruckTractorWheelbaseLegalLimits(
         policy,
         vehicleConfiguration,
         permit.permitData.vehicleConfiguration.axleConfiguration,
@@ -1643,7 +1645,7 @@ describe('Axle Calculation Functions', () => {
 
   it('should not include a truck tractor wheelbase validation violation when the direct policy check passes below 6.2m', async () => {
     const permit = getTruckTractorWheelbasePermit(580, 40);
-    const directResult = CheckTruckTractorWheelbase(
+    const directResult = CheckTruckTractorWheelbaseLegalLimits(
       policy,
       vehicleConfiguration,
       permit.permitData.vehicleConfiguration.axleConfiguration,

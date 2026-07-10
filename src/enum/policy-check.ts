@@ -15,5 +15,6 @@ export enum PolicyCheckId {
   NumberOfAxles = 'number-of-axles',
   NumberOfWheelsPerAxle = 'number-of-wheels',
   PickerTruckTractorWeightRestrictions = 'picker-truck-tractor-weight-restrictions',
-  TruckTractorWheelbase = 'truck-tractor-wheelbase',
+  TruckTractorWheelbaseLegalLimits = 'truck-tractor-wheelbase-legal-limits',
+  WheelbaseLegalLimits = 'wheelbase-legal-limits',
 }
