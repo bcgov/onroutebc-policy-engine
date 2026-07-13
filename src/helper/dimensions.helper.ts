@@ -498,6 +498,9 @@ export function selectCorrectWeightDimensionHelper(
             isMatch =
               matcher ==
               (isTypeMatch ? relatives.nextType : relatives.nextCategory);
+            if (!isMatch) {
+              break;
+            }
             if (isMatch && m.axles) {
               isMatch =
                 m.axles == axleConfiguration[axleIndex + 1].numberOfAxles;
