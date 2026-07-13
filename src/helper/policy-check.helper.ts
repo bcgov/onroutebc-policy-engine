@@ -1028,8 +1028,6 @@ export function CheckBoosterAxleLimit(
  * Wheelbase is derived from the spacing between axle units 1 and 2 plus half
  * of axle unit 2 spread. Axle dimensions are stored in centimetres.
  */
-
-// TODO since wheelbase calculation is being simplified, we may be able to combine this function with CheckWheelbaseLegalLimits and remove the duplication of logic. Awaiting spec update.
 export function CheckTruckTractorWheelbaseLegalLimits(
   policy: Policy,
   vehicleConfiguration: Array<string>,
@@ -1040,25 +1038,21 @@ export function CheckTruckTractorWheelbaseLegalLimits(
     startAxleUnit: 1,
     endAxleUnit: 2,
   };
+
+  const powerUnitSubtype = vehicleConfiguration[0];
+
   const steerAxle = axleConfiguration[0];
-  const driveAxle = axleConfiguration[1];
 
-  if (
-    !steerAxle ||
-    !driveAxle ||
-    steerAxle.numberOfAxles === undefined ||
-    driveAxle.numberOfAxles === undefined
-  ) {
-    return [];
-  }
+  const driveAxle = {
+    ...axleConfiguration[1],
+    axleSpread: axleConfiguration[1].axleSpread ?? 0,
+    interaxleSpacing: axleConfiguration[1].interaxleSpacing ?? 0,
+  };
 
-  if (
-    steerAxle.numberOfAxles === 1 &&
-    driveAxle.numberOfAxles === 2 &&
-    driveAxle.interaxleSpacing !== undefined &&
-    driveAxle.axleSpread !== undefined
-  ) {
-    // TODO update this to use the correct wheelbase calculation as defined in the updated ASW Wheelbase Legal Limiuts / ASW 6.2 to 7.2m specs
+  const isTruckTractor = powerUnitSubtype === 'TRKTRAC';
+  const isSingleSteer = steerAxle.numberOfAxles === 1;
+
+  if (isTruckTractor && isSingleSteer) {
     const wheelbase = driveAxle.interaxleSpacing + driveAxle.axleSpread / 2;
 
     if (wheelbase > 720) {
@@ -1074,15 +1068,9 @@ export function CheckTruckTractorWheelbaseLegalLimits(
 
     if (wheelbase >= 620) {
       const hasDisallowedTrailer = vehicleConfiguration.slice(1).some((v) => {
-        if (
-          v === AccessoryVehicleType.Jeep ||
-          v === AccessoryVehicleType.Booster
-        ) {
-          return true;
-        }
-
         const trailer = policy.getTrailerDefinition(v);
-        return trailer?.category !== 'semi';
+        const isSemiTrailer = trailer?.displayCode === 'SEMITRL';
+        return !isSemiTrailer;
       });
 
       return [
@@ -1113,14 +1101,28 @@ export function CheckTruckTractorWheelbaseLegalLimits(
  * Validates wheelbase legal limits for supported power unit vehicle sub-types.
  */
 export function CheckWheelbaseLegalLimits(
-  policy: Policy,
+  _policy: Policy,
   vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
 ): Array<PolicyCheckResult> {
-  const policyId = PolicyCheckId.WheelbaseLegalLimits;
+  const resultBase = {
+    id: PolicyCheckId.WheelbaseLegalLimits,
+    startAxleUnit: 1,
+    endAxleUnit: 2,
+  };
+
   const powerUnitSubtype = vehicleConfiguration[0];
-  const steerAxle = axleConfiguration[0];
-  const driveAxle = axleConfiguration[1];
+
+  const steerAxle = {
+    ...axleConfiguration[0],
+    axleSpread: axleConfiguration[0].axleSpread ?? 0,
+  };
+
+  const driveAxle = {
+    ...axleConfiguration[1],
+    axleSpread: axleConfiguration[1].axleSpread ?? 0,
+    interaxleSpacing: axleConfiguration[1].interaxleSpacing ?? 0,
+  };
 
   const isSupportedVehicleSubtype = (value?: string): boolean => {
     return (
@@ -1131,34 +1133,24 @@ export function CheckWheelbaseLegalLimits(
     );
   };
 
-  const resultBase = {
-    id: policyId,
-    startAxleUnit: 1,
-    endAxleUnit: 2,
-  };
+  const isSingleSteer = steerAxle.numberOfAxles === 1;
+  const isTandemSteer = steerAxle.numberOfAxles === 2;
+  const isTandemDrive = driveAxle.numberOfAxles === 2;
+  const isTridemDrive = driveAxle.numberOfAxles === 3;
 
-  if (
-    !steerAxle ||
-    !driveAxle ||
-    steerAxle.numberOfAxles === undefined ||
-    driveAxle.numberOfAxles === undefined
-  ) {
-    return [];
-  }
+  const isTruckTractor = powerUnitSubtype === 'TRKTRAC';
+  const isPickerTruckTractor = powerUnitSubtype === 'PICKRTT';
+  const isOilfieldBedTruck = powerUnitSubtype === 'OGBEDTK';
 
-  if (
-    isSupportedVehicleSubtype(powerUnitSubtype) &&
-    steerAxle.axleSpread !== undefined &&
-    driveAxle.interaxleSpacing !== undefined &&
-    // TODO axleSpread will be undefined for single drive axle units, this may be resolved with updated wheelbase calculation logic
-    driveAxle.axleSpread !== undefined
-  ) {
-    // TODO update this to use the correct wheelbase calculation as defined in the updated ASW Wheelbase Legal Limiuts / ASW 6.2 to 7.2m specs
-    const wheelbase =
-      steerAxle.axleSpread + driveAxle.interaxleSpacing + driveAxle.axleSpread;
+  if (isSupportedVehicleSubtype(powerUnitSubtype)) {
+    const wheelbase = isSingleSteer
+      ? driveAxle.interaxleSpacing + driveAxle.axleSpread / 2
+      : steerAxle.axleSpread / 2 +
+        driveAxle.interaxleSpacing +
+        driveAxle.axleSpread / 2;
 
-    if (steerAxle.numberOfAxles === 1 && driveAxle.numberOfAxles === 2) {
-      if (powerUnitSubtype === 'TRKTRAC' || powerUnitSubtype === 'PICKRTT') {
+    if (isSingleSteer && isTandemDrive) {
+      if (isTruckTractor || isPickerTruckTractor) {
         if (wheelbase < 660) {
           return [
             {
@@ -1191,9 +1183,9 @@ export function CheckWheelbaseLegalLimits(
       }
     }
 
-    if (steerAxle.numberOfAxles === 2 && driveAxle.numberOfAxles === 3) {
+    if (isTandemSteer && isTridemDrive) {
       if (wheelbase < 770) {
-        if (powerUnitSubtype === 'OGBEDTK') {
+        if (isOilfieldBedTruck) {
           if (
             driveAxle.axleSpread >= 280 &&
             driveAxle.axleSpread < 300 &&
@@ -1224,7 +1216,7 @@ export function CheckWheelbaseLegalLimits(
         }
 
         if (
-          powerUnitSubtype !== 'OGBEDTK' &&
+          !isOilfieldBedTruck &&
           driveAxle.axleSpread >= 240 &&
           driveAxle.axleSpread < 280
         ) {
@@ -1238,7 +1230,7 @@ export function CheckWheelbaseLegalLimits(
         }
       }
 
-      if (powerUnitSubtype === 'OGBEDTK' && wheelbase > 1000) {
+      if (isOilfieldBedTruck && wheelbase > 1000) {
         return [
           {
             ...resultBase,
