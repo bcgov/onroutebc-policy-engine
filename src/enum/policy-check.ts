@@ -4,6 +4,7 @@ export enum PolicyCheckResultType {
 }
 
 export enum PolicyCheckId {
+  AxleGroupMaximumLegalWeightThreshold = 'axle-group-maximum-legal-weight-threshold',
   BoosterAxleLimit = 'booster-axle-limit',
   BridgeFormula = 'bridge-formula',
   CheckPermittableWeight = 'check-permittable-weight',
