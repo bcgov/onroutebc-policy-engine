@@ -8,6 +8,7 @@ import {
 } from 'onroute-policy-engine/types';
 import { Policy } from 'onroute-policy-engine';
 import { getAxleUnitVehicleIndexes } from './dimensions.helper';
+import { getCtr717TableValue } from './ctr-717.helper';
 import {
   AccessoryVehicleType,
   PolicyCheckId,
@@ -33,6 +34,193 @@ type PolicyCheck = (
   vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
 ) => Array<PolicyCheckResult>;
+
+/** Applies the standard lower-of rule or the exact 7.16(g) exception. */
+export function getMaximumLegalAxleGroupWeightThreshold(
+  individualLegalWeightSum: number,
+  ctr717TableValue: number,
+  isTandemDriveSingleJeepException: boolean,
+): number {
+  const tandemDriveSingleJeepMinimumKg = 24000;
+
+  return isTandemDriveSingleJeepException
+    ? Math.max(tandemDriveSingleJeepMinimumKg, ctr717TableValue)
+    : Math.min(individualLegalWeightSum, ctr717TableValue);
+}
+
+function getApplicableLegalWeightThreshold(
+  policy: Policy,
+  vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+  axleUnitVehicleIndexes: Array<number>,
+  axleIndex: number,
+): number | undefined {
+  const vehicleIndex = axleUnitVehicleIndexes[axleIndex];
+  const vehicleType = vehicleConfiguration[vehicleIndex];
+  const axle = axleConfiguration[axleIndex];
+
+  if (!vehicleType || !axle) {
+    return undefined;
+  }
+
+  const weights =
+    vehicleIndex === 0
+      ? policy.getDefaultPowerUnitWeight(
+          vehicleType,
+          axleConfiguration[0].numberOfAxles * 10 +
+            axleConfiguration[1].numberOfAxles,
+        )
+      : policy.getDefaultTrailerWeight(vehicleType, axle.numberOfAxles);
+
+  if (weights.length === 0) {
+    return undefined;
+  }
+
+  return policy.selectCorrectWeightDimension(
+    weights,
+    vehicleConfiguration,
+    axleConfiguration,
+    axleIndex,
+  )?.legal;
+}
+
+/**
+ * Validates every contiguous axle-unit group within 8 m, excluding groups
+ * beginning at axle unit 1, against the CTR 7.17 maximum legal weight.
+ */
+export function CheckAxleGroupMaximumLegalWeightThreshold(
+  policy: Policy,
+  vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+): Array<AxleGroupPolicyCheckResult> {
+  const ctr717MaxSpreadCm = 800;
+  const policyCheckResults = new Array<AxleGroupPolicyCheckResult>();
+  const policyId = PolicyCheckId.AxleGroupMaximumLegalWeightThreshold;
+
+  if (axleConfiguration.length < 3) {
+    return policyCheckResults;
+  }
+
+  const hasVehicleIndexes = axleConfiguration.some(
+    (axleUnit) => axleUnit.vehicleIndex !== undefined,
+  );
+  const axleUnitVehicleIndexes = hasVehicleIndexes
+    ? getAxleUnitVehicleIndexes(policy, vehicleConfiguration, axleConfiguration)
+    : axleConfiguration.map((_, axleIndex) =>
+        axleIndex < 2 ? 0 : axleIndex - 1,
+      );
+  const legalWeightThresholds = axleConfiguration.map((_, axleIndex) =>
+    getApplicableLegalWeightThreshold(
+      policy,
+      vehicleConfiguration,
+      axleConfiguration,
+      axleUnitVehicleIndexes,
+      axleIndex,
+    ),
+  );
+
+  for (
+    let startAxleIndex = 1;
+    startAxleIndex < axleConfiguration.length - 1;
+    startAxleIndex++
+  ) {
+    const firstAxle = axleConfiguration[startAxleIndex];
+    const firstAxleSpread = firstAxle.axleSpread ?? 0;
+    let groupSpread = firstAxleSpread;
+    let actualWeight = firstAxle.axleUnitWeight;
+    let individualLegalWeightSum = legalWeightThresholds[startAxleIndex];
+
+    if (
+      !Number.isFinite(firstAxleSpread) ||
+      firstAxleSpread < 0 ||
+      !Number.isFinite(actualWeight)
+    ) {
+      continue;
+    }
+
+    for (
+      let endAxleIndex = startAxleIndex + 1;
+      endAxleIndex < axleConfiguration.length;
+      endAxleIndex++
+    ) {
+      const endAxle = axleConfiguration[endAxleIndex];
+      const endAxleSpread = endAxle.axleSpread ?? 0;
+      const interaxleSpacing = endAxle.interaxleSpacing;
+      const endAxleLegalWeight = legalWeightThresholds[endAxleIndex];
+
+      if (
+        !Number.isFinite(interaxleSpacing) ||
+        (interaxleSpacing as number) <= 0 ||
+        !Number.isFinite(endAxleSpread) ||
+        endAxleSpread < 0 ||
+        !Number.isFinite(endAxle.axleUnitWeight)
+      ) {
+        break;
+      }
+
+      groupSpread += (interaxleSpacing as number) + endAxleSpread;
+      actualWeight += endAxle.axleUnitWeight;
+
+      if (
+        individualLegalWeightSum === undefined ||
+        endAxleLegalWeight === undefined
+      ) {
+        individualLegalWeightSum = undefined;
+      } else {
+        individualLegalWeightSum += endAxleLegalWeight;
+      }
+
+      if (groupSpread > ctr717MaxSpreadCm) {
+        break;
+      }
+
+      const ctr717TableValue = getCtr717TableValue(groupSpread);
+      const isTandemDriveSingleJeepException =
+        startAxleIndex === 1 &&
+        endAxleIndex === 2 &&
+        vehicleConfiguration[0] === 'TRKTRAC' &&
+        vehicleConfiguration[1] === AccessoryVehicleType.Jeep &&
+        axleUnitVehicleIndexes[1] === 0 &&
+        axleUnitVehicleIndexes[2] === 1 &&
+        axleConfiguration[1].numberOfAxles === 2 &&
+        axleConfiguration[2].numberOfAxles === 1;
+
+      if (
+        ctr717TableValue === undefined ||
+        (!isTandemDriveSingleJeepException &&
+          individualLegalWeightSum === undefined)
+      ) {
+        continue;
+      }
+
+      const thresholdWeight = getMaximumLegalAxleGroupWeightThreshold(
+        individualLegalWeightSum ?? 0,
+        ctr717TableValue,
+        isTandemDriveSingleJeepException,
+      );
+      const passes = actualWeight <= thresholdWeight;
+      const startAxleUnit = startAxleIndex + 1;
+      const endAxleUnit = endAxleIndex + 1;
+      const overloadAmount = Math.max(0, actualWeight - thresholdWeight);
+
+      policyCheckResults.push({
+        id: policyId,
+        result: passes
+          ? PolicyCheckResultType.Pass
+          : PolicyCheckResultType.Fail,
+        message: passes
+          ? ''
+          : `Axle Group ${startAxleUnit} to ${endAxleUnit} exceeds the maximum legal weight threshold of ${thresholdWeight} kg by ${overloadAmount} kg.`,
+        startAxleUnit,
+        endAxleUnit,
+        actualWeight,
+        thresholdWeight,
+      });
+    }
+  }
+
+  return policyCheckResults;
+}
 
 function meetsMinimumSteerPercentageOfDriveAxleWeight(
   steerAxle: AxleConfiguration,
@@ -1300,6 +1488,7 @@ export function CheckDriveJeepLoadEqualization(
  * this map with additional entries.
  *
  * Currently includes:
+ * - AxleGroupMaximumLegalWeightThreshold: Validates axle groups within 8 m against CTR 7.17
  * - BridgeFormula: Validates axle groups against bridge formula requirements
  * - CheckPermittableWeight: Validates total vehicle weight against permit limits
  * - MaxTireLoad: Validates tire load capacity for each axle unit
@@ -1321,6 +1510,10 @@ export function CheckDriveJeepLoadEqualization(
 export const policyCheckMap = new Map<string, PolicyCheck>([
   [PolicyCheckId.NumberOfAxles, CheckNumberOfAxles],
   [PolicyCheckId.BridgeFormula, CheckBridgeFormula],
+  [
+    PolicyCheckId.AxleGroupMaximumLegalWeightThreshold,
+    CheckAxleGroupMaximumLegalWeightThreshold,
+  ],
   [PolicyCheckId.CheckPermittableWeight, CheckPermittableWeight],
   [PolicyCheckId.MaxTireLoad, CheckMaxTireLoad],
   [PolicyCheckId.MinDriveAxleWeight, CheckMinDriveAxleWeight],
