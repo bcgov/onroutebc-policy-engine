@@ -1779,8 +1779,6 @@ describe('Axle Calculation Functions', () => {
     expect(axleCalcViolation).toBeUndefined();
   });
 
-  // it('single steer, tridem drive truck should fail when wheelbase is below 6.6m')
-
   describe('drive and jeep load equalization', () => {
     const loadEqualizationMessage =
       'Axle Unit 2 and Axle Unit 3 must be load equalized within 1000 kg.';
