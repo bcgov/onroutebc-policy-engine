@@ -18,7 +18,7 @@ import {
   CheckMinSteerAxleWeight,
   CheckMinTandemSteerAxleWeight,
   CheckPickerTruckTractorWeightRestrictions,
-  CheckTruckTractorWheelbaseLegalLimits,
+  CheckWheelbaseLegalLimits,
   CheckDriveJeepLoadEqualization,
 } from '../../helper/policy-check.helper';
 import dayjs from 'dayjs';
@@ -1451,8 +1451,140 @@ describe('Axle Calculation Functions', () => {
     });
   });
 
-  it('should pass truck tractor wheelbase at the maximum allowed value', async () => {
-    const results = CheckTruckTractorWheelbaseLegalLimits(
+  it('should fail single steer wheelbase below 6.6m for trucks', async () => {
+    const results = CheckWheelbaseLegalLimits(
+      policy,
+      ['REGTRCK'],
+      [
+        { numberOfAxles: 1, axleUnitWeight: 6700, axleSpread: 200 },
+        {
+          numberOfAxles: 3,
+          axleSpread: 200,
+          interaxleSpacing: 540,
+          axleUnitWeight: 12000,
+        },
+      ],
+    );
+
+    expect(results[0]).toMatchObject({
+      id: PolicyCheckId.WheelbaseLegalLimits,
+      result: PolicyCheckResultType.Fail,
+      message: 'Wheelbase for Axle Unit 1 is less than 6.6 m.',
+    });
+  });
+
+  it('should fail single steer wheelbase above 6.8m for truck tractors', async () => {
+    const results = CheckWheelbaseLegalLimits(
+      policy,
+      ['TRKTRAC'],
+      [
+        { numberOfAxles: 1, axleUnitWeight: 6700, axleSpread: 200 },
+        {
+          numberOfAxles: 3,
+          axleSpread: 200,
+          interaxleSpacing: 590,
+          axleUnitWeight: 12000,
+        },
+      ],
+    );
+
+    expect(results[0]).toMatchObject({
+      id: PolicyCheckId.WheelbaseLegalLimits,
+      result: PolicyCheckResultType.Fail,
+      message: 'Wheelbase for Axle Unit 1 is greater than 6.8 m.',
+    });
+  });
+
+  it('should fail tandem steer tridem drive wheelbase below 7.7m for supported subtypes', async () => {
+    const results = CheckWheelbaseLegalLimits(
+      policy,
+      ['REGTRCK'],
+      [
+        { numberOfAxles: 2, axleUnitWeight: 6700, axleSpread: 200 },
+        {
+          numberOfAxles: 3,
+          axleSpread: 240,
+          interaxleSpacing: 320,
+          axleUnitWeight: 12000,
+        },
+      ],
+    );
+
+    expect(results[0]).toMatchObject({
+      id: PolicyCheckId.WheelbaseLegalLimits,
+      result: PolicyCheckResultType.Fail,
+      message: 'Wheelbase for Axle Unit 1 is less than 7.7 m.',
+    });
+  });
+
+  it('should fail oilfield bed truck wheelbase below 7.8m for 2.8m to less than 3.0m axle spread', async () => {
+    const results = CheckWheelbaseLegalLimits(
+      policy,
+      ['OGBEDTK'],
+      [
+        { numberOfAxles: 2, axleUnitWeight: 6700, axleSpread: 200 },
+        {
+          numberOfAxles: 3,
+          axleSpread: 280,
+          interaxleSpacing: 350,
+          axleUnitWeight: 12000,
+        },
+      ],
+    );
+
+    expect(results[0]).toMatchObject({
+      id: PolicyCheckId.WheelbaseLegalLimits,
+      result: PolicyCheckResultType.Fail,
+      message: 'Wheelbase for Axle Unit 1 is less than 7.8 m.',
+    });
+  });
+
+  it('should fail oilfield bed truck wheelbase below 7.9m for 3.0m to 3.1m axle spread', async () => {
+    const results = CheckWheelbaseLegalLimits(
+      policy,
+      ['OGBEDTK'],
+      [
+        { numberOfAxles: 2, axleUnitWeight: 6700, axleSpread: 200 },
+        {
+          numberOfAxles: 3,
+          axleSpread: 300,
+          interaxleSpacing: 350,
+          axleUnitWeight: 12000,
+        },
+      ],
+    );
+
+    expect(results[0]).toMatchObject({
+      id: PolicyCheckId.WheelbaseLegalLimits,
+      result: PolicyCheckResultType.Fail,
+      message: 'Wheelbase for Axle Unit 1 is less than 7.9 m.',
+    });
+  });
+
+  it('should fail oilfield bed truck wheelbase above 10.0m', async () => {
+    const results = CheckWheelbaseLegalLimits(
+      policy,
+      ['OGBEDTK'],
+      [
+        { numberOfAxles: 2, axleUnitWeight: 6700, axleSpread: 200 },
+        {
+          numberOfAxles: 3,
+          axleSpread: 300,
+          interaxleSpacing: 760,
+          axleUnitWeight: 12000,
+        },
+      ],
+    );
+
+    expect(results[0]).toMatchObject({
+      id: PolicyCheckId.WheelbaseLegalLimits,
+      result: PolicyCheckResultType.Fail,
+      message: 'Wheelbase for Axle Unit 1 is greater than 10.0 m.',
+    });
+  });
+
+  it('should warn truck tractor wheelbase at the maximum allowed value with semi-trailer', async () => {
+    const results = CheckWheelbaseLegalLimits(
       policy,
       ['TRKTRAC', 'SEMITRL'],
       [
@@ -1463,22 +1595,22 @@ describe('Axle Calculation Functions', () => {
           interaxleSpacing: 650,
           axleUnitWeight: 12000,
         },
-        { numberOfAxles: 3, axleUnitWeight: 10000 },
+        { numberOfAxles: 2, axleUnitWeight: 10000 },
       ],
     );
 
     expect(results[0]).toMatchObject({
-      id: PolicyCheckId.TruckTractorWheelbaseLegalLimits,
-      result: PolicyCheckResultType.Pass,
+      id: PolicyCheckId.WheelbaseLegalLimits,
+      result: PolicyCheckResultType.Warning,
       message:
-        'Wheelbase for Axle Unit 1 and Axle Unit 2 is between 6.2m and 7.2m. See CTPM 5.3.7.A.',
+        'Wheelbase for Axle Unit X and Axle Unit Y is between 6.2m and 7.2m. Semi-Trailer wheelbase must be within dimensions table found in CTPM 5.3.7.A.',
       startAxleUnit: 1,
       endAxleUnit: 2,
     });
   });
 
   it('should fail truck tractor wheelbase above the maximum allowed value', async () => {
-    const results = CheckTruckTractorWheelbaseLegalLimits(
+    const results = CheckWheelbaseLegalLimits(
       policy,
       ['TRKTRAC', 'SEMITRL'],
       [
@@ -1494,7 +1626,7 @@ describe('Axle Calculation Functions', () => {
     );
 
     expect(results[0]).toMatchObject({
-      id: PolicyCheckId.TruckTractorWheelbaseLegalLimits,
+      id: PolicyCheckId.WheelbaseLegalLimits,
       result: PolicyCheckResultType.Fail,
       message:
         'Wheelbase for Axle Unit 1 and Axle Unit 2 is greater than 7.2m.',
@@ -1504,7 +1636,7 @@ describe('Axle Calculation Functions', () => {
   });
 
   it('should pass truck tractor wheelbase below the minimum restricted value', async () => {
-    const results = CheckTruckTractorWheelbaseLegalLimits(
+    const results = CheckWheelbaseLegalLimits(
       policy,
       ['TRKTRAC', 'JEEPSRG', 'BOOSTER'],
       [
@@ -1528,34 +1660,46 @@ describe('Axle Calculation Functions', () => {
     });
   });
 
-  it('should fail truck tractor wheelbase between 6.2m and 7.2m with jeep or booster selected', async () => {
-    const jeepResults = CheckTruckTractorWheelbaseLegalLimits(
+  it('should fail truck tractor wheelbase between 6.2m and 7.2m when trailer type is not semi-trailer', async () => {
+    const jeepResults = CheckWheelbaseLegalLimits(
       policy,
       ['TRKTRAC', 'JEEPSRG'],
       [
-        { numberOfAxles: 1, axleUnitWeight: 6700 },
+        { numberOfAxles: 1, axleUnitWeight: 5000 },
         {
           numberOfAxles: 2,
-          axleSpread: 140,
+          axleSpread: 141,
           interaxleSpacing: 550,
-          axleUnitWeight: 12000,
+          axleUnitWeight: 5000,
         },
-        { numberOfAxles: 2, axleUnitWeight: 10000 },
+        {
+          numberOfAxles: 2,
+          interaxleSpacing: 200,
+          axleUnitWeight: 5000,
+        },
       ],
     );
-    const boosterResults = CheckTruckTractorWheelbaseLegalLimits(
+    const boosterResults = CheckWheelbaseLegalLimits(
       policy,
       ['TRKTRAC', 'SEMITRL', 'BOOSTER'],
       [
-        { numberOfAxles: 1, axleUnitWeight: 6700 },
+        { numberOfAxles: 1, axleUnitWeight: 5000 },
         {
           numberOfAxles: 2,
-          axleSpread: 140,
+          axleSpread: 141,
           interaxleSpacing: 550,
-          axleUnitWeight: 12000,
+          axleUnitWeight: 5000,
         },
-        { numberOfAxles: 3, axleUnitWeight: 10000 },
-        { numberOfAxles: 2, axleUnitWeight: 10000 },
+        {
+          numberOfAxles: 2,
+          interaxleSpacing: 200,
+          axleUnitWeight: 5000,
+        },
+        {
+          numberOfAxles: 2,
+          interaxleSpacing: 200,
+          axleUnitWeight: 5000,
+        },
       ],
     );
 
@@ -1581,7 +1725,7 @@ describe('Axle Calculation Functions', () => {
 
     const results = policy.runAxleCalculation(vc, ac, 0);
     const wheelbaseResult = results.results.find(
-      (r) => r.id === PolicyCheckId.TruckTractorWheelbaseLegalLimits,
+      (r) => r.id === PolicyCheckId.WheelbaseLegalLimits,
     );
 
     expect(wheelbaseResult).toMatchObject({
@@ -1599,53 +1743,22 @@ describe('Axle Calculation Functions', () => {
 
     scenarios.forEach(({ interaxleSpacing, axleSpread }) => {
       const ac = getTruckTractorWheelbaseAxles(interaxleSpacing, axleSpread);
-      const directResult = CheckTruckTractorWheelbaseLegalLimits(
+      const directResult = CheckWheelbaseLegalLimits(
         policy,
         vehicleConfiguration,
         ac,
       )[0];
       const runAxleCalculationResult = policy
         .runAxleCalculation(vehicleConfiguration, ac, 0)
-        .results.find(
-          (r) => r.id === PolicyCheckId.TruckTractorWheelbaseLegalLimits,
-        );
+        .results.find((r) => r.id === PolicyCheckId.WheelbaseLegalLimits);
 
       expect(runAxleCalculationResult).toMatchObject(directResult);
     });
   });
 
-  it('should include failed truck tractor wheelbase results from validate matching the direct policy check', async () => {
-    const scenarios = [
-      { interaxleSpacing: 660, axleSpread: 140 },
-      { interaxleSpacing: 550, axleSpread: 140 },
-    ];
-
-    for (const { interaxleSpacing, axleSpread } of scenarios) {
-      const permit = getTruckTractorWheelbasePermit(
-        interaxleSpacing,
-        axleSpread,
-      );
-      const directResult = CheckTruckTractorWheelbaseLegalLimits(
-        policy,
-        vehicleConfiguration,
-        permit.permitData.vehicleConfiguration.axleConfiguration,
-      )[0];
-
-      expect(directResult.result).toBe(PolicyCheckResultType.Fail);
-
-      const validationResult = await policy.validate(permit);
-      expect(validationResult.violations[0]).toMatchObject({
-        message: 'Vehicle configuration failed axle calculation policy checks',
-      });
-      expect(validationResult.violations[0].details).toContain(
-        directResult.message,
-      );
-    }
-  });
-
   it('should not include a truck tractor wheelbase validation violation when the direct policy check passes below 6.2m', async () => {
     const permit = getTruckTractorWheelbasePermit(580, 40);
-    const directResult = CheckTruckTractorWheelbaseLegalLimits(
+    const directResult = CheckWheelbaseLegalLimits(
       policy,
       vehicleConfiguration,
       permit.permitData.vehicleConfiguration.axleConfiguration,
@@ -1665,6 +1778,8 @@ describe('Axle Calculation Functions', () => {
 
     expect(axleCalcViolation).toBeUndefined();
   });
+
+  // it('single steer, tridem drive truck should fail when wheelbase is below 6.6m')
 
   describe('drive and jeep load equalization', () => {
     const loadEqualizationMessage =

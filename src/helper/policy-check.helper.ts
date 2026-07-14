@@ -192,7 +192,6 @@ export function CheckNumTiresPerAxle(
       // Invalid number of axles, cannot calculate
       message = `Number of axles for axle unit ${axleNum} is not permittable.`;
     } else {
-      // TODO this implementation is currently disallowing tridem drive axles, which we need to evaluate for wheelbase legal limits
       const multipliers =
         axleNum === 1 ? [2] : axleNum === 2 ? [2, 4] : [2, 4, 8];
       const checkResult = multipliers
@@ -1023,85 +1022,10 @@ export function CheckBoosterAxleLimit(
 }
 
 /**
- * Validates derived wheelbase for single steer, tandem drive truck tractors.
- *
- * Wheelbase is derived from the spacing between axle units 1 and 2 plus half
- * of axle unit 2 spread. Axle dimensions are stored in centimetres.
- */
-export function CheckTruckTractorWheelbaseLegalLimits(
-  policy: Policy,
-  vehicleConfiguration: Array<string>,
-  axleConfiguration: Array<AxleConfiguration>,
-): Array<PolicyCheckResult> {
-  const resultBase = {
-    id: PolicyCheckId.TruckTractorWheelbaseLegalLimits,
-    startAxleUnit: 1,
-    endAxleUnit: 2,
-  };
-
-  const powerUnitSubtype = vehicleConfiguration[0];
-
-  const steerAxle = axleConfiguration[0];
-
-  const driveAxle = {
-    ...axleConfiguration[1],
-    axleSpread: axleConfiguration[1].axleSpread ?? 0,
-    interaxleSpacing: axleConfiguration[1].interaxleSpacing ?? 0,
-  };
-
-  const isTruckTractor = powerUnitSubtype === 'TRKTRAC';
-  const isSingleSteer = steerAxle.numberOfAxles === 1;
-
-  if (isTruckTractor && isSingleSteer) {
-    const wheelbase = driveAxle.interaxleSpacing + driveAxle.axleSpread / 2;
-
-    if (wheelbase > 720) {
-      return [
-        {
-          ...resultBase,
-          result: PolicyCheckResultType.Fail,
-          message:
-            'Wheelbase for Axle Unit 1 and Axle Unit 2 is greater than 7.2m.',
-        },
-      ];
-    }
-
-    if (wheelbase >= 620) {
-      const hasDisallowedTrailer = vehicleConfiguration.slice(1).some((v) => {
-        const trailer = policy.getTrailerDefinition(v);
-        const isSemiTrailer = trailer?.displayCode === 'SEMITRL';
-        return !isSemiTrailer;
-      });
-
-      return [
-        {
-          ...resultBase,
-          result: hasDisallowedTrailer
-            ? PolicyCheckResultType.Fail
-            : PolicyCheckResultType.Pass,
-          message:
-            'Wheelbase for Axle Unit 1 and Axle Unit 2 is between 6.2m and 7.2m. See CTPM 5.3.7.A.',
-        },
-      ];
-    }
-
-    return [
-      {
-        ...resultBase,
-        result: PolicyCheckResultType.Pass,
-        message: '',
-      },
-    ];
-  }
-
-  return [];
-}
-
-/**
  * Validates wheelbase legal limits for supported power unit vehicle sub-types.
  */
 export function CheckWheelbaseLegalLimits(
-  _policy: Policy,
+  policy: Policy,
   vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
 ): Array<PolicyCheckResult> {
@@ -1124,6 +1048,7 @@ export function CheckWheelbaseLegalLimits(
     interaxleSpacing: axleConfiguration[1].interaxleSpacing ?? 0,
   };
 
+  // TODO we need to add Truck with PME and Truck Tractor with PME when ready
   const isSupportedVehicleSubtype = (value?: string): boolean => {
     return (
       value === 'REGTRCK' ||
@@ -1142,14 +1067,64 @@ export function CheckWheelbaseLegalLimits(
   const isPickerTruckTractor = powerUnitSubtype === 'PICKRTT';
   const isOilfieldBedTruck = powerUnitSubtype === 'OGBEDTK';
 
-  if (isSupportedVehicleSubtype(powerUnitSubtype)) {
-    const wheelbase = isSingleSteer
-      ? driveAxle.interaxleSpacing + driveAxle.axleSpread / 2
-      : steerAxle.axleSpread / 2 +
-        driveAxle.interaxleSpacing +
-        driveAxle.axleSpread / 2;
+  const wheelbase = isSingleSteer
+    ? driveAxle.interaxleSpacing + driveAxle.axleSpread / 2
+    : steerAxle.axleSpread / 2 +
+      driveAxle.interaxleSpacing +
+      driveAxle.axleSpread / 2;
 
-    if (isSingleSteer && isTandemDrive) {
+  // the following logic covers the ASW 6.2 to 7.2m feature, we are grouping it with CheckWheelBaseLegalLimits because of feature overlap
+  if (
+    (isTruckTractor || isPickerTruckTractor) &&
+    isSingleSteer &&
+    isTandemDrive &&
+    wheelbase > 620
+  ) {
+    if (wheelbase > 720) {
+      return [
+        {
+          ...resultBase,
+          result: PolicyCheckResultType.Fail,
+          message:
+            'Wheelbase for Axle Unit 1 and Axle Unit 2 is greater than 7.2m.',
+        },
+      ];
+    }
+
+    if (wheelbase >= 620) {
+      const hasDisallowedTrailer = vehicleConfiguration.slice(1).some((v) => {
+        const trailer = policy.getTrailerDefinition(v);
+        const isSemiTrailer = trailer?.id === 'SEMITRL';
+        return !isSemiTrailer;
+      });
+
+      const hasTrailer = vehicleConfiguration.length > 1;
+
+      return [
+        {
+          ...resultBase,
+          result: hasDisallowedTrailer
+            ? PolicyCheckResultType.Fail
+            : PolicyCheckResultType.Warning,
+          message:
+            hasTrailer && !hasDisallowedTrailer
+              ? 'Wheelbase for Axle Unit X and Axle Unit Y is between 6.2m and 7.2m. Semi-Trailer wheelbase must be within dimensions table found in CTPM 5.3.7.A.'
+              : 'Wheelbase for Axle Unit 1 and Axle Unit 2 is between 6.2m and 7.2m. See CTPM 5.3.7.A.',
+        },
+      ];
+    }
+    return [
+      {
+        ...resultBase,
+        result: PolicyCheckResultType.Pass,
+        message: '',
+      },
+    ];
+  }
+
+  if (isSupportedVehicleSubtype(powerUnitSubtype)) {
+    if (isSingleSteer && isTridemDrive) {
+      // TODO we need to add Truck with PME and Truck Tractor with PME when ready
       if (isTruckTractor || isPickerTruckTractor) {
         if (wheelbase < 660) {
           return [
@@ -1357,10 +1332,6 @@ export const policyCheckMap = new Map<string, PolicyCheck>([
   ],
   [PolicyCheckId.NumberOfWheelsPerAxle, CheckNumTiresPerAxle],
   [PolicyCheckId.BoosterAxleLimit, CheckBoosterAxleLimit],
-  [PolicyCheckId.WheelbaseLegalLimits, CheckWheelbaseLegalLimits],
-  [
-    PolicyCheckId.TruckTractorWheelbaseLegalLimits,
-    CheckTruckTractorWheelbaseLegalLimits,
-  ],
   [PolicyCheckId.DriveJeepLoadEqualization, CheckDriveJeepLoadEqualization],
+  [PolicyCheckId.WheelbaseLegalLimits, CheckWheelbaseLegalLimits],
 ]);
