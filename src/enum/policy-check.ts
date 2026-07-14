@@ -1,6 +1,7 @@
 export enum PolicyCheckResultType {
   Pass = 'pass',
   Fail = 'fail',
+  Warning = 'warning',
 }
 
 export enum PolicyCheckId {
@@ -16,5 +17,5 @@ export enum PolicyCheckId {
   NumberOfAxles = 'number-of-axles',
   NumberOfWheelsPerAxle = 'number-of-wheels',
   PickerTruckTractorWeightRestrictions = 'picker-truck-tractor-weight-restrictions',
-  TruckTractorWheelbase = 'truck-tractor-wheelbase',
+  WheelbaseLegalLimits = 'wheelbase-legal-limits',
 }
