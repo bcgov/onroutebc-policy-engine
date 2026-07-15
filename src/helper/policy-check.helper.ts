@@ -846,10 +846,9 @@ export function CheckPickerTruckTractorWeightRestrictions(
  * @see PolicyCheck
  * @see AxleGroupPolicyCheckResult
  */
-// TODO this evaluation should only be applied to certain vehicle subtypes, await spec update
 export function CheckMinDriveAxleWeight(
   _policy: Policy,
-  _vehicleConfiguration: Array<string>,
+  vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
 ): Array<PolicyCheckResult> {
   const policyCheckResults = new Array<AxleGroupPolicyCheckResult>();
@@ -862,17 +861,28 @@ export function CheckMinDriveAxleWeight(
 
   let message, result;
 
+  const powerUnitSubtype = vehicleConfiguration[0];
+
+  const driveAxle = axleConfiguration[1];
+  const isTandemDrive = driveAxle.numberOfAxles === 2;
+  const isTridemDrive = driveAxle.numberOfAxles === 3;
+
+  // TODO we need to add Truck with PME and Truck Tractor with PME when ready
+  const isSupportedVehicleSubtype = (value?: string): boolean => {
+    return value === 'REGTRCK' || value === 'TRKTRAC' || value === 'PICKRTT';
+  };
+
   if (
-    axleConfiguration[1].numberOfAxles === 2 ||
-    axleConfiguration[1].numberOfAxles === 3
+    (isTandemDrive || isTridemDrive) &&
+    isSupportedVehicleSubtype(powerUnitSubtype)
   ) {
     let targetMinWeight = gvcw * 0.2;
-    if (axleConfiguration[1].numberOfAxles === 2) {
+    if (isTandemDrive) {
       targetMinWeight = Math.min(targetMinWeight, 23000);
-    } else if (axleConfiguration[1].numberOfAxles === 3) {
+    } else if (isTridemDrive) {
       targetMinWeight = Math.min(targetMinWeight, 28000);
     }
-    if (axleConfiguration[1].axleUnitWeight >= targetMinWeight) {
+    if (driveAxle.axleUnitWeight >= targetMinWeight) {
       message = 'Drive axle meets minimum weight requirements';
       result = PolicyCheckResultType.Pass;
     } else {
@@ -880,7 +890,7 @@ export function CheckMinDriveAxleWeight(
       result = PolicyCheckResultType.Fail;
     }
   } else {
-    // This policy check is only for tandem or tridem drive power units
+    // This policy check is only for tandem or tridem drive power units with supported vehicle sub-type
     message = 'Policy check does not apply to this configuration';
     result = PolicyCheckResultType.Pass;
   }
@@ -888,9 +898,8 @@ export function CheckMinDriveAxleWeight(
     id: policyId,
     message: message,
     result: result,
-    // TODO both start and end axle units should be the drive axle, is this always the second axle unit in the configuration? Or is it the last axle unit of the power unit configuration?
     startAxleUnit: 1,
-    endAxleUnit: axleConfiguration.length,
+    endAxleUnit: 1,
   });
 
   return policyCheckResults;

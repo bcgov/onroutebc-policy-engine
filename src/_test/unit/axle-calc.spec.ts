@@ -877,7 +877,7 @@ describe('Axle Calculation Functions', () => {
         id: PolicyCheckId.MinDriveAxleWeight,
         result: PolicyCheckResultType.Fail,
         startAxleUnit: 1,
-        endAxleUnit: 3,
+        endAxleUnit: 1,
       });
     });
   });
