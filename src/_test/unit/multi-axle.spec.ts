@@ -112,6 +112,54 @@ describe('Multi-Axle Unit Calculation Tests', () => {
     ).toBe(true);
   });
 
+  it('should calculate a truck tractor with a tridem semi-trailer axle unit', () => {
+    const results = policy.runAxleCalculation(
+      ['TRKTRAC', 'SEMITRL'],
+      [
+        {
+          numberOfAxles: 1,
+          axleUnitWeight: 5000,
+          numberOfTires: 2,
+          tireSize: 279,
+          vehicleIndex: 0,
+        },
+        {
+          numberOfAxles: 2,
+          axleSpread: 140,
+          interaxleSpacing: 660,
+          axleUnitWeight: 5000,
+          numberOfTires: 4,
+          tireSize: 279,
+          vehicleIndex: 0,
+        },
+        {
+          numberOfAxles: 3,
+          axleSpread: 200,
+          interaxleSpacing: 200,
+          axleUnitWeight: 5000,
+          numberOfTires: 6,
+          tireSize: 279,
+          vehicleIndex: 1,
+        },
+      ],
+      30000,
+    );
+
+    expect(results.totalGCVW).toBe(15000);
+    expect(results.results).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: PolicyCheckId.CheckPermittableWeight,
+          result: PolicyCheckResultType.Pass,
+          startAxleUnit: 3,
+          endAxleUnit: 3,
+          actualWeight: 5000,
+          thresholdWeight: 29000,
+        }),
+      ]),
+    );
+  });
+
   it('should calculate PICKRTT and PLATFRM with one-axle trailer defaults and report tire failures', () => {
     const results = policy.runAxleCalculation(
       ['PICKRTT', 'PLATFRM'],
