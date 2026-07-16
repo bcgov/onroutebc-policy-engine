@@ -340,7 +340,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
 
   it('should raise STOW axle calculation violation when truck tractor wheelbase is between 6.2m and 7.2m with jeep and booster selected', async () => {
     const permit = getDatedPermit();
-    setTruckTractorWheelbaseScenario(permit, 550, 140);
+    setTruckTractorWheelbaseScenario(permit, 550, 141);
 
     const validationResult = await policy.validate(permit);
 

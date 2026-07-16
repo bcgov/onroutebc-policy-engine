@@ -8,6 +8,7 @@ import {
 } from 'onroute-policy-engine/types';
 import { Policy } from 'onroute-policy-engine';
 import { getAxleUnitVehicleIndexes } from './dimensions.helper';
+import { getCtr717TableValue } from './ctr-717.helper';
 import {
   AccessoryVehicleType,
   PolicyCheckId,
@@ -33,6 +34,193 @@ type PolicyCheck = (
   vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
 ) => Array<PolicyCheckResult>;
+
+/** Applies the standard lower-of rule or the exact 7.16(g) exception. */
+export function getMaximumLegalAxleGroupWeightThreshold(
+  individualLegalWeightSum: number,
+  ctr717TableValue: number,
+  isTandemDriveSingleJeepException: boolean,
+): number {
+  const tandemDriveSingleJeepMinimumKg = 24000;
+
+  return isTandemDriveSingleJeepException
+    ? Math.max(tandemDriveSingleJeepMinimumKg, ctr717TableValue)
+    : Math.min(individualLegalWeightSum, ctr717TableValue);
+}
+
+function getApplicableLegalWeightThreshold(
+  policy: Policy,
+  vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+  axleUnitVehicleIndexes: Array<number>,
+  axleIndex: number,
+): number | undefined {
+  const vehicleIndex = axleUnitVehicleIndexes[axleIndex];
+  const vehicleType = vehicleConfiguration[vehicleIndex];
+  const axle = axleConfiguration[axleIndex];
+
+  if (!vehicleType || !axle) {
+    return undefined;
+  }
+
+  const weights =
+    vehicleIndex === 0
+      ? policy.getDefaultPowerUnitWeight(
+          vehicleType,
+          axleConfiguration[0].numberOfAxles * 10 +
+            axleConfiguration[1].numberOfAxles,
+        )
+      : policy.getDefaultTrailerWeight(vehicleType, axle.numberOfAxles);
+
+  if (weights.length === 0) {
+    return undefined;
+  }
+
+  return policy.selectCorrectWeightDimension(
+    weights,
+    vehicleConfiguration,
+    axleConfiguration,
+    axleIndex,
+  )?.legal;
+}
+
+/**
+ * Validates every contiguous axle-unit group within 8 m, excluding groups
+ * beginning at axle unit 1, against the CTR 7.17 maximum legal weight.
+ */
+export function CheckAxleGroupMaximumLegalWeightThreshold(
+  policy: Policy,
+  vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+): Array<AxleGroupPolicyCheckResult> {
+  const ctr717MaxSpreadCm = 800;
+  const policyCheckResults = new Array<AxleGroupPolicyCheckResult>();
+  const policyId = PolicyCheckId.AxleGroupMaximumLegalWeightThreshold;
+
+  if (axleConfiguration.length < 3) {
+    return policyCheckResults;
+  }
+
+  const hasVehicleIndexes = axleConfiguration.some(
+    (axleUnit) => axleUnit.vehicleIndex !== undefined,
+  );
+  const axleUnitVehicleIndexes = hasVehicleIndexes
+    ? getAxleUnitVehicleIndexes(policy, vehicleConfiguration, axleConfiguration)
+    : axleConfiguration.map((_, axleIndex) =>
+        axleIndex < 2 ? 0 : axleIndex - 1,
+      );
+  const legalWeightThresholds = axleConfiguration.map((_, axleIndex) =>
+    getApplicableLegalWeightThreshold(
+      policy,
+      vehicleConfiguration,
+      axleConfiguration,
+      axleUnitVehicleIndexes,
+      axleIndex,
+    ),
+  );
+
+  for (
+    let startAxleIndex = 1;
+    startAxleIndex < axleConfiguration.length - 1;
+    startAxleIndex++
+  ) {
+    const firstAxle = axleConfiguration[startAxleIndex];
+    const firstAxleSpread = firstAxle.axleSpread ?? 0;
+    let groupSpread = firstAxleSpread;
+    let actualWeight = firstAxle.axleUnitWeight;
+    let individualLegalWeightSum = legalWeightThresholds[startAxleIndex];
+
+    if (
+      !Number.isFinite(firstAxleSpread) ||
+      firstAxleSpread < 0 ||
+      !Number.isFinite(actualWeight)
+    ) {
+      continue;
+    }
+
+    for (
+      let endAxleIndex = startAxleIndex + 1;
+      endAxleIndex < axleConfiguration.length;
+      endAxleIndex++
+    ) {
+      const endAxle = axleConfiguration[endAxleIndex];
+      const endAxleSpread = endAxle.axleSpread ?? 0;
+      const interaxleSpacing = endAxle.interaxleSpacing;
+      const endAxleLegalWeight = legalWeightThresholds[endAxleIndex];
+
+      if (
+        !Number.isFinite(interaxleSpacing) ||
+        (interaxleSpacing as number) <= 0 ||
+        !Number.isFinite(endAxleSpread) ||
+        endAxleSpread < 0 ||
+        !Number.isFinite(endAxle.axleUnitWeight)
+      ) {
+        break;
+      }
+
+      groupSpread += (interaxleSpacing as number) + endAxleSpread;
+      actualWeight += endAxle.axleUnitWeight;
+
+      if (
+        individualLegalWeightSum === undefined ||
+        endAxleLegalWeight === undefined
+      ) {
+        individualLegalWeightSum = undefined;
+      } else {
+        individualLegalWeightSum += endAxleLegalWeight;
+      }
+
+      if (groupSpread > ctr717MaxSpreadCm) {
+        break;
+      }
+
+      const ctr717TableValue = getCtr717TableValue(groupSpread);
+      const isTandemDriveSingleJeepException =
+        startAxleIndex === 1 &&
+        endAxleIndex === 2 &&
+        vehicleConfiguration[0] === 'TRKTRAC' &&
+        vehicleConfiguration[1] === AccessoryVehicleType.Jeep &&
+        axleUnitVehicleIndexes[1] === 0 &&
+        axleUnitVehicleIndexes[2] === 1 &&
+        axleConfiguration[1].numberOfAxles === 2 &&
+        axleConfiguration[2].numberOfAxles === 1;
+
+      if (
+        ctr717TableValue === undefined ||
+        (!isTandemDriveSingleJeepException &&
+          individualLegalWeightSum === undefined)
+      ) {
+        continue;
+      }
+
+      const thresholdWeight = getMaximumLegalAxleGroupWeightThreshold(
+        individualLegalWeightSum ?? 0,
+        ctr717TableValue,
+        isTandemDriveSingleJeepException,
+      );
+      const passes = actualWeight <= thresholdWeight;
+      const startAxleUnit = startAxleIndex + 1;
+      const endAxleUnit = endAxleIndex + 1;
+      const overloadAmount = Math.max(0, actualWeight - thresholdWeight);
+
+      policyCheckResults.push({
+        id: policyId,
+        result: passes
+          ? PolicyCheckResultType.Pass
+          : PolicyCheckResultType.Fail,
+        message: passes
+          ? ''
+          : `Axle Group ${startAxleUnit} to ${endAxleUnit} exceeds the maximum legal weight threshold of ${thresholdWeight} kg by ${overloadAmount} kg.`,
+        startAxleUnit,
+        endAxleUnit,
+        actualWeight,
+        thresholdWeight,
+      });
+    }
+  }
+
+  return policyCheckResults;
+}
 
 function meetsMinimumSteerPercentageOfDriveAxleWeight(
   steerAxle: AxleConfiguration,
@@ -660,7 +848,7 @@ export function CheckPickerTruckTractorWeightRestrictions(
  */
 export function CheckMinDriveAxleWeight(
   _policy: Policy,
-  _vehicleConfiguration: Array<string>,
+  vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
 ): Array<PolicyCheckResult> {
   const policyCheckResults = new Array<AxleGroupPolicyCheckResult>();
@@ -672,17 +860,29 @@ export function CheckMinDriveAxleWeight(
   );
 
   let message, result;
+
+  const powerUnitSubtype = vehicleConfiguration[0];
+
+  const driveAxle = axleConfiguration[1];
+  const isTandemDrive = driveAxle.numberOfAxles === 2;
+  const isTridemDrive = driveAxle.numberOfAxles === 3;
+
+  // TODO we need to add Truck with PME and Truck Tractor with PME when ready
+  const isSupportedVehicleSubtype = (value?: string): boolean => {
+    return value === 'REGTRCK' || value === 'TRKTRAC' || value === 'PICKRTT';
+  };
+
   if (
-    axleConfiguration[1].numberOfAxles === 2 ||
-    axleConfiguration[1].numberOfAxles === 3
+    (isTandemDrive || isTridemDrive) &&
+    isSupportedVehicleSubtype(powerUnitSubtype)
   ) {
     let targetMinWeight = gvcw * 0.2;
-    if (axleConfiguration[1].numberOfAxles === 2) {
+    if (isTandemDrive) {
       targetMinWeight = Math.min(targetMinWeight, 23000);
-    } else if (axleConfiguration[1].numberOfAxles === 3) {
+    } else if (isTridemDrive) {
       targetMinWeight = Math.min(targetMinWeight, 28000);
     }
-    if (axleConfiguration[1].axleUnitWeight >= targetMinWeight) {
+    if (driveAxle.axleUnitWeight >= targetMinWeight) {
       message = 'Drive axle meets minimum weight requirements';
       result = PolicyCheckResultType.Pass;
     } else {
@@ -690,7 +890,7 @@ export function CheckMinDriveAxleWeight(
       result = PolicyCheckResultType.Fail;
     }
   } else {
-    // This policy check is only for tandem or tridem drive power units
+    // This policy check is only for tandem or tridem drive power units with supported vehicle sub-type
     message = 'Policy check does not apply to this configuration';
     result = PolicyCheckResultType.Pass;
   }
@@ -699,7 +899,7 @@ export function CheckMinDriveAxleWeight(
     message: message,
     result: result,
     startAxleUnit: 1,
-    endAxleUnit: axleConfiguration.length,
+    endAxleUnit: 1,
   });
 
   return policyCheckResults;
@@ -1019,83 +1219,210 @@ export function CheckBoosterAxleLimit(
 }
 
 /**
- * Validates derived wheelbase for single steer, tandem drive truck tractors.
- *
- * Wheelbase is derived from the spacing between axle units 1 and 2 plus half
- * of axle unit 2 spread. Axle dimensions are stored in centimetres.
+ * Validates wheelbase legal limits for supported power unit vehicle sub-types.
  */
-export function CheckTruckTractorWheelbase(
+export function CheckWheelbaseLegalLimits(
   policy: Policy,
   vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
 ): Array<PolicyCheckResult> {
-  const policyId = PolicyCheckId.TruckTractorWheelbase;
-  const powerUnitSubtype = vehicleConfiguration[0];
-  const steerAxle = axleConfiguration[0];
-  const driveAxle = axleConfiguration[1];
-
-  if (
-    powerUnitSubtype !== 'TRKTRAC' ||
-    !steerAxle ||
-    !driveAxle ||
-    steerAxle.numberOfAxles !== 1 ||
-    driveAxle.numberOfAxles !== 2 ||
-    driveAxle.interaxleSpacing === undefined ||
-    driveAxle.axleSpread === undefined
-  ) {
-    return [];
-  }
-
-  const wheelbase = driveAxle.interaxleSpacing + driveAxle.axleSpread / 2;
   const resultBase = {
-    id: policyId,
+    id: PolicyCheckId.WheelbaseLegalLimits,
     startAxleUnit: 1,
     endAxleUnit: 2,
   };
 
-  if (wheelbase > 720) {
+  const powerUnitSubtype = vehicleConfiguration[0];
+
+  const steerAxle = {
+    ...axleConfiguration[0],
+    axleSpread: axleConfiguration[0].axleSpread ?? 0,
+  };
+
+  const driveAxle = {
+    ...axleConfiguration[1],
+    axleSpread: axleConfiguration[1].axleSpread ?? 0,
+    interaxleSpacing: axleConfiguration[1].interaxleSpacing ?? 0,
+  };
+
+  // TODO we need to add Truck with PME and Truck Tractor with PME when ready
+  const isSupportedVehicleSubtype = (value?: string): boolean => {
+    return (
+      value === 'REGTRCK' ||
+      value === 'TRKTRAC' ||
+      value === 'PICKRTT' ||
+      value === 'OGBEDTK'
+    );
+  };
+
+  const isSingleSteer = steerAxle.numberOfAxles === 1;
+  const isTandemSteer = steerAxle.numberOfAxles === 2;
+  const isTandemDrive = driveAxle.numberOfAxles === 2;
+  const isTridemDrive = driveAxle.numberOfAxles === 3;
+
+  const isTruckTractor = powerUnitSubtype === 'TRKTRAC';
+  const isPickerTruckTractor = powerUnitSubtype === 'PICKRTT';
+  const isOilfieldBedTruck = powerUnitSubtype === 'OGBEDTK';
+
+  const wheelbase = isSingleSteer
+    ? driveAxle.interaxleSpacing + driveAxle.axleSpread / 2
+    : steerAxle.axleSpread / 2 +
+      driveAxle.interaxleSpacing +
+      driveAxle.axleSpread / 2;
+
+  // the following logic covers the ASW 6.2 to 7.2m feature, we are grouping it with CheckWheelBaseLegalLimits because of feature overlap
+  if (
+    (isTruckTractor || isPickerTruckTractor) &&
+    isSingleSteer &&
+    isTandemDrive &&
+    wheelbase > 620
+  ) {
+    if (wheelbase > 720) {
+      return [
+        {
+          ...resultBase,
+          result: PolicyCheckResultType.Fail,
+          message:
+            'Wheelbase for Axle Unit 1 and Axle Unit 2 is greater than 7.2m.',
+        },
+      ];
+    }
+
+    if (wheelbase >= 620) {
+      const hasDisallowedTrailer = vehicleConfiguration.slice(1).some((v) => {
+        const trailer = policy.getTrailerDefinition(v);
+        const isSemiTrailer = trailer?.id === 'SEMITRL';
+        return !isSemiTrailer;
+      });
+
+      const hasTrailer = vehicleConfiguration.length > 1;
+
+      return [
+        {
+          ...resultBase,
+          result: hasDisallowedTrailer
+            ? PolicyCheckResultType.Fail
+            : PolicyCheckResultType.Warning,
+          message:
+            hasTrailer && !hasDisallowedTrailer
+              ? 'Wheelbase for Axle Unit X and Axle Unit Y is between 6.2m and 7.2m. Semi-Trailer wheelbase must be within dimensions table found in CTPM 5.3.7.A.'
+              : 'Wheelbase for Axle Unit 1 and Axle Unit 2 is between 6.2m and 7.2m. See CTPM 5.3.7.A.',
+        },
+      ];
+    }
     return [
       {
         ...resultBase,
-        result: PolicyCheckResultType.Fail,
-        message:
-          'Wheelbase for Axle Unit 1 and Axle Unit 2 is greater than 7.2m.',
+        result: PolicyCheckResultType.Pass,
+        message: '',
       },
     ];
   }
 
-  if (wheelbase >= 620) {
-    const hasDisallowedTrailer = vehicleConfiguration.slice(1).some((v) => {
-      if (
-        v === AccessoryVehicleType.Jeep ||
-        v === AccessoryVehicleType.Booster
-      ) {
-        return true;
+  if (isSupportedVehicleSubtype(powerUnitSubtype)) {
+    if (isSingleSteer && isTridemDrive) {
+      // TODO we need to add Truck with PME and Truck Tractor with PME when ready
+      if (isTruckTractor || isPickerTruckTractor) {
+        if (wheelbase < 660) {
+          return [
+            {
+              ...resultBase,
+              result: PolicyCheckResultType.Fail,
+              message: 'Wheelbase for Axle Unit 1 is less than 6.6 m.',
+            },
+          ];
+        }
+
+        if (wheelbase > 680) {
+          return [
+            {
+              ...resultBase,
+              result: PolicyCheckResultType.Fail,
+              message: 'Wheelbase for Axle Unit 1 is greater than 6.8 m.',
+            },
+          ];
+        }
+      } else {
+        if (wheelbase < 660) {
+          return [
+            {
+              ...resultBase,
+              result: PolicyCheckResultType.Fail,
+              message: 'Wheelbase for Axle Unit 1 is less than 6.6 m.',
+            },
+          ];
+        }
+      }
+    }
+
+    if (isTandemSteer && isTridemDrive) {
+      if (wheelbase < 770) {
+        if (isOilfieldBedTruck) {
+          if (
+            driveAxle.axleSpread >= 280 &&
+            driveAxle.axleSpread < 300 &&
+            wheelbase < 780
+          ) {
+            return [
+              {
+                ...resultBase,
+                result: PolicyCheckResultType.Fail,
+                message: 'Wheelbase for Axle Unit 1 is less than 7.8 m.',
+              },
+            ];
+          }
+
+          if (
+            driveAxle.axleSpread >= 300 &&
+            driveAxle.axleSpread <= 310 &&
+            wheelbase < 790
+          ) {
+            return [
+              {
+                ...resultBase,
+                result: PolicyCheckResultType.Fail,
+                message: 'Wheelbase for Axle Unit 1 is less than 7.9 m.',
+              },
+            ];
+          }
+        }
+
+        if (
+          !isOilfieldBedTruck &&
+          driveAxle.axleSpread >= 240 &&
+          driveAxle.axleSpread < 280
+        ) {
+          return [
+            {
+              ...resultBase,
+              result: PolicyCheckResultType.Fail,
+              message: 'Wheelbase for Axle Unit 1 is less than 7.7 m.',
+            },
+          ];
+        }
       }
 
-      const trailer = policy.getTrailerDefinition(v);
-      return trailer?.category !== 'semi';
-    });
+      if (isOilfieldBedTruck && wheelbase > 1000) {
+        return [
+          {
+            ...resultBase,
+            result: PolicyCheckResultType.Fail,
+            message: 'Wheelbase for Axle Unit 1 is greater than 10.0 m.',
+          },
+        ];
+      }
+    }
 
     return [
       {
         ...resultBase,
-        result: hasDisallowedTrailer
-          ? PolicyCheckResultType.Fail
-          : PolicyCheckResultType.Pass,
-        message:
-          'Wheelbase for Axle Unit 1 and Axle Unit 2 is between 6.2m and 7.2m. See CTPM 5.3.7.A.',
+        result: PolicyCheckResultType.Pass,
+        message: '',
       },
     ];
   }
 
-  return [
-    {
-      ...resultBase,
-      result: PolicyCheckResultType.Pass,
-      message: '',
-    },
-  ];
+  return [];
 }
 
 /**
@@ -1170,6 +1497,7 @@ export function CheckDriveJeepLoadEqualization(
  * this map with additional entries.
  *
  * Currently includes:
+ * - AxleGroupMaximumLegalWeightThreshold: Validates axle groups within 8 m against CTR 7.17
  * - BridgeFormula: Validates axle groups against bridge formula requirements
  * - CheckPermittableWeight: Validates total vehicle weight against permit limits
  * - MaxTireLoad: Validates tire load capacity for each axle unit
@@ -1180,7 +1508,8 @@ export function CheckDriveJeepLoadEqualization(
  * - NumberOfAxles: Validates axle count per axle unit
  * - NumberOfWheelsPerAxle: Validates tire count per axle unit
  * - BoosterAxleLimit: Validates booster axle count against the preceding trailer
- * - TruckTractorWheelbase: Validates derived wheelbase for single steer, tandem drive truck tractors
+ * - TruckTractorWheelbaseLegalLimits: Validates derived wheelbase for single steer, tandem drive truck tractors
+ * - WheelbaseLegalLimits: Validates wheelbase against legal limits
  * - DriveJeepLoadEqualization: Validates drive and jeep axle unit load equalization
  *
  * @see PolicyCheck
@@ -1190,6 +1519,10 @@ export function CheckDriveJeepLoadEqualization(
 export const policyCheckMap = new Map<string, PolicyCheck>([
   [PolicyCheckId.NumberOfAxles, CheckNumberOfAxles],
   [PolicyCheckId.BridgeFormula, CheckBridgeFormula],
+  [
+    PolicyCheckId.AxleGroupMaximumLegalWeightThreshold,
+    CheckAxleGroupMaximumLegalWeightThreshold,
+  ],
   [PolicyCheckId.CheckPermittableWeight, CheckPermittableWeight],
   [PolicyCheckId.MaxTireLoad, CheckMaxTireLoad],
   [PolicyCheckId.MinDriveAxleWeight, CheckMinDriveAxleWeight],
@@ -1201,6 +1534,6 @@ export const policyCheckMap = new Map<string, PolicyCheck>([
   ],
   [PolicyCheckId.NumberOfWheelsPerAxle, CheckNumTiresPerAxle],
   [PolicyCheckId.BoosterAxleLimit, CheckBoosterAxleLimit],
-  [PolicyCheckId.TruckTractorWheelbase, CheckTruckTractorWheelbase],
   [PolicyCheckId.DriveJeepLoadEqualization, CheckDriveJeepLoadEqualization],
+  [PolicyCheckId.WheelbaseLegalLimits, CheckWheelbaseLegalLimits],
 ]);
