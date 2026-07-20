@@ -2326,6 +2326,126 @@ export const data: PolicyDefinition = {
       conditions: [],
     },
     {
+      id: 'STGVWI',
+      name: 'Single Trip GVW Increase',
+      routingRequired: true,
+      weightDimensionRequired: true,
+      sizeDimensionRequired: false,
+      commodityRequired: false,
+      allowedVehicles: [
+        'BUSCRUM',
+        'BUSTRLR',
+        'CONCRET',
+        'CRANEAT',
+        'CRANEMB',
+        'DDCKBUS',
+        'GRADERS',
+        'LCVRMDB',
+        'LCVTPDB',
+        'LOGGING',
+        'LOGOFFH',
+        'MUNFITR',
+        'OGBEDTK',
+        'OGOILSW',
+        'OGSERVC',
+        'OGSRRAH',
+        'PICKRTT',
+        'PLOWBLD',
+        'PUTAXIS',
+        'REGTRCK',
+        'SCRAPER',
+        'STINGER',
+        'TOWVEHC',
+        'TRKTRAC',
+      ],
+      rules: [
+        {
+          conditions: {
+            any: [
+              {
+                not: {
+                  fact: 'permitData',
+                  path: 'permitDuration',
+                  operator: 'lessThanInclusive',
+                  value: 7,
+                },
+              },
+              {
+                not: {
+                  fact: 'permitData',
+                  path: 'permitDuration',
+                  operator: 'greaterThan',
+                  value: 0,
+                },
+              },
+            ],
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'Duration must be 7 days or less',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.permitDuration',
+            },
+          },
+        },
+        {
+          conditions: {
+            not: {
+              fact: 'permitData',
+              path: 'vehicleConfiguration.actualGVW',
+              operator: 'greaterThan',
+              value: {
+                fact: 'permitData',
+                path: 'vehicleDetails.licensedGVW',
+              },
+            },
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'Actual GVW must be greater than Licensed GVW.',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.vehicleConfiguration.actualGVW',
+            },
+          },
+        },
+        {
+          conditions: {
+            not: {
+              fact: 'permitData',
+              path: 'vehicleConfiguration.actualGVW',
+              operator: 'lessThanInclusive',
+              value: 63500,
+            },
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'Cannot exceed 63,500kg',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.vehicleConfiguration.actualGVW',
+            },
+          },
+        },
+      ],
+      costRules: [
+        {
+          fact: 'overloadCost',
+          params: {
+            description:
+              'Calculates overload fee based on distance and licensed GVW increase',
+          },
+        },
+      ],
+      conditions: [
+        {
+          condition: 'CVSE-1070',
+          mandatory: true,
+        },
+      ],
+    },
+    {
       id: 'STFR',
       name: 'Single Trip ICBC Basic Insurance (FR)',
       routingRequired: false,
