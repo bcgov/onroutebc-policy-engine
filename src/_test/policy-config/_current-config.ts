@@ -1507,307 +1507,317 @@ export const data: PolicyDefinition = {
       sizeDimensionRequired: false,
       commodityRequired: false,
       allowedVehicles: [
-        "BUSCRUM",
-        "CONCRET",
-        "CRANEAT",
-        "CRANEMB",
-        "DDCKBUS",
-        "FARMTRC",
-        "GRADERS",
-        "LOGGING",
-        "LOGOFFH",
-        "LCVRMDB",
-        "LCVTPDB",
-        "LWBTRCT",
-        "MUNFITR",
-        "OGBEDTK",
-        "OGOILSW",
-        "OGSERVC",
-        "OGSRRAH",
-        "PICKRTR",
-        "PICKRTT",
-        "RBTRLDR",
-        "SCRAPER",
-        "PUTAXIS",
-        "TLSCONV",
-        "TOWVEHC",
-        "TRKTRAC",
-        "STINGER",
-        "REGTRCK",
-        "PLOWBLD",
-        "BOOSTER",
-        "DOLLIES",
-        "EXPANDO",
-        "FECVYRX",
-        "FEDRMMX",
-        "FEPNYTR",
-        "FEBGHSE",
-        "FESEMTR",
-        "FEWHELR",
-        "FEWHLPR",
-        "FLOATTR",
-        "FULLLTL",
-        "JEEPSRG",
-        "LOGNTAC",
-        "LOGTNDM",
-        "LOGTRIX",
-        "LOGDGLG",
-        "LOGOWBK",
-        "LOGSMEM",
-        "LOGFULL",
-        "MHMBSHG",
-        "MHMBSHL",
-        "OGOSFDT",
-        "ODTRLEX",
-        "PMHWAAX",
-        "PLATFRM",
-        "POLETRL",
-        "PONYTRL",
-        "REDIMIX",
-        "SEMITRL",
-        "STACTRN",
-        "STBTRAN",
-        "HIBOEXP",
-        "HIBOFLT",
-        "STREEFR",
-        "STLOGNG",
-        "STNTSHC",
-        "STSDBDK",
-        "STWDTAN",
-        "STSTEER",
-        "STSTNGR",
-        "STCHIPS",
-        "STWHELR",
-        "STWIDWH",
-        "STCRANE",
-        "STROPRT",
-        "STRSELF",
-        "STINGAT",
-        "DBTRBTR",
-        "PLATWHE"
+        'BUSCRUM',
+        'CONCRET',
+        'CRANEAT',
+        'CRANEMB',
+        'DDCKBUS',
+        'FARMTRC',
+        'GRADERS',
+        'LOGGING',
+        'LOGOFFH',
+        'LCVRMDB',
+        'LCVTPDB',
+        'LWBTRCT',
+        'MUNFITR',
+        'OGBEDTK',
+        'OGOILSW',
+        'OGSERVC',
+        'OGSRRAH',
+        'PICKRTR',
+        'PICKRTT',
+        'RBTRLDR',
+        'SCRAPER',
+        'PUTAXIS',
+        'TLSCONV',
+        'TOWVEHC',
+        'TRKTRAC',
+        'STINGER',
+        'REGTRCK',
+        'PLOWBLD',
+        'BOOSTER',
+        'DOLLIES',
+        'EXPANDO',
+        'FECVYRX',
+        'FEDRMMX',
+        'FEPNYTR',
+        'FEBGHSE',
+        'FESEMTR',
+        'FEWHELR',
+        'FEWHLPR',
+        'FLOATTR',
+        'FULLLTL',
+        'JEEPSRG',
+        'LOGNTAC',
+        'LOGTNDM',
+        'LOGTRIX',
+        'LOGDGLG',
+        'LOGOWBK',
+        'LOGSMEM',
+        'LOGFULL',
+        'MHMBSHG',
+        'MHMBSHL',
+        'OGOSFDT',
+        'ODTRLEX',
+        'PMHWAAX',
+        'PLATFRM',
+        'POLETRL',
+        'PONYTRL',
+        'REDIMIX',
+        'SEMITRL',
+        'STACTRN',
+        'STBTRAN',
+        'HIBOEXP',
+        'HIBOFLT',
+        'STREEFR',
+        'STLOGNG',
+        'STNTSHC',
+        'STSDBDK',
+        'STWDTAN',
+        'STSTEER',
+        'STSTNGR',
+        'STCHIPS',
+        'STWHELR',
+        'STWIDWH',
+        'STCRANE',
+        'STROPRT',
+        'STRSELF',
+        'STINGAT',
+        'DBTRBTR',
+        'PLATWHE',
       ],
       rules: [
         {
           conditions: {
             not: {
-              fact: "permitData",
-              path: "expiryDate",
-              operator: "equal",
+              fact: 'permitData',
+              path: 'expiryDate',
+              operator: 'equal',
               value: {
-                fact: "endOfPermitYear"
-              }
-            }
+                fact: 'endOfPermitYear',
+              },
+            },
           },
           event: {
-            type: "violation",
+            type: 'violation',
             params: {
-              message: "Permit end date must be the end of the year in which the permit starts",
-              code: "field-validation-error",
-              fieldReference: "permitData.expiryDate"
-            }
-          }
+              message:
+                'Permit end date must be the end of the year in which the permit starts',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.expiryDate',
+            },
+          },
         },
         {
           conditions: {
             all: [
               {
                 not: {
-                  fact: "permitData",
-                  path: "vehicleDetails.vehicleType",
-                  operator: "equal",
-                  value: "other"
-                }
+                  fact: 'permitData',
+                  path: 'vehicleDetails.vehicleType',
+                  operator: 'equal',
+                  value: 'other',
+                },
               },
               {
-                fact: "permitData",
-                path: "vehicleDetails.vehicleDescription",
-                operator: "stringMinimumLength",
-                value: 1
-              }
-            ]
+                fact: 'permitData',
+                path: 'vehicleDetails.vehicleDescription',
+                operator: 'stringMinimumLength',
+                value: 1,
+              },
+            ],
           },
           event: {
-            type: "violation",
+            type: 'violation',
             params: {
-              message: "Vehicle description should not exist unless the permit vehicle type is 'Other'.",
-              code: "field-validation-error",
-              fieldReference: "permitData.vehicleDetails.vehicleDescription"
-            }
-          }
+              message:
+                "Vehicle description should not exist unless the permit vehicle type is 'Other'.",
+              code: 'field-validation-error',
+              fieldReference: 'permitData.vehicleDetails.vehicleDescription',
+            },
+          },
         },
         {
           conditions: {
             all: [
               {
                 not: {
-                  fact: "permitData",
-                  path: "vehicleDetails.vehicleDescription",
-                  operator: "stringMinimumLength",
-                  value: 1
-                }
+                  fact: 'permitData',
+                  path: 'vehicleDetails.vehicleDescription',
+                  operator: 'stringMinimumLength',
+                  value: 1,
+                },
               },
               {
-                fact: "permitData",
-                path: "vehicleDetails.vehicleType",
-                operator: "equal",
-                value: "other"
-              }
-            ]
+                fact: 'permitData',
+                path: 'vehicleDetails.vehicleType',
+                operator: 'equal',
+                value: 'other',
+              },
+            ],
           },
           event: {
-            type: "violation",
+            type: 'violation',
             params: {
-              message: "Vehicle description must be present if the permit vehicle type is 'Other'.",
-              code: "field-validation-error",
-              fieldReference: "permitData.vehicleDetails.vehicleDescription"
-            }
-          }
+              message:
+                "Vehicle description must be present if the permit vehicle type is 'Other'.",
+              code: 'field-validation-error',
+              fieldReference: 'permitData.vehicleDetails.vehicleDescription',
+            },
+          },
         },
         {
           conditions: {
             all: [
               {
                 not: {
-                  fact: "permitData",
-                  path: "icbcInsuranceCertificate.haveCertificate",
-                  operator: "equal",
-                  value: true
-                }
+                  fact: 'permitData',
+                  path: 'icbcInsuranceCertificate.haveCertificate',
+                  operator: 'equal',
+                  value: true,
+                },
               },
               {
-                fact: "permitData",
-                path: "icbcInsuranceCertificate.certificateNumber",
-                operator: "stringMinimumLength",
-                value: 1
-              }
-            ]
+                fact: 'permitData',
+                path: 'icbcInsuranceCertificate.certificateNumber',
+                operator: 'stringMinimumLength',
+                value: 1,
+              },
+            ],
           },
           event: {
-            type: "violation",
+            type: 'violation',
             params: {
-              message: "ICBC certificate number should not exist if no certificate is being used.",
-              code: "field-validation-error",
-              fieldReference: "permitData.icbcInsuranceCertificate.certificateNumber"
-            }
-          }
+              message:
+                'ICBC certificate number should not exist if no certificate is being used.',
+              code: 'field-validation-error',
+              fieldReference:
+                'permitData.icbcInsuranceCertificate.certificateNumber',
+            },
+          },
         },
         {
           conditions: {
             all: [
               {
-                fact: "permitData",
-                path: "icbcInsuranceCertificate.haveCertificate",
-                operator: "equal",
-                value: true
+                fact: 'permitData',
+                path: 'icbcInsuranceCertificate.haveCertificate',
+                operator: 'equal',
+                value: true,
               },
               {
                 not: {
-                  fact: "permitData",
-                  path: "icbcInsuranceCertificate.certificateNumber",
-                  operator: "stringMinimumLength",
-                  value: 1
-                }
-              }
-            ]
+                  fact: 'permitData',
+                  path: 'icbcInsuranceCertificate.certificateNumber',
+                  operator: 'stringMinimumLength',
+                  value: 1,
+                },
+              },
+            ],
           },
           event: {
-            type: "violation",
+            type: 'violation',
             params: {
-              message: "ICBC certificate number is required if certificate is being used.",
-              code: "field-validation-error",
-              fieldReference: "permitData.icbcInsuranceCertificate.certificateNumber"
-            }
-          }
+              message:
+                'ICBC certificate number is required if certificate is being used.',
+              code: 'field-validation-error',
+              fieldReference:
+                'permitData.icbcInsuranceCertificate.certificateNumber',
+            },
+          },
         },
         {
           conditions: {
             all: [
               {
-                fact: "permitData",
-                path: "icbcInsuranceCertificate.haveCertificate",
-                operator: "equal",
-                value: true
+                fact: 'permitData',
+                path: 'icbcInsuranceCertificate.haveCertificate',
+                operator: 'equal',
+                value: true,
               },
               {
                 not: {
-                  fact: "permitData",
-                  path: "icbcInsuranceCertificate.certificateNumber",
-                  operator: "equal",
+                  fact: 'permitData',
+                  path: 'icbcInsuranceCertificate.certificateNumber',
+                  operator: 'equal',
                   value: {
-                    fact: "permitData",
-                    path: "vehicleDetails.plate"  
-                  }
-                }
-              }
-            ]
+                    fact: 'permitData',
+                    path: 'vehicleDetails.plate',
+                  },
+                },
+              },
+            ],
           },
           event: {
-            type: "violation",
+            type: 'violation',
             params: {
-              message: "ICBC certificate number must match the vehicle plate number.",
-              code: "field-validation-error",
-              fieldReference: "permitData.icbcInsuranceCertificate.certificateNumber"
-            }
-          }
+              message:
+                'ICBC certificate number must match the vehicle plate number.',
+              code: 'field-validation-error',
+              fieldReference:
+                'permitData.icbcInsuranceCertificate.certificateNumber',
+            },
+          },
         },
         {
           conditions: {
             all: [
               {
                 not: {
-                  fact: "permitData",
-                  path: "vehicleDetails.vehicleType",
-                  operator: "equal",
-                  value: "other"
-                }
+                  fact: 'permitData',
+                  path: 'vehicleDetails.vehicleType',
+                  operator: 'equal',
+                  value: 'other',
+                },
               },
               {
                 not: {
-                  fact: "permitData",
-                  path: "vehicleDetails.vehicleSubType",
-                  operator: "in",
+                  fact: 'permitData',
+                  path: 'vehicleDetails.vehicleSubType',
+                  operator: 'in',
                   value: {
-                    fact: "allowedVehicles"
-                  }
-                }
-              }
-            ]
+                    fact: 'allowedVehicles',
+                  },
+                },
+              },
+            ],
           },
           event: {
-            type: "violation",
+            type: 'violation',
             params: {
-              message: "Vehicle type not permittable for this permit type",
-              code: "field-validation-error",
-              fieldReference: "permitData.vehicleDetails.vehicleSubType"
-            }
-          }
+              message: 'Vehicle type not permittable for this permit type',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.vehicleDetails.vehicleSubType',
+            },
+          },
         },
         {
           conditions: {
             all: [
               {
-                fact: "permitData",
-                path: "vehicleDetails.vehicleType",
-                operator: "equal",
-                value: "other"
+                fact: 'permitData',
+                path: 'vehicleDetails.vehicleType',
+                operator: 'equal',
+                value: 'other',
               },
               {
-                fact: "permitData",
-                path: "vehicleDetails.vehicleSubType",
-                operator: "stringMinimumLength",
-                value: 1
-              }
-            ]
+                fact: 'permitData',
+                path: 'vehicleDetails.vehicleSubType',
+                operator: 'stringMinimumLength',
+                value: 1,
+              },
+            ],
           },
           event: {
-            type: "violation",
+            type: 'violation',
             params: {
-              message: "Vehicle subtype not permittable for Vehicle Type 'Other'.",
-              code: "field-validation-error",
-              fieldReference: "permitData.vehicleDetails.vehicleSubType"
-            }
-          }
-        }
+              message:
+                "Vehicle subtype not permittable for Vehicle Type 'Other'.",
+              code: 'field-validation-error',
+              fieldReference: 'permitData.vehicleDetails.vehicleSubType',
+            },
+          },
+        },
       ],
       costRules: [
         {
@@ -2277,6 +2287,126 @@ export const data: PolicyDefinition = {
         },
       ],
       conditions: [],
+    },
+    {
+      id: 'STGVWI',
+      name: 'Single Trip GVW Increase',
+      routingRequired: true,
+      weightDimensionRequired: true,
+      sizeDimensionRequired: false,
+      commodityRequired: false,
+      allowedVehicles: [
+        'BUSCRUM',
+        'BUSTRLR',
+        'CONCRET',
+        'CRANEAT',
+        'CRANEMB',
+        'DDCKBUS',
+        'GRADERS',
+        'LCVRMDB',
+        'LCVTPDB',
+        'LOGGING',
+        'LOGOFFH',
+        'MUNFITR',
+        'OGBEDTK',
+        'OGOILSW',
+        'OGSERVC',
+        'OGSRRAH',
+        'PICKRTT',
+        'PLOWBLD',
+        'PUTAXIS',
+        'REGTRCK',
+        'SCRAPER',
+        'STINGER',
+        'TOWVEHC',
+        'TRKTRAC',
+      ],
+      rules: [
+        {
+          conditions: {
+            any: [
+              {
+                not: {
+                  fact: 'permitData',
+                  path: 'permitDuration',
+                  operator: 'lessThanInclusive',
+                  value: 7,
+                },
+              },
+              {
+                not: {
+                  fact: 'permitData',
+                  path: 'permitDuration',
+                  operator: 'greaterThan',
+                  value: 0,
+                },
+              },
+            ],
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'Duration must be 7 days or less',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.permitDuration',
+            },
+          },
+        },
+        {
+          conditions: {
+            not: {
+              fact: 'permitData',
+              path: 'vehicleConfiguration.actualGVW',
+              operator: 'greaterThan',
+              value: {
+                fact: 'permitData',
+                path: 'vehicleDetails.licensedGVW',
+              },
+            },
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'Actual GVW must be greater than Licensed GVW.',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.vehicleConfiguration.actualGVW',
+            },
+          },
+        },
+        {
+          conditions: {
+            not: {
+              fact: 'permitData',
+              path: 'vehicleConfiguration.actualGVW',
+              operator: 'lessThanInclusive',
+              value: 63500,
+            },
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'Cannot exceed 63,500kg',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.vehicleConfiguration.actualGVW',
+            },
+          },
+        },
+      ],
+      costRules: [
+        {
+          fact: 'overloadCost',
+          params: {
+            description:
+              'Calculates overload fee based on distance and licensed GVW increase',
+          },
+        },
+      ],
+      conditions: [
+        {
+          condition: 'CVSE-1070',
+          mandatory: true,
+        },
+      ],
     },
     {
       id: 'STFR',
@@ -3756,7 +3886,7 @@ export const data: PolicyDefinition = {
       {
         id: 'LWBTRCT',
         name: 'Long Wheelbase Truck Tractors Exceeding 6.2 m up to 7.25 m',
-        category: 'powerunit'
+        category: 'powerunit',
       },
       {
         id: 'MUNFITR',
