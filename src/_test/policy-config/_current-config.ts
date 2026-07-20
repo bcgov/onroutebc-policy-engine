@@ -1379,7 +1379,15 @@ export const data: PolicyDefinition = {
     },
     {
       conditions: {
-        any: [
+        all: [
+          {
+            not: {
+              fact: 'permitType',
+              path: '$permitType',
+              operator: 'equal',
+              value: 'HC',
+            },
+          },
           {
             fact: 'daysBetween',
             operator: 'greaterThan',
@@ -1587,6 +1595,35 @@ export const data: PolicyDefinition = {
         'PLATWHE',
       ],
       rules: [
+        {
+          conditions: {
+            any: [
+              {
+                fact: 'daysBetween',
+                operator: 'greaterThan',
+                value: 90,
+                params: {
+                  dateFrom: {
+                    fact: 'validationDate',
+                  },
+                  dateTo: {
+                    fact: 'permitData',
+                    path: '$.startDate',
+                  },
+                },
+              },
+            ],
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message:
+                'Permit start date cannot be more than 90 days in the future',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.startDate',
+            },
+          },
+        },
         {
           conditions: {
             not: {
