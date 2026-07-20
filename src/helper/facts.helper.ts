@@ -17,10 +17,16 @@ import {
   VehicleConfiguration,
 } from 'onroute-policy-engine/types';
 import { policyCheckMap } from './policy-check.helper';
+import {
+  AXLE_CALC_RESULTS_FACT,
+  BASE_OVERLOAD_LIMIT,
+  DEFAULT_MAX_RATE,
+  EXTRA_RATE_INCREMENT,
+  EXTRA_WEIGHT_INTERVAL,
+  MINIMUM_OVERLOAD_FEE,
+} from '../constants/stgvwi';
 
 dayjs.extend(quarterOfYear);
-
-const AXLE_CALC_RESULTS_FACT = 'axleCalcResults';
 
 type AxleCalculationInputs = {
   vehicleConfiguration: Array<string>;
@@ -555,7 +561,7 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
 
       let ratePer10km = 0;
 
-      if (overloadKg <= 28000) {
+      if (overloadKg <= BASE_OVERLOAD_LIMIT) {
         // Overload permit fee rate table mapping up to 28,000 kg
         const rates = [
           { max: 2000, rate: 0.95 },
@@ -588,12 +594,12 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
         ];
 
         const match = rates.find((r) => overloadKg <= r.max);
-        ratePer10km = match ? match.rate : 21.4;
+        ratePer10km = match ? match.rate : DEFAULT_MAX_RATE;
       } else {
-        // For overload greater than 28000 kg
-        const extraWeight = overloadKg - 28000;
-        const intervals = Math.ceil(extraWeight / 900);
-        ratePer10km = 21.4 + intervals * 1.85;
+        // For overload greater than BASE_OVERLOAD_LIMIT kg
+        const extraWeight = overloadKg - BASE_OVERLOAD_LIMIT;
+        const intervals = Math.ceil(extraWeight / EXTRA_WEIGHT_INTERVAL);
+        ratePer10km = DEFAULT_MAX_RATE + intervals * EXTRA_RATE_INCREMENT;
       }
 
       // Fee calculation: rate * (distance / 10)
@@ -601,8 +607,8 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
       let totalFee = ratePer10km * distanceUnits;
 
       // Apply minimum fee rule
-      if (totalFee < 25.0) {
-        totalFee = 25.0;
+      if (totalFee < MINIMUM_OVERLOAD_FEE) {
+        totalFee = MINIMUM_OVERLOAD_FEE;
       }
       // Round to the nearest dollar (0.50 rounds up)
       return Math.round(totalFee);

@@ -2410,16 +2410,13 @@
                   "fact": "permitData",
                   "path": "vehicleConfiguration.actualGVW",
                   "operator": "greaterThan",
-                  "value": {
-                    "fact": "permitData",
-                    "path": "vehicleDetails.licensedGVW"
-                  }
+                  "value": 0
                 }
               },
               "event": {
                 "type": "violation",
                 "params": {
-                  "message": "Actual GVW must be greater than Licensed GVW.",
+                  "message": "This is a required field",
                   "code": "field-validation-error",
                   "fieldReference": "permitData.vehicleConfiguration.actualGVW"
                 }
@@ -2427,12 +2424,51 @@
             },
             {
               "conditions": {
-                "not": {
-                  "fact": "permitData",
-                  "path": "vehicleConfiguration.actualGVW",
-                  "operator": "lessThanInclusive",
-                  "value": 63500
+                "all": [
+                  {
+                    "fact": "permitData",
+                    "path": "vehicleConfiguration.actualGVW",
+                    "operator": "greaterThan",
+                    "value": 0
+                  },
+                  {
+                    "not": {
+                      "fact": "permitData",
+                      "path": "vehicleConfiguration.actualGVW",
+                      "operator": "greaterThan",
+                      "value": {
+                        "fact": "permitData",
+                        "path": "vehicleDetails.licensedGVW"
+                      }
+                    }
+                  }
+                ]
+              },
+              "event": {
+                "type": "violation",
+                "params": {
+                  "message": "Must be greater than Licensed GVW.",
+                  "code": "field-validation-error",
+                  "fieldReference": "permitData.vehicleConfiguration.actualGVW"
                 }
+              }
+            },
+            {
+              "conditions": {
+                "all": [
+                  {
+                    "fact": "permitData",
+                    "path": "vehicleConfiguration.actualGVW",
+                    "operator": "greaterThan",
+                    "value": 0
+                  },
+                  {
+                    "fact": "permitData",
+                    "path": "vehicleConfiguration.actualGVW",
+                    "operator": "greaterThan",
+                    "value": 63500
+                  }
+                ]
               },
               "event": {
                 "type": "violation",
