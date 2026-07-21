@@ -17,10 +17,16 @@ import {
   VehicleConfiguration,
 } from 'onroute-policy-engine/types';
 import { policyCheckMap } from './policy-check.helper';
+import {
+  AXLE_CALC_RESULTS_FACT,
+  BASE_OVERLOAD_LIMIT,
+  DEFAULT_MAX_RATE,
+  EXTRA_RATE_INCREMENT,
+  EXTRA_WEIGHT_INTERVAL,
+  MINIMUM_OVERLOAD_FEE,
+} from '../constants/stgvwi';
 
 dayjs.extend(quarterOfYear);
-
-const AXLE_CALC_RESULTS_FACT = 'axleCalcResults';
 
 type AxleCalculationInputs = {
   vehicleConfiguration: Array<string>;
@@ -55,10 +61,9 @@ const getAxleCalculationInputs = async (
       Array.isArray(trailer.axleConfiguration) &&
       trailer.axleConfiguration.length > 0,
   );
-  const axleConfiguration =
-    hasNestedTrailerAxleConfiguration
-      ? policy.combineAxleConfigurations(powerUnitAxleConfiguration, trailers)
-      : powerUnitAxleConfiguration;
+  const axleConfiguration = hasNestedTrailerAxleConfiguration
+    ? policy.combineAxleConfigurations(powerUnitAxleConfiguration, trailers)
+    : powerUnitAxleConfiguration;
 
   return {
     vehicleConfiguration,
@@ -121,21 +126,20 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
    * that the permit start date falls in. Returns the date
    * formatted as a string in the standard permit date format.
    */
-  engine.addFact(
-    PolicyFacts.EndOfPermitYear,
-    async function (params, almanac) {
-      const startDate: string = await almanac.factValue(
-        PermitAppInfo.PermitData,
-        {},
-        PermitAppInfo.PermitStartDate,
-      );
+  engine.addFact(PolicyFacts.EndOfPermitYear, async function (params, almanac) {
+    const startDate: string = await almanac.factValue(
+      PermitAppInfo.PermitData,
+      {},
+      PermitAppInfo.PermitStartDate,
+    );
 
-      const dateFrom = dayjs(startDate, PermitAppInfo.PermitDateFormat);
-      const endOfYear = dateFrom.endOf('year').format(PermitAppInfo.PermitDateFormat);
+    const dateFrom = dayjs(startDate, PermitAppInfo.PermitDateFormat);
+    const endOfYear = dateFrom
+      .endOf('year')
+      .format(PermitAppInfo.PermitDateFormat);
 
-      return endOfYear;
-    },
-  );
+    return endOfYear;
+  });
 
   /**
    * Adds a runtime fact specifying whether the vehicle configuration
@@ -304,18 +308,15 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
    * Add runtime fact to return the complete runAxleCalculation result. This
    * is the structured ASW validation detail exposed by validate().
    */
-  engine.addFact(
-    AXLE_CALC_RESULTS_FACT,
-    async function (params, almanac) {
-      const { vehicleConfiguration, axleConfiguration, licensedGVW } =
-        await getAxleCalculationInputs(policy, almanac);
-      return policy.runAxleCalculation(
-        vehicleConfiguration,
-        axleConfiguration,
-        licensedGVW,
-      );
-    },
-  );
+  engine.addFact(AXLE_CALC_RESULTS_FACT, async function (params, almanac) {
+    const { vehicleConfiguration, axleConfiguration, licensedGVW } =
+      await getAxleCalculationInputs(policy, almanac);
+    return policy.runAxleCalculation(
+      vehicleConfiguration,
+      axleConfiguration,
+      licensedGVW,
+    );
+  });
 
   /**
    * Add runtime fact to return messages from failed axle calculation checks.
@@ -527,6 +528,90 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
       }
 
       return cost;
+    },
+  );
+
+  /**
+   * Add runtime fact to calculate the overload fee for STGVWI permits
+   * based on the Licensed GVW Increase and Total Distance.
+   */
+  engine.addFact(
+    CostFacts.OverloadCost.toString(),
+    async function (params, almanac) {
+      const actualGVW: number = await almanac.factValue(
+        PermitAppInfo.PermitData,
+        {},
+        'vehicleConfiguration.actualGVW',
+      );
+      const licensedGVW: number = await almanac.factValue(
+        PermitAppInfo.PermitData,
+        {},
+        'vehicleDetails.licensedGVW',
+      );
+      const distance: number = await almanac.factValue(
+        PermitAppInfo.PermitData,
+        {},
+        PermitAppInfo.TotalDistance,
+      );
+
+      const overloadKg = actualGVW - licensedGVW;
+      if (overloadKg <= 0 || !distance) {
+        return 0;
+      }
+
+      let ratePer10km = 0;
+
+      if (overloadKg <= BASE_OVERLOAD_LIMIT) {
+        // Overload permit fee rate table mapping up to 28,000 kg
+        const rates = [
+          { max: 2000, rate: 0.95 },
+          { max: 3000, rate: 1.15 },
+          { max: 4000, rate: 1.4 },
+          { max: 5000, rate: 1.6 },
+          { max: 6000, rate: 1.85 },
+          { max: 7000, rate: 2.15 },
+          { max: 8000, rate: 2.45 },
+          { max: 9000, rate: 2.95 },
+          { max: 10000, rate: 3.35 },
+          { max: 11000, rate: 3.75 },
+          { max: 12000, rate: 4.25 },
+          { max: 13000, rate: 4.95 },
+          { max: 14000, rate: 5.6 },
+          { max: 15000, rate: 6.25 },
+          { max: 16000, rate: 7.25 },
+          { max: 17000, rate: 8.25 },
+          { max: 18000, rate: 9.15 },
+          { max: 19000, rate: 10.1 },
+          { max: 20000, rate: 10.9 },
+          { max: 21000, rate: 11.85 },
+          { max: 22000, rate: 12.7 },
+          { max: 23000, rate: 13.95 },
+          { max: 24000, rate: 14.95 },
+          { max: 25000, rate: 16.1 },
+          { max: 26000, rate: 17.85 },
+          { max: 27000, rate: 19.85 },
+          { max: 28000, rate: 21.4 },
+        ];
+
+        const match = rates.find((r) => overloadKg <= r.max);
+        ratePer10km = match ? match.rate : DEFAULT_MAX_RATE;
+      } else {
+        // For overload greater than BASE_OVERLOAD_LIMIT kg
+        const extraWeight = overloadKg - BASE_OVERLOAD_LIMIT;
+        const intervals = Math.ceil(extraWeight / EXTRA_WEIGHT_INTERVAL);
+        ratePer10km = DEFAULT_MAX_RATE + intervals * EXTRA_RATE_INCREMENT;
+      }
+
+      // Fee calculation: rate * (distance / 10)
+      const distanceUnits = Math.ceil(distance / 10);
+      let totalFee = ratePer10km * distanceUnits;
+
+      // Apply minimum fee rule
+      if (totalFee < MINIMUM_OVERLOAD_FEE) {
+        totalFee = MINIMUM_OVERLOAD_FEE;
+      }
+      // Round to the nearest dollar (0.50 rounds up)
+      return Math.round(totalFee);
     },
   );
 }

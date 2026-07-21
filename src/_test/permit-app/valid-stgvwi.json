@@ -1,0 +1,68 @@
+{
+  "permitType": "STGVWI",
+  "permitData": {
+    "companyName": "Sonic Delivery Services",
+    "clientNumber": "B3-000102-466",
+    "permitDuration": 7,
+    "commodities": [
+      {
+        "description": "Permit Scope and Limitation",
+        "condition": "CVSE-1070",
+        "conditionLink": "https://www.th.gov.bc.ca/forms/getForm.aspx?formId=1261",
+        "checked": true,
+        "disabled": true
+      }
+    ],
+    "contactDetails": {
+      "firstName": "Chief",
+      "lastName": "Baker",
+      "phone1": "(250) 555-1234",
+      "phone1Extension": null,
+      "phone2": "(250) 555-4321",
+      "phone2Extension": null,
+      "email": "chief.baker@gov.bc.ca",
+      "additionalEmail": "baker.chief@gov.bc.ca",
+      "fax": null
+    },
+    "mailingAddress": {
+      "addressLine1": "940 Blanshard",
+      "addressLine2": null,
+      "city": "Victoria",
+      "provinceCode": "BC",
+      "countryCode": "CA",
+      "postalCode": "V8B1A2"
+    },
+    "vehicleDetails": {
+      "vehicleId": "101",
+      "unitNumber": "321",
+      "vin": "654321",
+      "plate": "D654321",
+      "make": "Kenworth",
+      "year": 2022,
+      "countryCode": "CA",
+      "provinceCode": "BC",
+      "vehicleType": "powerUnit",
+      "vehicleSubType": "TRKTRAC",
+      "licensedGVW": 40000,
+      "saveVehicle": false
+    },
+    "vehicleConfiguration": {
+      "actualGVW": 46000,
+      "trailers": [],
+      "axleConfiguration": []
+    },
+    "permittedRoute": {
+      "manualRoute": {
+        "origin": "Victoria, BC",
+        "destination": "Prince George, BC",
+        "highwaySequence": ["1", "5"],
+        "totalDistance": 100
+      },
+      "routeDetails": "Single Trip GVW Increase test permit"
+    },
+    "feeSummary": "0",
+    "startDate": "2025-01-18",
+    "expiryDate": "2025-01-24",
+    "applicationNotes": "Policy Engine STGVWI test"
+  }
+}
