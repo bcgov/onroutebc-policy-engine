@@ -8,10 +8,12 @@ describe('Policy Engine Oversize Configuration Functions', () => {
 
   it('should retrieve all permittable power unit types for STOS', async () => {
     const puTypes = policy.getPermittablePowerUnitTypes('STOS', 'EMPTYXX');
-    expect(puTypes.size).toBe(3);
+    expect(puTypes.size).toBe(5);
     expect(puTypes.keys()).toContain('TRKTRAC');
     expect(puTypes.keys()).toContain('PICKRTT');
     expect(puTypes.keys()).toContain('PICKRTR');
+    expect(puTypes.keys()).toContain('TRUCKPME');
+    expect(puTypes.keys()).toContain('TRACPME');
   });
 
   it('should retrieve valid power unit types for STOW', async () => {
