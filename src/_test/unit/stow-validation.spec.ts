@@ -141,6 +141,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     permit.permitData.startDate = dayjs().format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
+    permit.permitData.vehicleConfiguration.axleConfiguration[0].axleUnitWeight = 6000;
     return permit;
   };
 
@@ -219,6 +220,69 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(0);
+  });
+
+  // Source: ASW Legal Weight Maximums.feature @orv2-5706.
+  it('exposes an above-legal axle-unit failure through validate', async () => {
+    const permit = getDatedPermit();
+    permit.permitData.vehicleConfiguration.axleConfiguration[0].axleUnitWeight = 6001;
+
+    const validationResult = await policy.validate(permit);
+    const legalFailure = validationResult.axleCalculationResults?.results.find(
+      ({ id, startAxleUnit }) =>
+        id === PolicyCheckId.CheckLegalWeight && startAxleUnit === 1,
+    );
+
+    expect(legalFailure).toMatchObject({
+      result: PolicyCheckResultType.Fail,
+      actualWeight: 6001,
+      thresholdWeight: 6000,
+    });
+    expect(validationResult.violations).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          message:
+            'Vehicle configuration failed axle calculation policy checks',
+          details: expect.arrayContaining([
+            'Weight for axle unit 1 must not exceed 6000 kgs',
+          ]),
+        }),
+      ]),
+    );
+  });
+
+  // Source: ASW Permit Weight Maximums.feature @orv2-5709.
+  it('exposes an above-permittable axle-unit failure through validate', async () => {
+    const permit = getDatedPermit();
+    const driveAxle =
+      permit.permitData.vehicleConfiguration.axleConfiguration[1];
+    driveAxle.axleUnitWeight = 23001;
+    driveAxle.numberOfTires = 8;
+    driveAxle.tireSize = 455;
+
+    const validationResult = await policy.validate(permit);
+    const permittableFailure =
+      validationResult.axleCalculationResults?.results.find(
+        ({ id, startAxleUnit }) =>
+          id === PolicyCheckId.CheckPermittableWeight && startAxleUnit === 2,
+      );
+
+    expect(permittableFailure).toMatchObject({
+      result: PolicyCheckResultType.Fail,
+      actualWeight: 23001,
+      thresholdWeight: 23000,
+    });
+    expect(validationResult.violations).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          message:
+            'Vehicle configuration failed axle calculation policy checks',
+          details: expect.arrayContaining([
+            'Weight for axle unit 2 must not exceed 23000 kgs',
+          ]),
+        }),
+      ]),
+    );
   });
 
   it('should raise STOW axle calculation violation when an axle unit has zero axles', async () => {
