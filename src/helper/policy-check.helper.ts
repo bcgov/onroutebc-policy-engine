@@ -33,6 +33,31 @@ type PolicyCheck = (
   axleConfiguration: Array<AxleConfiguration>,
 ) => Array<PolicyCheckResult>;
 
+const POWER_UNIT_AXLE_CODE_MULTIPLIER = 10;
+
+const LEGAL_WEIGHT_MAXIMUM_KG = {
+  SINGLE_AXLE: 9100,
+  STANDARD_TRUCK_TRACTOR_STEER: 6000,
+  STANDARD_SINGLE_STEER_WITH_TRIDEM_DRIVE: 7300,
+  TANDEM_AXLE: 17000,
+  STANDARD_TANDEM_STEER_WITH_TRIDEM_DRIVE: 13600,
+  PME_TANDEM_STEER_WITH_TRIDEM_DRIVE: 15200,
+  TRIDEM_AXLE: 24000,
+} as const;
+
+const PERMITTABLE_WEIGHT_MAXIMUM_KG = {
+  SINGLE_STEER: 9100,
+  SINGLE_NON_STEER: 11000,
+  TANDEM: 23000,
+  STANDARD_TRIDEM: 28000,
+  QUALIFYING_TRIDEM: 29000,
+} as const;
+
+const QUALIFYING_TRIDEM_SPREAD_CM = {
+  MINIMUM: 240,
+  MAXIMUM: 370,
+} as const;
+
 /** Applies the standard lower-of rule or the exact 7.16(g) exception. */
 export function getMaximumLegalAxleGroupWeightThreshold(
   individualLegalWeightSum: number,
@@ -65,7 +90,7 @@ function getApplicableLegalWeightThreshold(
     vehicleIndex === 0
       ? policy.getDefaultPowerUnitWeight(
           vehicleType,
-          axleConfiguration[0].numberOfAxles * 10 +
+          axleConfiguration[0].numberOfAxles * POWER_UNIT_AXLE_CODE_MULTIPLIER +
             axleConfiguration[1].numberOfAxles,
         )
       : policy.getDefaultTrailerWeight(vehicleType, axle.numberOfAxles);
@@ -116,7 +141,7 @@ function getConfiguredAxleUnitWeightThreshold(
     vehicleIndex === 0
       ? policy.getDefaultPowerUnitWeight(
           vehicleType,
-          axleConfiguration[0].numberOfAxles * 10 +
+          axleConfiguration[0].numberOfAxles * POWER_UNIT_AXLE_CODE_MULTIPLIER +
             axleConfiguration[1].numberOfAxles,
         )
       : policy.getDefaultTrailerWeight(vehicleType, axleUnit.numberOfAxles);
@@ -139,7 +164,7 @@ function isFeatureLegalWeightPowerUnit(vehicleType?: string): boolean {
   return (
     vehicleType === 'REGTRCK' ||
     vehicleType === 'TRKTRAC' ||
-    vehicleType === 'TRUCKPME' ||
+    vehicleType === 'TRCKPME' ||
     vehicleType === 'TRACPME'
   );
 }
@@ -151,31 +176,37 @@ function getFeatureLegalPowerUnitWeightThreshold(
 ): number | undefined {
   const steerAxle = axleConfiguration[0];
   const driveAxle = axleConfiguration[1];
-  const hasPme = vehicleType === 'TRUCKPME' || vehicleType === 'TRACPME';
+  const hasPme = vehicleType === 'TRCKPME' || vehicleType === 'TRACPME';
 
   if (axleIndex === 0) {
     if (
       steerAxle.numberOfAxles === 1 &&
       (driveAxle.numberOfAxles === 1 || driveAxle.numberOfAxles === 2)
     ) {
-      return hasPme || vehicleType === 'REGTRCK' ? 9100 : 6000;
+      return hasPme || vehicleType === 'REGTRCK'
+        ? LEGAL_WEIGHT_MAXIMUM_KG.SINGLE_AXLE
+        : LEGAL_WEIGHT_MAXIMUM_KG.STANDARD_TRUCK_TRACTOR_STEER;
     }
     if (steerAxle.numberOfAxles === 1 && driveAxle.numberOfAxles === 3) {
-      return hasPme ? 9100 : 7300;
+      return hasPme
+        ? LEGAL_WEIGHT_MAXIMUM_KG.SINGLE_AXLE
+        : LEGAL_WEIGHT_MAXIMUM_KG.STANDARD_SINGLE_STEER_WITH_TRIDEM_DRIVE;
     }
     if (steerAxle.numberOfAxles === 2 && driveAxle.numberOfAxles === 2) {
-      return 17000;
+      return LEGAL_WEIGHT_MAXIMUM_KG.TANDEM_AXLE;
     }
     if (steerAxle.numberOfAxles === 2 && driveAxle.numberOfAxles === 3) {
-      return hasPme ? 15200 : 13600;
+      return hasPme
+        ? LEGAL_WEIGHT_MAXIMUM_KG.PME_TANDEM_STEER_WITH_TRIDEM_DRIVE
+        : LEGAL_WEIGHT_MAXIMUM_KG.STANDARD_TANDEM_STEER_WITH_TRIDEM_DRIVE;
     }
   }
 
   if (axleIndex === 1) {
     return {
-      1: 9100,
-      2: 17000,
-      3: 24000,
+      1: LEGAL_WEIGHT_MAXIMUM_KG.SINGLE_AXLE,
+      2: LEGAL_WEIGHT_MAXIMUM_KG.TANDEM_AXLE,
+      3: LEGAL_WEIGHT_MAXIMUM_KG.TRIDEM_AXLE,
     }[driveAxle.numberOfAxles];
   }
 
@@ -435,6 +466,47 @@ export function CheckNumberOfAxles(
   return policyCheckResults;
 }
 
+function getBridgeFormulaInputFailure(
+  axleConfiguration: Array<AxleConfiguration>,
+): AxleGroupPolicyCheckResult | undefined {
+  for (let axleIndex = 0; axleIndex < axleConfiguration.length; axleIndex++) {
+    const axleUnit = axleConfiguration[axleIndex];
+    const axleUnitNumber = axleIndex + 1;
+    let message: string | undefined;
+
+    if (
+      !Number.isFinite(axleUnit.axleUnitWeight) ||
+      axleUnit.axleUnitWeight <= 0
+    ) {
+      message = `Axle unit weight for axle unit ${axleUnitNumber} must be a finite number greater than 0.`;
+    } else if (
+      axleUnit.numberOfAxles > 1 &&
+      (!Number.isFinite(axleUnit.axleSpread) ||
+        (axleUnit.axleSpread as number) <= 0)
+    ) {
+      message = `Axle spread for axle unit ${axleUnitNumber} must be a finite number greater than 0 when the unit has multiple axles.`;
+    } else if (
+      axleIndex > 0 &&
+      (!Number.isFinite(axleUnit.interaxleSpacing) ||
+        (axleUnit.interaxleSpacing as number) <= 0)
+    ) {
+      message = `Axle spacing before axle unit ${axleUnitNumber} must be a finite number greater than 0.`;
+    }
+
+    if (message) {
+      return {
+        id: PolicyCheckId.BridgeFormula,
+        message,
+        result: PolicyCheckResultType.Fail,
+        startAxleUnit: axleUnitNumber,
+        endAxleUnit: axleUnitNumber,
+      };
+    }
+  }
+
+  return undefined;
+}
+
 /**
  * Performs bridge formula calculations on axle groups and returns policy check results.
  *
@@ -468,6 +540,12 @@ export function CheckBridgeFormula(
 ): Array<PolicyCheckResult> {
   const policyCheckResults = new Array<AxleGroupPolicyCheckResult>();
   const policyId = PolicyCheckId.BridgeFormula;
+  const inputFailure = getBridgeFormulaInputFailure(axleConfiguration);
+
+  if (inputFailure) {
+    return [inputFailure];
+  }
+
   const bridgeCalcResults = policy.calculateBridge(axleConfiguration);
   bridgeCalcResults.forEach((br) => {
     const message = `Axle group ${br.startAxleUnit} to ${br.endAxleUnit} ${br.success ? 'passes' : 'does not pass'} bridge formula.`;
@@ -630,17 +708,17 @@ export function CheckPermittableWeight(
     let permittableWeight: number | undefined;
 
     if (isSingleSteer) {
-      permittableWeight = 9100;
+      permittableWeight = PERMITTABLE_WEIGHT_MAXIMUM_KG.SINGLE_STEER;
     } else if (!isTandemSteer) {
       if (axleUnit.numberOfAxles === 1) {
-        permittableWeight = 11000;
+        permittableWeight = PERMITTABLE_WEIGHT_MAXIMUM_KG.SINGLE_NON_STEER;
       } else if (axleUnit.numberOfAxles === 2) {
-        permittableWeight = 23000;
+        permittableWeight = PERMITTABLE_WEIGHT_MAXIMUM_KG.TANDEM;
       } else if (axleUnit.numberOfAxles === 3) {
         const spreadQualifies =
           axleUnit.axleSpread !== undefined &&
-          axleUnit.axleSpread >= 240 &&
-          axleUnit.axleSpread <= 370;
+          axleUnit.axleSpread >= QUALIFYING_TRIDEM_SPREAD_CM.MINIMUM &&
+          axleUnit.axleSpread <= QUALIFYING_TRIDEM_SPREAD_CM.MAXIMUM;
         const nextVehicleIndex = vehicleIndex + 1;
         const hasImmediatelyFollowingBooster =
           vehicleConfiguration[nextVehicleIndex] ===
@@ -653,7 +731,10 @@ export function CheckPermittableWeight(
         const boosterQualifies =
           !hasImmediatelyFollowingBooster || boosterAxle?.numberOfAxles === 1;
 
-        permittableWeight = spreadQualifies && boosterQualifies ? 29000 : 28000;
+        permittableWeight =
+          spreadQualifies && boosterQualifies
+            ? PERMITTABLE_WEIGHT_MAXIMUM_KG.QUALIFYING_TRIDEM
+            : PERMITTABLE_WEIGHT_MAXIMUM_KG.STANDARD_TRIDEM;
       }
     }
 

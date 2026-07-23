@@ -37,7 +37,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
     ).toBe(true);
   });
 
-  it('should return policy results for a concrete truck with unsupported tandem steer and single drive weights', () => {
+  it('should preserve unsupported tandem-steer configuration while applying the single non-steering maximum', () => {
     let results: AxleCalcResults | undefined;
 
     expect(() => {

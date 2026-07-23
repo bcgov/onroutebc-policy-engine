@@ -59,7 +59,7 @@ describe('ORV2-5706 legal weight maximums', () => {
     it.each([
       ['REGTRCK', 1, 2, 9100],
       ['TRKTRAC', 1, 2, 6000],
-      ['TRUCKPME', 1, 3, 9100],
+      ['TRCKPME', 1, 3, 9100],
       ['TRKTRAC', 2, 2, 17000],
       ['TRACPME', 2, 3, 15200],
     ])(
@@ -115,7 +115,7 @@ describe('ORV2-5706 legal weight maximums', () => {
     it.each([
       ['TRKTRAC', 7300, 7300, PolicyCheckResultType.Pass],
       ['REGTRCK', 7301, 7300, PolicyCheckResultType.Fail],
-      ['TRUCKPME', 9100, 9100, PolicyCheckResultType.Pass],
+      ['TRCKPME', 9100, 9100, PolicyCheckResultType.Pass],
     ])(
       'evaluates %s at %i kg',
       (powerUnitType, actualWeight, thresholdWeight, expectedResult) => {
@@ -138,7 +138,7 @@ describe('ORV2-5706 legal weight maximums', () => {
   describe('tandem steer with tandem drive', () => {
     it.each([
       ['TRKTRAC', 17000, PolicyCheckResultType.Pass],
-      ['TRUCKPME', 17001, PolicyCheckResultType.Fail],
+      ['TRCKPME', 17001, PolicyCheckResultType.Fail],
     ])(
       'evaluates %s at %i kg',
       (powerUnitType, actualWeight, expectedResult) => {
@@ -284,7 +284,7 @@ describe('ORV2-5706 legal weight maximums', () => {
       },
     ];
     const results = policy
-      .runAxleCalculation(['TRUCKPME', 'SEMITRL'], axleConfiguration, 100000)
+      .runAxleCalculation(['TRCKPME', 'SEMITRL'], axleConfiguration, 100000)
       .results.filter((result) => result.id === PolicyCheckId.CheckLegalWeight);
 
     expect(results).toHaveLength(axleConfiguration.length);
