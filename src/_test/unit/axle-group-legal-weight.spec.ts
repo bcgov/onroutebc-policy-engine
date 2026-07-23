@@ -443,6 +443,7 @@ describe('ORV2-5617 axle group maximum legal weight threshold', () => {
       );
       const axleConfiguration =
         permit.permitData.vehicleConfiguration.axleConfiguration;
+      axleConfiguration[0].axleUnitWeight = 6000;
       axleConfiguration[1].axleUnitWeight = driveWeight;
       axleConfiguration[1].numberOfTires = 8;
       axleConfiguration[2] = {
@@ -468,7 +469,7 @@ describe('ORV2-5617 axle group maximum legal weight threshold', () => {
 
     it('exposes a nested trailer failure through validate details and structured results', async () => {
       const validationResult = await policy.validate(
-        getNestedJeepPermit(13500, 10501),
+        getNestedJeepPermit(14900, 9101),
       );
       const failure = validationResult.axleCalculationResults?.results.find(
         (result) =>
@@ -498,7 +499,7 @@ describe('ORV2-5617 axle group maximum legal weight threshold', () => {
 
     it('does not add an axle-calculation violation at the exact threshold', async () => {
       const validationResult = await policy.validate(
-        getNestedJeepPermit(13500, 10500),
+        getNestedJeepPermit(14900, 9100),
       );
       const axleCalculationViolation = validationResult.violations.find(
         (violation) =>

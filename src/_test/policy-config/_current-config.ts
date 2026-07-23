@@ -1534,7 +1534,7 @@ export const data: PolicyDefinition = {
         'OGSRRAH',
         'PICKRTR',
         'PICKRTT',
-        'TRUCKPME',
+        'TRCKPME',
         'TRACPME',
         'RBTRLDR',
         'SCRAPER',
@@ -1896,7 +1896,7 @@ export const data: PolicyDefinition = {
         'OGOILSW',
         'OGSERVC',
         'PICKRTT',
-        'TRUCKPME',
+        'TRCKPME',
         'TRACPME',
         'PICKRTR',
         'RBTRLDR',
@@ -2050,7 +2050,7 @@ export const data: PolicyDefinition = {
         'OGOILSW',
         'OGSERVC',
         'PICKRTT',
-        'TRUCKPME',
+        'TRCKPME',
         'TRACPME',
         'PICKRTR',
         'RBTRLDR',
@@ -2356,7 +2356,7 @@ export const data: PolicyDefinition = {
         'OGSERVC',
         'OGSRRAH',
         'PICKRTT',
-        'TRUCKPME',
+        'TRCKPME',
         'TRACPME',
         'PLOWBLD',
         'PUTAXIS',
@@ -2478,7 +2478,7 @@ export const data: PolicyDefinition = {
         'OGSERVC',
         'OGSRRAH',
         'PICKRTT',
-        'TRUCKPME',
+        'TRCKPME',
         'TRACPME',
         'PLOWBLD',
         'PUTAXIS',
@@ -2664,7 +2664,7 @@ export const data: PolicyDefinition = {
         'OGSERVC',
         'OGSRRAH',
         'PICKRTT',
-        'TRUCKPME',
+        'TRCKPME',
         'TRACPME',
         'PLOWBLD',
         'PUTAXIS',
@@ -2840,7 +2840,7 @@ export const data: PolicyDefinition = {
         'OGSERVC',
         'OGSRRAH',
         'PICKRTT',
-        'TRUCKPME',
+        'TRCKPME',
         'TRACPME',
         'PLOWBLD',
         'REGTRCK',
@@ -3031,7 +3031,7 @@ export const data: PolicyDefinition = {
         'OGSERVC',
         'OGSRRAH',
         'PICKRTT',
-        'TRUCKPME',
+        'TRCKPME',
         'TRACPME',
         'PLOWBLD',
         'PUTAXIS',
@@ -3340,7 +3340,7 @@ export const data: PolicyDefinition = {
         'OGSERVC',
         'OGSRRAH',
         'PICKRTT',
-        'TRUCKPME',
+        'TRCKPME',
         'TRACPME',
         'PLOWBLD',
         'PUTAXIS',
@@ -3992,7 +3992,7 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'D',
       },
       {
-        id: 'TRUCKPME',
+        id: 'TRCKPME',
         name: 'Truck with PME',
         category: 'powerunit',
         displayCodePrefix: 'TT',
@@ -5218,7 +5218,7 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'TRUCKPME',
+          type: 'TRCKPME',
           trailers: [
             {
               type: 'XXXXXXX',
@@ -6823,7 +6823,7 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'TRUCKPME',
+          type: 'TRCKPME',
           trailers: [
             {
               type: 'SEMITRL',
@@ -7702,7 +7702,7 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'TRUCKPME',
+          type: 'TRCKPME',
           trailers: [
             {
               type: 'OGOSFDT',
@@ -8976,7 +8976,7 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'TRUCKPME',
+          type: 'TRCKPME',
           trailers: [
             {
               type: 'OGOSFDT',

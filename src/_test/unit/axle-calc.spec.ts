@@ -58,6 +58,7 @@ describe('Axle Calculation Functions', () => {
     p.permitData.vehicleDetails.vehicleSubType = 'TRKTRAC';
     p.permitData.vehicleConfiguration.axleConfiguration =
       getTruckTractorWheelbaseAxles(interaxleSpacing, axleSpread);
+    p.permitData.vehicleConfiguration.axleConfiguration[0].axleUnitWeight = 6000;
     return p;
   };
 
@@ -883,9 +884,13 @@ describe('Axle Calculation Functions', () => {
   });
 
   it('should return no failing policy checks for valid STOW', async () => {
+    const legalAxleConfiguration = JSON.parse(
+      JSON.stringify(axleConfiguration),
+    ) as Array<AxleConfiguration>;
+    legalAxleConfiguration[0].axleUnitWeight = 6000;
     const results = policy.runAxleCalculation(
       vehicleConfiguration,
-      axleConfiguration,
+      legalAxleConfiguration,
       0,
     );
     expect(

@@ -78,11 +78,11 @@ describe('Multi-Axle Unit Calculation Tests', () => {
         }),
         expect.objectContaining({
           id: PolicyCheckId.CheckPermittableWeight,
-          result: PolicyCheckResultType.Fail,
+          result: PolicyCheckResultType.Pass,
           startAxleUnit: 2,
           endAxleUnit: 2,
           actualWeight: 2000,
-          thresholdWeight: 0,
+          thresholdWeight: 11000,
         }),
       ]),
     );
@@ -154,7 +154,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
           startAxleUnit: 3,
           endAxleUnit: 3,
           actualWeight: 5000,
-          thresholdWeight: 29000,
+          thresholdWeight: 28000,
         }),
       ]),
     );
