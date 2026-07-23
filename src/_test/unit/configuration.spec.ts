@@ -12,7 +12,7 @@ describe('Policy Engine Oversize Configuration Functions', () => {
     expect(puTypes.keys()).toContain('TRKTRAC');
     expect(puTypes.keys()).toContain('PICKRTT');
     expect(puTypes.keys()).toContain('PICKRTR');
-    expect(puTypes.keys()).toContain('TRUCKPME');
+    expect(puTypes.keys()).toContain('TRCKPME');
     expect(puTypes.keys()).toContain('TRACPME');
   });
 

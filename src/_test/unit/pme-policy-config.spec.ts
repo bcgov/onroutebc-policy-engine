@@ -8,7 +8,7 @@ import currentPolicyConfig from '../policy-config/_current-config.json';
 describe('PME power-unit policy configuration foundation', () => {
   const policy = new Policy(currentPolicyConfig);
   const pmeTypes = [
-    ['TRUCKPME', 'Truck with PME'],
+    ['TRCKPME', 'Truck with PME'],
     ['TRACPME', 'Truck Tractor with PME'],
   ] as const;
 
@@ -56,7 +56,7 @@ describe('PME power-unit policy configuration foundation', () => {
       );
 
       expect(powerUnits.keys()).toContain('PICKRTT');
-      expect(powerUnits.keys()).toContain('TRUCKPME');
+      expect(powerUnits.keys()).toContain('TRCKPME');
       expect(powerUnits.keys()).toContain('TRACPME');
     },
   );
@@ -84,7 +84,7 @@ describe('PME power-unit policy configuration foundation', () => {
       if (!pickerTruckTractor) {
         expect(
           commodity.powerUnits.some(({ type }) =>
-            ['TRUCKPME', 'TRACPME'].includes(type),
+            ['TRCKPME', 'TRACPME'].includes(type),
           ),
         ).toBe(false);
         continue;
@@ -127,7 +127,7 @@ describe('PME power-unit policy configuration foundation', () => {
       }
 
       expect(permitType.allowedVehicles).toEqual(
-        expect.arrayContaining(['TRUCKPME', 'TRACPME']),
+        expect.arrayContaining(['TRCKPME', 'TRACPME']),
       );
     }
   });

@@ -1530,7 +1530,7 @@
         "OGSRRAH",
         "PICKRTR",
         "PICKRTT",
-        "TRUCKPME",
+        "TRCKPME",
         "TRACPME",
         "RBTRLDR",
         "SCRAPER",
@@ -1881,7 +1881,7 @@
         "OGOILSW",
         "OGSERVC",
         "PICKRTT",
-        "TRUCKPME",
+        "TRCKPME",
         "TRACPME",
         "PICKRTR",
         "RBTRLDR",
@@ -2035,7 +2035,7 @@
         "OGOILSW",
         "OGSERVC",
         "PICKRTT",
-        "TRUCKPME",
+        "TRCKPME",
         "TRACPME",
         "PICKRTR",
         "RBTRLDR",
@@ -2401,7 +2401,7 @@
         "OGSERVC",
         "OGSRRAH",
         "PICKRTT",
-        "TRUCKPME",
+        "TRCKPME",
         "TRACPME",
         "PLOWBLD",
         "PUTAXIS",
@@ -2558,7 +2558,7 @@
         "OGSERVC",
         "OGSRRAH",
         "PICKRTT",
-        "TRUCKPME",
+        "TRCKPME",
         "TRACPME",
         "PLOWBLD",
         "PUTAXIS",
@@ -2744,7 +2744,7 @@
         "OGSERVC",
         "OGSRRAH",
         "PICKRTT",
-        "TRUCKPME",
+        "TRCKPME",
         "TRACPME",
         "PLOWBLD",
         "PUTAXIS",
@@ -2919,7 +2919,7 @@
         "OGSERVC",
         "OGSRRAH",
         "PICKRTT",
-        "TRUCKPME",
+        "TRCKPME",
         "TRACPME",
         "PLOWBLD",
         "REGTRCK",
@@ -3109,7 +3109,7 @@
         "OGSERVC",
         "OGSRRAH",
         "PICKRTT",
-        "TRUCKPME",
+        "TRCKPME",
         "TRACPME",
         "PLOWBLD",
         "PUTAXIS",
@@ -3416,7 +3416,7 @@
         "OGSERVC",
         "OGSRRAH",
         "PICKRTT",
-        "TRUCKPME",
+        "TRCKPME",
         "TRACPME",
         "PLOWBLD",
         "PUTAXIS",
@@ -4065,7 +4065,7 @@
         "displayCodeDriveAxle": "D"
       },
       {
-        "id": "TRUCKPME",
+        "id": "TRCKPME",
         "name": "Truck with PME",
         "category": "powerunit",
         "displayCodePrefix": "TT",
@@ -5334,7 +5334,7 @@
           ]
         },
         {
-          "type": "TRUCKPME",
+          "type": "TRCKPME",
           "trailers": [
             {
               "type": "XXXXXXX",
@@ -6992,7 +6992,7 @@
           ]
         },
         {
-          "type": "TRUCKPME",
+          "type": "TRCKPME",
           "trailers": [
             {
               "type": "SEMITRL",
@@ -7960,7 +7960,7 @@
           ]
         },
         {
-          "type": "TRUCKPME",
+          "type": "TRCKPME",
           "trailers": [
             {
               "type": "OGOSFDT",
@@ -9366,7 +9366,7 @@
           ]
         },
         {
-          "type": "TRUCKPME",
+          "type": "TRCKPME",
           "trailers": [
             {
               "type": "OGOSFDT",
