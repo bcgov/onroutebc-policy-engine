@@ -1534,6 +1534,8 @@ export const data: PolicyDefinition = {
         'OGSRRAH',
         'PICKRTR',
         'PICKRTT',
+        'TRUCKPME',
+        'TRACPME',
         'RBTRLDR',
         'SCRAPER',
         'PUTAXIS',
@@ -1894,6 +1896,8 @@ export const data: PolicyDefinition = {
         'OGOILSW',
         'OGSERVC',
         'PICKRTT',
+        'TRUCKPME',
+        'TRACPME',
         'PICKRTR',
         'RBTRLDR',
         'TLSCONV',
@@ -2046,6 +2050,8 @@ export const data: PolicyDefinition = {
         'OGOILSW',
         'OGSERVC',
         'PICKRTT',
+        'TRUCKPME',
+        'TRACPME',
         'PICKRTR',
         'RBTRLDR',
         'TLSCONV',
@@ -2350,6 +2356,8 @@ export const data: PolicyDefinition = {
         'OGSERVC',
         'OGSRRAH',
         'PICKRTT',
+        'TRUCKPME',
+        'TRACPME',
         'PLOWBLD',
         'PUTAXIS',
         'REGTRCK',
@@ -2470,6 +2478,8 @@ export const data: PolicyDefinition = {
         'OGSERVC',
         'OGSRRAH',
         'PICKRTT',
+        'TRUCKPME',
+        'TRACPME',
         'PLOWBLD',
         'PUTAXIS',
         'REGTRCK',
@@ -2654,6 +2664,8 @@ export const data: PolicyDefinition = {
         'OGSERVC',
         'OGSRRAH',
         'PICKRTT',
+        'TRUCKPME',
+        'TRACPME',
         'PLOWBLD',
         'PUTAXIS',
         'REGTRCK',
@@ -2828,6 +2840,8 @@ export const data: PolicyDefinition = {
         'OGSERVC',
         'OGSRRAH',
         'PICKRTT',
+        'TRUCKPME',
+        'TRACPME',
         'PLOWBLD',
         'REGTRCK',
         'SCRAPER',
@@ -3017,6 +3031,8 @@ export const data: PolicyDefinition = {
         'OGSERVC',
         'OGSRRAH',
         'PICKRTT',
+        'TRUCKPME',
+        'TRACPME',
         'PLOWBLD',
         'PUTAXIS',
         'REGTRCK',
@@ -3324,6 +3340,8 @@ export const data: PolicyDefinition = {
         'OGSERVC',
         'OGSRRAH',
         'PICKRTT',
+        'TRUCKPME',
+        'TRACPME',
         'PLOWBLD',
         'PUTAXIS',
         'REGTRCK',
@@ -3968,6 +3986,22 @@ export const data: PolicyDefinition = {
       {
         id: 'PICKRTT',
         name: 'Picker Truck Tractors',
+        category: 'powerunit',
+        displayCodePrefix: 'TT',
+        displayCodeSteerAxle: 'S',
+        displayCodeDriveAxle: 'D',
+      },
+      {
+        id: 'TRUCKPME',
+        name: 'Truck with PME',
+        category: 'powerunit',
+        displayCodePrefix: 'TT',
+        displayCodeSteerAxle: 'S',
+        displayCodeDriveAxle: 'D',
+      },
+      {
+        id: 'TRACPME',
+        name: 'Truck Tractor with PME',
         category: 'powerunit',
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
@@ -5101,6 +5135,174 @@ export const data: PolicyDefinition = {
         },
         {
           type: 'PICKRTT',
+          trailers: [
+            {
+              type: 'XXXXXXX',
+              jeep: false,
+              booster: false,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 1,
+                  w: 2.6,
+                  h: 4.15,
+                  l: 16,
+                },
+              ],
+              weightPermittable: true,
+            },
+            {
+              type: 'STCRANE',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 2.6,
+                  h: 4.15,
+                  l: 25,
+                },
+              ],
+            },
+            {
+              type: 'STROPRT',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.88,
+                  l: 40,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+              weightPermittable: true,
+            },
+            {
+              type: 'STRSELF',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.88,
+                  l: 36,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+              weightPermittable: true,
+            },
+          ],
+        },
+        {
+          type: 'TRUCKPME',
+          trailers: [
+            {
+              type: 'XXXXXXX',
+              jeep: false,
+              booster: false,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 1,
+                  w: 2.6,
+                  h: 4.15,
+                  l: 16,
+                },
+              ],
+              weightPermittable: true,
+            },
+            {
+              type: 'STCRANE',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 2.6,
+                  h: 4.15,
+                  l: 25,
+                },
+              ],
+            },
+            {
+              type: 'STROPRT',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.88,
+                  l: 40,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+              weightPermittable: true,
+            },
+            {
+              type: 'STRSELF',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.88,
+                  l: 36,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+              weightPermittable: true,
+            },
+          ],
+        },
+        {
+          type: 'TRACPME',
           trailers: [
             {
               type: 'XXXXXXX',
@@ -6621,6 +6823,192 @@ export const data: PolicyDefinition = {
           ],
         },
         {
+          type: 'TRUCKPME',
+          trailers: [
+            {
+              type: 'SEMITRL',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 3.2,
+                  h: 4.3,
+                  l: 27.5,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'HIBOEXP',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 3.2,
+                  h: 4.3,
+                  l: 27.5,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'HIBOFLT',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 3.2,
+                  h: 4.3,
+                  l: 27.5,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'STSDBDK',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 3.2,
+                  h: 4.3,
+                  l: 27.5,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: 'TRACPME',
+          trailers: [
+            {
+              type: 'SEMITRL',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 3.2,
+                  h: 4.3,
+                  l: 27.5,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'HIBOEXP',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 3.2,
+                  h: 4.3,
+                  l: 27.5,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'HIBOFLT',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 3.2,
+                  h: 4.3,
+                  l: 27.5,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'STSDBDK',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 3.2,
+                  h: 4.3,
+                  l: 27.5,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
           type: 'STINGER',
           trailers: [
             {
@@ -7223,6 +7611,190 @@ export const data: PolicyDefinition = {
         },
         {
           type: 'PICKRTT',
+          trailers: [
+            {
+              type: 'OGOSFDT',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 3.2,
+                  h: 4.15,
+                  l: 23,
+                },
+              ],
+            },
+            {
+              type: 'PLATFRM',
+              jeep: true,
+              booster: true,
+              selfIssue: false,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 3.2,
+                  h: 4.15,
+                  l: 27.5,
+                },
+              ],
+              weightPermittable: true,
+            },
+            {
+              type: 'HIBOEXP',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 2.6,
+                  h: 4.15,
+                  l: 25,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      l: 27.5,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'STWHELR',
+              jeep: true,
+              booster: true,
+              selfIssue: false,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 3.2,
+                  h: 4.15,
+                  l: 27.5,
+                },
+              ],
+            },
+            {
+              type: 'STWIDWH',
+              jeep: true,
+              booster: true,
+              selfIssue: false,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 3.2,
+                  h: 4.15,
+                  l: 27.5,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: 'TRUCKPME',
+          trailers: [
+            {
+              type: 'OGOSFDT',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 3.2,
+                  h: 4.15,
+                  l: 23,
+                },
+              ],
+            },
+            {
+              type: 'PLATFRM',
+              jeep: true,
+              booster: true,
+              selfIssue: false,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 3.2,
+                  h: 4.15,
+                  l: 27.5,
+                },
+              ],
+              weightPermittable: true,
+            },
+            {
+              type: 'HIBOEXP',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 2.6,
+                  h: 4.15,
+                  l: 25,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      l: 27.5,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'STWHELR',
+              jeep: true,
+              booster: true,
+              selfIssue: false,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 3.2,
+                  h: 4.15,
+                  l: 27.5,
+                },
+              ],
+            },
+            {
+              type: 'STWIDWH',
+              jeep: true,
+              booster: true,
+              selfIssue: false,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 3.2,
+                  h: 4.15,
+                  l: 27.5,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: 'TRACPME',
           trailers: [
             {
               type: 'OGOSFDT',
@@ -8162,6 +8734,492 @@ export const data: PolicyDefinition = {
         },
         {
           type: 'PICKRTT',
+          trailers: [
+            {
+              type: 'OGOSFDT',
+              jeep: true,
+              booster: true,
+              selfIssue: false,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 3.3,
+                  h: 4.3,
+                  l: 23,
+                },
+              ],
+              weightPermittable: true,
+            },
+            {
+              type: 'SEMITRL',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.88,
+                  l: 25,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+              weightPermittable: true,
+            },
+            {
+              type: 'HIBOEXP',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.4,
+                  l: 25,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'HIBOFLT',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.4,
+                  l: 25,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'STSDBDK',
+              jeep: true,
+              booster: true,
+              selfIssue: false,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.88,
+                  l: 25,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'STSTEER',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.88,
+                  l: 27.5,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'STWHELR',
+              jeep: true,
+              booster: true,
+              selfIssue: false,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.88,
+                  l: 27.5,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'STCRANE',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.88,
+                  l: 27.5,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'STROPRT',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.88,
+                  l: 40,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'STRSELF',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.88,
+                  l: 36,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'STWIDWH',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.88,
+                  l: 27.5,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: 'TRUCKPME',
+          trailers: [
+            {
+              type: 'OGOSFDT',
+              jeep: true,
+              booster: true,
+              selfIssue: false,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 3.3,
+                  h: 4.3,
+                  l: 23,
+                },
+              ],
+              weightPermittable: true,
+            },
+            {
+              type: 'SEMITRL',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.88,
+                  l: 25,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+              weightPermittable: true,
+            },
+            {
+              type: 'HIBOEXP',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.4,
+                  l: 25,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'HIBOFLT',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.4,
+                  l: 25,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'STSDBDK',
+              jeep: true,
+              booster: true,
+              selfIssue: false,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.88,
+                  l: 25,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'STSTEER',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.88,
+                  l: 27.5,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'STWHELR',
+              jeep: true,
+              booster: true,
+              selfIssue: false,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.88,
+                  l: 27.5,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'STCRANE',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.88,
+                  l: 27.5,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'STROPRT',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.88,
+                  l: 40,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'STRSELF',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.88,
+                  l: 36,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'STWIDWH',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.88,
+                  l: 27.5,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: 'TRACPME',
           trailers: [
             {
               type: 'OGOSFDT',
