@@ -108,6 +108,16 @@ export type ICBCInsuranceCertificate = {
 };
 
 /**
+ * Extraordinary Load Request information for STOW permit applications
+ */
+export type ExtraordinaryLoadRequest = {
+  /** Whether or not an extraordinary load request is to be applied to the permit */
+  isExtraordinaryLoadRequest: boolean;
+  /** Approval number */
+  approvalNumber?: string | null;
+};
+
+/**
  * Complete permit data including all application details
  */
 export type PermitData = {
@@ -147,6 +157,8 @@ export type PermitData = {
   conditionalLicensingFee?: string | null;
   /** ICBC insurance certificate information (optional) */
   icbcInsuranceCertificate?: ICBCInsuranceCertificate | null;
+  /** Extraordinary load request information for STOW permit (optional) */
+  extraordinaryLoadRequest?: ExtraordinaryLoadRequest | null;
 };
 
 /**
