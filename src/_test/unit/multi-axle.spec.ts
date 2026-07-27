@@ -268,6 +268,59 @@ describe('Multi-Axle Unit Calculation Tests', () => {
     );
   });
 
+  it.each([
+    ['TRKTRAC', 'SEMITRL'],
+    ['PICKRTT', 'PLATFRM'],
+    ['TRKTRAC', 'PLATFRM'],
+  ])(
+    'should calculate a %s with a non-jeep tridem %s trailer',
+    (powerUnit, trailer) => {
+      const results = policy.runAxleCalculation(
+        [powerUnit, trailer],
+        [
+          {
+            numberOfAxles: 1,
+            axleUnitWeight: 5000,
+            numberOfTires: 2,
+            tireSize: 279,
+            vehicleIndex: 0,
+          },
+          {
+            numberOfAxles: 1,
+            interaxleSpacing: 200,
+            axleUnitWeight: 5000,
+            numberOfTires: 2,
+            tireSize: 279,
+            vehicleIndex: 0,
+          },
+          {
+            numberOfAxles: 3,
+            axleSpread: 200,
+            interaxleSpacing: 200,
+            axleUnitWeight: 5000,
+            numberOfTires: 6,
+            tireSize: 279,
+            vehicleIndex: 1,
+          },
+        ],
+        36000,
+      );
+
+      expect(results.totalGCVW).toBe(15000);
+      expect(results.results).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: PolicyCheckId.CheckPermittableWeight,
+            result: PolicyCheckResultType.Pass,
+            startAxleUnit: 3,
+            endAxleUnit: 3,
+            actualWeight: 5000,
+          }),
+        ]),
+      );
+    },
+  );
+
   it('should calculate PICKRTT and PLATFRM with one-axle trailer defaults and report tire failures', () => {
     const results = policy.runAxleCalculation(
       ['PICKRTT', 'PLATFRM'],
