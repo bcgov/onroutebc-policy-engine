@@ -2314,6 +2314,64 @@ export const data: PolicyDefinition = {
             },
           },
         },
+        {
+          conditions: {
+            all: [
+              {
+                fact: 'permitData',
+                path: 'extraordinaryLoadRequest.isExtraordinaryLoadRequest',
+                operator: 'equal',
+                value: true,
+              },
+              {
+                not: {
+                  fact: 'permitData',
+                  path: 'extraordinaryLoadRequest.approvalNumber',
+                  operator: 'stringMinimumLength',
+                  value: 1,
+                },
+              },
+            ],
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message:
+                'Approval number is required when an extraordinary load request is being used.',
+              code: 'field-validation-error',
+              fieldReference:
+                'permitData.extraordinaryLoadRequest.approvalNumber',
+            },
+          },
+        },
+        {
+          conditions: {
+            all: [
+              {
+                fact: 'permitData',
+                path: 'extraordinaryLoadRequest.isExtraordinaryLoadRequest',
+                operator: 'equal',
+                value: false,
+              },
+              {
+                fact: 'permitData',
+                path: 'extraordinaryLoadRequest.approvalNumber',
+                operator: 'stringMinimumLength',
+                value: 1,
+              },
+            ],
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message:
+                'Approval number should not exist if no extraordinary load request is being used.',
+              code: 'field-validation-error',
+              fieldReference:
+                'permitData.extraordinaryLoadRequest.approvalNumber',
+            },
+          },
+        },
       ],
       costRules: [
         {
