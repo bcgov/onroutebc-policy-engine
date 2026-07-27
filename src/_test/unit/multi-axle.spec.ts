@@ -160,6 +160,114 @@ describe('Multi-Axle Unit Calculation Tests', () => {
     );
   });
 
+  it('should calculate the reported picker truck tractor with a tridem semi-trailer', () => {
+    let results: AxleCalcResults | undefined;
+
+    expect(() => {
+      results = policy.runAxleCalculation(
+        ['PICKRTT', 'SEMITRL'],
+        [
+          {
+            numberOfAxles: 1,
+            axleUnitWeight: 5000,
+            numberOfTires: 2,
+            tireSize: 279,
+            vehicleIndex: 0,
+          },
+          {
+            numberOfAxles: 1,
+            interaxleSpacing: 200,
+            axleUnitWeight: 5000,
+            numberOfTires: 2,
+            tireSize: 279,
+            vehicleIndex: 0,
+          },
+          {
+            numberOfAxles: 3,
+            axleSpread: 200,
+            interaxleSpacing: 200,
+            axleUnitWeight: 5000,
+            numberOfTires: 6,
+            tireSize: 279,
+            vehicleIndex: 1,
+          },
+        ],
+        36000,
+      );
+    }).not.toThrow();
+
+    expect(results!.totalGCVW).toBe(15000);
+    expect(results!.results).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: PolicyCheckId.CheckPermittableWeight,
+          result: PolicyCheckResultType.Pass,
+          startAxleUnit: 3,
+          endAxleUnit: 3,
+          actualWeight: 5000,
+        }),
+      ]),
+    );
+  });
+
+  it('should calculate the reported picker truck tractor with a tridem semi-trailer and booster', () => {
+    let results: AxleCalcResults | undefined;
+
+    expect(() => {
+      results = policy.runAxleCalculation(
+        ['PICKRTT', 'SEMITRL', 'BOOSTER'],
+        [
+          {
+            numberOfAxles: 1,
+            axleUnitWeight: 5000,
+            numberOfTires: 2,
+            tireSize: 279,
+            vehicleIndex: 0,
+          },
+          {
+            numberOfAxles: 1,
+            interaxleSpacing: 200,
+            axleUnitWeight: 5000,
+            numberOfTires: 2,
+            tireSize: 279,
+            vehicleIndex: 0,
+          },
+          {
+            numberOfAxles: 3,
+            axleSpread: 200,
+            interaxleSpacing: 200,
+            axleUnitWeight: 5000,
+            numberOfTires: 12,
+            tireSize: 279,
+            vehicleIndex: 1,
+          },
+          {
+            numberOfAxles: 1,
+            interaxleSpacing: 200,
+            axleUnitWeight: 5000,
+            numberOfTires: 2,
+            tireSize: 279,
+            vehicleIndex: 2,
+          },
+        ],
+        36000,
+      );
+    }).not.toThrow();
+
+    expect(results!.totalGCVW).toBe(20000);
+    expect(results!.results).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: PolicyCheckId.CheckPermittableWeight,
+          result: PolicyCheckResultType.Pass,
+          startAxleUnit: 3,
+          endAxleUnit: 3,
+          actualWeight: 5000,
+        }),
+      ]),
+    );
+  });
+
   it('should calculate PICKRTT and PLATFRM with one-axle trailer defaults and report tire failures', () => {
     const results = policy.runAxleCalculation(
       ['PICKRTT', 'PLATFRM'],
