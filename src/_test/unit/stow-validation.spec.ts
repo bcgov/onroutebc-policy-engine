@@ -126,6 +126,10 @@ const reportedTrailerCrashInput = {
         loadedGVW: null,
         netWeight: null,
       },
+      extraordinaryLoadRequest: {
+        isExtraordinaryLoadRequest: false,
+        approvalNumber: null,
+      },
       thirdPartyLiability: null,
       conditionalLicensingFee: null,
     },
@@ -219,6 +223,26 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(0);
+  });
+
+  it('should not have approval number when extraordinary load request is false', async () => {
+    const permit = getDatedPermit();
+    permit.permitData.extraordinaryLoadRequest.isExtraordinaryLoadRequest =
+      false;
+    permit.permitData.extraordinaryLoadRequest.approvalNumber = 'abc123';
+
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.violations).toHaveLength(1);
+  });
+
+  it('should require approval number when extraordinary load request is true', async () => {
+    const permit = getDatedPermit();
+    permit.permitData.extraordinaryLoadRequest.isExtraordinaryLoadRequest =
+      true;
+    permit.permitData.extraordinaryLoadRequest.approvalNumber = '';
+
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.violations).toHaveLength(1);
   });
 
   it('should raise STOW axle calculation violation when an axle unit has zero axles', async () => {

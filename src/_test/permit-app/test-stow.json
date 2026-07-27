@@ -96,14 +96,15 @@
         }
       ]
     },
+    "extraordinaryLoadRequest": {
+      "isExtraordinaryLoadRequest": true,
+      "approvalNumber": "abc123"
+    },
     "permittedRoute": {
       "manualRoute": {
         "origin": "Victoria, BC",
         "destination": "Prince George, BC",
-        "highwaySequence": [
-          "1",
-          "5"
-        ],
+        "highwaySequence": ["1", "5"],
         "totalDistance": 750
       },
       "routeDetails": "Just driving here"
