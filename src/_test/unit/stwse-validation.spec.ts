@@ -179,4 +179,14 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     expect(validationResult.cost[0].cost).toBe(15.00);
     expect(validationResult.cost[1].cost).toBe(25.00);
   });
+
+  it('should calculate STWSE cost as a flat $15 flat rate plus overload fee above 28000kg', async () => {
+    const permit = getPermit();
+    permit.permitData.vehicleConfiguration.overloadWeight = 30700;
+    permit.permitData.permittedRoute.manualRoute.totalDistance = 100;
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.cost.length).toBe(2);
+    expect(validationResult.cost[0].cost).toBe(15.00);
+    expect(validationResult.cost[1].cost).toBe(270.00);
+  });
 });
