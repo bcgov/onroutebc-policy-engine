@@ -53,7 +53,7 @@ export function getRulesEngines(policy: Policy): Map<string, Engine> {
         event: {
           type: 'cost',
           params: {
-            message: 'Calculated permit cost',
+            message: c.params.description || 'Calculated permit cost',
             code: 'cost-value',
             cost: c,
           },

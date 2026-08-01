@@ -2468,6 +2468,26 @@ export const data: PolicyDefinition = {
         },
         {
           conditions: {
+            all: [
+              {
+                fact: 'permitData',
+                path: 'vehicleConfiguration.overallWidth',
+                operator: 'greaterThan',
+                value: 3.2
+              }
+            ]
+          },
+          event: {
+            type: 'warning',
+            params: {
+              message: 'The provided dimensions make this application ineligible for self-issue and must be reviewed by the Provincial Permit Centre.',
+              code: 'dimension-oversize',
+              fieldReference: 'permitData.vehicleConfiguration.overallWidth'
+            }
+          }
+        },
+        {
+          conditions: {
             not: {
               fact: 'permitData',
               path: 'vehicleConfiguration.overallHeight',
@@ -2486,6 +2506,26 @@ export const data: PolicyDefinition = {
         },
         {
           conditions: {
+            all: [
+              {
+                fact: 'permitData',
+                path: 'vehicleConfiguration.overallHeight',
+                operator: 'greaterThan',
+                value: 4.3
+              }
+            ]
+          },
+          event: {
+            type: 'warning',
+            params: {
+              message: 'The provided dimensions make this application ineligible for self-issue and must be reviewed by the Provincial Permit Centre.',
+              code: 'dimension-oversize',
+              fieldReference: 'permitData.vehicleConfiguration.overallHeight'
+            }
+          }
+        },
+        {
+          conditions: {
             not: {
               fact: 'permitData',
               path: 'vehicleConfiguration.overallLength',
@@ -2498,6 +2538,26 @@ export const data: PolicyDefinition = {
             params: {
               message: 'Must be greater than 27.5m.',
               code: 'field-validation-error',
+              fieldReference: 'permitData.vehicleConfiguration.overallLength'
+            }
+          }
+        },
+        {
+          conditions: {
+            all: [
+              {
+                fact: 'permitData',
+                path: 'vehicleConfiguration.overallLength',
+                operator: 'greaterThan',
+                value: 31
+              }
+            ]
+          },
+          event: {
+            type: 'warning',
+            params: {
+              message: 'The provided dimensions make this application ineligible for self-issue and must be reviewed by the Provincial Permit Centre.',
+              code: 'dimension-oversize',
               fieldReference: 'permitData.vehicleConfiguration.overallLength'
             }
           }

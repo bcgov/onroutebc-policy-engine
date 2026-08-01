@@ -191,15 +191,30 @@ export class Policy {
           0,
         );
 
-        // Clear the cost array and replace with zero cost
-        validationResults.cost.length = 0;
-        const newPermitCostResult = new ValidationResult(
-          ValidationResultType.Cost,
-          ValidationResultCode.CostValue,
-          'Calculated permit cost',
-        );
-        newPermitCostResult.cost = 0;
-        validationResults.cost.push(newPermitCostResult);
+        if (permit.permitType !== "STWSE") {
+          // Clear the cost array and replace with zero cost
+          validationResults.cost.length = 0;
+          const newPermitCostResult = new ValidationResult(
+            ValidationResultType.Cost,
+            ValidationResultCode.CostValue,
+            'Calculated permit cost',
+          );
+          newPermitCostResult.cost = 0;
+          validationResults.cost.push(newPermitCostResult);
+        } else {
+          // If permit type is STWSE, keep each of the cost objects, but set their costs to zero
+          const newPermitCosts = validationResults.cost.map(cost => {
+            const newPermitCostResult = new ValidationResult(
+              ValidationResultType.Cost,
+              ValidationResultCode.CostValue,
+              cost.message,
+            );
+            newPermitCostResult.cost = 0;
+            return newPermitCostResult;
+          });
+
+          validationResults.cost = newPermitCosts;
+        }
 
         // Add an informational message to the results
         validationResults.information.push(

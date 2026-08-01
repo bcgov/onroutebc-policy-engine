@@ -28,6 +28,7 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     const permit = getPermit();
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(0);
+    expect(validationResult.warnings).toHaveLength(0);
   });
 
   it('should fail validation when Overall Width is not provided', async () => {
@@ -35,6 +36,7 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     permit.permitData.vehicleConfiguration.overallWidth = null;
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.warnings).toHaveLength(0);
   });
 
   it('should fail validation when Overall Height is not provided', async () => {
@@ -42,6 +44,7 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     permit.permitData.vehicleConfiguration.overallHeight = null;
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.warnings).toHaveLength(0);
   });
 
   it('should fail validation when Overall Length is not provided', async () => {
@@ -49,6 +52,7 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     permit.permitData.vehicleConfiguration.overallLength = null;
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.warnings).toHaveLength(0);
   });
 
   it('should fail validation when Front Projection is not provided', async () => {
@@ -56,6 +60,7 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     permit.permitData.vehicleConfiguration.frontProjection = null;
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.warnings).toHaveLength(0);
   });
 
   it('should fail validation when Rear Projection is not provided', async () => {
@@ -63,6 +68,7 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     permit.permitData.vehicleConfiguration.rearProjection = null;
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.warnings).toHaveLength(0);
   });
 
   it('should fail validation when Weight over 27.5m is not provided', async () => {
@@ -70,6 +76,7 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     permit.permitData.vehicleConfiguration.overloadWeight = null;
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.warnings).toHaveLength(0);
   });
 
   it('should fail validation when Overall Width is not greater than 0', async () => {
@@ -77,6 +84,7 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     permit.permitData.vehicleConfiguration.overallWidth = 0;
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.warnings).toHaveLength(0);
   });
 
   it('should fail validation when Overall Height is not greater than 0', async () => {
@@ -84,6 +92,7 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     permit.permitData.vehicleConfiguration.overallHeight = 0;
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.warnings).toHaveLength(0);
   });
 
   it('should fail validation when Overall Length is not greater than 27.5m', async () => {
@@ -91,6 +100,7 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     permit.permitData.vehicleConfiguration.overallLength = 25;
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.warnings).toHaveLength(0);
   });
 
   it('should fail validation when Front Projection is not greater than 0', async () => {
@@ -98,6 +108,7 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     permit.permitData.vehicleConfiguration.frontProjection = 0;
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.warnings).toHaveLength(0);
   });
 
   it('should fail validation when Rear Projection is not greater than 0', async () => {
@@ -105,6 +116,7 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     permit.permitData.vehicleConfiguration.rearProjection = 0;
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.warnings).toHaveLength(0);
   });
 
   it('should fail validation when Weight over 27.5m is not greater than 0', async () => {
@@ -112,6 +124,7 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     permit.permitData.vehicleConfiguration.overloadWeight = 0;
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.warnings).toHaveLength(0);
   });
 
   it('should fail validation when Total Distance is not provided', async () => {
@@ -119,6 +132,7 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     permit.permitData.permittedRoute.manualRoute.totalDistance = null;
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.warnings).toHaveLength(0);
   });
 
   it('should fail validation when Total Distance is not greater than 0', async () => {
@@ -126,6 +140,7 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     permit.permitData.permittedRoute.manualRoute.totalDistance = 0;
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.warnings).toHaveLength(0);
   });
 
   it('should fail validation when Vehicle subtype is not part of allowable vehicles', async () => {
@@ -133,6 +148,7 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     permit.permitData.vehicleDetails.vehicleSubType = "BUSCRUM";
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.warnings).toHaveLength(0);
   });
 
   it('should pass when Vehicle subtype is part of allowable vehicles', async () => {
@@ -140,6 +156,7 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     permit.permitData.vehicleDetails.vehicleSubType = "LWBTRCT";
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(0);
+    expect(validationResult.warnings).toHaveLength(0);
   });
 
   it('should fail validation when Vehicle subtype is a Trailer', async () => {
@@ -148,6 +165,7 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     permit.permitData.vehicleDetails.vehicleSubType = "FULLLTL";
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.warnings).toHaveLength(0);
   });
 
   it('should return only mandatory CVSE-1000 and CVSE-1070 for STWSE conditions', () => {
@@ -161,16 +179,18 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     expect(conditions[1].mandatory).toBe(true);
   });
 
-  it('should calculate STWSE cost as a flat $15 flat rate plus overload rate', async () => {
+  it('should calculate STWSE cost as a flat $15 oversize rate plus overload rate', async () => {
     const permit = getPermit();
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.cost.length).toBe(2);
     expect(validationResult.cost[0].cost).toBe(15.00);
     expect(validationResult.cost[1].cost).toBe(268.00);
+    expect(validationResult.cost[0].message).toBe("Oversize");
+    expect(validationResult.cost[1].message).toBe("Overload");
   });
 
-  it('should calculate STWSE cost as a flat $15 flat rate plus minimum of $25 overload fee', async () => {
+  it('should calculate STWSE cost as a flat $15 oversize rate plus minimum of $25 overload fee', async () => {
     const permit = getPermit();
     permit.permitData.vehicleConfiguration.overloadWeight = 1000;
     permit.permitData.permittedRoute.manualRoute.totalDistance = 100;
@@ -180,7 +200,7 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     expect(validationResult.cost[1].cost).toBe(25.00);
   });
 
-  it('should calculate STWSE cost as a flat $15 flat rate plus overload fee above 28000kg', async () => {
+  it('should calculate STWSE cost as a flat $15 oversize rate plus overload fee above 28000kg', async () => {
     const permit = getPermit();
     permit.permitData.vehicleConfiguration.overloadWeight = 30700;
     permit.permitData.permittedRoute.manualRoute.totalDistance = 100;
@@ -188,5 +208,58 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     expect(validationResult.cost.length).toBe(2);
     expect(validationResult.cost[0].cost).toBe(15.00);
     expect(validationResult.cost[1].cost).toBe(270.00);
+  });
+
+  it('should calculate STWSE costs to be $0 for oversize and overload if no-fee flag is set', async () => {
+    const permit = getPermit();
+    const noFeePolicy = new Policy(
+      currentConfig,
+      {
+        companyId: 1,
+        isLcvAllowed: false,
+        noFeeType: "CA_GOVT",
+      },
+    );
+
+    const validationResult = await noFeePolicy.validate(permit);
+    expect(validationResult.cost.length).toBe(2);
+    expect(validationResult.cost[0].cost).toBe(0);
+    expect(validationResult.cost[1].cost).toBe(0);
+    expect(validationResult.cost[0].message).toBe("Oversize");
+    expect(validationResult.cost[1].message).toBe("Overload");
+  });
+
+  it('should show warning when overall width is greater than 3.2m', async () => {
+    const permit = getPermit();
+    permit.permitData.vehicleConfiguration.overallWidth = 3.3;
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.violations).toHaveLength(0);
+    expect(validationResult.warnings).toHaveLength(1);
+  });
+
+  it('should show warning when overall length is greater than 31m', async () => {
+    const permit = getPermit();
+    permit.permitData.vehicleConfiguration.overallLength = 31.1;
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.violations).toHaveLength(0);
+    expect(validationResult.warnings).toHaveLength(1);
+  });
+
+  it('should show warning when overall height is greater than 4.3m', async () => {
+    const permit = getPermit();
+    permit.permitData.vehicleConfiguration.overallHeight = 4.4;
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.violations).toHaveLength(0);
+    expect(validationResult.warnings).toHaveLength(1);
+  });
+
+  it('should show multiple warnings and violations when there are multiple oversized dimensions', async () => {
+    const permit = getPermit();
+    permit.permitData.vehicleConfiguration.overallHeight = 5;
+    permit.permitData.vehicleConfiguration.overallWidth = 4;
+    permit.permitData.vehicleConfiguration.overallLength = 25;
+    const validationResult = await policy.validate(permit);
+    expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.warnings).toHaveLength(2);
   });
 });
