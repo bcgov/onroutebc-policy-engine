@@ -67,6 +67,7 @@ import {
   CheckNumberOfAxles,
   policyCheckMap,
 } from './helper/policy-check.helper';
+import { DEFAULT_COST_DESCRIPTION } from './constants/cost';
 
 /** Class representing commercial vehicle policy. */
 export class Policy {
@@ -197,7 +198,7 @@ export class Policy {
           const newPermitCostResult = new ValidationResult(
             ValidationResultType.Cost,
             ValidationResultCode.CostValue,
-            'Calculated permit cost',
+            DEFAULT_COST_DESCRIPTION,
           );
           newPermitCostResult.cost = 0;
           validationResults.cost.push(newPermitCostResult);
