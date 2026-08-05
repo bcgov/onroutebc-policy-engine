@@ -1,7 +1,9 @@
 import { Engine, RuleProperties } from 'json-rules-engine';
-import { CustomOperators } from '../rule-operator/custom-operators';
 import { Policy } from 'onroute-policy-engine';
 import { PolicyDefinition } from 'onroute-policy-engine/types';
+
+import { CustomOperators } from '../rule-operator/custom-operators';
+import { DEFAULT_COST_DESCRIPTION } from '../constants/cost';
 
 /**
  * Gets a json-rules-engine with all onRouteBC custom operators added,
@@ -53,7 +55,7 @@ export function getRulesEngines(policy: Policy): Map<string, Engine> {
         event: {
           type: 'cost',
           params: {
-            message: 'Calculated permit cost',
+            message: c.params.description || DEFAULT_COST_DESCRIPTION,
             code: 'cost-value',
             cost: c,
           },
