@@ -173,10 +173,13 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
 
     const conditions = policy.getConditionsForPermit(permit);
     expect(conditions).toHaveLength(2);
-    expect(conditions[0].condition).toBe('CVSE-1000');
-    expect(conditions[0].mandatory).toBe(true);
-    expect(conditions[1].condition).toBe('CVSE-1070');
-    expect(conditions[1].mandatory).toBe(true);
+    expect(conditions.filter(
+      condition => condition.condition === 'CVSE-1000' && condition.mandatory === true
+    )).toHaveLength(1);
+
+    expect(conditions.filter(
+      condition => condition.condition === 'CVSE-1070' && condition.mandatory === true
+    )).toHaveLength(1);
   });
 
   it('should calculate STWSE cost as a flat $15 oversize rate plus overload rate', async () => {
