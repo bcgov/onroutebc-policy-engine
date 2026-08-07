@@ -58,6 +58,57 @@ const QUALIFYING_TRIDEM_SPREAD_CM = {
   MAXIMUM: 370,
 } as const;
 
+const AXLE_SPREAD_CM = {
+  DEFAULT: {
+    MINIMUM: 0,
+  },
+
+  SINGLE: {
+    MINIMUM: 0,
+    MAXIMUM: 100,
+  },
+
+  TANDEM: {
+    MINIMUM: 100,
+    MAXIMUM: 185,
+
+    SPREAD_TANDEM_SEMI_TRAILER: {
+      MINIMUM: 186,
+      MAXIMUM: 307,
+    },
+  },
+
+  TRIDEM: {
+    MINIMUM: 240,
+    MAXIMUM: 280,
+
+    PONY_TRAILER: {
+      MAXIMUM: 250,
+    },
+
+    FULL_TRAILER: {
+      WITH_TANDEM_DRIVE_TRUCK: {
+        MAXIMUM: 370,
+      },
+      WITH_TRIDEM_DRIVE_TRUCK: {
+        MAXIMUM: 310,
+      },
+    },
+
+    SEMI_TRAILER: {
+      MAXIMUM: 370,
+    },
+
+    POLE_TRAILER: {
+      MAXIMUM: 310,
+    },
+
+    OILFIELD_BED_TRUCK: {
+      MAXIMUM: 310,
+    },
+  },
+} as const;
+
 /** Applies the standard lower-of rule or the exact 7.16(g) exception. */
 export function getMaximumLegalAxleGroupWeightThreshold(
   individualLegalWeightSum: number,
@@ -1673,6 +1724,220 @@ export function CheckDriveJeepLoadEqualization(
 }
 
 /**
+ * Validates each axle unit against its legal axle spread maximum.
+ */
+
+function formatMeters(cm: number): string {
+  return (cm / 100).toFixed(2).replace(/\.0+$/u, '');
+}
+
+// function isSpreadTandemSemiTrailer(vehicleType?: string): boolean {
+//   return vehicleType === 'STWDTAN';
+// }
+
+function getTandemAxleSpreadThreshold(
+  vehicleConfiguration: Array<string>,
+  vehicleIndex: number,
+): { minCm: number; maxCm: number } {
+  const vehicleType = vehicleConfiguration[vehicleIndex];
+  const isSpreadTandemSemiTrailer = vehicleType === 'STWDTAN';
+
+  // TODO if the tandem axle is part of a tandem spread semi-trailer, enforce the configured minimum and maximum for that trailer ?
+  // see cell c12 for updated info
+  if (isSpreadTandemSemiTrailer) {
+    return {
+      minCm: AXLE_SPREAD_CM.TANDEM.SPREAD_TANDEM_SEMI_TRAILER.MINIMUM,
+      maxCm: AXLE_SPREAD_CM.TANDEM.SPREAD_TANDEM_SEMI_TRAILER.MAXIMUM,
+    };
+  }
+
+  return {
+    minCm: AXLE_SPREAD_CM.TANDEM.MINIMUM,
+    maxCm: AXLE_SPREAD_CM.TANDEM.MAXIMUM,
+  };
+}
+
+function getTridemAxleSpreadThreshold(
+  vehicleConfiguration: Array<string>,
+  vehicleIndex: number,
+  axleConfiguration: Array<AxleConfiguration>,
+  axleIndex: number,
+): { minCm: number; maxCm: number } {
+  const vehicleType = vehicleConfiguration[vehicleIndex];
+  const isPowerUnit = vehicleIndex === 0;
+  const isSteerAxle = axleIndex === 0;
+
+  // TODO do we always assume that the second axle unit is the drive axle?
+  // yes
+  const isTandemDrive = axleConfiguration[1].numberOfAxles === 2;
+  const isTridemDrive = axleConfiguration[2].numberOfAxles === 3;
+
+  const isPonyTrailer = vehicleType === 'PONYTRL';
+  // TODO what is a "full trailer"? Is this a net new trailer type or an existing trailer type with a different name?
+  // this is a net new trailer that is incoming
+  const isFullTrailer = vehicleType === 'FULLTRL';
+  const isSemiTrailer = vehicleType === 'SEMITRL';
+  const isPoleTrailer = vehicleType === 'POLETRL';
+
+  // TODO is a tridem steer axle possible? Do we need to defend against this if so? Current implementation assumes all tridem axles are drive axles
+  // no, current number of axles already blocks this
+
+  // TODO these statements do not account for the power unit subtype, though these are specificed in the spreads, spacings and weight exceptions table (e.g. Truck or Truck Tractor)
+
+  // do we actually need to be checking for this or is it safe to assume that the power unit subtype is always a truck or truck tractor since the policy engine will prevent invalid configurations?
+  if (isPonyTrailer) {
+    return {
+      minCm: AXLE_SPREAD_CM.TRIDEM.MINIMUM,
+      maxCm: AXLE_SPREAD_CM.TRIDEM.PONY_TRAILER.MAXIMUM,
+    };
+  }
+
+  if (isFullTrailer) {
+    return isTridemDrive
+      ? {
+          minCm: AXLE_SPREAD_CM.TRIDEM.MINIMUM,
+          maxCm:
+            AXLE_SPREAD_CM.TRIDEM.FULL_TRAILER.WITH_TRIDEM_DRIVE_TRUCK.MAXIMUM,
+        }
+      : // TODO what do we do in the case where the drive axle is a single axle? What is the maximum for that configuration (currently assuming the same as tandem drive)
+        // We are not including full trailer row (row 5)
+        {
+          minCm: AXLE_SPREAD_CM.TRIDEM.MINIMUM,
+          maxCm:
+            AXLE_SPREAD_CM.TRIDEM.FULL_TRAILER.WITH_TANDEM_DRIVE_TRUCK.MAXIMUM,
+        };
+  }
+
+  if (isSemiTrailer) {
+    return {
+      minCm: AXLE_SPREAD_CM.TRIDEM.MINIMUM,
+      maxCm: AXLE_SPREAD_CM.TRIDEM.SEMI_TRAILER.MAXIMUM,
+    };
+  }
+
+  // TODO what is A Train, B Train and C Train? There are all found in the spreads, spacings and weight exceptions table
+  // we are not including a, b or c train
+
+  if (isPoleTrailer) {
+    return {
+      minCm: AXLE_SPREAD_CM.TRIDEM.MINIMUM,
+      maxCm: AXLE_SPREAD_CM.TRIDEM.POLE_TRAILER.MAXIMUM,
+    };
+  }
+
+  // TODO is a "triaxle pole trailer" the same as a "tridem axle pole trailer"?
+  // no, this is a net new trailer type, but we are not covering this in this feature regardless
+  return {
+    minCm: AXLE_SPREAD_CM.TRIDEM.MINIMUM,
+    maxCm: AXLE_SPREAD_CM.TRIDEM.MAXIMUM,
+  };
+}
+
+function getAxleSpreadThreshold(
+  vehicleConfiguration: Array<string>,
+  axleUnitVehicleIndexes: Array<number>,
+  axleConfiguration: Array<AxleConfiguration>,
+  axleIndex: number,
+): { minCm: number; maxCm: number } | undefined {
+  const axleUnit = axleConfiguration[axleIndex];
+  if (!Number.isFinite(axleUnit.axleSpread)) {
+    return undefined;
+  }
+
+  const vehicleIndex = axleUnitVehicleIndexes[axleIndex];
+  const numberOfAxles = axleUnit.numberOfAxles;
+
+  const isSingleAxle = numberOfAxles === 1;
+  const isTandemAxle = numberOfAxles === 2;
+  const isTridemAxle = numberOfAxles === 3;
+
+  const isPowerUnit = vehicleIndex === 0;
+  const isOilfieldBedTruck = vehicleConfiguration[0] === 'OGBEDTK';
+
+  if (isSingleAxle) {
+    return {
+      minCm: AXLE_SPREAD_CM.SINGLE.MINIMUM,
+      maxCm: AXLE_SPREAD_CM.SINGLE.MAXIMUM,
+    };
+  }
+
+  if (isTandemAxle) {
+    return getTandemAxleSpreadThreshold(vehicleConfiguration, vehicleIndex);
+  }
+
+  if (isTridemAxle) {
+    const threshold = getTridemAxleSpreadThreshold(
+      vehicleConfiguration,
+      vehicleIndex,
+      axleConfiguration,
+      axleIndex,
+    );
+
+    if (isPowerUnit && isOilfieldBedTruck) {
+      return {
+        minCm: threshold.minCm,
+        maxCm: AXLE_SPREAD_CM.TRIDEM.OILFIELD_BED_TRUCK.MAXIMUM,
+      };
+    }
+
+    return threshold;
+  }
+
+  return undefined;
+}
+
+export function CheckLegalAxleSpreads(
+  policy: Policy,
+  vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+): Array<PolicyCheckResult> {
+  const policyId = PolicyCheckId.CheckLegalAxleSpreads;
+  const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
+    policy,
+    vehicleConfiguration,
+    axleConfiguration,
+  );
+
+  return axleConfiguration.flatMap((axleUnit, axleIndex) => {
+    const threshold = getAxleSpreadThreshold(
+      vehicleConfiguration,
+      axleUnitVehicleIndexes,
+      axleConfiguration,
+      axleIndex,
+    );
+
+    if (
+      !axleUnit.axleSpread ||
+      !threshold ||
+      !Number.isFinite(axleUnit.axleSpread)
+    ) {
+      return [];
+    }
+
+    const result =
+      axleUnit.axleSpread >= threshold.minCm &&
+      axleUnit.axleSpread <= threshold.maxCm;
+    const axleUnitNumber = axleIndex + 1;
+    const message = result
+      ? ''
+      : `Axle Spread for Axle Unit ${axleUnitNumber} must be between ${formatMeters(
+          threshold.minCm,
+        )} m and ${formatMeters(threshold.maxCm)} m.`;
+
+    return [
+      {
+        id: policyId,
+        result: result
+          ? PolicyCheckResultType.Pass
+          : PolicyCheckResultType.Fail,
+        message,
+        axleUnit: axleUnitNumber,
+      } as AxleUnitPolicyCheckResult,
+    ];
+  });
+}
+
+/**
  * Map of policy check functions keyed by their corresponding PolicyCheckId.
  *
  * This map contains all the registered policy check functions that are executed
@@ -1684,6 +1949,7 @@ export function CheckDriveJeepLoadEqualization(
  * - AxleGroupMaximumLegalWeightThreshold: Validates axle groups within 8 m against CTR 7.17
  * - BridgeFormula: Validates axle groups against bridge formula requirements
  * - CheckLegalWeight: Validates axle units against legal weight limits
+ * - CheckLegalAxleSpreads: Validates axle units against legal axle spread limits
  * - CheckPermittableWeight: Validates total vehicle weight against permit limits
  * - MaxTireLoad: Validates tire load capacity for each axle unit
  * - MinDriveAxleWeight: Validates minimum weight requirements for drive axles
@@ -1709,6 +1975,7 @@ export const policyCheckMap = new Map<string, PolicyCheck>([
     CheckAxleGroupMaximumLegalWeightThreshold,
   ],
   [PolicyCheckId.CheckLegalWeight, CheckLegalWeight],
+  [PolicyCheckId.CheckLegalAxleSpreads, CheckLegalAxleSpreads],
   [PolicyCheckId.CheckPermittableWeight, CheckPermittableWeight],
   [PolicyCheckId.MaxTireLoad, CheckMaxTireLoad],
   [PolicyCheckId.MinDriveAxleWeight, CheckMinDriveAxleWeight],
