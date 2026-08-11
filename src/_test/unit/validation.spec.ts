@@ -1,4 +1,5 @@
 import { Policy } from 'onroute-policy-engine';
+
 import trosOnly from '../policy-config/tros-only.sample.json';
 import trosNoAllowedVehicles from '../policy-config/tros-no-allowed-vehicles.sample.json';
 import currentConfig from '../policy-config/_current-config.json';
@@ -7,9 +8,9 @@ import validTros30Day from '../permit-app/valid-tros-30day.json';
 import validTrow120Day from '../permit-app/valid-trow-120day.json';
 import allEventTypes from '../policy-config/all-event-types.sample.json';
 import specialAuth from '../policy-config/special-auth-lcv.sample.json';
-import dayjs from 'dayjs';
 import { PermitAppInfo } from '../../enum/permit-app-info';
 import { ValidationResultCode } from '../../enum/validation-result-code';
+import { convertToTimezone, getUtcDatetime, TIMEZONE_IDS } from '../../helper/date.helper';
 
 describe('Permit Engine Constructor', () => {
   it('should construct without error with special authorizations', () => {
@@ -44,8 +45,12 @@ describe('Policy Engine Validator', () => {
 
   it('should validate TROS successfully', async () => {
     const permit = JSON.parse(JSON.stringify(validTros30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
@@ -55,10 +60,12 @@ describe('Policy Engine Validator', () => {
 
   it('should raise violation for start date in the past', async () => {
     const permit = JSON.parse(JSON.stringify(validTros30Day));
+
     // Set startDate to yesterday
-    permit.permitData.startDate = dayjs()
-      .subtract(1, 'day')
-      .format(PermitAppInfo.PermitDateFormat.toString());
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).subtract(1, 'day').format(PermitAppInfo.PermitDateFormat.toString());
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
@@ -66,10 +73,12 @@ describe('Policy Engine Validator', () => {
 
   it('should raise violation for start date more than 14 days in future', async () => {
     const permit = JSON.parse(JSON.stringify(validTros30Day));
+
     // Set startDate to more than 14 days in the future
-    permit.permitData.startDate = dayjs()
-      .add(15, 'day')
-      .format(PermitAppInfo.PermitDateFormat.toString());
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).add(15, 'day').format(PermitAppInfo.PermitDateFormat.toString());
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
@@ -77,10 +86,12 @@ describe('Policy Engine Validator', () => {
 
   it('should validate correctly for start date exactly 14 days in future', async () => {
     const permit = JSON.parse(JSON.stringify(validTros30Day));
+
     // Set startDate to yesterday
-    permit.permitData.startDate = dayjs()
-      .add(14, 'day')
-      .format(PermitAppInfo.PermitDateFormat.toString());
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).add(14, 'day').format(PermitAppInfo.PermitDateFormat.toString());
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(0);
@@ -88,10 +99,15 @@ describe('Policy Engine Validator', () => {
 
   it('should raise violation for invalid permit type', async () => {
     const permit = JSON.parse(JSON.stringify(validTros30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
+
     permit.permitType = '__INVALID';
 
     const validationResult = await policy.validate(permit);
@@ -100,10 +116,15 @@ describe('Policy Engine Validator', () => {
 
   it('should raise violation for invalid vehicle type', async () => {
     const permit = JSON.parse(JSON.stringify(validTros30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
+
     // Set an invalid vehicle type
     permit.permitData.vehicleDetails.vehicleSubType = '__INVALID';
 
@@ -113,11 +134,16 @@ describe('Policy Engine Validator', () => {
 
   it('should raise violation for TROS lcv with no special auth', async () => {
     const permit = JSON.parse(JSON.stringify(validTros30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
-    // Set an lcv vehicle type
+
+    // Set an LCV vehicle type
     permit.permitData.vehicleDetails.vehicleSubType = 'LCVRMDB';
 
     const validationResult = await policy.validate(permit);
@@ -126,11 +152,16 @@ describe('Policy Engine Validator', () => {
 
   it('should validate lcv for TROS with special auth', async () => {
     const permit = JSON.parse(JSON.stringify(validTros30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
-    // Set an lcv vehicle type
+
+    // Set an LCV vehicle type
     permit.permitData.vehicleDetails.vehicleSubType = 'LCVRMDB';
 
     const validationResult = await lcvPolicy.validate(permit);
@@ -139,11 +170,16 @@ describe('Policy Engine Validator', () => {
 
   it('should validate lcv using set method instead of constructor', async () => {
     const permit = JSON.parse(JSON.stringify(validTros30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
-    // Set an lcv vehicle type
+
+    // Set an LCV vehicle type
     permit.permitData.vehicleDetails.vehicleSubType = 'LCVRMDB';
 
     const validationResult = await policy.validate(permit);
@@ -170,10 +206,15 @@ describe('Policy Engine Validator', () => {
 
   it('should return the correct validation code', async () => {
     const permit = JSON.parse(JSON.stringify(validTros30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
+
     // Set an invalid companyName
     permit.permitData.companyName = '';
 
@@ -186,10 +227,15 @@ describe('Policy Engine Validator', () => {
 
   it('should return the correct field reference', async () => {
     const permit = JSON.parse(JSON.stringify(validTros30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
+
     // Set an invalid companyName
     permit.permitData.companyName = '';
 
@@ -206,8 +252,12 @@ describe('Master Policy Configuration Validator', () => {
 
   it('should validate TROS successfully', async () => {
     const permit = JSON.parse(JSON.stringify(validTros30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
@@ -217,8 +267,12 @@ describe('Master Policy Configuration Validator', () => {
 
   it('should validate TROW successfully', async () => {
     const permit = JSON.parse(JSON.stringify(validTrow120Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
@@ -232,8 +286,12 @@ describe('Policy Configuration Missing Elements', () => {
 
   it('should not fail when a validation has no params', async () => {
     const permit = JSON.parse(JSON.stringify(validTros30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
@@ -251,11 +309,13 @@ describe('Permit Engine Validation Results Aggregator', () => {
     const permit = JSON.parse(JSON.stringify(validTros30Day));
 
     const validationResult = await policy.validate(permit);
+    
     // Violation 1: expected structure
     // Violation 2: unknown event type (defaults to violation)
     expect(validationResult.violations).toHaveLength(2);
     expect(validationResult.requirements).toHaveLength(1);
     expect(validationResult.warnings).toHaveLength(1);
+
     // Information 1: expected structure
     // Information 2: params object, but no message property
     // Information 3: no params object in the event

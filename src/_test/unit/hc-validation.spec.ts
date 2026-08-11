@@ -1,9 +1,13 @@
 import { Policy } from 'onroute-policy-engine';
-import dayjs from 'dayjs';
 
 import currentConfig from '../policy-config/_current-config.json';
 import validHc from '../permit-app/valid-hcp.json';
 import { PermitAppInfo } from '../../enum/permit-app-info';
+import {
+  convertToTimezone,
+  getUtcDatetime,
+  TIMEZONE_IDS,
+} from '../../helper/date.helper';
 
 describe('Highway Crossing Permit (HC) Validation Tests', () => {
   const policy: Policy = new Policy(currentConfig);
@@ -11,7 +15,11 @@ describe('Highway Crossing Permit (HC) Validation Tests', () => {
   const getPermit = () => {
     const permit = JSON.parse(JSON.stringify(validHc));
 
-    const today = dayjs();
+    const today = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    );
+
     permit.permitData.startDate = today
       .format(PermitAppInfo.PermitDateFormat);
     
@@ -36,6 +44,7 @@ describe('Highway Crossing Permit (HC) Validation Tests', () => {
       (total, result) => total + (result.cost ?? 0),
       0,
     );
+    
     expect(cost).toBe(30);
   });
 

@@ -1,5 +1,3 @@
-import dayjs from 'dayjs';
-import quarterOfYear from 'dayjs/plugin/quarterOfYear';
 import { Engine } from 'json-rules-engine';
 import { Policy } from 'onroute-policy-engine';
 import {
@@ -29,7 +27,12 @@ import {
   OVERLOAD_RATES_PER_10KM,
 } from '../constants/overload';
 
-dayjs.extend(quarterOfYear);
+import {
+  convertToTimezone,
+  getEndOfQuarter,
+  getUtcDatetime,
+  TIMEZONE_IDS,
+} from './date.helper';
 
 type AxleCalculationInputs = {
   vehicleConfiguration: Array<string>;
@@ -107,7 +110,14 @@ const getOverloadCost = (overloadKg: number, totalDistance: number) => {
  * @param engine json-rules-engine Engine instance to add facts to.
  */
 export function addRuntimeFacts(engine: Engine, policy: Policy): void {
-  const today: string = dayjs().format(PermitAppInfo.PermitDateFormat);
+  /**
+   * Add runtime fact for today's date (based on Pacific timezone)
+   */
+  const today: string = convertToTimezone(
+    getUtcDatetime(),
+    TIMEZONE_IDS.PACIFIC,
+  ).format(PermitAppInfo.PermitDateFormat);
+
   engine.addFact(PolicyFacts.ValidationDate, today);
 
   /**
@@ -123,7 +133,8 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
         {},
         PermitAppInfo.PermitStartDate,
       );
-      const dateFrom = dayjs(startDate, PermitAppInfo.PermitDateFormat);
+
+      const dateFrom = convertToTimezone(startDate, TIMEZONE_IDS.PACIFIC);
       const daysInPermitYear = dateFrom.add(1, 'year').diff(dateFrom, 'day');
       return daysInPermitYear;
     },
@@ -143,9 +154,8 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
         PermitAppInfo.PermitStartDate,
       );
 
-      const dateFrom = dayjs(startDate, PermitAppInfo.PermitDateFormat);
-      const endOfQuarter = dateFrom.endOf('quarter');
-
+      const dateFrom = convertToTimezone(startDate, TIMEZONE_IDS.PACIFIC);
+      const endOfQuarter = getEndOfQuarter(dateFrom);
       return endOfQuarter.format(PermitAppInfo.PermitDateFormat);
     },
   );
@@ -162,7 +172,7 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
       PermitAppInfo.PermitStartDate,
     );
 
-    const dateFrom = dayjs(startDate, PermitAppInfo.PermitDateFormat);
+    const dateFrom = convertToTimezone(startDate, TIMEZONE_IDS.PACIFIC);
     const endOfYear = dateFrom
       .endOf('year')
       .format(PermitAppInfo.PermitDateFormat);
@@ -378,13 +388,15 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
         {},
         params.dateFrom.path,
       );
+
       const dateToStr: string = await almanac.factValue(
         params.dateTo.fact,
         {},
         params.dateTo.path,
       );
-      const dateFrom = dayjs(dateFromStr, PermitAppInfo.PermitDateFormat);
-      const dateTo = dayjs(dateToStr, PermitAppInfo.PermitDateFormat);
+
+      const dateFrom = convertToTimezone(dateFromStr, TIMEZONE_IDS.PACIFIC);
+      const dateTo = convertToTimezone(dateToStr, TIMEZONE_IDS.PACIFIC);
       const daysBetween = dateTo.diff(dateFrom, 'day');
       return daysBetween;
     },
