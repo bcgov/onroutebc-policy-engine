@@ -68,14 +68,12 @@ describe('Axle Calculation Functions', () => {
     p.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    ).format(PermitAppInfo.PermitDateFormat.toString());
 
     p.permitData.vehicleDetails.vehicleSubType = 'TRKTRAC';
     p.permitData.vehicleConfiguration.axleConfiguration =
       getTruckTractorWheelbaseAxles(interaxleSpacing, axleSpread);
-    
+
     p.permitData.vehicleConfiguration.axleConfiguration[0].axleUnitWeight = 6000;
     return p;
   };
@@ -135,7 +133,7 @@ describe('Axle Calculation Functions', () => {
         ac,
         2,
         PolicyCheckResultType.Fail,
-        'Interaxle Spacing between Axle Unit 1 and Axle Unit 2 must be greater than 3.00 m.',
+        'Interaxle Spacing between Axle Unit 1 and Axle Unit 2 must be greater than 3 m.',
       );
     });
 
