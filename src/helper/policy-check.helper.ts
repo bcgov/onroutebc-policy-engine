@@ -58,6 +58,24 @@ const QUALIFYING_TRIDEM_SPREAD_CM = {
   MAXIMUM: 370,
 } as const;
 
+const INTERAXLE_SPACING_MINIMUM_CM = {
+  SINGLE: {
+    SINGLE: 300,
+    TANDEM: 300,
+    TRIDEM: 300,
+  },
+  TANDEM: {
+    SINGLE: 300,
+    TANDEM: 500,
+    TRIDEM: 550,
+  },
+  TRIDEM: {
+    SINGLE: 300,
+    TANDEM: 550,
+    TRIDEM: 600,
+  },
+} as const;
+
 /** Applies the standard lower-of rule or the exact 7.16(g) exception. */
 export function getMaximumLegalAxleGroupWeightThreshold(
   individualLegalWeightSum: number,
@@ -107,6 +125,10 @@ function getApplicableLegalWeightThreshold(
   )?.legal;
 }
 
+/**
+ * Returns an array of vehicle indexes for each axle unit.
+ * Each entry maps an axle unit to the vehicle in vehicleConfiguration that it belongs to.
+ */
 function getAxleUnitVehicleIndexLookup(
   policy: Policy,
   vehicleConfiguration: Array<string>,
@@ -1672,6 +1694,179 @@ export function CheckDriveJeepLoadEqualization(
   return policyCheckResults;
 }
 
+const getAxleUnitType = (
+  numberOfAxles: number,
+): keyof typeof INTERAXLE_SPACING_MINIMUM_CM => {
+  if (numberOfAxles === 1) {
+    return 'SINGLE';
+  }
+
+  if (numberOfAxles === 2) {
+    return 'TANDEM';
+  }
+
+  return 'TRIDEM';
+};
+
+type InteraxleSpacingRequirement = {
+  min?: number;
+  max?: number;
+  groupLabel?: string;
+};
+
+function getInteraxleSpacingRequirement(
+  policy: Policy,
+  vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+  axleIndex: number,
+): InteraxleSpacingRequirement | undefined {
+  // the first axle unit will never have an interaxle spacing value or previous axle unit to compare against
+  if (axleIndex === 0) {
+    return undefined;
+  }
+
+  const axleUnit = axleConfiguration[axleIndex];
+  const previousAxleUnit = axleConfiguration[axleIndex - 1];
+
+  if (
+    !Number.isFinite(axleUnit.interaxleSpacing) ||
+    !Number.isFinite(previousAxleUnit.numberOfAxles)
+  ) {
+    return undefined;
+  }
+
+  // "axleUnitType" reresents the string name given to the number of axles in the axle unit, e.g. "SINGLE", "TANEDM" or "TRIDEM"
+  const previousAxleUnitType = getAxleUnitType(previousAxleUnit.numberOfAxles);
+  const currentAxleUnitType = getAxleUnitType(axleUnit.numberOfAxles);
+  const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
+    policy,
+    vehicleConfiguration,
+    axleConfiguration,
+  );
+
+  const currentVehicleType =
+    vehicleConfiguration[axleUnitVehicleIndexes[axleIndex]];
+  const previousVehicleType =
+    vehicleConfiguration[axleUnitVehicleIndexes[axleIndex - 1]];
+
+  const isPreviousDriveAxle =
+    axleIndex - 1 === 1 && axleUnitVehicleIndexes[axleIndex - 1] === 0;
+  const isCurrentJeep = currentVehicleType === AccessoryVehicleType.Jeep;
+  const isPreviousJeep = previousVehicleType === AccessoryVehicleType.Jeep;
+  const isPreviousSemiTrailer = previousVehicleType === 'SEMITRL';
+  const isCurrentSemiTrailer = currentVehicleType === 'SEMITRL';
+  const isCurrentBooster = currentVehicleType === AccessoryVehicleType.Booster;
+
+  if (isPreviousJeep && isCurrentSemiTrailer) {
+    return {
+      min: 700,
+      groupLabel: 'Jeep and Semi-Trailer',
+    };
+  }
+
+  if (isPreviousDriveAxle && isCurrentJeep) {
+    return axleUnit.numberOfAxles === 1
+      ? {
+          min: 120,
+          max: 350,
+          groupLabel: 'Drive Axle and Jeep Single Axle',
+        }
+      : {
+          min: 420,
+          groupLabel: 'Drive Axle and Jeep',
+        };
+  }
+
+  if (
+    isPreviousSemiTrailer &&
+    isCurrentBooster &&
+    axleUnit.numberOfAxles === 1
+  ) {
+    return {
+      groupLabel: 'Semi-Trailer and Booster Single Axle',
+    };
+  }
+
+  return {
+    min: INTERAXLE_SPACING_MINIMUM_CM[previousAxleUnitType][
+      currentAxleUnitType
+    ],
+  };
+}
+
+function formatMeters(cm: number): string {
+  return (cm / 100).toFixed(2).replace(/\.0+$/u, '');
+}
+
+function getFailedInteraxleSpacingMessage(
+  requirement: InteraxleSpacingRequirement,
+  previousAxleUnitNumber: number,
+  currentAxleUnitNumber: number,
+): string {
+  if (requirement.groupLabel) {
+    if (requirement.min && requirement.max) {
+      return `Interaxle Spacing for ${requirement.groupLabel} must be between ${formatMeters(requirement.min)} m and ${formatMeters(requirement.max)} m.`;
+    }
+
+    if (requirement.min) {
+      return `Interaxle Spacing for ${requirement.groupLabel} must be greater than ${formatMeters(requirement.min)} m.`;
+    }
+  }
+
+  if (requirement.min) {
+    return `Interaxle Spacing between Axle Unit ${previousAxleUnitNumber} and Axle Unit ${currentAxleUnitNumber} must be greater than ${formatMeters(requirement.min)} m.`;
+  }
+  return '';
+}
+
+/**
+ * Validates each axle unit against the minimum interaxle spacing for its
+ * current axle unit and the next axle unit, per Table II.
+ */
+export function CheckLegalInteraxleSpacing(
+  policy: Policy,
+  vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+): Array<PolicyCheckResult> {
+  const policyId = PolicyCheckId.CheckLegalInteraxleSpacing;
+
+  return axleConfiguration.map((axleUnit, axleIndex) => {
+    const requirement = getInteraxleSpacingRequirement(
+      policy,
+      vehicleConfiguration,
+      axleConfiguration,
+      axleIndex,
+    );
+
+    // Pass when no requirement exists, interaxle spacing is missing, or interaxle spacing falls within the requirement's min/max bounds.
+    const shouldPass =
+      !requirement ||
+      !axleUnit.interaxleSpacing ||
+      ((!requirement.min || axleUnit.interaxleSpacing >= requirement.min) &&
+        (!requirement.max || axleUnit.interaxleSpacing <= requirement.max));
+
+    const axleUnitNumber = axleIndex + 1;
+    const previousAxleUnitNumber = axleIndex;
+
+    const message = shouldPass
+      ? ''
+      : getFailedInteraxleSpacingMessage(
+          requirement,
+          previousAxleUnitNumber,
+          axleUnitNumber,
+        );
+
+    return {
+      id: policyId,
+      message,
+      result: shouldPass
+        ? PolicyCheckResultType.Pass
+        : PolicyCheckResultType.Fail,
+      axleUnit: axleUnitNumber,
+    };
+  });
+}
+
 /**
  * Map of policy check functions keyed by their corresponding PolicyCheckId.
  *
@@ -1719,6 +1914,7 @@ export const policyCheckMap = new Map<string, PolicyCheck>([
     CheckPickerTruckTractorWeightRestrictions,
   ],
   [PolicyCheckId.NumberOfWheelsPerAxle, CheckNumTiresPerAxle],
+  [PolicyCheckId.CheckLegalInteraxleSpacing, CheckLegalInteraxleSpacing],
   [PolicyCheckId.BoosterAxleLimit, CheckBoosterAxleLimit],
   [PolicyCheckId.DriveJeepLoadEqualization, CheckDriveJeepLoadEqualization],
   [PolicyCheckId.WheelbaseLegalLimits, CheckWheelbaseLegalLimits],
