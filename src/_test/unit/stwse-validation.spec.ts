@@ -1,9 +1,13 @@
 import { Policy } from 'onroute-policy-engine';
-import dayjs from 'dayjs';
 
 import { PermitAppInfo } from '../../enum/permit-app-info';
 import currentConfig from '../policy-config/_current-config.json';
 import validSTWSE from '../permit-app/valid-stwse.json';
+import {
+  convertToTimezone,
+  getUtcDatetime,
+  TIMEZONE_IDS,
+} from '../../helper/date.helper';
 
 describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () => {
   const policy: Policy = new Policy(currentConfig);
@@ -11,7 +15,11 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
   const getPermit = () => {
     const permit = JSON.parse(JSON.stringify(validSTWSE));
 
-    const today = dayjs();
+    const today = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    );
+
     permit.permitData.startDate = today
       .format(PermitAppInfo.PermitDateFormat);
 

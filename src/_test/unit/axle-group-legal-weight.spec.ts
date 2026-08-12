@@ -1,18 +1,25 @@
-import dayjs from 'dayjs';
-import { Policy } from '../../policy-engine';
+import { Policy } from 'onroute-policy-engine';
+
 import {
   PermitAppInfo,
   PolicyCheckId,
   PolicyCheckResultType,
 } from '../../enum';
+
 import { AxleConfiguration } from '../../types';
 import {
   CheckAxleGroupMaximumLegalWeightThreshold,
   getMaximumLegalAxleGroupWeightThreshold,
 } from '../../helper/policy-check.helper';
+
 import { getCtr717TableValue } from '../../helper/ctr-717.helper';
 import currentPolicyConfig from '../policy-config/_current-config.json';
 import testStow from '../permit-app/test-stow.json';
+import {
+  convertToTimezone,
+  getUtcDatetime,
+  TIMEZONE_IDS,
+} from '../../helper/date.helper';
 
 describe('ORV2-5617 axle group maximum legal weight threshold', () => {
   const policy = new Policy(currentPolicyConfig);
@@ -438,11 +445,16 @@ describe('ORV2-5617 axle group maximum legal weight threshold', () => {
 
     const getNestedJeepPermit = (driveWeight: number, jeepWeight: number) => {
       const permit = JSON.parse(JSON.stringify(testStow));
-      permit.permitData.startDate = dayjs().format(
+      permit.permitData.startDate = convertToTimezone(
+        getUtcDatetime(),
+        TIMEZONE_IDS.PACIFIC,
+      ).format(
         PermitAppInfo.PermitDateFormat.toString(),
       );
+
       const axleConfiguration =
         permit.permitData.vehicleConfiguration.axleConfiguration;
+      
       axleConfiguration[0].axleUnitWeight = 6000;
       axleConfiguration[1].axleUnitWeight = driveWeight;
       axleConfiguration[1].numberOfTires = 8;
@@ -453,17 +465,22 @@ describe('ORV2-5617 axle group maximum legal weight threshold', () => {
         interaxleSpacing: 155,
         axleUnitWeight: jeepWeight,
       };
+
       permit.permitData.vehicleConfiguration.axleConfiguration =
         axleConfiguration.slice(0, 2);
+      
       permit.permitData.vehicleConfiguration.trailers[0].axleConfiguration = [
         axleConfiguration[2],
       ];
+
       permit.permitData.vehicleConfiguration.trailers[1].axleConfiguration = [
         axleConfiguration[3],
       ];
+
       permit.permitData.vehicleConfiguration.trailers[2].axleConfiguration = [
         axleConfiguration[4],
       ];
+
       return permit;
     };
 

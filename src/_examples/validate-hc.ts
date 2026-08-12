@@ -1,14 +1,22 @@
 import { Policy } from 'onroute-policy-engine';
 import { PermitAppInfo } from 'onroute-policy-engine/enum';
+
 import hcOnly from '../_test/policy-config/_current-config.json';
 import validHc from '../_test/permit-app/valid-hcp.json';
-import dayjs from 'dayjs';
+import {
+  convertToTimezone,
+  getUtcDatetime,
+  TIMEZONE_IDS,
+} from '../helper/date.helper';
 
 async function start() {
   const policy: Policy = new Policy(hcOnly);
 
   // Set startDate to today
-  const today = dayjs();
+  const today = convertToTimezone(
+    getUtcDatetime(),
+    TIMEZONE_IDS.PACIFIC,
+  );
 
   validHc.permitData.startDate = today.format(
     PermitAppInfo.PermitDateFormat.toString(),

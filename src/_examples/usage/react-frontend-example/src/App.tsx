@@ -2,10 +2,16 @@ import { useState, useEffect } from 'react'
 import { Policy } from 'onroute-policy-engine'
 import { ValidationResults, ValidationResult } from 'onroute-policy-engine'
 import { PermitAppInfo } from 'onroute-policy-engine/enum'
-import dayjs from 'dayjs'
+
 import PageHeader from './components/PageHeader'
 import PermitForm from './components/PermitForm'
 import VehicleFontTest from './components/VehicleFontTest'
+import {
+  convertToTimezone,
+  TIMEZONE_IDS,
+  getUtcDatetime,
+} from './helpers/date.helper';
+
 import './App.css'
 
 const API_BASE_URL = 'http://localhost:3001/api/permits'
@@ -16,8 +22,6 @@ function App() {
   const [permitApplication, setPermitApplication] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'form' | 'font-test'>('form')
-
-
 
   useEffect(() => {
     const initializePolicy = async () => {
@@ -137,7 +141,11 @@ function App() {
         },
         
         // Dates
-        startDate: permitData.startDate || dayjs().format(PermitAppInfo.PermitDateFormat.toString()),
+        startDate: permitData.startDate || convertToTimezone(
+          getUtcDatetime(),
+          TIMEZONE_IDS.PACIFIC,
+        ).format(PermitAppInfo.PermitDateFormat.toString()),
+
         expiryDate: permitData.expiryDate || null,
         
         // Additional fields
@@ -149,12 +157,17 @@ function App() {
         permittedRoute: {
           manualRoute: {
             highwaySequence: permitData.highwaySequence 
-              ? permitData.highwaySequence.split(',').map((h: string) => h.trim()).filter((h: string) => h.length > 0)
+              ? permitData.highwaySequence
+                .split(',')
+                .map((h: string) => h.trim())
+                .filter((h: string) => h.length > 0)
               : [],
             origin: permitData.routeOrigin,
             destination: permitData.routeDestination,
             exitPoint: permitData.routeExitPoint || null,
-            totalDistance: permitData.routeTotalDistance ? parseFloat(permitData.routeTotalDistance) : null
+            totalDistance: permitData.routeTotalDistance
+              ? parseFloat(permitData.routeTotalDistance)
+              : null
           },
           routeDetails: null
         },
