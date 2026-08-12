@@ -10,6 +10,8 @@ import { Operator } from 'json-rules-engine';
 import { CustomOperator, PermitAppInfo } from 'onroute-policy-engine/enum';
 import dayjs from 'dayjs';
 
+import { convertToTimezone, TIMEZONE_IDS } from '../helper/date.helper';
+
 /**
  * Validates that the input is a string type
  * @param a - The value to validate
@@ -72,8 +74,8 @@ CustomOperators.push(
     CustomOperator.DateLessThan,
     (a: string, b: string) => {
       // Parse both dates using the permit application date format
-      const firstDate = dayjs(a, PermitAppInfo.PermitDateFormat.toString());
-      const secondDate = dayjs(b, PermitAppInfo.PermitDateFormat.toString());
+      const firstDate = convertToTimezone(a, TIMEZONE_IDS.PACIFIC);
+      const secondDate = convertToTimezone(b, TIMEZONE_IDS.PACIFIC);
 
       // Return true if first date is before second date (difference is negative)
       return firstDate.diff(secondDate) < 0;

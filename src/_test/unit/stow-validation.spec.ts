@@ -1,9 +1,14 @@
-import { Policy } from '../../policy-engine';
+import { Policy } from 'onroute-policy-engine';
+
 import currentConfig from '../policy-config/_current-config.json';
 import testStow from '../permit-app/test-stow.json';
-import dayjs from 'dayjs';
 import { PermitAppInfo } from '../../enum/permit-app-info';
 import { PolicyCheckId, PolicyCheckResultType } from '../../enum/policy-check';
+import {
+  convertToTimezone,
+  getUtcDatetime,
+  TIMEZONE_IDS,
+} from '../../helper/date.helper';
 
 const reportedTrailerCrashInput = {
   currentFormData: {
@@ -142,9 +147,14 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
 
   const getDatedPermit = () => {
     const permit = JSON.parse(JSON.stringify(testStow));
-    permit.permitData.startDate = dayjs().format(
+
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
+
     permit.permitData.vehicleConfiguration.axleConfiguration[0].axleUnitWeight = 6000;
     return permit;
   };
