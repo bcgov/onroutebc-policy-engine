@@ -2391,7 +2391,7 @@ export const data: PolicyDefinition = {
     },
     {
       id: 'STWSE',
-      name: 'Single Trip GVW Increase',
+      name: 'Overweight Oversize Empty - Length over 27.5 m',
       routingRequired: true,
       weightDimensionRequired: true,
       sizeDimensionRequired: true,
