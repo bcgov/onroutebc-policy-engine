@@ -69,7 +69,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
     expect(results!.results).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          id: PolicyCheckId.CheckPermittableWeight,
+          id: PolicyCheckId.PermittableWeight,
           result: PolicyCheckResultType.Fail,
           startAxleUnit: 1,
           endAxleUnit: 1,
@@ -77,7 +77,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
           thresholdWeight: 0,
         }),
         expect.objectContaining({
-          id: PolicyCheckId.CheckPermittableWeight,
+          id: PolicyCheckId.PermittableWeight,
           result: PolicyCheckResultType.Pass,
           startAxleUnit: 2,
           endAxleUnit: 2,
@@ -149,7 +149,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
     expect(results.results).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          id: PolicyCheckId.CheckPermittableWeight,
+          id: PolicyCheckId.PermittableWeight,
           result: PolicyCheckResultType.Pass,
           startAxleUnit: 3,
           endAxleUnit: 3,

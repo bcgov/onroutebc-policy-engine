@@ -107,7 +107,7 @@ describe('Axle Calculation Functions', () => {
       );
 
       expect(results[axleUnit - 1]).toMatchObject({
-        id: PolicyCheckId.CheckLegalInteraxleSpacing,
+        id: PolicyCheckId.LegalInteraxleSpacing,
         result: expectedResult,
         message: expectedMessage ?? '',
         axleUnit,
@@ -1347,7 +1347,7 @@ describe('Axle Calculation Functions', () => {
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(false);
     const permittableWeightResults = results.results.filter(
-      (r) => r.id === PolicyCheckId.CheckPermittableWeight,
+      (r) => r.id === PolicyCheckId.PermittableWeight,
     );
     expect(
       permittableWeightResults.every(
@@ -1365,7 +1365,7 @@ describe('Axle Calculation Functions', () => {
     ac[ac.length - 1].axleUnitWeight = 23000;
     const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
     const permittableWeightResults = results.results.filter(
-      (r) => r.id === PolicyCheckId.CheckPermittableWeight,
+      (r) => r.id === PolicyCheckId.PermittableWeight,
     );
     expect(
       permittableWeightResults.every(

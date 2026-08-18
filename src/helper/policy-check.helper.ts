@@ -247,7 +247,7 @@ export function CheckLegalWeight(
   vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
 ): Array<PolicyCheckResult> {
-  const policyId = PolicyCheckId.CheckLegalWeight;
+  const policyId = PolicyCheckId.LegalWeight;
   const powerUnitType = vehicleConfiguration[0];
   const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
     policy,
@@ -714,7 +714,7 @@ export function CheckPermittableWeight(
   vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
 ): Array<PolicyCheckResult> {
-  const policyId = PolicyCheckId.CheckPermittableWeight;
+  const policyId = PolicyCheckId.PermittableWeight;
   const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
     policy,
     vehicleConfiguration,
@@ -1694,9 +1694,9 @@ export function CheckDriveJeepLoadEqualization(
   return policyCheckResults;
 }
 
-const getAxleUnitType = (
+function getAxleUnitType(
   numberOfAxles: number,
-): keyof typeof INTERAXLE_SPACING_MINIMUM_CM => {
+): keyof typeof INTERAXLE_SPACING_MINIMUM_CM {
   if (numberOfAxles === 1) {
     return 'SINGLE';
   }
@@ -1706,7 +1706,7 @@ const getAxleUnitType = (
   }
 
   return 'TRIDEM';
-};
+}
 
 type InteraxleSpacingRequirement = {
   min?: number;
@@ -1715,8 +1715,6 @@ type InteraxleSpacingRequirement = {
 };
 
 function getInteraxleSpacingRequirement(
-  policy: Policy,
-  vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
   axleIndex: number,
 ): InteraxleSpacingRequirement | undefined {
@@ -1735,57 +1733,8 @@ function getInteraxleSpacingRequirement(
     return undefined;
   }
 
-  // "axleUnitType" reresents the string name given to the number of axles in the axle unit, e.g. "SINGLE", "TANEDM" or "TRIDEM"
   const previousAxleUnitType = getAxleUnitType(previousAxleUnit.numberOfAxles);
   const currentAxleUnitType = getAxleUnitType(axleUnit.numberOfAxles);
-  const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
-    policy,
-    vehicleConfiguration,
-    axleConfiguration,
-  );
-
-  const currentVehicleType =
-    vehicleConfiguration[axleUnitVehicleIndexes[axleIndex]];
-  const previousVehicleType =
-    vehicleConfiguration[axleUnitVehicleIndexes[axleIndex - 1]];
-
-  const isPreviousDriveAxle =
-    axleIndex - 1 === 1 && axleUnitVehicleIndexes[axleIndex - 1] === 0;
-  const isCurrentJeep = currentVehicleType === AccessoryVehicleType.Jeep;
-  const isPreviousJeep = previousVehicleType === AccessoryVehicleType.Jeep;
-  const isPreviousSemiTrailer = previousVehicleType === 'SEMITRL';
-  const isCurrentSemiTrailer = currentVehicleType === 'SEMITRL';
-  const isCurrentBooster = currentVehicleType === AccessoryVehicleType.Booster;
-
-  if (isPreviousJeep && isCurrentSemiTrailer) {
-    return {
-      min: 700,
-      groupLabel: 'Jeep and Semi-Trailer',
-    };
-  }
-
-  if (isPreviousDriveAxle && isCurrentJeep) {
-    return axleUnit.numberOfAxles === 1
-      ? {
-          min: 120,
-          max: 350,
-          groupLabel: 'Drive Axle and Jeep Single Axle',
-        }
-      : {
-          min: 420,
-          groupLabel: 'Drive Axle and Jeep',
-        };
-  }
-
-  if (
-    isPreviousSemiTrailer &&
-    isCurrentBooster &&
-    axleUnit.numberOfAxles === 1
-  ) {
-    return {
-      groupLabel: 'Semi-Trailer and Booster Single Axle',
-    };
-  }
 
   return {
     min: INTERAXLE_SPACING_MINIMUM_CM[previousAxleUnitType][
@@ -1824,16 +1773,14 @@ function getFailedInteraxleSpacingMessage(
  * current axle unit and the next axle unit, per Table II.
  */
 export function CheckLegalInteraxleSpacing(
-  policy: Policy,
-  vehicleConfiguration: Array<string>,
+  _policy: Policy,
+  _vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
 ): Array<PolicyCheckResult> {
-  const policyId = PolicyCheckId.CheckLegalInteraxleSpacing;
+  const policyId = PolicyCheckId.LegalInteraxleSpacing;
 
   return axleConfiguration.map((axleUnit, axleIndex) => {
     const requirement = getInteraxleSpacingRequirement(
-      policy,
-      vehicleConfiguration,
       axleConfiguration,
       axleIndex,
     );
@@ -1903,8 +1850,8 @@ export const policyCheckMap = new Map<string, PolicyCheck>([
     PolicyCheckId.AxleGroupMaximumLegalWeightThreshold,
     CheckAxleGroupMaximumLegalWeightThreshold,
   ],
-  [PolicyCheckId.CheckLegalWeight, CheckLegalWeight],
-  [PolicyCheckId.CheckPermittableWeight, CheckPermittableWeight],
+  [PolicyCheckId.LegalWeight, CheckLegalWeight],
+  [PolicyCheckId.PermittableWeight, CheckPermittableWeight],
   [PolicyCheckId.MaxTireLoad, CheckMaxTireLoad],
   [PolicyCheckId.MinDriveAxleWeight, CheckMinDriveAxleWeight],
   [PolicyCheckId.MinSteerAxleWeight, CheckMinSteerAxleWeight],
@@ -1914,7 +1861,7 @@ export const policyCheckMap = new Map<string, PolicyCheck>([
     CheckPickerTruckTractorWeightRestrictions,
   ],
   [PolicyCheckId.NumberOfWheelsPerAxle, CheckNumTiresPerAxle],
-  [PolicyCheckId.CheckLegalInteraxleSpacing, CheckLegalInteraxleSpacing],
+  [PolicyCheckId.LegalInteraxleSpacing, CheckLegalInteraxleSpacing],
   [PolicyCheckId.BoosterAxleLimit, CheckBoosterAxleLimit],
   [PolicyCheckId.DriveJeepLoadEqualization, CheckDriveJeepLoadEqualization],
   [PolicyCheckId.WheelbaseLegalLimits, CheckWheelbaseLegalLimits],

@@ -448,13 +448,11 @@ describe('ORV2-5617 axle group maximum legal weight threshold', () => {
       permit.permitData.startDate = convertToTimezone(
         getUtcDatetime(),
         TIMEZONE_IDS.PACIFIC,
-      ).format(
-        PermitAppInfo.PermitDateFormat.toString(),
-      );
+      ).format(PermitAppInfo.PermitDateFormat.toString());
 
       const axleConfiguration =
         permit.permitData.vehicleConfiguration.axleConfiguration;
-      
+
       axleConfiguration[0].axleUnitWeight = 6000;
       axleConfiguration[1].axleUnitWeight = driveWeight;
       axleConfiguration[1].numberOfTires = 8;
@@ -462,13 +460,13 @@ describe('ORV2-5617 axle group maximum legal weight threshold', () => {
         numberOfAxles: 1,
         numberOfTires: 4,
         tireSize: 330,
-        interaxleSpacing: 155,
+        interaxleSpacing: 300,
         axleUnitWeight: jeepWeight,
       };
 
       permit.permitData.vehicleConfiguration.axleConfiguration =
         axleConfiguration.slice(0, 2);
-      
+
       permit.permitData.vehicleConfiguration.trailers[0].axleConfiguration = [
         axleConfiguration[2],
       ];
@@ -486,7 +484,7 @@ describe('ORV2-5617 axle group maximum legal weight threshold', () => {
 
     it('exposes a nested trailer failure through validate details and structured results', async () => {
       const validationResult = await policy.validate(
-        getNestedJeepPermit(14900, 9101),
+        getNestedJeepPermit(15900, 9101),
       );
       const failure = validationResult.axleCalculationResults?.results.find(
         (result) =>
@@ -494,14 +492,14 @@ describe('ORV2-5617 axle group maximum legal weight threshold', () => {
           result.result === PolicyCheckResultType.Fail,
       );
       const message =
-        'Axle Group 2 to 3 exceeds the maximum legal weight threshold of 24000 kg by 1 kg.';
+        'Axle Group 2 to 3 exceeds the maximum legal weight threshold of 25000 kg by 1 kg.';
 
       expect(failure).toMatchObject({
         message,
         startAxleUnit: 2,
         endAxleUnit: 3,
-        actualWeight: 24001,
-        thresholdWeight: 24000,
+        actualWeight: 25001,
+        thresholdWeight: 25000,
       });
       expect(validationResult.violations).toEqual(
         expect.arrayContaining([
@@ -516,7 +514,7 @@ describe('ORV2-5617 axle group maximum legal weight threshold', () => {
 
     it('does not add an axle-calculation violation at the exact threshold', async () => {
       const validationResult = await policy.validate(
-        getNestedJeepPermit(14900, 9100),
+        getNestedJeepPermit(15900, 9100),
       );
       const axleCalculationViolation = validationResult.violations.find(
         (violation) =>
@@ -534,8 +532,8 @@ describe('ORV2-5617 axle group maximum legal weight threshold', () => {
         ),
       ).toMatchObject({
         result: PolicyCheckResultType.Pass,
-        actualWeight: 24000,
-        thresholdWeight: 24000,
+        actualWeight: 25000,
+        thresholdWeight: 25000,
       });
     });
   });

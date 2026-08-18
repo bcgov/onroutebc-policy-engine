@@ -37,7 +37,7 @@ describe('ORV2-5706 legal weight maximums', () => {
       .runAxleCalculation([powerUnitType], axleConfiguration, 100000)
       .results.find(
         (result) =>
-          result.id === PolicyCheckId.CheckLegalWeight &&
+          result.id === PolicyCheckId.LegalWeight &&
           result.startAxleUnit === axleUnit,
       )!;
   };
@@ -285,7 +285,7 @@ describe('ORV2-5706 legal weight maximums', () => {
     ];
     const results = policy
       .runAxleCalculation(['TRCKPME', 'SEMITRL'], axleConfiguration, 100000)
-      .results.filter((result) => result.id === PolicyCheckId.CheckLegalWeight);
+      .results.filter((result) => result.id === PolicyCheckId.LegalWeight);
 
     expect(results).toHaveLength(axleConfiguration.length);
     expect(results).toEqual(
@@ -330,7 +330,7 @@ describe('ORV2-5706 legal weight maximums', () => {
     ];
     const results = policy
       .runAxleCalculation(['CONCRET', 'SEMITRL'], axleConfiguration, 100000)
-      .results.filter((result) => result.id === PolicyCheckId.CheckLegalWeight);
+      .results.filter((result) => result.id === PolicyCheckId.LegalWeight);
 
     expect(results.map(({ thresholdWeight }) => thresholdWeight)).toEqual([
       9100, 17000, 17000,

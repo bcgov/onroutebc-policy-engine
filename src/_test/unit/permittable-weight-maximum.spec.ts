@@ -77,7 +77,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
       .runAxleCalculation(vehicleConfiguration, axleConfiguration, 100000)
       .results.find(
         (result) =>
-          result.id === PolicyCheckId.CheckPermittableWeight &&
+          result.id === PolicyCheckId.PermittableWeight &&
           result.startAxleUnit === axleUnit,
       )!;
   };
@@ -287,7 +287,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
       expect(results).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            id: PolicyCheckId.CheckPermittableWeight,
+            id: PolicyCheckId.PermittableWeight,
             startAxleUnit: 2,
             thresholdWeight: 23000,
             result: PolicyCheckResultType.Pass,
@@ -338,7 +338,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
       expect(results).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            id: PolicyCheckId.CheckPermittableWeight,
+            id: PolicyCheckId.PermittableWeight,
             startAxleUnit: 2,
             thresholdWeight: 23000,
             result: PolicyCheckResultType.Pass,
@@ -387,7 +387,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
         ],
         100000,
       )
-      .results.filter(({ id }) => id === PolicyCheckId.CheckPermittableWeight);
+      .results.filter(({ id }) => id === PolicyCheckId.PermittableWeight);
 
     expect(results.map(({ thresholdWeight }) => thresholdWeight)).toEqual([
       9100, 23000,
@@ -428,7 +428,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
       )
       .results.find(
         ({ id, startAxleUnit }) =>
-          id === PolicyCheckId.CheckPermittableWeight && startAxleUnit === 1,
+          id === PolicyCheckId.PermittableWeight && startAxleUnit === 1,
       );
 
     expect(result).toMatchObject({
