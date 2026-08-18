@@ -73,7 +73,7 @@
         {
           "numberOfAxles": 2,
           "axleSpread": 160,
-          "interaxleSpacing": 300,
+          "interaxleSpacing": 500,
           "axleUnitWeight": 11000,
           "numberOfTires": 4,
           "tireSize": 330
@@ -89,7 +89,7 @@
         {
           "numberOfAxles": 2,
           "axleSpread": 160,
-          "interaxleSpacing": 350,
+          "interaxleSpacing": 550,
           "axleUnitWeight": 10000,
           "numberOfTires": 4,
           "tireSize": 330

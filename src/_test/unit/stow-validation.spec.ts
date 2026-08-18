@@ -151,9 +151,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    ).format(PermitAppInfo.PermitDateFormat.toString());
 
     permit.permitData.vehicleConfiguration.axleConfiguration[0].axleUnitWeight = 6000;
     return permit;
@@ -264,7 +262,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     const validationResult = await policy.validate(permit);
     const legalFailure = validationResult.axleCalculationResults?.results.find(
       ({ id, startAxleUnit }) =>
-        id === PolicyCheckId.CheckLegalWeight && startAxleUnit === 1,
+        id === PolicyCheckId.LegalWeight && startAxleUnit === 1,
     );
 
     expect(legalFailure).toMatchObject({
@@ -298,7 +296,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     const permittableFailure =
       validationResult.axleCalculationResults?.results.find(
         ({ id, startAxleUnit }) =>
-          id === PolicyCheckId.CheckPermittableWeight && startAxleUnit === 2,
+          id === PolicyCheckId.PermittableWeight && startAxleUnit === 2,
       );
 
     expect(permittableFailure).toMatchObject({

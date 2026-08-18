@@ -8,7 +8,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
   const policy: Policy = new Policy(currentPolicyConfig);
   const axleUnit = {
     numberOfAxles: 1,
-    interaxleSpacing: 200,
+    interaxleSpacing: 300,
     axleUnitWeight: 5000,
     numberOfTires: 2,
     tireSize: 279,
@@ -69,7 +69,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
     expect(results!.results).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          id: PolicyCheckId.CheckPermittableWeight,
+          id: PolicyCheckId.PermittableWeight,
           result: PolicyCheckResultType.Fail,
           startAxleUnit: 1,
           endAxleUnit: 1,
@@ -77,7 +77,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
           thresholdWeight: 0,
         }),
         expect.objectContaining({
-          id: PolicyCheckId.CheckPermittableWeight,
+          id: PolicyCheckId.PermittableWeight,
           result: PolicyCheckResultType.Pass,
           startAxleUnit: 2,
           endAxleUnit: 2,
@@ -149,7 +149,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
     expect(results.results).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          id: PolicyCheckId.CheckPermittableWeight,
+          id: PolicyCheckId.PermittableWeight,
           result: PolicyCheckResultType.Pass,
           startAxleUnit: 3,
           endAxleUnit: 3,
@@ -237,7 +237,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
       [
         {
           numberOfAxles: 1,
-          interaxleSpacing: 200,
+          interaxleSpacing: 300,
           axleUnitWeight: 5000,
           numberOfTires: 2,
           tireSize: 279,
@@ -245,7 +245,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
         },
         {
           numberOfAxles: 1,
-          interaxleSpacing: 200,
+          interaxleSpacing: 300,
           axleUnitWeight: 5000,
           numberOfTires: 2,
           tireSize: 279,
@@ -253,7 +253,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
         },
         {
           numberOfAxles: 1,
-          interaxleSpacing: 200,
+          interaxleSpacing: 300,
           axleUnitWeight: 5000,
           numberOfTires: 2,
           tireSize: 279,
@@ -275,7 +275,6 @@ describe('Multi-Axle Unit Calculation Tests', () => {
       [
         {
           numberOfAxles: 1,
-          interaxleSpacing: 200,
           axleUnitWeight: 5000,
           numberOfTires: 2,
           tireSize: 279,
@@ -284,7 +283,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
         {
           numberOfAxles: 2,
           axleSpread: 160,
-          interaxleSpacing: 200,
+          interaxleSpacing: 300,
           axleUnitWeight: 5000,
           numberOfTires: 4,
           tireSize: 279,
@@ -293,7 +292,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
         {
           numberOfAxles: 2,
           axleSpread: 160,
-          interaxleSpacing: 200,
+          interaxleSpacing: 500,
           axleUnitWeight: 5000,
           numberOfTires: 4,
           tireSize: 279,
@@ -315,7 +314,6 @@ describe('Multi-Axle Unit Calculation Tests', () => {
       [
         {
           numberOfAxles: 1,
-          interaxleSpacing: 200,
           axleUnitWeight: 5000,
           numberOfTires: 2,
           tireSize: 279,
@@ -324,7 +322,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
         {
           numberOfAxles: 2,
           axleSpread: 160,
-          interaxleSpacing: 200,
+          interaxleSpacing: 300,
           axleUnitWeight: 5000,
           numberOfTires: 4,
           tireSize: 279,
@@ -333,7 +331,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
         {
           numberOfAxles: 3,
           axleSpread: 160,
-          interaxleSpacing: 200,
+          interaxleSpacing: 550,
           axleUnitWeight: 5000,
           numberOfTires: 12,
           tireSize: 279,
@@ -342,7 +340,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
         {
           numberOfAxles: 3,
           axleSpread: 160,
-          interaxleSpacing: 200,
+          interaxleSpacing: 600,
           axleUnitWeight: 5000,
           numberOfTires: 12,
           tireSize: 279,
@@ -351,7 +349,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
         {
           numberOfAxles: 3,
           axleSpread: 160,
-          interaxleSpacing: 200,
+          interaxleSpacing: 600,
           axleUnitWeight: 5000,
           numberOfTires: 12,
           tireSize: 279,
