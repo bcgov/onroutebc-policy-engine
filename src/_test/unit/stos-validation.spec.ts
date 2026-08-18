@@ -1,10 +1,15 @@
 import { Policy } from 'onroute-policy-engine';
+
 import currentConfig from '../policy-config/_current-config.json';
 import testStos from '../permit-app/test-stos.json';
 import lcvStos from '../permit-app/valid-stos-lcv.json';
 import specialAuth from '../policy-config/special-auth-lcv.sample.json';
-import dayjs from 'dayjs';
 import { PermitAppInfo } from '../../enum/permit-app-info';
+import {
+  convertToTimezone,
+  getUtcDatetime,
+  TIMEZONE_IDS,
+} from '../../helper/date.helper';
 
 describe('Single Trip Oversize Policy Configuration Validator', () => {
   const policy: Policy = new Policy(currentConfig);
@@ -12,8 +17,12 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
 
   it('should validate STOS successfully', async () => {
     const permit = JSON.parse(JSON.stringify(testStos));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
@@ -23,8 +32,12 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
 
   it('should validate LCV STOS successfully with LCV auth', async () => {
     const permit = JSON.parse(JSON.stringify(lcvStos));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
@@ -34,8 +47,12 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
 
   it('should fail to validate LCV STOS successfully without LCV auth', async () => {
     const permit = JSON.parse(JSON.stringify(lcvStos));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
@@ -45,8 +62,12 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
 
   it('should validate STOS successfully with 6 day duration', async () => {
     const permit = JSON.parse(JSON.stringify(testStos));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
@@ -59,8 +80,12 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
 
   it('should validate STOS successfully with 7 day duration', async () => {
     const permit = JSON.parse(JSON.stringify(testStos));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
@@ -73,8 +98,12 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
 
   it('should fail validation for STOS with 8 day duration', async () => {
     const permit = JSON.parse(JSON.stringify(testStos));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
@@ -87,8 +116,12 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
 
   it('should fail validation for STOS with 0 day duration', async () => {
     const permit = JSON.parse(JSON.stringify(testStos));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
@@ -101,10 +134,15 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
 
   it('should pass validation for STOS with multiple boosters', async () => {
     const permit = JSON.parse(JSON.stringify(testStos));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
+
     // Add two boosters to the configuration list
     // Note that this configuration allows boosters.
     permit.permitData.vehicleConfiguration.trailers.push({
@@ -120,10 +158,15 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
 
   it('should pass validation for STOS with multiple jeeps', async () => {
     const permit = JSON.parse(JSON.stringify(testStos));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
+
     // Add two jeeps to the configuration list
     // Note that this configuration allows jeeps.
     permit.permitData.vehicleConfiguration.trailers.splice(
@@ -143,10 +186,15 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
 
   it('should fail validation for STOS with jeep after the trailer', async () => {
     const permit = JSON.parse(JSON.stringify(testStos));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
+
     // Add jeep to the end of the configuration.
     // Note that this configuration allows jeeps.
     permit.permitData.vehicleConfiguration.trailers.push({
@@ -159,10 +207,15 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
 
   it('should fail validation for STOS with invalid configuration', async () => {
     const permit = JSON.parse(JSON.stringify(testStos));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
+
     // Add an invalid trailer to the configuration list
     permit.permitData.vehicleConfiguration.trailers.push({
       vehicleSubType: '_INVALID',

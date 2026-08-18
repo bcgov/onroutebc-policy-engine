@@ -1,10 +1,10 @@
 import { Policy } from 'onroute-policy-engine';
 import { ValidationResults } from 'onroute-policy-engine';
 import { PermitAppInfo } from 'onroute-policy-engine/enum';
-import dayjs from 'dayjs';
 
 // Use require for JSON import to avoid TypeScript module resolution issues
 const completePolicyConfig = require('../config/_current-config.json');
+const dateHelper = require('../utils/date.helper');
 
 let policyInstance: Policy | null = null;
 
@@ -36,7 +36,10 @@ export const validatePermit = async (
         ...permitData.permitData,
         startDate:
           permitData.permitData?.startDate ||
-          dayjs().format(PermitAppInfo.PermitDateFormat.toString()),
+          dateHelper.convertToTimezone(
+            dateHelper.getUtcDatetime(),
+            dateHelper.TIMEZONE_IDS.PACIFIC,
+          ).format(PermitAppInfo.PermitDateFormat.toString()),
       },
     };
 

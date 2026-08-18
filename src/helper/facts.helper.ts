@@ -1,13 +1,12 @@
-import dayjs from 'dayjs';
-import quarterOfYear from 'dayjs/plugin/quarterOfYear';
 import { Engine } from 'json-rules-engine';
+import { Policy } from 'onroute-policy-engine';
 import {
   PermitAppInfo,
   PolicyFacts,
   CostFacts,
   PolicyCheckResultType,
 } from 'onroute-policy-engine/enum';
-import { Policy } from 'onroute-policy-engine';
+
 import {
   AxleCalcResults,
   AxleConfiguration,
@@ -16,17 +15,24 @@ import {
   RangeMatrix,
   VehicleConfiguration,
 } from 'onroute-policy-engine/types';
+
 import { policyCheckMap } from './policy-check.helper';
+import { AXLE_CALC_RESULTS_FACT } from '../constants/stgvwi';
 import {
-  AXLE_CALC_RESULTS_FACT,
   BASE_OVERLOAD_LIMIT,
   DEFAULT_MAX_RATE,
   EXTRA_RATE_INCREMENT,
   EXTRA_WEIGHT_INTERVAL,
   MINIMUM_OVERLOAD_FEE,
-} from '../constants/stgvwi';
+  OVERLOAD_RATES_PER_10KM,
+} from '../constants/overload';
 
-dayjs.extend(quarterOfYear);
+import {
+  convertToTimezone,
+  getEndOfQuarter,
+  getUtcDatetime,
+  TIMEZONE_IDS,
+} from './date.helper';
 
 type AxleCalculationInputs = {
   vehicleConfiguration: Array<string>;
@@ -72,13 +78,46 @@ const getAxleCalculationInputs = async (
   };
 };
 
+const getOverloadCost = (overloadKg: number, totalDistance: number) => {
+  let ratePer10km = 0;
+
+  if (overloadKg <= BASE_OVERLOAD_LIMIT) {
+    const match = OVERLOAD_RATES_PER_10KM.find((r) => overloadKg <= r.max);
+    ratePer10km = match ? match.rate : DEFAULT_MAX_RATE;
+  } else {
+    // For overload greater than BASE_OVERLOAD_LIMIT kg
+    const extraWeight = overloadKg - BASE_OVERLOAD_LIMIT;
+    const intervals = Math.ceil(extraWeight / EXTRA_WEIGHT_INTERVAL);
+    ratePer10km = DEFAULT_MAX_RATE + intervals * EXTRA_RATE_INCREMENT;
+  }
+
+  // Fee calculation: rate * (totalDistance / 10)
+  const distanceUnits = Math.ceil(totalDistance / 10);
+  let totalFee = ratePer10km * distanceUnits;
+
+  // Apply minimum fee rule
+  if (totalFee < MINIMUM_OVERLOAD_FEE) {
+    totalFee = MINIMUM_OVERLOAD_FEE;
+  }
+
+  // Round to the nearest dollar (0.50 rounds up)
+  return Math.round(totalFee);
+};
+
 /**
  * Adds runtime facts for the validation. For example, adds the
  * validation date for comparison against startDate of the permit.
  * @param engine json-rules-engine Engine instance to add facts to.
  */
 export function addRuntimeFacts(engine: Engine, policy: Policy): void {
-  const today: string = dayjs().format(PermitAppInfo.PermitDateFormat);
+  /**
+   * Add runtime fact for today's date (based on Pacific timezone)
+   */
+  const today: string = convertToTimezone(
+    getUtcDatetime(),
+    TIMEZONE_IDS.PACIFIC,
+  ).format(PermitAppInfo.PermitDateFormat);
+
   engine.addFact(PolicyFacts.ValidationDate, today);
 
   /**
@@ -94,7 +133,8 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
         {},
         PermitAppInfo.PermitStartDate,
       );
-      const dateFrom = dayjs(startDate, PermitAppInfo.PermitDateFormat);
+
+      const dateFrom = convertToTimezone(startDate, TIMEZONE_IDS.PACIFIC);
       const daysInPermitYear = dateFrom.add(1, 'year').diff(dateFrom, 'day');
       return daysInPermitYear;
     },
@@ -114,9 +154,8 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
         PermitAppInfo.PermitStartDate,
       );
 
-      const dateFrom = dayjs(startDate, PermitAppInfo.PermitDateFormat);
-      const endOfQuarter = dateFrom.endOf('quarter');
-
+      const dateFrom = convertToTimezone(startDate, TIMEZONE_IDS.PACIFIC);
+      const endOfQuarter = getEndOfQuarter(dateFrom);
       return endOfQuarter.format(PermitAppInfo.PermitDateFormat);
     },
   );
@@ -133,7 +172,7 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
       PermitAppInfo.PermitStartDate,
     );
 
-    const dateFrom = dayjs(startDate, PermitAppInfo.PermitDateFormat);
+    const dateFrom = convertToTimezone(startDate, TIMEZONE_IDS.PACIFIC);
     const endOfYear = dateFrom
       .endOf('year')
       .format(PermitAppInfo.PermitDateFormat);
@@ -349,13 +388,15 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
         {},
         params.dateFrom.path,
       );
+
       const dateToStr: string = await almanac.factValue(
         params.dateTo.fact,
         {},
         params.dateTo.path,
       );
-      const dateFrom = dayjs(dateFromStr, PermitAppInfo.PermitDateFormat);
-      const dateTo = dayjs(dateToStr, PermitAppInfo.PermitDateFormat);
+
+      const dateFrom = convertToTimezone(dateFromStr, TIMEZONE_IDS.PACIFIC);
+      const dateTo = convertToTimezone(dateToStr, TIMEZONE_IDS.PACIFIC);
       const daysBetween = dateTo.diff(dateFrom, 'day');
       return daysBetween;
     },
@@ -536,7 +577,7 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
    * based on the Licensed GVW Increase and Total Distance.
    */
   engine.addFact(
-    CostFacts.OverloadCost.toString(),
+    CostFacts.OverloadGvwCost.toString(),
     async function (params, almanac) {
       const actualGVW: number = await almanac.factValue(
         PermitAppInfo.PermitData,
@@ -559,59 +600,34 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
         return 0;
       }
 
-      let ratePer10km = 0;
+      return getOverloadCost(overloadKg, distance);
+    },
+  );
 
-      if (overloadKg <= BASE_OVERLOAD_LIMIT) {
-        // Overload permit fee rate table mapping up to 28,000 kg
-        const rates = [
-          { max: 2000, rate: 0.95 },
-          { max: 3000, rate: 1.15 },
-          { max: 4000, rate: 1.4 },
-          { max: 5000, rate: 1.6 },
-          { max: 6000, rate: 1.85 },
-          { max: 7000, rate: 2.15 },
-          { max: 8000, rate: 2.45 },
-          { max: 9000, rate: 2.95 },
-          { max: 10000, rate: 3.35 },
-          { max: 11000, rate: 3.75 },
-          { max: 12000, rate: 4.25 },
-          { max: 13000, rate: 4.95 },
-          { max: 14000, rate: 5.6 },
-          { max: 15000, rate: 6.25 },
-          { max: 16000, rate: 7.25 },
-          { max: 17000, rate: 8.25 },
-          { max: 18000, rate: 9.15 },
-          { max: 19000, rate: 10.1 },
-          { max: 20000, rate: 10.9 },
-          { max: 21000, rate: 11.85 },
-          { max: 22000, rate: 12.7 },
-          { max: 23000, rate: 13.95 },
-          { max: 24000, rate: 14.95 },
-          { max: 25000, rate: 16.1 },
-          { max: 26000, rate: 17.85 },
-          { max: 27000, rate: 19.85 },
-          { max: 28000, rate: 21.4 },
-        ];
+  /**
+   * Add runtime fact to calculate the overload fee for STWSE permits
+   * based on the Weight over 27.5m and Total Distance.
+   */
+  engine.addFact(
+    CostFacts.OverloadWeightCost.toString(),
+    async function (params, almanac) {
+      const overloadWeight: number = await almanac.factValue(
+        PermitAppInfo.PermitData,
+        {},
+        'vehicleConfiguration.overloadWeight',
+      );
 
-        const match = rates.find((r) => overloadKg <= r.max);
-        ratePer10km = match ? match.rate : DEFAULT_MAX_RATE;
-      } else {
-        // For overload greater than BASE_OVERLOAD_LIMIT kg
-        const extraWeight = overloadKg - BASE_OVERLOAD_LIMIT;
-        const intervals = Math.ceil(extraWeight / EXTRA_WEIGHT_INTERVAL);
-        ratePer10km = DEFAULT_MAX_RATE + intervals * EXTRA_RATE_INCREMENT;
+      const totalDistance: number = await almanac.factValue(
+        PermitAppInfo.PermitData,
+        {},
+        PermitAppInfo.TotalDistance,
+      );
+
+      if (overloadWeight <= 0 || !totalDistance) {
+        return 0;
       }
 
-      // Fee calculation: rate * (distance / 10)
-      const distanceUnits = Math.ceil(distance / 10);
-      let totalFee = ratePer10km * distanceUnits;
-
-      // Apply minimum fee rule
-      if (totalFee < MINIMUM_OVERLOAD_FEE) {
-        totalFee = MINIMUM_OVERLOAD_FEE;
-      }
-      // Round to the nearest dollar (0.50 rounds up)
-      return Math.round(totalFee);
+      return getOverloadCost(overloadWeight, totalDistance);
     },
   );
 }

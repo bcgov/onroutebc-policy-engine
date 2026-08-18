@@ -4,6 +4,7 @@ export enum ValidationResultCode {
   PolicyValidationError = 'policy-validation-error',
   ConfigurationInvalid = 'configuration-invalid',
   GeneralResult = 'general-result',
+  DimensionOversize = 'dimension-oversize',
   CostValue = 'cost-value',
   IsLcvCarrier = 'lcv-carrier',
   NoFeeClient = 'no-fee-client',

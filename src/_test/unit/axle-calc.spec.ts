@@ -1,4 +1,5 @@
-import { Policy } from '../../policy-engine';
+import { Policy } from 'onroute-policy-engine';
+
 import currentPolicyConfig from '../policy-config/_current-config.json';
 import testStow from '../permit-app/test-stow.json';
 import {
@@ -6,11 +7,13 @@ import {
   PolicyCheckId,
   PolicyCheckResultType,
 } from '../../enum';
+
 import {
   AxleCalcResults,
   AxleConfiguration,
   AxleGroupPolicyCheckResult,
 } from '../../types';
+
 import {
   CheckBoosterAxleLimit,
   CheckLegalAxleSpreads,
@@ -22,15 +25,22 @@ import {
   CheckWheelbaseLegalLimits,
   CheckDriveJeepLoadEqualization,
 } from '../../helper/policy-check.helper';
-import dayjs from 'dayjs';
+
+import {
+  convertToTimezone,
+  getUtcDatetime,
+  TIMEZONE_IDS,
+} from '../../helper/date.helper';
 
 describe('Axle Calculation Functions', () => {
   const policy: Policy = new Policy(currentPolicyConfig);
   const permit = JSON.parse(JSON.stringify(testStow));
+
   const vehicleConfiguration = policy.getSimplifiedVehicleConfiguration(
     permit.permitData.vehicleDetails,
     permit.permitData.vehicleConfiguration,
   );
+
   const axleConfiguration =
     permit.permitData.vehicleConfiguration.axleConfiguration;
 
@@ -41,6 +51,7 @@ describe('Axle Calculation Functions', () => {
     const ac = JSON.parse(
       JSON.stringify(axleConfiguration),
     ) as Array<AxleConfiguration>;
+
     ac[0].numberOfAxles = 1;
     ac[1].numberOfAxles = 2;
     ac[1].axleSpread = axleSpread;
@@ -53,12 +64,18 @@ describe('Axle Calculation Functions', () => {
     axleSpread: number,
   ) => {
     const p = JSON.parse(JSON.stringify(testStow));
-    p.permitData.startDate = dayjs().format(
+
+    p.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
+
     p.permitData.vehicleDetails.vehicleSubType = 'TRKTRAC';
     p.permitData.vehicleConfiguration.axleConfiguration =
       getTruckTractorWheelbaseAxles(interaxleSpacing, axleSpread);
+    
     p.permitData.vehicleConfiguration.axleConfiguration[0].axleUnitWeight = 6000;
     return p;
   };

@@ -1,19 +1,24 @@
 import { Policy } from 'onroute-policy-engine';
+
 import currentConfig from '../policy-config/_current-config.json';
 import validStfr30Day from '../permit-app/valid-stfr-30day.json';
-import dayjs from 'dayjs';
 import { PermitAppInfo } from '../../enum/permit-app-info';
+import { convertToTimezone, getUtcDatetime, TIMEZONE_IDS } from '../../helper/date.helper';
 
 describe('Single Trip ICBC (FR) Validator', () => {
   const policy: Policy = new Policy(currentConfig);
 
   it('should validate STFR successfully', async () => {
     const permit = JSON.parse(JSON.stringify(validStfr30Day));
+
     // Set startDate to today
     // Note: we do not need to set the expiry date as well because
     // the validation only uses permitDuration, not expiryDate for this
     // permit type.
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
@@ -23,8 +28,12 @@ describe('Single Trip ICBC (FR) Validator', () => {
 
   it('should fail validation for STFR with invalid vehicle subtype', async () => {
     const permit = JSON.parse(JSON.stringify(validStfr30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
@@ -36,8 +45,12 @@ describe('Single Trip ICBC (FR) Validator', () => {
 
   it('should validate STFR successfully with 29 day duration', async () => {
     const permit = JSON.parse(JSON.stringify(validStfr30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
@@ -50,8 +63,12 @@ describe('Single Trip ICBC (FR) Validator', () => {
 
   it('should validate STFR successfully with 30 day duration', async () => {
     const permit = JSON.parse(JSON.stringify(validStfr30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
@@ -64,8 +81,12 @@ describe('Single Trip ICBC (FR) Validator', () => {
 
   it('should fail validation for STFR with 31 day duration', async () => {
     const permit = JSON.parse(JSON.stringify(validStfr30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
@@ -78,8 +99,12 @@ describe('Single Trip ICBC (FR) Validator', () => {
 
   it('should fail validation for STFR with 0 day duration', async () => {
     const permit = JSON.parse(JSON.stringify(validStfr30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
@@ -92,8 +117,12 @@ describe('Single Trip ICBC (FR) Validator', () => {
 
   it('should fail validation for STFR with licensed GVW greater than 63,500', async () => {
     const permit = JSON.parse(JSON.stringify(validStfr30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
@@ -106,8 +135,12 @@ describe('Single Trip ICBC (FR) Validator', () => {
 
   it('should fail validation for STFR with licensed GVW of zero', async () => {
     const permit = JSON.parse(JSON.stringify(validStfr30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
@@ -120,8 +153,12 @@ describe('Single Trip ICBC (FR) Validator', () => {
 
   it('should fail validation for STFR with negative licensed GVW', async () => {
     const permit = JSON.parse(JSON.stringify(validStfr30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
@@ -134,8 +171,12 @@ describe('Single Trip ICBC (FR) Validator', () => {
 
   it('should pass validation for STFR with licensed GVW exactly 63,500', async () => {
     const permit = JSON.parse(JSON.stringify(validStfr30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
@@ -148,8 +189,12 @@ describe('Single Trip ICBC (FR) Validator', () => {
 
   it('should pass validation for STFR with licensed GVW 1 kg', async () => {
     const permit = JSON.parse(JSON.stringify(validStfr30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
@@ -162,8 +207,12 @@ describe('Single Trip ICBC (FR) Validator', () => {
 
   it('should pass validation for STFR with third party liability GENERAL_GOODS', async () => {
     const permit = JSON.parse(JSON.stringify(validStfr30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
@@ -176,8 +225,12 @@ describe('Single Trip ICBC (FR) Validator', () => {
 
   it('should pass validation for STFR with third party liability DANGEROUS_GOODS', async () => {
     const permit = JSON.parse(JSON.stringify(validStfr30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
@@ -190,8 +243,12 @@ describe('Single Trip ICBC (FR) Validator', () => {
 
   it('should fail validation for STFR with third party liability dangerous_goods (exact match required)', async () => {
     const permit = JSON.parse(JSON.stringify(validStfr30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
@@ -204,12 +261,15 @@ describe('Single Trip ICBC (FR) Validator', () => {
 
   it('should fail validation for STFR with undefined third party liability', async () => {
     const permit = JSON.parse(JSON.stringify(validStfr30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
 
-    // deletee thirdPartyLiability
     delete permit.permitData.thirdPartyLiability;
 
     const validationResult = await policy.validate(permit);
@@ -218,39 +278,53 @@ describe('Single Trip ICBC (FR) Validator', () => {
 
   it('should calculate STFR general goods cost correctly', async () => {
     const permit = JSON.parse(JSON.stringify(validStfr30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
+
     // Set thirdPartyLiability to GENERAL_GOODS
     permit.permitData.thirdPartyLiability = 'GENERAL_GOODS';
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.cost).not.toHaveLength(0);
+
     const initialValue: number = 0;
     const cost = validationResult.cost.reduce(
       (prev: any, curr: any) => prev + curr.cost,
       initialValue,
     );
+
     expect(cost).toBe(84);
   });
 
   it('should calculate STFR dangerous goods cost correctly', async () => {
     const permit = JSON.parse(JSON.stringify(validStfr30Day));
+
     // Set startDate to today
-    permit.permitData.startDate = dayjs().format(
+    permit.permitData.startDate = convertToTimezone(
+      getUtcDatetime(),
+      TIMEZONE_IDS.PACIFIC,
+    ).format(
       PermitAppInfo.PermitDateFormat.toString(),
     );
+
     // Set thirdPartyLiability to DANGEROUS_GOODS
     permit.permitData.thirdPartyLiability = 'DANGEROUS_GOODS';
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.cost).not.toHaveLength(0);
+
     const initialValue: number = 0;
     const cost = validationResult.cost.reduce(
       (prev: any, curr: any) => prev + curr.cost,
       initialValue,
     );
+    
     expect(cost).toBe(89);
   });
 });

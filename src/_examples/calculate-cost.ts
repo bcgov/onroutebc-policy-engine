@@ -1,20 +1,31 @@
 import { Policy } from 'onroute-policy-engine';
 import { PermitAppInfo } from 'onroute-policy-engine/enum';
+
 import masterPolicyConfig from '../_test/policy-config/master.sample.json';
 import validTros30Day from '../_test/permit-app/valid-tros-30day.json';
-import dayjs from 'dayjs';
+import {
+  convertToTimezone,
+  getUtcDatetime,
+  TIMEZONE_IDS,
+} from '../helper/date.helper';
 
 async function start() {
   const policy: Policy = new Policy(masterPolicyConfig);
-  const today = dayjs();
+  const today = convertToTimezone(
+    getUtcDatetime(),
+    TIMEZONE_IDS.PACIFIC,
+  );
 
   // Set startDate to today
   validTros30Day.permitData.startDate = today.format(
     PermitAppInfo.PermitDateFormat.toString(),
   );
+
   // Set duration to full year (365 or 366 depending on leap year)
   const oneYearDuration: number = today.add(1, 'year').diff(today, 'day');
+
   console.log('Setting TROS permit duration to ' + oneYearDuration);
+  
   validTros30Day.permitData.permitDuration = oneYearDuration;
 
   const validationResult2 = await policy.validate(validTros30Day);

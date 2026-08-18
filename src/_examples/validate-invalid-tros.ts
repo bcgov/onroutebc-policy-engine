@@ -1,14 +1,22 @@
 import { Policy } from 'onroute-policy-engine';
 import { PermitAppInfo } from 'onroute-policy-engine/enum';
+
 import masterPolicyConfig from '../_test/policy-config/master.sample.json';
 import validTros30Day from '../_test/permit-app/valid-tros-30day.json';
-import dayjs from 'dayjs';
+import {
+  convertToTimezone,
+  getUtcDatetime,
+  TIMEZONE_IDS,
+} from '../helper/date.helper';
 
 async function start() {
   const policy: Policy = new Policy(masterPolicyConfig);
 
   // Set startDate to today
-  validTros30Day.permitData.startDate = dayjs().format(
+  validTros30Day.permitData.startDate = convertToTimezone(
+    getUtcDatetime(),
+    TIMEZONE_IDS.PACIFIC,
+  ).format(
     PermitAppInfo.PermitDateFormat.toString(),
   );
 
