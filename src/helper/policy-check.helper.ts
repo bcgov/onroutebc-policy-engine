@@ -1758,12 +1758,12 @@ function getFailedInteraxleSpacingMessage(
     }
 
     if (requirement.min) {
-      return `Interaxle Spacing for ${requirement.groupLabel} must be greater than ${formatMeters(requirement.min)} m.`;
+      return `Interaxle Spacing for ${requirement.groupLabel} must be at least ${formatMeters(requirement.min)} m.`;
     }
   }
 
   if (requirement.min) {
-    return `Interaxle Spacing between Axle Unit ${previousAxleUnitNumber} and Axle Unit ${currentAxleUnitNumber} must be greater than ${formatMeters(requirement.min)} m.`;
+    return `Interaxle Spacing between Axle Unit ${previousAxleUnitNumber} and Axle Unit ${currentAxleUnitNumber} must be at least ${formatMeters(requirement.min)} m.`;
   }
   return '';
 }
