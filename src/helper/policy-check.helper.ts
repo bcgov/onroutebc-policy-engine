@@ -1708,11 +1708,11 @@ function getAxleUnitType(
   return 'TRIDEM';
 }
 
-type InteraxleSpacingRequirement = {
+interface InteraxleSpacingRequirement {
   min?: number;
   max?: number;
   groupLabel?: string;
-};
+}
 
 function getInteraxleSpacingRequirement(
   axleConfiguration: Array<AxleConfiguration>,
