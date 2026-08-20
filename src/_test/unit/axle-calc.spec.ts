@@ -133,7 +133,7 @@ describe('Axle Calculation Functions', () => {
         ac,
         2,
         PolicyCheckResultType.Fail,
-        'Interaxle Spacing between Axle Unit 1 and Axle Unit 2 must be greater than 3 m.',
+        'Interaxle Spacing between Axle Unit 1 and Axle Unit 2 must be at least 3 m.',
       );
     });
 
