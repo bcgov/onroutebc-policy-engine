@@ -1865,14 +1865,6 @@ export function CheckLegalInteraxleSpacing(
   });
 }
 
-/**
- * Validates each axle unit against its legal axle spread maximum.
- */
-
-function formatMeters(cm: number): string {
-  return (cm / 100).toFixed(2).replace(/\.0+$/u, '');
-}
-
 // function isSpreadTandemSemiTrailer(vehicleType?: string): boolean {
 //   return vehicleType === 'STWDTAN';
 // }
@@ -2028,12 +2020,15 @@ function getAxleSpreadThreshold(
   return undefined;
 }
 
-export function CheckLegalAxleSpreads(
+/**
+ * Validates each axle unit against its legal axle spread maximum.
+ */
+export function CheckLegalAxleSpread(
   policy: Policy,
   vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
 ): Array<PolicyCheckResult> {
-  const policyId = PolicyCheckId.CheckLegalAxleSpreads;
+  const policyId = PolicyCheckId.LegalAxleSpread;
   const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
     policy,
     vehicleConfiguration,
@@ -2091,7 +2086,7 @@ export function CheckLegalAxleSpreads(
  * - AxleGroupMaximumLegalWeightThreshold: Validates axle groups within 8 m against CTR 7.17
  * - BridgeFormula: Validates axle groups against bridge formula requirements
  * - CheckLegalWeight: Validates axle units against legal weight limits
- * - CheckLegalAxleSpreads: Validates axle units against legal axle spread limits
+ * - CheckLegalAxleSpread: Validates axle units against legal axle spread limits
  * - CheckPermittableWeight: Validates total vehicle weight against permit limits
  * - MaxTireLoad: Validates tire load capacity for each axle unit
  * - MinDriveAxleWeight: Validates minimum weight requirements for drive axles
@@ -2116,7 +2111,7 @@ export const policyCheckMap = new Map<string, PolicyCheck>([
     PolicyCheckId.AxleGroupMaximumLegalWeightThreshold,
     CheckAxleGroupMaximumLegalWeightThreshold,
   ],
-  [PolicyCheckId.CheckLegalAxleSpreads, CheckLegalAxleSpreads],
+  [PolicyCheckId.LegalAxleSpread, CheckLegalAxleSpread],
   [PolicyCheckId.LegalWeight, CheckLegalWeight],
   [PolicyCheckId.PermittableWeight, CheckPermittableWeight],
   [PolicyCheckId.MaxTireLoad, CheckMaxTireLoad],
