@@ -1929,7 +1929,7 @@ function getTridemAxleSpreadThreshold(
 ): { minCm: number; maxCm: number } {
   const vehicleType = vehicleConfiguration[vehicleIndex];
   const isDriveAxle = axleIndex === 1;
-  const isTridemDrive = axleConfiguration[2].numberOfAxles === 3;
+  const isTridemDrive = axleConfiguration[1].numberOfAxles === 3;
   const isPonyTrailer = vehicleType === 'PONYTRL';
   const isPoleTrailer = vehicleType === 'POLETRL';
   const isOilfieldBedTruck = vehicleType === 'OGBEDTK';
@@ -1988,6 +1988,7 @@ function getAxleSpreadThreshold(
   const isTridemAxle = numberOfAxles === 3;
 
   if (isSingleAxle) {
+    // the ASW table specifically disables the axleSpread input for single axle unit types, so this code will never run, but have left these in place in case something changes
     return {
       minCm: AXLE_SPREAD_CM.SINGLE.MINIMUM,
       maxCm: AXLE_SPREAD_CM.SINGLE.MAXIMUM,

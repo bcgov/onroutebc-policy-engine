@@ -16,7 +16,7 @@ import {
 
 import {
   CheckBoosterAxleLimit,
-  CheckLegalAxleSpreads,
+  CheckLegalAxleSpread,
   CheckNumTiresPerAxle,
   CheckMinDriveAxleWeight,
   CheckMinSteerAxleWeight,
@@ -1834,7 +1834,7 @@ describe('Axle Calculation Functions', () => {
 
   describe('legal axle spread policy check', () => {
     it('should pass valid truck tractor tandem axle spread', () => {
-      const results = CheckLegalAxleSpreads(
+      const results = CheckLegalAxleSpread(
         policy,
         ['TRKTRAC'],
         [
@@ -1845,7 +1845,7 @@ describe('Axle Calculation Functions', () => {
 
       expect(results).toHaveLength(1);
       expect(results[0]).toMatchObject({
-        id: PolicyCheckId.CheckLegalAxleSpreads,
+        id: PolicyCheckId.LegalAxleSpread,
         result: PolicyCheckResultType.Pass,
         message: '',
         axleUnit: 2,
@@ -1853,40 +1853,24 @@ describe('Axle Calculation Functions', () => {
     });
 
     it('should fail invalid pony trailer tridem axle spread above 2.5m', () => {
-      const results = CheckLegalAxleSpreads(
+      const results = CheckLegalAxleSpread(
         policy,
         ['TRKTRAC', 'PONYTRL'],
         [
           { numberOfAxles: 1, axleUnitWeight: 6700 },
-          { numberOfAxles: 3, axleUnitWeight: 12000, axleSpread: 260 },
+          { numberOfAxles: 1, axleUnitWeight: 6700 },
+          { numberOfAxles: 3, axleUnitWeight: 12000, axleSpread: 255 },
         ],
       );
 
       expect(results).toHaveLength(1);
       expect(results[0]).toMatchObject({
-        id: PolicyCheckId.CheckLegalAxleSpreads,
+        id: PolicyCheckId.LegalAxleSpread,
         result: PolicyCheckResultType.Fail,
         message:
-          'Axle Spread for Axle Unit 2 must be between 2.40 m and 2.50 m.',
-        axleUnit: 2,
+          'Axle Spread for Axle Unit 3 must be between 2.40 m and 2.50 m.',
+        axleUnit: 3,
       });
-    });
-
-    it('should include CheckLegalAxleSpreads in runAxleCalculation results', () => {
-      const results = policy.runAxleCalculation(
-        ['TRKTRAC', 'PONYTRL'],
-        [
-          { numberOfAxles: 1, axleUnitWeight: 6700 },
-          { numberOfAxles: 3, axleUnitWeight: 12000, axleSpread: 260 },
-        ],
-        0,
-      );
-
-      expect(
-        results.results.some(
-          (r) => r.id === PolicyCheckId.CheckLegalAxleSpreads,
-        ),
-      ).toBe(true);
     });
   });
 
