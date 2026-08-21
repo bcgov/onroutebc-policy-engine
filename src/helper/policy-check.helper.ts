@@ -77,10 +77,6 @@ const INTERAXLE_SPACING_MINIMUM_CM = {
 } as const;
 
 const AXLE_SPREAD_CM = {
-  DEFAULT: {
-    MINIMUM: 0,
-  },
-
   SINGLE: {
     MINIMUM: 0,
     MAXIMUM: 100,
@@ -102,15 +98,6 @@ const AXLE_SPREAD_CM = {
 
     PONY_TRAILER: {
       MAXIMUM: 250,
-    },
-
-    FULL_TRAILER: {
-      WITH_TANDEM_DRIVE_TRUCK: {
-        MAXIMUM: 370,
-      },
-      WITH_TRIDEM_DRIVE_TRUCK: {
-        MAXIMUM: 310,
-      },
     },
 
     SEMI_TRAILER: {
@@ -1865,10 +1852,6 @@ export function CheckLegalInteraxleSpacing(
   });
 }
 
-// function isSpreadTandemSemiTrailer(vehicleType?: string): boolean {
-//   return vehicleType === 'STWDTAN';
-// }
-
 function getTandemAxleSpreadThreshold(
   vehicleConfiguration: Array<string>,
   vehicleIndex: number,
@@ -1876,8 +1859,6 @@ function getTandemAxleSpreadThreshold(
   const vehicleType = vehicleConfiguration[vehicleIndex];
   const isSpreadTandemSemiTrailer = vehicleType === 'STWDTAN';
 
-  // TODO if the tandem axle is part of a tandem spread semi-trailer, enforce the configured minimum and maximum for that trailer ?
-  // see cell c12 for updated info
   if (isSpreadTandemSemiTrailer) {
     return {
       minCm: AXLE_SPREAD_CM.TANDEM.SPREAD_TANDEM_SEMI_TRAILER.MINIMUM,
@@ -1891,6 +1872,51 @@ function getTandemAxleSpreadThreshold(
   };
 }
 
+const SEMI_TRAILER_TYPES = new Set([
+  // Expando Semi-Trailers
+  'EXPANDO',
+  // Fixed Equipment - Conveyors
+  'FECVYRX',
+  // Fixed Equipment - Counter Flow Asphalt Drum Mixers
+  'FEDRMMX',
+  // Fixed Equipment - Portable Asphalt Baghouses
+  'FEBGHSE',
+  // Fixed Equipment - Semi-Trailers
+  'FESEMTR',
+  // Fixed Equipment - Wheeler Semi-Trailers
+  'FEWHELR',
+  // Semi-Trailers - Hiboys/Expandos
+  'HIBOEXP',
+  // Semi-Trailers - Hiboys/Flat Decks
+  'HIBOFLT',
+  // Oil and Gas - Oversize Oilfield Flat Deck Semi-Trailers
+  'OGOSFDT',
+  // Platform Trailer
+  'PLATFRM',
+  // Platform Trailers - Wheelers
+  'PLATWHE',
+  // Pole Trailers
+  'POLETRL',
+  // Ready Mix Concrete Pump Semi-Trailers
+  'REDIMIX',
+  // Semi-Trailers
+  'SEMITRL',
+  // Semi-Trailers - Single Drop, Double Drop, Step Decks, Lowbed, Expandos, etc.
+  'STSDBDK',
+  // Semi-Trailers with Crane
+  'STCRANE',
+  // Semi-Trailers - Spread Tandem
+  'STWDTAN',
+  // Semi-Trailers - Wheelers
+  'STWHELR',
+  // Semi-Trailers - Wide Wheelers
+  'STWIDWH',
+]);
+
+function isSemiTrailerType(vehicleType: string): boolean {
+  return SEMI_TRAILER_TYPES.has(vehicleType);
+}
+
 function getTridemAxleSpreadThreshold(
   vehicleConfiguration: Array<string>,
   vehicleIndex: number,
@@ -1898,27 +1924,20 @@ function getTridemAxleSpreadThreshold(
   axleIndex: number,
 ): { minCm: number; maxCm: number } {
   const vehicleType = vehicleConfiguration[vehicleIndex];
-  const isPowerUnit = vehicleIndex === 0;
-  const isSteerAxle = axleIndex === 0;
-
-  // TODO do we always assume that the second axle unit is the drive axle?
-  // yes
-  const isTandemDrive = axleConfiguration[1].numberOfAxles === 2;
+  const isDriveAxle = axleIndex === 1;
   const isTridemDrive = axleConfiguration[2].numberOfAxles === 3;
-
   const isPonyTrailer = vehicleType === 'PONYTRL';
-  // TODO what is a "full trailer"? Is this a net new trailer type or an existing trailer type with a different name?
-  // this is a net new trailer that is incoming
-  const isFullTrailer = vehicleType === 'FULLTRL';
-  const isSemiTrailer = vehicleType === 'SEMITRL';
   const isPoleTrailer = vehicleType === 'POLETRL';
+  const isOilfieldBedTruck = vehicleType === 'OGBEDTK';
+  const isPowerUnitTruckTractor = vehicleConfiguration[0] === 'TRKTRAC';
 
-  // TODO is a tridem steer axle possible? Do we need to defend against this if so? Current implementation assumes all tridem axles are drive axles
-  // no, current number of axles already blocks this
+  if (isOilfieldBedTruck && isDriveAxle) {
+    return {
+      minCm: AXLE_SPREAD_CM.TRIDEM.MINIMUM,
+      maxCm: AXLE_SPREAD_CM.TRIDEM.OILFIELD_BED_TRUCK.MAXIMUM,
+    };
+  }
 
-  // TODO these statements do not account for the power unit subtype, though these are specificed in the spreads, spacings and weight exceptions table (e.g. Truck or Truck Tractor)
-
-  // do we actually need to be checking for this or is it safe to assume that the power unit subtype is always a truck or truck tractor since the policy engine will prevent invalid configurations?
   if (isPonyTrailer) {
     return {
       minCm: AXLE_SPREAD_CM.TRIDEM.MINIMUM,
@@ -1926,41 +1945,20 @@ function getTridemAxleSpreadThreshold(
     };
   }
 
-  if (isFullTrailer) {
-    return isTridemDrive
-      ? {
-          minCm: AXLE_SPREAD_CM.TRIDEM.MINIMUM,
-          maxCm:
-            AXLE_SPREAD_CM.TRIDEM.FULL_TRAILER.WITH_TRIDEM_DRIVE_TRUCK.MAXIMUM,
-        }
-      : // TODO what do we do in the case where the drive axle is a single axle? What is the maximum for that configuration (currently assuming the same as tandem drive)
-        // We are not including full trailer row (row 5)
-        {
-          minCm: AXLE_SPREAD_CM.TRIDEM.MINIMUM,
-          maxCm:
-            AXLE_SPREAD_CM.TRIDEM.FULL_TRAILER.WITH_TANDEM_DRIVE_TRUCK.MAXIMUM,
-        };
-  }
-
-  if (isSemiTrailer) {
+  if (isPowerUnitTruckTractor && isSemiTrailerType(vehicleType)) {
     return {
       minCm: AXLE_SPREAD_CM.TRIDEM.MINIMUM,
       maxCm: AXLE_SPREAD_CM.TRIDEM.SEMI_TRAILER.MAXIMUM,
     };
   }
 
-  // TODO what is A Train, B Train and C Train? There are all found in the spreads, spacings and weight exceptions table
-  // we are not including a, b or c train
-
-  if (isPoleTrailer) {
+  if (isPowerUnitTruckTractor && isTridemDrive && isPoleTrailer) {
     return {
       minCm: AXLE_SPREAD_CM.TRIDEM.MINIMUM,
       maxCm: AXLE_SPREAD_CM.TRIDEM.POLE_TRAILER.MAXIMUM,
     };
   }
 
-  // TODO is a "triaxle pole trailer" the same as a "tridem axle pole trailer"?
-  // no, this is a net new trailer type, but we are not covering this in this feature regardless
   return {
     minCm: AXLE_SPREAD_CM.TRIDEM.MINIMUM,
     maxCm: AXLE_SPREAD_CM.TRIDEM.MAXIMUM,
@@ -1985,9 +1983,6 @@ function getAxleSpreadThreshold(
   const isTandemAxle = numberOfAxles === 2;
   const isTridemAxle = numberOfAxles === 3;
 
-  const isPowerUnit = vehicleIndex === 0;
-  const isOilfieldBedTruck = vehicleConfiguration[0] === 'OGBEDTK';
-
   if (isSingleAxle) {
     return {
       minCm: AXLE_SPREAD_CM.SINGLE.MINIMUM,
@@ -2000,21 +1995,12 @@ function getAxleSpreadThreshold(
   }
 
   if (isTridemAxle) {
-    const threshold = getTridemAxleSpreadThreshold(
+    return getTridemAxleSpreadThreshold(
       vehicleConfiguration,
       vehicleIndex,
       axleConfiguration,
       axleIndex,
     );
-
-    if (isPowerUnit && isOilfieldBedTruck) {
-      return {
-        minCm: threshold.minCm,
-        maxCm: AXLE_SPREAD_CM.TRIDEM.OILFIELD_BED_TRUCK.MAXIMUM,
-      };
-    }
-
-    return threshold;
   }
 
   return undefined;
