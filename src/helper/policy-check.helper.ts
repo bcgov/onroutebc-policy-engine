@@ -1800,6 +1800,10 @@ function getFailedInteraxleSpacingMessage(
     }
   }
 
+  if (requirement.min && requirement.max) {
+    return `Interaxle Spacing between Axle Unit ${previousAxleUnitNumber} and Axle Unit ${currentAxleUnitNumber} must be between ${formatMeters(requirement.min)} m and ${formatMeters(requirement.max)} m.`;
+  }
+
   if (requirement.min) {
     return `Interaxle Spacing between Axle Unit ${previousAxleUnitNumber} and Axle Unit ${currentAxleUnitNumber} must be at least ${formatMeters(requirement.min)} m.`;
   }
@@ -2055,7 +2059,7 @@ export function CheckLegalAxleSpread(
           : PolicyCheckResultType.Fail,
         message,
         axleUnit: axleUnitNumber,
-      } as AxleUnitPolicyCheckResult,
+      },
     ];
   });
 }
