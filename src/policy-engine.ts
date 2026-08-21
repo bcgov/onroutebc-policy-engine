@@ -192,7 +192,7 @@ export class Policy {
           0,
         );
 
-        if (permit.permitType !== "STWSE") {
+        if (permit.permitType !== 'STWSE') {
           // Clear the cost array and replace with zero cost
           validationResults.cost.length = 0;
           const newPermitCostResult = new ValidationResult(
@@ -204,7 +204,7 @@ export class Policy {
           validationResults.cost.push(newPermitCostResult);
         } else {
           // If permit type is STWSE, keep each of the cost objects, but set their costs to zero
-          const newPermitCosts = validationResults.cost.map(cost => {
+          const newPermitCosts = validationResults.cost.map((cost) => {
             const newPermitCostResult = new ValidationResult(
               ValidationResultType.Cost,
               ValidationResultCode.CostValue,

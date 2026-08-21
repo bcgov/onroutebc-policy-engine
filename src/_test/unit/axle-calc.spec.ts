@@ -24,6 +24,7 @@ import {
   CheckPickerTruckTractorWeightRestrictions,
   CheckWheelbaseLegalLimits,
   CheckDriveJeepLoadEqualization,
+  CheckLegalInteraxleSpacing,
 } from '../../helper/policy-check.helper';
 
 import {
@@ -68,14 +69,12 @@ describe('Axle Calculation Functions', () => {
     p.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    ).format(PermitAppInfo.PermitDateFormat.toString());
 
     p.permitData.vehicleDetails.vehicleSubType = 'TRKTRAC';
     p.permitData.vehicleConfiguration.axleConfiguration =
       getTruckTractorWheelbaseAxles(interaxleSpacing, axleSpread);
-    
+
     p.permitData.vehicleConfiguration.axleConfiguration[0].axleUnitWeight = 6000;
     return p;
   };
@@ -94,6 +93,60 @@ describe('Axle Calculation Functions', () => {
       axleUnitWeight: driveAxleWeight,
     },
   ];
+
+  describe('legal interaxle spacing policy check', () => {
+    const expectInteraxleSpacingResult = (
+      axleConfiguration: Array<AxleConfiguration>,
+      axleUnit: number,
+      expectedResult: PolicyCheckResultType,
+      expectedMessage?: string,
+    ) => {
+      const results = CheckLegalInteraxleSpacing(
+        policy,
+        vehicleConfiguration,
+        axleConfiguration,
+      );
+
+      expect(results[axleUnit - 1]).toMatchObject({
+        id: PolicyCheckId.LegalInteraxleSpacing,
+        result: expectedResult,
+        message: expectedMessage ?? '',
+        axleUnit,
+      });
+    };
+
+    it('passes when interaxle spacing meets the minimum threshold', () => {
+      const ac: Array<AxleConfiguration> = [
+        { numberOfAxles: 1, axleUnitWeight: 5000 },
+        { numberOfAxles: 2, interaxleSpacing: 300, axleUnitWeight: 10000 },
+      ];
+
+      expectInteraxleSpacingResult(ac, 2, PolicyCheckResultType.Pass);
+    });
+
+    it('fails when interaxle spacing is below the minimum threshold', () => {
+      const ac: Array<AxleConfiguration> = [
+        { numberOfAxles: 1, axleUnitWeight: 5000 },
+        { numberOfAxles: 2, interaxleSpacing: 299, axleUnitWeight: 10000 },
+      ];
+
+      expectInteraxleSpacingResult(
+        ac,
+        2,
+        PolicyCheckResultType.Fail,
+        'Interaxle Spacing between Axle Unit 1 and Axle Unit 2 must be at least 3 m.',
+      );
+    });
+
+    it('passes for the first axle unit because it has no preceding interaxle spacing field', () => {
+      const ac: Array<AxleConfiguration> = [
+        { numberOfAxles: 1, axleUnitWeight: 5000 },
+        { numberOfAxles: 2, interaxleSpacing: 300, axleUnitWeight: 10000 },
+      ];
+
+      expectInteraxleSpacingResult(ac, 1, PolicyCheckResultType.Pass);
+    });
+  });
 
   describe('number of wheels per axle unit policy check', () => {
     type WheelCountCase = [number, number, number];
@@ -1295,7 +1348,7 @@ describe('Axle Calculation Functions', () => {
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(false);
     const permittableWeightResults = results.results.filter(
-      (r) => r.id === PolicyCheckId.CheckPermittableWeight,
+      (r) => r.id === PolicyCheckId.PermittableWeight,
     );
     expect(
       permittableWeightResults.every(
@@ -1313,7 +1366,7 @@ describe('Axle Calculation Functions', () => {
     ac[ac.length - 1].axleUnitWeight = 23000;
     const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
     const permittableWeightResults = results.results.filter(
-      (r) => r.id === PolicyCheckId.CheckPermittableWeight,
+      (r) => r.id === PolicyCheckId.PermittableWeight,
     );
     expect(
       permittableWeightResults.every(
