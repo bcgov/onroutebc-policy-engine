@@ -1533,13 +1533,10 @@ export function CheckWheelbaseLegalLimits(
     }
 
     if (wheelbase >= 620) {
-      const hasDisallowedTrailer = vehicleConfiguration.slice(1).some((v) => {
-        const trailer = policy.getTrailerDefinition(v);
-        const isSemiTrailer = trailer?.id === 'SEMITRL';
-        return !isSemiTrailer;
-      });
-
       const hasTrailer = vehicleConfiguration.length > 1;
+      const hasDisallowedTrailer = vehicleConfiguration
+        .slice(1)
+        .some((vehicleType) => !isSemiTrailerType(vehicleType));
 
       return [
         {

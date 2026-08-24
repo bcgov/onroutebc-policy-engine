@@ -134,7 +134,7 @@ describe('Axle Calculation Functions', () => {
         ac,
         2,
         PolicyCheckResultType.Fail,
-        'Interaxle Spacing between Axle Unit 1 and Axle Unit 2 must be at least 3 m.',
+        'Interaxle Spacing between Axle Unit 1 and Axle Unit 2 must be at least 3.0 m.',
       );
     });
 
@@ -1736,7 +1736,7 @@ describe('Axle Calculation Functions', () => {
     });
   });
 
-  it('should fail truck tractor wheelbase between 6.2m and 7.2m when trailer type is not semi-trailer', async () => {
+  it('should fail truck tractor wheelbase between 6.2m and 7.2m when trailer type is not semi-trailer type', async () => {
     const jeepResults = CheckWheelbaseLegalLimits(
       policy,
       ['TRKTRAC', 'JEEPSRG'],
@@ -1867,8 +1867,7 @@ describe('Axle Calculation Functions', () => {
       expect(results[0]).toMatchObject({
         id: PolicyCheckId.LegalAxleSpread,
         result: PolicyCheckResultType.Fail,
-        message:
-          'Axle Spread for Axle Unit 3 must be between 2.40 m and 2.50 m.',
+        message: 'Axle Spread for Axle Unit 3 must be between 2.4 m and 2.5 m.',
         axleUnit: 3,
       });
     });
@@ -2070,7 +2069,7 @@ describe('Axle Calculation Functions', () => {
   });
 
   it('should not include a truck tractor wheelbase validation violation when the direct policy check passes below 6.2m', async () => {
-    const permit = getTruckTractorWheelbasePermit(580, 40);
+    const permit = getTruckTractorWheelbasePermit(480, 100);
     const directResult = CheckWheelbaseLegalLimits(
       policy,
       vehicleConfiguration,
