@@ -18,9 +18,35 @@ export type AxleCalcResults = {
   results: Array<AxleGroupPolicyCheckResult>;
   /** Total weight overload across all axles in kilograms */
   overload: number;
+  /** Details for only the selected overload calculation */
+  overloadDetails: Array<OverloadCalculationDetail>;
   /** Total Gross Combined Vehicle Weight across all axles in kilograms */
   totalGCVW: number;
 };
+
+/** Licensed-GVW overload selected across the complete axle configuration. */
+export type LicensedGvwOverloadCalculationDetail = {
+  kind: 'licensed-gvw';
+  startAxleUnit: number;
+  endAxleUnit: number;
+  licensedGVW: number;
+  totalGCVW: number;
+  overload: number;
+};
+
+/** Legal-weight overload selected for an axle unit or axle-unit group. */
+export type AxleWeightOverloadCalculationDetail = {
+  kind: 'axle-weight';
+  startAxleUnit: number;
+  endAxleUnit: number;
+  actualWeight: number;
+  legalMaxWeight: number;
+  overload: number;
+};
+
+export type OverloadCalculationDetail =
+  | LicensedGvwOverloadCalculationDetail
+  | AxleWeightOverloadCalculationDetail;
 
 /**
  * Individual policy check result for a specific validation rule

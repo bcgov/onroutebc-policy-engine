@@ -3,6 +3,9 @@ export type {
   PolicyCheckResult,
   AxleUnitPolicyCheckResult,
   AxleGroupPolicyCheckResult,
+  OverloadCalculationDetail,
+  LicensedGvwOverloadCalculationDetail,
+  AxleWeightOverloadCalculationDetail,
 } from './axle-calculation-results';
 export type {
   AxleConfiguration,

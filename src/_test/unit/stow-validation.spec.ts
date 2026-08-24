@@ -258,6 +258,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
   it('exposes an above-legal axle-unit failure through validate', async () => {
     const permit = getDatedPermit();
     permit.permitData.vehicleConfiguration.axleConfiguration[0].axleUnitWeight = 6001;
+    permit.permitData.vehicleDetails.licensedGVW = 100000;
 
     const validationResult = await policy.validate(permit);
     const legalFailure = validationResult.axleCalculationResults?.results.find(
@@ -270,6 +271,33 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
       actualWeight: 6001,
       thresholdWeight: 6000,
     });
+    expect(validationResult.axleCalculationResults).toMatchObject({
+      overload: 1,
+      overloadDetails: [
+        {
+          kind: 'axle-weight',
+          startAxleUnit: 1,
+          endAxleUnit: 1,
+          actualWeight: 6001,
+          legalMaxWeight: 6000,
+          overload: 1,
+        },
+      ],
+    });
+
+    const vehicleConfiguration = policy.getSimplifiedVehicleConfiguration(
+      permit.permitData.vehicleDetails,
+      permit.permitData.vehicleConfiguration,
+    );
+    const axleConfiguration =
+      permit.permitData.vehicleConfiguration.axleConfiguration;
+    expect(
+      policy.runAxleCalculation(
+        vehicleConfiguration,
+        axleConfiguration,
+        permit.permitData.vehicleDetails.licensedGVW,
+      ).overloadDetails,
+    ).toEqual(validationResult.axleCalculationResults?.overloadDetails);
     expect(validationResult.violations).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
