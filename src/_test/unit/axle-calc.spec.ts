@@ -2342,4 +2342,48 @@ describe('Axle Calculation Functions', () => {
       maxTireResults.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(false);
   });
+
+  describe('ORV2-5903 grandfathered TPS tire limit', () => {
+    const getMaxTireLoadResult = (
+      axleUnit: number,
+      numberOfAxles: number,
+      tireSize: number,
+      numberOfTires: number,
+      axleUnitWeight: number,
+    ) => {
+      const ac = JSON.parse(
+        JSON.stringify(axleConfiguration),
+      ) as Array<AxleConfiguration>;
+      const targetAxle = ac[axleUnit - 1];
+
+      targetAxle.numberOfAxles = numberOfAxles;
+      targetAxle.tireSize = tireSize;
+      targetAxle.numberOfTires = numberOfTires;
+      targetAxle.axleUnitWeight = axleUnitWeight;
+
+      return policy
+        .runAxleCalculation(vehicleConfiguration, ac, 0)
+        .results.find((result) => result.id === PolicyCheckId.MaxTireLoad);
+    };
+
+    it('should allow 23,000 kg for the exact grandfathered TPS configuration', () => {
+      // TPS allowed this configuration. ORV2-5903 keeps it as a grandfathered case.
+      expect(getMaxTireLoadResult(2, 2, 279.4, 8, 23000)).toMatchObject({
+        result: PolicyCheckResultType.Pass,
+      });
+    });
+
+    it.each([
+      ['axle unit 1', 1, 2, 279.4, 8, 23000],
+      ['a single axle', 2, 1, 279.4, 8, 23000],
+      ['a different tire size', 2, 2, 279.3, 8, 23000],
+      ['a different tire count', 2, 2, 279.4, 7, 23000],
+      ['a weight above the limit', 2, 2, 279.4, 8, 23001],
+    ])('should not apply the TPS exception to %s', (_, ...testCase) => {
+      // ORV2-5903 keeps only this exact TPS configuration as a grandfathered case.
+      expect(getMaxTireLoadResult(...testCase)).toMatchObject({
+        result: PolicyCheckResultType.Fail,
+      });
+    });
+  });
 });

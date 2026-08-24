@@ -1360,6 +1360,17 @@ export function CheckMaxTireLoad(
       return;
     }
 
+    // ORV2-5903 keeps this exact configuration as a grandfathered TPS case.
+    const hasGrandfatheredTpsTireLimit =
+      ac.numberOfAxles === 2 &&
+      tireSize === 279.4 &&
+      numberOfTires === 8 &&
+      axleWeight <= 23000;
+
+    if (hasGrandfatheredTpsTireLimit) {
+      return;
+    }
+
     /**
      * Standard non-steering axle — all vehicles except Crane - All Terrain,
      * Mobile Crane (non-steering), Rubber Tired Loader
