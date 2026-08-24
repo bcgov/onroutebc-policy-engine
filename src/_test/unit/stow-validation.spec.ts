@@ -628,6 +628,13 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
       });
     });
 
+    describe('ORV2-5903 grandfathered TPS tire limit', () => {
+      it('should allow the exact TPS configuration during permit validation', async () => {
+        // TPS allowed this configuration. ORV2-5903 keeps it as a grandfathered case.
+        await testTireLoadResult('TRKTRAC', 1, 279.4, 8, 23000, false);
+      });
+    });
+
     describe('Crane - All Terrain (CRANEAT)', () => {
       it('should pass at limit for tires >=520mm', async () => {
         await testTireLoadResult('CRANEAT', 0, 550, 2, 11000, false);
