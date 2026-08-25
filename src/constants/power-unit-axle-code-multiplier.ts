@@ -1,0 +1,1 @@
+export const POWER_UNIT_AXLE_CODE_MULTIPLIER = 10;
