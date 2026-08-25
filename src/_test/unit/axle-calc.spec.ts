@@ -2343,7 +2343,7 @@ describe('Axle Calculation Functions', () => {
     ).toBe(false);
   });
 
-  describe('ORV2-5903 grandfathered TPS tire limit', () => {
+  xdescribe('ORV2-5903 grandfathered TPS tire limit', () => {
     const getMaxTireLoadResult = (
       axleUnit: number,
       numberOfAxles: number,

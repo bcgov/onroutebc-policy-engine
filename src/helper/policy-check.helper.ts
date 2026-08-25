@@ -13,6 +13,16 @@ import {
   VehicleCategory,
   PolicyCheckResultType,
 } from '../enum';
+import { AXLE_WEIGHT_LEGAL_MAXIMUMS } from '../constants/axle-weight-legal-maximums';
+import { AXLE_WEIGHT_PERMITTABLE_MAXIMUMS } from '../constants/axle-weight-permittable-maximums';
+import { POWER_UNIT_AXLE_CODE_MULTIPLIER } from '../constants/power-unit-axle-code-multiplier';
+import { getAxleSpreadThreshold } from './axle-spread.helper';
+import { isSemiTrailerType } from '../constants/semi-trailer-types';
+import {
+  getFailedInteraxleSpacingMessage,
+  getInteraxleSpacingRequirement,
+} from './interaxle-spacing.helper';
+import { formatMeters } from './format-meters.helper';
 
 /**
  * Type definition for policy check functions.
@@ -32,87 +42,6 @@ type PolicyCheck = (
   vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
 ) => Array<PolicyCheckResult>;
-
-const POWER_UNIT_AXLE_CODE_MULTIPLIER = 10;
-
-const LEGAL_WEIGHT_MAXIMUM_KG = {
-  SINGLE_AXLE: 9100,
-  STANDARD_TRUCK_TRACTOR_STEER: 6000,
-  STANDARD_SINGLE_STEER_WITH_TRIDEM_DRIVE: 7300,
-  TANDEM_AXLE: 17000,
-  STANDARD_TANDEM_STEER_WITH_TRIDEM_DRIVE: 13600,
-  PME_TANDEM_STEER_WITH_TRIDEM_DRIVE: 15200,
-  TRIDEM_AXLE: 24000,
-} as const;
-
-const PERMITTABLE_WEIGHT_MAXIMUM_KG = {
-  SINGLE_STEER: 9100,
-  SINGLE_NON_STEER: 11000,
-  TANDEM: 23000,
-  STANDARD_TRIDEM: 28000,
-  QUALIFYING_TRIDEM: 29000,
-} as const;
-
-const QUALIFYING_TRIDEM_SPREAD_CM = {
-  MINIMUM: 240,
-  MAXIMUM: 370,
-} as const;
-
-const INTERAXLE_SPACING_MINIMUM_CM = {
-  SINGLE: {
-    SINGLE: 300,
-    TANDEM: 300,
-    TRIDEM: 300,
-  },
-  TANDEM: {
-    SINGLE: 300,
-    TANDEM: 500,
-    TRIDEM: 550,
-  },
-  TRIDEM: {
-    SINGLE: 300,
-    TANDEM: 550,
-    TRIDEM: 600,
-  },
-} as const;
-
-const AXLE_SPREAD_CM = {
-  SINGLE: {
-    MINIMUM: 0,
-    MAXIMUM: 100,
-  },
-
-  TANDEM: {
-    MINIMUM: 100,
-    MAXIMUM: 185,
-
-    SPREAD_TANDEM_SEMI_TRAILER: {
-      MINIMUM: 186,
-      MAXIMUM: 307,
-    },
-  },
-
-  TRIDEM: {
-    MINIMUM: 240,
-    MAXIMUM: 280,
-
-    PONY_TRAILER: {
-      MAXIMUM: 250,
-    },
-
-    SEMI_TRAILER: {
-      MAXIMUM: 370,
-    },
-
-    POLE_TRAILER: {
-      MAXIMUM: 310,
-    },
-
-    OILFIELD_BED_TRUCK: {
-      MAXIMUM: 310,
-    },
-  },
-} as const;
 
 /** Applies the standard lower-of rule or the exact 7.16(g) exception. */
 export function getMaximumLegalAxleGroupWeightThreshold(
@@ -244,29 +173,29 @@ function getFeatureLegalPowerUnitWeightThreshold(
       (driveAxle.numberOfAxles === 1 || driveAxle.numberOfAxles === 2)
     ) {
       return hasPme || vehicleType === 'REGTRCK'
-        ? LEGAL_WEIGHT_MAXIMUM_KG.SINGLE_AXLE
-        : LEGAL_WEIGHT_MAXIMUM_KG.STANDARD_TRUCK_TRACTOR_STEER;
+        ? AXLE_WEIGHT_LEGAL_MAXIMUMS.SINGLE_AXLE
+        : AXLE_WEIGHT_LEGAL_MAXIMUMS.STANDARD_TRUCK_TRACTOR_STEER;
     }
     if (steerAxle.numberOfAxles === 1 && driveAxle.numberOfAxles === 3) {
       return hasPme
-        ? LEGAL_WEIGHT_MAXIMUM_KG.SINGLE_AXLE
-        : LEGAL_WEIGHT_MAXIMUM_KG.STANDARD_SINGLE_STEER_WITH_TRIDEM_DRIVE;
+        ? AXLE_WEIGHT_LEGAL_MAXIMUMS.SINGLE_AXLE
+        : AXLE_WEIGHT_LEGAL_MAXIMUMS.STANDARD_SINGLE_STEER_WITH_TRIDEM_DRIVE;
     }
     if (steerAxle.numberOfAxles === 2 && driveAxle.numberOfAxles === 2) {
-      return LEGAL_WEIGHT_MAXIMUM_KG.TANDEM_AXLE;
+      return AXLE_WEIGHT_LEGAL_MAXIMUMS.TANDEM_AXLE;
     }
     if (steerAxle.numberOfAxles === 2 && driveAxle.numberOfAxles === 3) {
       return hasPme
-        ? LEGAL_WEIGHT_MAXIMUM_KG.PME_TANDEM_STEER_WITH_TRIDEM_DRIVE
-        : LEGAL_WEIGHT_MAXIMUM_KG.STANDARD_TANDEM_STEER_WITH_TRIDEM_DRIVE;
+        ? AXLE_WEIGHT_LEGAL_MAXIMUMS.PME_TANDEM_STEER_WITH_TRIDEM_DRIVE
+        : AXLE_WEIGHT_LEGAL_MAXIMUMS.STANDARD_TANDEM_STEER_WITH_TRIDEM_DRIVE;
     }
   }
 
   if (axleIndex === 1) {
     return {
-      1: LEGAL_WEIGHT_MAXIMUM_KG.SINGLE_AXLE,
-      2: LEGAL_WEIGHT_MAXIMUM_KG.TANDEM_AXLE,
-      3: LEGAL_WEIGHT_MAXIMUM_KG.TRIDEM_AXLE,
+      1: AXLE_WEIGHT_LEGAL_MAXIMUMS.SINGLE_AXLE,
+      2: AXLE_WEIGHT_LEGAL_MAXIMUMS.TANDEM_AXLE,
+      3: AXLE_WEIGHT_LEGAL_MAXIMUMS.TRIDEM_AXLE,
     }[driveAxle.numberOfAxles];
   }
 
@@ -759,6 +688,11 @@ export function CheckPermittableWeight(
     axleConfiguration,
   );
 
+  const QUALIFYING_TRIDEM_SPREAD_CM = {
+    MINIMUM: 240,
+    MAXIMUM: 370,
+  };
+
   return axleConfiguration.map((axleUnit, axleIndex) => {
     const vehicleIndex = axleUnitVehicleIndexes[axleIndex];
     const isSingleSteer =
@@ -768,12 +702,12 @@ export function CheckPermittableWeight(
     let permittableWeight: number | undefined;
 
     if (isSingleSteer) {
-      permittableWeight = PERMITTABLE_WEIGHT_MAXIMUM_KG.SINGLE_STEER;
+      permittableWeight = AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.SINGLE_STEER;
     } else if (!isTandemSteer) {
       if (axleUnit.numberOfAxles === 1) {
-        permittableWeight = PERMITTABLE_WEIGHT_MAXIMUM_KG.SINGLE_NON_STEER;
+        permittableWeight = AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.SINGLE_NON_STEER;
       } else if (axleUnit.numberOfAxles === 2) {
-        permittableWeight = PERMITTABLE_WEIGHT_MAXIMUM_KG.TANDEM;
+        permittableWeight = AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.TANDEM;
       } else if (axleUnit.numberOfAxles === 3) {
         const spreadQualifies =
           axleUnit.axleSpread !== undefined &&
@@ -793,8 +727,8 @@ export function CheckPermittableWeight(
 
         permittableWeight =
           spreadQualifies && boosterQualifies
-            ? PERMITTABLE_WEIGHT_MAXIMUM_KG.QUALIFYING_TRIDEM
-            : PERMITTABLE_WEIGHT_MAXIMUM_KG.STANDARD_TRIDEM;
+            ? AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.QUALIFYING_TRIDEM
+            : AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.STANDARD_TRIDEM;
       }
     }
 
@@ -1111,9 +1045,14 @@ export function CheckMinDriveAxleWeight(
   const isTandemDrive = driveAxle.numberOfAxles === 2;
   const isTridemDrive = driveAxle.numberOfAxles === 3;
 
-  // TODO we need to add Truck with PME and Truck Tractor with PME when ready
   const isSupportedVehicleSubtype = (value?: string): boolean => {
-    return value === 'REGTRCK' || value === 'TRKTRAC' || value === 'PICKRTT';
+    return (
+      value === 'REGTRCK' ||
+      value === 'TRKTRAC' ||
+      value === 'PICKRTT' ||
+      value === 'TRCKPME' ||
+      value === 'TRACPME'
+    );
   };
 
   if (
@@ -1477,7 +1416,7 @@ export function CheckBoosterAxleLimit(
  * Validates wheelbase legal limits for supported power unit vehicle sub-types.
  */
 export function CheckWheelbaseLegalLimits(
-  policy: Policy,
+  _policy: Policy,
   vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
 ): Array<PolicyCheckResult> {
@@ -1500,13 +1439,14 @@ export function CheckWheelbaseLegalLimits(
     interaxleSpacing: axleConfiguration[1].interaxleSpacing ?? 0,
   };
 
-  // TODO we need to add Truck with PME and Truck Tractor with PME when ready
   const isSupportedVehicleSubtype = (value?: string): boolean => {
     return (
       value === 'REGTRCK' ||
       value === 'TRKTRAC' ||
       value === 'PICKRTT' ||
-      value === 'OGBEDTK'
+      value === 'OGBEDTK' ||
+      value === 'TRCKPME' ||
+      value === 'TRACPME'
     );
   };
 
@@ -1517,6 +1457,8 @@ export function CheckWheelbaseLegalLimits(
 
   const isTruckTractor = powerUnitSubtype === 'TRKTRAC';
   const isPickerTruckTractor = powerUnitSubtype === 'PICKRTT';
+  const isTruckWithPME = powerUnitSubtype === 'TRCKPME';
+  const isTruckTractorWithPME = powerUnitSubtype === 'TRACPME';
   const isOilfieldBedTruck = powerUnitSubtype === 'OGBEDTK';
 
   const wheelbase = isSingleSteer
@@ -1573,8 +1515,12 @@ export function CheckWheelbaseLegalLimits(
 
   if (isSupportedVehicleSubtype(powerUnitSubtype)) {
     if (isSingleSteer && isTridemDrive) {
-      // TODO we need to add Truck with PME and Truck Tractor with PME when ready
-      if (isTruckTractor || isPickerTruckTractor) {
+      if (
+        isTruckTractor ||
+        isPickerTruckTractor ||
+        isTruckWithPME ||
+        isTruckTractorWithPME
+      ) {
         if (wheelbase < 660) {
           return [
             {
@@ -1740,84 +1686,6 @@ export function CheckDriveJeepLoadEqualization(
   return policyCheckResults;
 }
 
-function getAxleUnitType(
-  numberOfAxles: number,
-): keyof typeof INTERAXLE_SPACING_MINIMUM_CM {
-  if (numberOfAxles === 1) {
-    return 'SINGLE';
-  }
-
-  if (numberOfAxles === 2) {
-    return 'TANDEM';
-  }
-
-  return 'TRIDEM';
-}
-
-interface InteraxleSpacingRequirement {
-  min?: number;
-  max?: number;
-  groupLabel?: string;
-}
-
-function getInteraxleSpacingRequirement(
-  axleConfiguration: Array<AxleConfiguration>,
-  axleIndex: number,
-): InteraxleSpacingRequirement | undefined {
-  // the first axle unit will never have an interaxle spacing value or previous axle unit to compare against
-  if (axleIndex === 0) {
-    return undefined;
-  }
-
-  const axleUnit = axleConfiguration[axleIndex];
-  const previousAxleUnit = axleConfiguration[axleIndex - 1];
-
-  if (
-    !Number.isFinite(axleUnit.interaxleSpacing) ||
-    !Number.isFinite(previousAxleUnit.numberOfAxles)
-  ) {
-    return undefined;
-  }
-
-  const previousAxleUnitType = getAxleUnitType(previousAxleUnit.numberOfAxles);
-  const currentAxleUnitType = getAxleUnitType(axleUnit.numberOfAxles);
-
-  return {
-    min: INTERAXLE_SPACING_MINIMUM_CM[previousAxleUnitType][
-      currentAxleUnitType
-    ],
-  };
-}
-
-function formatMeters(cm: number): string {
-  return (cm / 100).toFixed(2).replace(/(\.\d)0$/u, '$1');
-}
-
-function getFailedInteraxleSpacingMessage(
-  requirement: InteraxleSpacingRequirement,
-  previousAxleUnitNumber: number,
-  currentAxleUnitNumber: number,
-): string {
-  if (requirement.groupLabel) {
-    if (requirement.min && requirement.max) {
-      return `Interaxle Spacing for ${requirement.groupLabel} must be between ${formatMeters(requirement.min)} m and ${formatMeters(requirement.max)} m.`;
-    }
-
-    if (requirement.min) {
-      return `Interaxle Spacing for ${requirement.groupLabel} must be at least ${formatMeters(requirement.min)} m.`;
-    }
-  }
-
-  if (requirement.min && requirement.max) {
-    return `Interaxle Spacing between Axle Unit ${previousAxleUnitNumber} and Axle Unit ${currentAxleUnitNumber} must be between ${formatMeters(requirement.min)} m and ${formatMeters(requirement.max)} m.`;
-  }
-
-  if (requirement.min) {
-    return `Interaxle Spacing between Axle Unit ${previousAxleUnitNumber} and Axle Unit ${currentAxleUnitNumber} must be at least ${formatMeters(requirement.min)} m.`;
-  }
-  return '';
-}
-
 /**
  * Validates each axle unit against the minimum interaxle spacing for its
  * current axle unit and the next axle unit, per Table II.
@@ -1862,161 +1730,6 @@ export function CheckLegalInteraxleSpacing(
       axleUnit: axleUnitNumber,
     };
   });
-}
-
-function getTandemAxleSpreadThreshold(
-  vehicleConfiguration: Array<string>,
-  vehicleIndex: number,
-): { minCm: number; maxCm: number } {
-  const vehicleType = vehicleConfiguration[vehicleIndex];
-  const isSpreadTandemSemiTrailer = vehicleType === 'STWDTAN';
-
-  if (isSpreadTandemSemiTrailer) {
-    return {
-      minCm: AXLE_SPREAD_CM.TANDEM.SPREAD_TANDEM_SEMI_TRAILER.MINIMUM,
-      maxCm: AXLE_SPREAD_CM.TANDEM.SPREAD_TANDEM_SEMI_TRAILER.MAXIMUM,
-    };
-  }
-
-  return {
-    minCm: AXLE_SPREAD_CM.TANDEM.MINIMUM,
-    maxCm: AXLE_SPREAD_CM.TANDEM.MAXIMUM,
-  };
-}
-
-const SEMI_TRAILER_TYPES = new Set([
-  // Expando Semi-Trailers
-  'EXPANDO',
-  // Fixed Equipment - Conveyors
-  'FECVYRX',
-  // Fixed Equipment - Counter Flow Asphalt Drum Mixers
-  'FEDRMMX',
-  // Fixed Equipment - Portable Asphalt Baghouses
-  'FEBGHSE',
-  // Fixed Equipment - Semi-Trailers
-  'FESEMTR',
-  // Fixed Equipment - Wheeler Semi-Trailers
-  'FEWHELR',
-  // Semi-Trailers - Hiboys/Expandos
-  'HIBOEXP',
-  // Semi-Trailers - Hiboys/Flat Decks
-  'HIBOFLT',
-  // Oil and Gas - Oversize Oilfield Flat Deck Semi-Trailers
-  'OGOSFDT',
-  // Platform Trailer
-  'PLATFRM',
-  // Platform Trailers - Wheelers
-  'PLATWHE',
-  // Pole Trailers
-  'POLETRL',
-  // Ready Mix Concrete Pump Semi-Trailers
-  'REDIMIX',
-  // Semi-Trailers
-  'SEMITRL',
-  // Semi-Trailers - Single Drop, Double Drop, Step Decks, Lowbed, Expandos, etc.
-  'STSDBDK',
-  // Semi-Trailers with Crane
-  'STCRANE',
-  // Semi-Trailers - Spread Tandem
-  'STWDTAN',
-  // Semi-Trailers - Wheelers
-  'STWHELR',
-  // Semi-Trailers - Wide Wheelers
-  'STWIDWH',
-]);
-
-function isSemiTrailerType(vehicleType: string): boolean {
-  return SEMI_TRAILER_TYPES.has(vehicleType);
-}
-
-function getTridemAxleSpreadThreshold(
-  vehicleConfiguration: Array<string>,
-  vehicleIndex: number,
-  axleConfiguration: Array<AxleConfiguration>,
-  axleIndex: number,
-): { minCm: number; maxCm: number } {
-  const vehicleType = vehicleConfiguration[vehicleIndex];
-  const isDriveAxle = axleIndex === 1;
-  const isTridemDrive = axleConfiguration[1].numberOfAxles === 3;
-  const isPonyTrailer = vehicleType === 'PONYTRL';
-  const isPoleTrailer = vehicleType === 'POLETRL';
-  const isOilfieldBedTruck = vehicleType === 'OGBEDTK';
-  const isPowerUnitTruckTractor = vehicleConfiguration[0] === 'TRKTRAC';
-
-  if (isOilfieldBedTruck && isDriveAxle) {
-    return {
-      minCm: AXLE_SPREAD_CM.TRIDEM.MINIMUM,
-      maxCm: AXLE_SPREAD_CM.TRIDEM.OILFIELD_BED_TRUCK.MAXIMUM,
-    };
-  }
-
-  if (isPonyTrailer) {
-    return {
-      minCm: AXLE_SPREAD_CM.TRIDEM.MINIMUM,
-      maxCm: AXLE_SPREAD_CM.TRIDEM.PONY_TRAILER.MAXIMUM,
-    };
-  }
-
-  if (isPowerUnitTruckTractor && isSemiTrailerType(vehicleType)) {
-    return {
-      minCm: AXLE_SPREAD_CM.TRIDEM.MINIMUM,
-      maxCm: AXLE_SPREAD_CM.TRIDEM.SEMI_TRAILER.MAXIMUM,
-    };
-  }
-
-  if (isPowerUnitTruckTractor && isTridemDrive && isPoleTrailer) {
-    return {
-      minCm: AXLE_SPREAD_CM.TRIDEM.MINIMUM,
-      maxCm: AXLE_SPREAD_CM.TRIDEM.POLE_TRAILER.MAXIMUM,
-    };
-  }
-
-  return {
-    minCm: AXLE_SPREAD_CM.TRIDEM.MINIMUM,
-    maxCm: AXLE_SPREAD_CM.TRIDEM.MAXIMUM,
-  };
-}
-
-function getAxleSpreadThreshold(
-  vehicleConfiguration: Array<string>,
-  axleUnitVehicleIndexes: Array<number>,
-  axleConfiguration: Array<AxleConfiguration>,
-  axleIndex: number,
-): { minCm: number; maxCm: number } | undefined {
-  const axleUnit = axleConfiguration[axleIndex];
-  if (!Number.isFinite(axleUnit.axleSpread)) {
-    return undefined;
-  }
-
-  const vehicleIndex = axleUnitVehicleIndexes[axleIndex];
-  const numberOfAxles = axleUnit.numberOfAxles;
-
-  const isSingleAxle = numberOfAxles === 1;
-  const isTandemAxle = numberOfAxles === 2;
-  const isTridemAxle = numberOfAxles === 3;
-
-  if (isSingleAxle) {
-    // the ASW table specifically disables the axleSpread input for single axle unit types, so this code will never run, but have left these in place in case something changes
-    return {
-      minCm: AXLE_SPREAD_CM.SINGLE.MINIMUM,
-      maxCm: AXLE_SPREAD_CM.SINGLE.MAXIMUM,
-    };
-  }
-
-  if (isTandemAxle) {
-    return getTandemAxleSpreadThreshold(vehicleConfiguration, vehicleIndex);
-  }
-
-  if (isTridemAxle) {
-    return getTridemAxleSpreadThreshold(
-      vehicleConfiguration,
-      vehicleIndex,
-      axleConfiguration,
-      axleIndex,
-    );
-  }
-
-  return undefined;
 }
 
 /**
