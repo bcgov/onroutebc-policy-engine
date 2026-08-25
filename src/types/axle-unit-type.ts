@@ -4,4 +4,5 @@ export const AXLE_UNIT_TYPES = {
   TRIDEM: 'TRIDEM',
 } as const;
 
-type AxleUnitType = (typeof AXLE_UNIT_TYPES)[keyof typeof AXLE_UNIT_TYPES];
+export type AxleUnitType =
+  (typeof AXLE_UNIT_TYPES)[keyof typeof AXLE_UNIT_TYPES];
