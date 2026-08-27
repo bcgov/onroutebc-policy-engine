@@ -1,4 +1,8 @@
-import { PolicyCheckId, PolicyCheckResultType } from '../../enum';
+import {
+  OverloadCalculationDetailKind,
+  PolicyCheckId,
+  PolicyCheckResultType,
+} from '../../enum';
 import { calculateOverload } from '../../helper/overload.helper';
 import { AxleGroupPolicyCheckResult } from '../../types';
 
@@ -55,7 +59,7 @@ describe('ORV2-5899 overload calculation details', () => {
       overload: 17000,
       overloadDetails: [
         {
-          kind: 'licensed-gvw',
+          kind: OverloadCalculationDetailKind.LicensedGvw,
           startAxleUnit: 1,
           endAxleUnit: 3,
           licensedGVW: 35000,
@@ -126,7 +130,10 @@ describe('ORV2-5899 overload calculation details', () => {
     );
 
     expect(result.overloadDetails).toEqual([
-      expect.objectContaining({ kind: 'licensed-gvw', overload: 1000 }),
+      expect.objectContaining({
+        kind: OverloadCalculationDetailKind.LicensedGvw,
+        overload: 1000,
+      }),
     ]);
   });
 });

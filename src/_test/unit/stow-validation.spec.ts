@@ -3,6 +3,7 @@ import { Policy } from 'onroute-policy-engine';
 import currentConfig from '../policy-config/_current-config.json';
 import testStow from '../permit-app/test-stow.json';
 import { PermitAppInfo } from '../../enum/permit-app-info';
+import { OverloadCalculationDetailKind } from '../../enum/overload-calculation-detail-kind';
 import { PolicyCheckId, PolicyCheckResultType } from '../../enum/policy-check';
 import {
   convertToTimezone,
@@ -275,7 +276,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
       overload: 1,
       overloadDetails: [
         {
-          kind: 'axle-weight',
+          kind: OverloadCalculationDetailKind.AxleWeight,
           startAxleUnit: 1,
           endAxleUnit: 1,
           actualWeight: 6001,

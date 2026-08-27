@@ -1,4 +1,8 @@
-import { PolicyCheckId, PolicyCheckResultType } from '../enum';
+import {
+  OverloadCalculationDetailKind,
+  PolicyCheckId,
+  PolicyCheckResultType,
+} from '../enum';
 import {
   AxleGroupPolicyCheckResult,
   AxleWeightOverloadCalculationDetail,
@@ -54,9 +58,9 @@ const getAxleOverloadCandidates = (
         (thresholdWeight as number) > 0 &&
         (actualWeight as number) > (thresholdWeight as number),
     )
-    .map(
+    .map<AxleWeightOverloadCalculationDetail>(
       ({ startAxleUnit, endAxleUnit, actualWeight, thresholdWeight }) => ({
-        kind: 'axle-weight' as const,
+        kind: OverloadCalculationDetailKind.AxleWeight,
         startAxleUnit,
         endAxleUnit,
         actualWeight: actualWeight as number,
@@ -121,7 +125,7 @@ export const calculateOverload = (
       overload: licensedGvwOverload,
       overloadDetails: [
         {
-          kind: 'licensed-gvw',
+          kind: OverloadCalculationDetailKind.LicensedGvw,
           startAxleUnit: 1,
           endAxleUnit: axleUnitCount,
           licensedGVW,

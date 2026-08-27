@@ -6,6 +6,7 @@
  */
 
 import {
+  OverloadCalculationDetailKind,
   PolicyCheckId,
   PolicyCheckResultType,
 } from 'onroute-policy-engine/enum';
@@ -26,7 +27,7 @@ export type AxleCalcResults = {
 
 /** Licensed-GVW overload selected across the complete axle configuration. */
 export type LicensedGvwOverloadCalculationDetail = {
-  kind: 'licensed-gvw';
+  kind: OverloadCalculationDetailKind.LicensedGvw;
   startAxleUnit: number;
   endAxleUnit: number;
   licensedGVW: number;
@@ -36,7 +37,7 @@ export type LicensedGvwOverloadCalculationDetail = {
 
 /** Legal-weight overload selected for an axle unit or axle-unit group. */
 export type AxleWeightOverloadCalculationDetail = {
-  kind: 'axle-weight';
+  kind: OverloadCalculationDetailKind.AxleWeight;
   startAxleUnit: number;
   endAxleUnit: number;
   actualWeight: number;
