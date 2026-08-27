@@ -2343,7 +2343,7 @@ describe('Axle Calculation Functions', () => {
     ).toBe(false);
   });
 
-  xdescribe('ORV2-5903 grandfathered TPS tire limit', () => {
+  describe('ORV2-5903 grandfathered TPS tire limit', () => {
     const getMaxTireLoadResult = (
       axleUnit: number,
       numberOfAxles: number,
@@ -2371,6 +2371,33 @@ describe('Axle Calculation Functions', () => {
       expect(getMaxTireLoadResult(2, 2, 279.4, 8, 23000)).toMatchObject({
         result: PolicyCheckResultType.Pass,
       });
+    });
+
+    it('should allow the application stored value for the 279.4 mm tire option', () => {
+      expect(getMaxTireLoadResult(2, 2, 279, 8, 23000)).toMatchObject({
+        result: PolicyCheckResultType.Pass,
+      });
+    });
+
+    it('should allow the exact grandfathered configuration on multiple non-steering axle units', () => {
+      const ac = JSON.parse(
+        JSON.stringify(axleConfiguration),
+      ) as Array<AxleConfiguration>;
+
+      [ac[1], ac[2]].forEach((axleUnit) => {
+        axleUnit.numberOfAxles = 2;
+        axleUnit.tireSize = 279.4;
+        axleUnit.numberOfTires = 8;
+        axleUnit.axleUnitWeight = 23000;
+      });
+
+      const maxTireLoadResults = policy
+        .runAxleCalculation(vehicleConfiguration, ac, 0)
+        .results.filter((result) => result.id === PolicyCheckId.MaxTireLoad);
+
+      expect(maxTireLoadResults).toEqual([
+        expect.objectContaining({ result: PolicyCheckResultType.Pass }),
+      ]);
     });
 
     it.each([

@@ -2,7 +2,7 @@ import { PolicyCheckId, PolicyCheckResultType } from '../../enum';
 import { calculateOverload } from '../../helper/overload.helper';
 import { AxleGroupPolicyCheckResult } from '../../types';
 
-const failure = (
+const overloadSource = (
   id: PolicyCheckId,
   startAxleUnit: number,
   endAxleUnit: number,
@@ -10,7 +10,10 @@ const failure = (
   thresholdWeight: number,
 ): AxleGroupPolicyCheckResult => ({
   id,
-  result: PolicyCheckResultType.Fail,
+  result:
+    id === PolicyCheckId.LegalWeight
+      ? PolicyCheckResultType.Warning
+      : PolicyCheckResultType.Fail,
   message: '',
   startAxleUnit,
   endAxleUnit,
@@ -26,10 +29,10 @@ describe('ORV2-5899 overload calculation details', () => {
     });
   });
 
-  it('ignores axle failures without a positive legal maximum', () => {
+  it('ignores overload sources without a positive legal maximum', () => {
     expect(
       calculateOverload(
-        [failure(PolicyCheckId.LegalWeight, 1, 1, 2000, 0)],
+        [overloadSource(PolicyCheckId.LegalWeight, 1, 1, 2000, 0)],
         2000,
         2000,
         1,
@@ -43,7 +46,7 @@ describe('ORV2-5899 overload calculation details', () => {
   it('selects licensed GVW details when they exceed the axle overload', () => {
     expect(
       calculateOverload(
-        [failure(PolicyCheckId.LegalWeight, 3, 3, 23000, 17000)],
+        [overloadSource(PolicyCheckId.LegalWeight, 3, 3, 23000, 17000)],
         52000,
         35000,
         3,
@@ -66,10 +69,10 @@ describe('ORV2-5899 overload calculation details', () => {
   it('selects the maximum non-overlapping combination of axle overloads', () => {
     const result = calculateOverload(
       [
-        failure(PolicyCheckId.LegalWeight, 1, 1, 7560, 7300),
-        failure(PolicyCheckId.LegalWeight, 2, 2, 28000, 24000),
-        failure(PolicyCheckId.LegalWeight, 3, 3, 26000, 24000),
-        failure(
+        overloadSource(PolicyCheckId.LegalWeight, 1, 1, 7560, 7300),
+        overloadSource(PolicyCheckId.LegalWeight, 2, 2, 28000, 24000),
+        overloadSource(PolicyCheckId.LegalWeight, 3, 3, 26000, 24000),
+        overloadSource(
           PolicyCheckId.AxleGroupMaximumLegalWeightThreshold,
           3,
           4,
@@ -93,9 +96,9 @@ describe('ORV2-5899 overload calculation details', () => {
   it('prefers individual axle rows when an overlapping group ties their total', () => {
     const result = calculateOverload(
       [
-        failure(PolicyCheckId.LegalWeight, 2, 2, 18000, 17000),
-        failure(PolicyCheckId.LegalWeight, 3, 3, 10000, 9000),
-        failure(
+        overloadSource(PolicyCheckId.LegalWeight, 2, 2, 18000, 17000),
+        overloadSource(PolicyCheckId.LegalWeight, 3, 3, 10000, 9000),
+        overloadSource(
           PolicyCheckId.AxleGroupMaximumLegalWeightThreshold,
           2,
           3,
@@ -116,7 +119,7 @@ describe('ORV2-5899 overload calculation details', () => {
 
   it('prefers licensed GVW when it ties the selected axle total', () => {
     const result = calculateOverload(
-      [failure(PolicyCheckId.LegalWeight, 2, 2, 18000, 17000)],
+      [overloadSource(PolicyCheckId.LegalWeight, 2, 2, 18000, 17000)],
       41000,
       40000,
       2,
