@@ -1,4 +1,9 @@
-import { Engine, RuleProperties } from 'json-rules-engine';
+import {
+  Engine,
+  EngineResult,
+  Event,
+  RuleProperties,
+} from 'json-rules-engine';
 import { Policy } from 'onroute-policy-engine';
 import { PolicyDefinition } from 'onroute-policy-engine/types';
 
@@ -19,6 +24,29 @@ function getEngine(policyDefinition: PolicyDefinition): Engine {
   CustomOperators.forEach((o) => engine.addOperator(o));
   policyDefinition.commonRules.forEach((r) => engine.addRule(r));
   return engine;
+}
+
+/** This returns the "Event", eg the axleCalcViolations event, in the _current-config.json. Helps
+ * identify an object like this from the JSON and return it for in-memory modification
+ *
+ *  This is the structure of the object we retrieve with this function
+ *   "conditions": {
+ *         "not": {
+ *         "fact": "axleCalcViolations",
+ *         "operator": "isEmptyArray",
+ *         "value": true
+ *       }
+ */
+export function getSuccessfulEventByFact(
+  engineResult: EngineResult,
+  fact: string,
+): Event | undefined {
+  return engineResult.results.find(
+    ({ conditions }) =>
+      'not' in conditions &&
+      'fact' in conditions.not &&
+      conditions.not.fact === fact,
+  )?.event;
 }
 
 /**

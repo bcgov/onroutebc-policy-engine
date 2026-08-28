@@ -40,11 +40,16 @@ interface ValidationResult {
   type: string;           // Type of result (violation, warning, etc.)
   code: string;           // Result code for categorization
   message: string;        // Human-readable message
+  id?: string;            // Optional stable identifier for specific processing
   fieldReference?: string; // Optional field reference for UI highlighting
   cost?: number;          // Optional cost amount for cost results
   details?: Array<string>; // Optional additional details
 }
 ```
+
+The `id` is set only when a validation class requires distinct consumer
+processing. Currently, axle weight and spacing violations use
+`"axle-weight-spacing"`; other validation results omit this property.
 
 ## Result Types
 

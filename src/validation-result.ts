@@ -20,6 +20,8 @@ export class ValidationResult {
   type: string;
   code: string;
   message: string;
+  /** Stable identifier for validation classes requiring specific processing. */
+  id?: string;
   fieldReference?: string;
   cost?: number;
   details?: Array<string>;
