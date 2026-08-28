@@ -5,6 +5,7 @@ import testStow from '../permit-app/test-stow.json';
 import { PermitAppInfo } from '../../enum/permit-app-info';
 import { OverloadCalculationDetailKind } from '../../enum/overload-calculation-detail-kind';
 import { PolicyCheckId, PolicyCheckResultType } from '../../enum/policy-check';
+import { ValidationResultId } from '../../enum/validation-result-id';
 import {
   convertToTimezone,
   getUtcDatetime,
@@ -332,6 +333,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     expect(validationResult.violations).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
+          id: ValidationResultId.AxleWeightSpacing,
           message:
             'Vehicle configuration failed axle calculation policy checks',
           details: expect.arrayContaining([

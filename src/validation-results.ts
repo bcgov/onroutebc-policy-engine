@@ -57,6 +57,7 @@ export class ValidationResults {
           code,
           message,
         );
+        result.id = e.params?.id;
         result.fieldReference = e.params?.fieldReference;
         result.cost = e.params?.cost;
         result.details = e.params?.details;

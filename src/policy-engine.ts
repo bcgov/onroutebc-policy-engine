@@ -28,16 +28,21 @@ import {
   intersectIdMaps,
 } from './helper/lists.helper';
 import { Engine, EngineResult } from 'json-rules-engine';
-import { getRulesEngines } from './helper/rules-engine.helper';
+import {
+  getRulesEngines,
+  getSuccessfulEventByFact,
+} from './helper/rules-engine.helper';
 import { ValidationResults } from './validation-results';
 import { ValidationResult } from './validation-result';
 import { addRuntimeFacts } from './helper/facts.helper';
 import {
   AccessoryVehicleType,
+  PolicyFacts,
   PolicyCheckId,
   PolicyCheckResultType,
   ValidationResultType,
   ValidationResultCode,
+  ValidationResultId,
   VehicleTypes,
   VehicleCategory,
 } from 'onroute-policy-engine/enum';
@@ -160,6 +165,14 @@ export class Policy {
 
       // Run the json-rules-engine against the permit facts
       const engineResult: EngineResult = await engine.run(permit);
+
+      const axleCalculationEvent = getSuccessfulEventByFact(
+        engineResult,
+        PolicyFacts.AxleCalcViolations,
+      );
+      if (axleCalculationEvent?.params) {
+        axleCalculationEvent.params.id = ValidationResultId.AxleWeightSpacing;
+      }
 
       // Wrap the json-rules-engine result in a ValidationResult object
       const validationResults = new ValidationResults(engineResult);
