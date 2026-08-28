@@ -250,7 +250,12 @@ export function CheckLegalWeight(
       message: `Weight for axle unit ${axleUnitNumber} ${
         result ? 'is legal' : `must not exceed ${legalWeight} kgs`
       }`,
-      result: result ? PolicyCheckResultType.Pass : PolicyCheckResultType.Fail,
+      // We intentionally only return Pass/Warning, as we should never 
+      // show an error for being above legal amount, only permitable 
+      // amount. But it's still useful info for things like OCD table.
+      result: result
+        ? PolicyCheckResultType.Pass
+        : PolicyCheckResultType.Warning,
       axleUnit: axleUnitNumber,
       actualWeight: axleUnit.axleUnitWeight,
       thresholdWeight: legalWeight,
@@ -1300,9 +1305,11 @@ export function CheckMaxTireLoad(
     }
 
     // ORV2-5903 keeps this exact configuration as a grandfathered TPS case.
+    // The application stores the 279.4 mm option as 279 to match f
+    const hasGrandfatheredTpsTireSize = tireSize === 279.4 || tireSize === 279;
     const hasGrandfatheredTpsTireLimit =
       ac.numberOfAxles === 2 &&
-      tireSize === 279.4 &&
+      hasGrandfatheredTpsTireSize &&
       numberOfTires === 8 &&
       axleWeight <= 23000;
 

@@ -68,6 +68,7 @@ import {
   policyCheckMap,
 } from './helper/policy-check.helper';
 import { DEFAULT_COST_DESCRIPTION } from './constants/cost';
+import { calculateOverload } from './helper/overload.helper';
 
 /** Class representing commercial vehicle policy. */
 export class Policy {
@@ -1008,7 +1009,19 @@ export class Policy {
     const axleCalcResults: AxleCalcResults = {
       results: [],
       overload: 0,
+      overloadDetails: [],
       totalGCVW: 0,
+    };
+
+    const updateOverloadCalculation = () => {
+      const { overload, overloadDetails } = calculateOverload(
+        axleCalcResults.results,
+        axleCalcResults.totalGCVW,
+        licensedGVW,
+        axleConfiguration.length,
+      );
+      axleCalcResults.overload = overload;
+      axleCalcResults.overloadDetails = overloadDetails;
     };
 
     // This is a little helper closure that just converts any PolicyCheckResult into an AxleGroupPolicyCheckResult,
@@ -1038,10 +1051,6 @@ export class Policy {
       (w, curr) => w + curr.axleUnitWeight,
       0,
     );
-    axleCalcResults.overload = Math.max(
-      axleCalcResults.overload,
-      gvcw - licensedGVW,
-    );
     axleCalcResults.totalGCVW = gvcw;
     const axleCountResults = CheckNumberOfAxles(
       this,
@@ -1053,6 +1062,7 @@ export class Policy {
     );
 
     if (axleCountResults.some((r) => r.result === PolicyCheckResultType.Fail)) {
+      updateOverloadCalculation();
       return axleCalcResults;
     }
 
@@ -1067,6 +1077,7 @@ export class Policy {
         ),
       );
     }
+    updateOverloadCalculation();
     return axleCalcResults;
   }
 

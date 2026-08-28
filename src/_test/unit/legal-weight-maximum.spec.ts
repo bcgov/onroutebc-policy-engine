@@ -84,7 +84,7 @@ describe('ORV2-5706 legal weight maximums', () => {
   describe('single steer with single or tandem drive', () => {
     it.each([
       ['REGTRCK', 1, 9100, 9100, PolicyCheckResultType.Pass],
-      ['TRKTRAC', 2, 6001, 6000, PolicyCheckResultType.Fail],
+      ['TRKTRAC', 2, 6001, 6000, PolicyCheckResultType.Warning],
       ['TRACPME', 2, 9100, 9100, PolicyCheckResultType.Pass],
     ])(
       'evaluates %s with %i drive axles at %i kg',
@@ -114,7 +114,7 @@ describe('ORV2-5706 legal weight maximums', () => {
   describe('single steer with tridem drive', () => {
     it.each([
       ['TRKTRAC', 7300, 7300, PolicyCheckResultType.Pass],
-      ['REGTRCK', 7301, 7300, PolicyCheckResultType.Fail],
+      ['REGTRCK', 7301, 7300, PolicyCheckResultType.Warning],
       ['TRCKPME', 9100, 9100, PolicyCheckResultType.Pass],
     ])(
       'evaluates %s at %i kg',
@@ -138,7 +138,7 @@ describe('ORV2-5706 legal weight maximums', () => {
   describe('tandem steer with tandem drive', () => {
     it.each([
       ['TRKTRAC', 17000, PolicyCheckResultType.Pass],
-      ['TRCKPME', 17001, PolicyCheckResultType.Fail],
+      ['TRCKPME', 17001, PolicyCheckResultType.Warning],
     ])(
       'evaluates %s at %i kg',
       (powerUnitType, actualWeight, expectedResult) => {
@@ -161,7 +161,7 @@ describe('ORV2-5706 legal weight maximums', () => {
   describe('tandem steer with tridem drive', () => {
     it.each([
       ['TRKTRAC', 13600, 13600, PolicyCheckResultType.Pass],
-      ['REGTRCK', 13601, 13600, PolicyCheckResultType.Fail],
+      ['REGTRCK', 13601, 13600, PolicyCheckResultType.Warning],
       ['TRACPME', 15200, 15200, PolicyCheckResultType.Pass],
     ])(
       'evaluates %s at %i kg',
@@ -210,7 +210,7 @@ describe('ORV2-5706 legal weight maximums', () => {
   describe('single drive boundary', () => {
     it.each([
       [9100, PolicyCheckResultType.Pass],
-      [9101, PolicyCheckResultType.Fail],
+      [9101, PolicyCheckResultType.Warning],
     ])('evaluates %i kg', (actualWeight, expectedResult) => {
       expectLegalResult(
         getLegalResult('REGTRCK', 1, 1, 2, actualWeight),
@@ -224,7 +224,7 @@ describe('ORV2-5706 legal weight maximums', () => {
   describe('tandem drive boundary', () => {
     it.each([
       [17000, PolicyCheckResultType.Pass],
-      [17001, PolicyCheckResultType.Fail],
+      [17001, PolicyCheckResultType.Warning],
     ])('evaluates %i kg', (actualWeight, expectedResult) => {
       expectLegalResult(
         getLegalResult('TRKTRAC', 1, 2, 2, actualWeight),
@@ -238,7 +238,7 @@ describe('ORV2-5706 legal weight maximums', () => {
   describe('fixed-load tridem drive boundary', () => {
     it.each([
       [24000, PolicyCheckResultType.Pass],
-      [24001, PolicyCheckResultType.Fail],
+      [24001, PolicyCheckResultType.Warning],
     ])('evaluates %i kg', (actualWeight, expectedResult) => {
       expectLegalResult(
         getLegalResult('REGTRCK', 1, 3, 2, actualWeight),
@@ -252,7 +252,7 @@ describe('ORV2-5706 legal weight maximums', () => {
   describe('truck-tractor tridem drive boundary', () => {
     it.each([
       [24000, PolicyCheckResultType.Pass],
-      [24001, PolicyCheckResultType.Fail],
+      [24001, PolicyCheckResultType.Warning],
     ])('evaluates %i kg', (actualWeight, expectedResult) => {
       expectLegalResult(
         getLegalResult('TRKTRAC', 1, 3, 2, actualWeight),

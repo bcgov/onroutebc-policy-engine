@@ -415,7 +415,7 @@ describe('ORV2-5617 axle group maximum legal weight threshold', () => {
   });
 
   describe('public calculation and validation paths', () => {
-    it('returns the registered failure without repurposing licensed-GVW overload', () => {
+    it('uses the registered legal-weight failures in the selected overload', () => {
       const { vehicleConfiguration, axleConfiguration } =
         getThreeUnitConfiguration({
           spreadCm: 315,
@@ -440,7 +440,13 @@ describe('ORV2-5617 axle group maximum legal weight threshold', () => {
         actualWeight: 21001,
         thresholdWeight: 21000,
       });
-      expect(results.overload).toBe(0);
+      expect(results.overload).toBe(1601);
+      expect(
+        results.overloadDetails.reduce(
+          (total, detail) => total + detail.overload,
+          0,
+        ),
+      ).toBe(results.overload);
     });
 
     const getNestedJeepPermit = (driveWeight: number, jeepWeight: number) => {

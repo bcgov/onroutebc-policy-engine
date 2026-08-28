@@ -3,6 +3,7 @@ import { Policy } from 'onroute-policy-engine';
 import currentConfig from '../policy-config/_current-config.json';
 import testStow from '../permit-app/test-stow.json';
 import { PermitAppInfo } from '../../enum/permit-app-info';
+import { OverloadCalculationDetailKind } from '../../enum/overload-calculation-detail-kind';
 import { PolicyCheckId, PolicyCheckResultType } from '../../enum/policy-check';
 import {
   convertToTimezone,
@@ -255,32 +256,56 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
   });
 
   // Source: ASW Legal Weight Maximums.feature @orv2-5706.
-  it('exposes an above-legal axle-unit failure through validate', async () => {
+  it('exposes an above-legal axle-unit warning through validate without a violation', async () => {
     const permit = getDatedPermit();
     permit.permitData.vehicleConfiguration.axleConfiguration[0].axleUnitWeight = 6001;
+    permit.permitData.vehicleDetails.licensedGVW = 100000;
 
     const validationResult = await policy.validate(permit);
-    const legalFailure = validationResult.axleCalculationResults?.results.find(
+    const legalWarning = validationResult.axleCalculationResults?.results.find(
       ({ id, startAxleUnit }) =>
         id === PolicyCheckId.LegalWeight && startAxleUnit === 1,
     );
 
-    expect(legalFailure).toMatchObject({
-      result: PolicyCheckResultType.Fail,
+    expect(legalWarning).toMatchObject({
+      result: PolicyCheckResultType.Warning,
       actualWeight: 6001,
       thresholdWeight: 6000,
     });
-    expect(validationResult.violations).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          message:
-            'Vehicle configuration failed axle calculation policy checks',
-          details: expect.arrayContaining([
-            'Weight for axle unit 1 must not exceed 6000 kgs',
-          ]),
-        }),
-      ]),
+    expect(validationResult.axleCalculationResults).toMatchObject({
+      overload: 1,
+      overloadDetails: [
+        {
+          kind: OverloadCalculationDetailKind.AxleWeight,
+          startAxleUnit: 1,
+          endAxleUnit: 1,
+          actualWeight: 6001,
+          legalMaxWeight: 6000,
+          overload: 1,
+        },
+      ],
+    });
+
+    const vehicleConfiguration = policy.getSimplifiedVehicleConfiguration(
+      permit.permitData.vehicleDetails,
+      permit.permitData.vehicleConfiguration,
     );
+    const axleConfiguration =
+      permit.permitData.vehicleConfiguration.axleConfiguration;
+    expect(
+      policy.runAxleCalculation(
+        vehicleConfiguration,
+        axleConfiguration,
+        permit.permitData.vehicleDetails.licensedGVW,
+      ).overloadDetails,
+    ).toEqual(validationResult.axleCalculationResults?.overloadDetails);
+    expect(
+      validationResult.violations.some((violation) =>
+        violation.details?.includes(
+          'Weight for axle unit 1 must not exceed 6000 kgs',
+        ),
+      ),
+    ).toBe(false);
   });
 
   // Source: ASW Permit Weight Maximums.feature @orv2-5709.
@@ -628,7 +653,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
       });
     });
 
-    xdescribe('ORV2-5903 grandfathered TPS tire limit', () => {
+    describe('ORV2-5903 grandfathered TPS tire limit', () => {
       it('should allow the exact TPS configuration during permit validation', async () => {
         // TPS allowed this configuration. ORV2-5903 keeps it as a grandfathered case.
         await testTireLoadResult('TRKTRAC', 1, 279.4, 8, 23000, false);
