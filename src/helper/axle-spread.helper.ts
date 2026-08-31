@@ -1,5 +1,5 @@
 import { AXLE_SPREAD_LEGAL_LIMITS } from '../constants/axle-spread-legal-limits';
-import { isSemiTrailerType } from '../constants/semi-trailer-types';
+import { isSemiTrailerType } from '../constants/semi-trailer-codes';
 import { AxleConfiguration } from '../types/axle-configuration';
 
 export function getTandemAxleSpreadThreshold(

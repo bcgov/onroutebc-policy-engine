@@ -17,7 +17,7 @@ import { AXLE_WEIGHT_LEGAL_MAXIMUMS } from '../constants/axle-weight-legal-maxim
 import { AXLE_WEIGHT_PERMITTABLE_MAXIMUMS } from '../constants/axle-weight-permittable-maximums';
 import { POWER_UNIT_AXLE_CODE_MULTIPLIER } from '../constants/power-unit-axle-code-multiplier';
 import { getAxleSpreadThreshold } from './axle-spread.helper';
-import { isSemiTrailerType } from '../constants/semi-trailer-types';
+import { isSemiTrailerType } from '../constants/semi-trailer-codes';
 import {
   getFailedInteraxleSpacingMessage,
   getInteraxleSpacingRequirement,
@@ -250,8 +250,8 @@ export function CheckLegalWeight(
       message: `Weight for axle unit ${axleUnitNumber} ${
         result ? 'is legal' : `must not exceed ${legalWeight} kgs`
       }`,
-      // We intentionally only return Pass/Warning, as we should never 
-      // show an error for being above legal amount, only permitable 
+      // We intentionally only return Pass/Warning, as we should never
+      // show an error for being above legal amount, only permitable
       // amount. But it's still useful info for things like OCD table.
       result: result
         ? PolicyCheckResultType.Pass
