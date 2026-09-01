@@ -241,7 +241,7 @@ export function getUniversalDisplayCode(
  *
  * @example
  * // Returns true for a standard truck-tractor with semi-trailer
- * canCreateStandardCode(policy, ['TRKTRAC', 'SEMI'], [
+ * canCreateStandardCode(policy, [POWER_UNIT_CODES.TRUCK_TRACTORS, 'SEMI'], [
  *   { numberOfAxles: 2, ... }, // Steer axle
  *   { numberOfAxles: 3, ... }, // Drive axle
  *   { numberOfAxles: 3, ... }  // Trailer axle

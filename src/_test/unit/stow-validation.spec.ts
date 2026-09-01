@@ -11,10 +11,14 @@ import {
   getUtcDatetime,
   TIMEZONE_IDS,
 } from '../../helper/date.helper';
+import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
+import { TRAILER_CODES } from '../../constants/trailer-codes';
+import { COMMODITY_CODES } from '../../constants/commodity-codes';
+import { PERMIT_CODES } from '../../constants/permit-codes';
 
 const reportedTrailerCrashInput = {
   currentFormData: {
-    permitType: 'STOW',
+    permitType: PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
     permitId: '35',
     originalPermitId: '35',
     applicationNumber: 'A2-00010029-791-A00',
@@ -65,7 +69,7 @@ const reportedTrailerCrashInput = {
         countryCode: 'CA',
         provinceCode: 'BC',
         vehicleType: 'powerUnit',
-        vehicleSubType: 'CONCRET',
+        vehicleSubType: POWER_UNIT_CODES.CONCRETE_PUMPER_TRUCKS,
         licensedGVW: 20000,
         saveVehicle: false,
       },
@@ -83,7 +87,7 @@ const reportedTrailerCrashInput = {
       },
       applicationNotes: '',
       permittedCommodity: {
-        commodityType: 'XXXXXXX',
+        commodityType: COMMODITY_CODES.NONE,
         loadDescription: 'NA',
       },
       vehicleConfiguration: {
@@ -110,11 +114,11 @@ const reportedTrailerCrashInput = {
         ],
         trailers: [
           {
-            vehicleSubType: 'XXXXXXX',
+            vehicleSubType: TRAILER_CODES.NONE,
             axleConfiguration: null,
           },
           {
-            vehicleSubType: 'BOOSTER',
+            vehicleSubType: TRAILER_CODES.BOOSTER,
             axleConfiguration: [
               {
                 interaxleSpacing: 2,
@@ -167,7 +171,8 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     interaxleSpacing: number,
     axleSpread: number,
   ) => {
-    permit.permitData.vehicleDetails.vehicleSubType = 'TRKTRAC';
+    permit.permitData.vehicleDetails.vehicleSubType =
+      POWER_UNIT_CODES.TRUCK_TRACTORS;
     permit.permitData.vehicleConfiguration.axleConfiguration[0].numberOfAxles = 1;
     permit.permitData.vehicleConfiguration.axleConfiguration[1].numberOfAxles = 2;
     permit.permitData.vehicleConfiguration.axleConfiguration[1].axleSpread =
@@ -206,7 +211,8 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     steerAxleWeight: number,
     driveAxleWeight: number,
   ) => {
-    permit.permitData.vehicleDetails.vehicleSubType = 'PICKRTT';
+    permit.permitData.vehicleDetails.vehicleSubType =
+      POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS;
     permit.permitData.vehicleConfiguration.trailers = [];
     permit.permitData.vehicleConfiguration.axleConfiguration = [
       {
@@ -528,7 +534,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     setPickerTruckTractorScenario(permit, 14000, 24001);
     permit.permitData.vehicleConfiguration.trailers = [
       {
-        vehicleSubType: 'STACTRN',
+        vehicleSubType: TRAILER_CODES.SEMI_TRAILERS_A_TRAINS_C_TRAINS,
       },
     ];
     permit.permitData.vehicleConfiguration.axleConfiguration.push({
@@ -621,77 +627,210 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
 
     describe('Standard Vehicle Steer Axle (Rate Limit & Single Steer Cap)', () => {
       it('should pass exactly at 100 kg/cm rate limit - 445mm', async () => {
-        await testTireLoadResult('TRKTRAC', 0, 445, 2, 8900, false);
+        await testTireLoadResult(
+          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          0,
+          445,
+          2,
+          8900,
+          false,
+        );
       });
       it('should fail just above 100 kg/cm rate limit - 445mm', async () => {
-        await testTireLoadResult('TRKTRAC', 0, 445, 2, 8901, true);
+        await testTireLoadResult(
+          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          0,
+          445,
+          2,
+          8901,
+          true,
+        );
       });
       it('should pass at 9,100 kg/axle single steer cap limit - 457mm', async () => {
-        await testTireLoadResult('TRKTRAC', 0, 457, 2, 9100, false);
+        await testTireLoadResult(
+          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          0,
+          457,
+          2,
+          9100,
+          false,
+        );
       });
       it('should fail just above 9,100 kg/axle single steer cap limit - 457mm', async () => {
-        await testTireLoadResult('TRKTRAC', 0, 457, 2, 9101, true);
+        await testTireLoadResult(
+          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          0,
+          457,
+          2,
+          9101,
+          true,
+        );
       });
     });
 
     describe('Standard Vehicle Non-Steering Axle (>=445mm and <=444mm)', () => {
       it('should pass at limit for tires >=445mm (rate limit binding)', async () => {
-        await testTireLoadResult('TRKTRAC', 1, 445, 4, 17800, false);
+        await testTireLoadResult(
+          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          1,
+          445,
+          4,
+          17800,
+          false,
+        );
       });
       it('should fail just above limit for tires >=445mm (rate limit binding)', async () => {
-        await testTireLoadResult('TRKTRAC', 1, 445, 4, 17801, true);
+        await testTireLoadResult(
+          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          1,
+          445,
+          4,
+          17801,
+          true,
+        );
       });
       it('should pass at limit for tires >=445mm (cap binding - 4,550 kg/tire)', async () => {
-        await testTireLoadResult('TRKTRAC', 1, 457, 4, 18200, false);
+        await testTireLoadResult(
+          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          1,
+          457,
+          4,
+          18200,
+          false,
+        );
       });
       it('should fail just above limit for tires >=445mm (cap binding - 4,550 kg/tire)', async () => {
-        await testTireLoadResult('TRKTRAC', 1, 457, 4, 18201, true);
+        await testTireLoadResult(
+          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          1,
+          457,
+          4,
+          18201,
+          true,
+        );
       });
       it('should pass at cap limit for tires <=444mm (3,000 kg/tire)', async () => {
-        await testTireLoadResult('TRKTRAC', 1, 385, 4, 12000, false);
+        await testTireLoadResult(
+          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          1,
+          385,
+          4,
+          12000,
+          false,
+        );
       });
       it('should fail just above cap limit for tires <=444mm (3,000 kg/tire)', async () => {
-        await testTireLoadResult('TRKTRAC', 1, 385, 4, 12001, true);
+        await testTireLoadResult(
+          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          1,
+          385,
+          4,
+          12001,
+          true,
+        );
       });
     });
 
     describe('ORV2-5903 grandfathered TPS tire limit', () => {
       it('should allow the exact TPS configuration during permit validation', async () => {
         // TPS allowed this configuration. ORV2-5903 keeps it as a grandfathered case.
-        await testTireLoadResult('TRKTRAC', 1, 279.4, 8, 23000, false);
+        await testTireLoadResult(
+          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          1,
+          279.4,
+          8,
+          23000,
+          false,
+        );
       });
     });
 
     describe('Crane - All Terrain (CRANEAT)', () => {
       it('should pass at limit for tires >=520mm', async () => {
-        await testTireLoadResult('CRANEAT', 0, 550, 2, 11000, false);
+        await testTireLoadResult(
+          POWER_UNIT_CODES.CRANES_ALL_TERRAIN,
+          0,
+          550,
+          2,
+          11000,
+          false,
+        );
       });
       it('should fail just above limit for tires >=520mm', async () => {
-        await testTireLoadResult('CRANEAT', 0, 550, 2, 11001, true);
+        await testTireLoadResult(
+          POWER_UNIT_CODES.CRANES_ALL_TERRAIN,
+          0,
+          550,
+          2,
+          11001,
+          true,
+        );
       });
     });
 
     describe('Crane - Mobile (CRANEMB)', () => {
       it('should pass at limit for non-steer axle tires >=520mm', async () => {
-        await testTireLoadResult('CRANEMB', 1, 550, 2, 11000, false);
+        await testTireLoadResult(
+          POWER_UNIT_CODES.CRANES_MOBILE,
+          1,
+          550,
+          2,
+          11000,
+          false,
+        );
       });
       it('should fail just above limit for non-steer axle tires >=520mm', async () => {
-        await testTireLoadResult('CRANEMB', 1, 550, 2, 11001, true);
+        await testTireLoadResult(
+          POWER_UNIT_CODES.CRANES_MOBILE,
+          1,
+          550,
+          2,
+          11001,
+          true,
+        );
       });
     });
 
     describe('Rubber Tired Loaders (RBTRLDR)', () => {
       it('should pass at 11,000 kg/axle limit for tires >=520mm and <600mm', async () => {
-        await testTireLoadResult('RBTRLDR', 0, 550, 2, 11000, false);
+        await testTireLoadResult(
+          POWER_UNIT_CODES.RUBBER_TIRED_LOADERS,
+          0,
+          550,
+          2,
+          11000,
+          false,
+        );
       });
       it('should fail just above 11,000 kg/axle limit for tires >=520mm and <600mm', async () => {
-        await testTireLoadResult('RBTRLDR', 0, 550, 2, 11001, true);
+        await testTireLoadResult(
+          POWER_UNIT_CODES.RUBBER_TIRED_LOADERS,
+          0,
+          550,
+          2,
+          11001,
+          true,
+        );
       });
       it('should pass at 12,000 kg/axle limit for tires >=600mm', async () => {
-        await testTireLoadResult('RBTRLDR', 0, 609, 2, 12000, false);
+        await testTireLoadResult(
+          POWER_UNIT_CODES.RUBBER_TIRED_LOADERS,
+          0,
+          609,
+          2,
+          12000,
+          false,
+        );
       });
       it('should fail just above 12,000 kg/axle limit for tires >=600mm', async () => {
-        await testTireLoadResult('RBTRLDR', 0, 609, 2, 12001, true);
+        await testTireLoadResult(
+          POWER_UNIT_CODES.RUBBER_TIRED_LOADERS,
+          0,
+          609,
+          2,
+          12001,
+          true,
+        );
       });
     });
   });

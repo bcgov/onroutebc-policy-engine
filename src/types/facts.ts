@@ -18,7 +18,7 @@ export type PermitFacts = {
   vehicleIdentificationNumber?: string;
   /** Vehicle license plate number */
   vehiclePlate?: string;
-  /** Type of vehicle permitted (primary vehicle) (e.g., 'TRKTRAC') */
+  /** Type of vehicle permitted (primary vehicle) (e.g., POWER_UNIT_CODES.TRUCK_TRACTORS) */
   vehicleType?: string;
   /** Additional application data as a generic object */
   app?: object;

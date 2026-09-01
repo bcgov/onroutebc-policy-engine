@@ -1,3 +1,7 @@
+import { COMMODITY_CODES } from '../../constants/commodity-codes';
+import { PERMIT_CODES } from '../../constants/permit-codes';
+import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
+import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { Policy } from '../../policy-engine';
 import stosPolicyConfig from '../policy-config/stos-vehicle-config.sample.json';
 
@@ -6,11 +10,15 @@ describe('Permit Engine Size Dimension Functions', () => {
 
   it('should assume all regions if none are supplied', async () => {
     // This configuration has minimum values pulled from multiple regions
-    const sizeDimension = policy.getSizeDimension('STOS', 'EMPTYXX', [
-      'TRKTRAC',
-      'JEEPSRG',
-      'HIBOEXP',
-    ]);
+    const sizeDimension = policy.getSizeDimension(
+      PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
+      COMMODITY_CODES.EMPTY,
+      [
+        POWER_UNIT_CODES.TRUCK_TRACTORS,
+        TRAILER_CODES.JEEPS,
+        TRAILER_CODES.HIBOYS_EXPANDOS,
+      ],
+    );
     expect(sizeDimension?.fp).toBe(3);
     expect(sizeDimension?.rp).toBe(6.5);
     expect(sizeDimension?.l).toBe(31);
@@ -20,9 +28,13 @@ describe('Permit Engine Size Dimension Functions', () => {
 
   it('should retrieve correct values for a single specified region', async () => {
     const sizeDimension = policy.getSizeDimension(
-      'STOS',
-      'EMPTYXX',
-      ['TRKTRAC', 'JEEPSRG', 'PLATFRM'],
+      PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
+      COMMODITY_CODES.EMPTY,
+      [
+        POWER_UNIT_CODES.TRUCK_TRACTORS,
+        TRAILER_CODES.JEEPS,
+        TRAILER_CODES.PLATFORM_TRAILERS,
+      ],
       ['PCE'],
     );
     expect(sizeDimension?.fp).toBe(3);
@@ -34,34 +46,38 @@ describe('Permit Engine Size Dimension Functions', () => {
 
   it('should throw an error if an invalid permit type is specified', async () => {
     expect(() => {
-      policy.getSizeDimension('_INVALID', 'EMPTYXX', [
-        'TRKTRAC',
-        'JEEPSRG',
-        'STWHELR',
+      policy.getSizeDimension('_INVALID', COMMODITY_CODES.EMPTY, [
+        POWER_UNIT_CODES.TRUCK_TRACTORS,
+        TRAILER_CODES.JEEPS,
+        TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
       ]);
     }).toThrow();
   });
 
   it('should return null if an invalid configuration is specified', async () => {
-    const sizeDimension = policy.getSizeDimension('STOS', 'EMPTYXX', [
-      '_INVALID',
-      'JEEPSRG',
-      'STWHELR',
-    ]);
+    const sizeDimension = policy.getSizeDimension(
+      PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
+      COMMODITY_CODES.EMPTY,
+      ['_INVALID', TRAILER_CODES.JEEPS, TRAILER_CODES.SEMI_TRAILERS_WHEELERS],
+    );
     expect(sizeDimension).toBeNull();
   });
 
   it('should return null if no dimensionable trailer is specified', async () => {
-    const sizeDimension = policy.getSizeDimension('STOS', 'EMPTYXX', [
-      'TRKTRAC',
-      'JEEPSRG',
-    ]);
+    const sizeDimension = policy.getSizeDimension(
+      PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
+      COMMODITY_CODES.EMPTY,
+      [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.JEEPS],
+    );
     expect(sizeDimension).toBeNull();
   });
 
   it('should throw an error if an invalid commodity is specified', async () => {
     expect(() => {
-      policy.getSizeDimension('STOS', '_INVALID', ['TRKTRAC', 'JEEPSRG']);
+      policy.getSizeDimension(PERMIT_CODES.SINGLE_TRIP_OVERSIZE, '_INVALID', [
+        POWER_UNIT_CODES.TRUCK_TRACTORS,
+        TRAILER_CODES.JEEPS,
+      ]);
     }).toThrow();
   });
 });

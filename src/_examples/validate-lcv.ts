@@ -9,6 +9,7 @@ import {
   getUtcDatetime,
   TIMEZONE_IDS,
 } from '../helper/date.helper';
+import { POWER_UNIT_CODES } from '../constants/power-unit-codes';
 
 async function start() {
   const policy: Policy = new Policy(trosOnly, specialAuth);
@@ -17,12 +18,11 @@ async function start() {
   validTros30Day.permitData.startDate = convertToTimezone(
     getUtcDatetime(),
     TIMEZONE_IDS.PACIFIC,
-  ).format(
-    PermitAppInfo.PermitDateFormat.toString(),
-  );
+  ).format(PermitAppInfo.PermitDateFormat.toString());
 
   // Set an LCV vehicle type
-  validTros30Day.permitData.vehicleDetails.vehicleSubType = 'LCVRMDB';
+  validTros30Day.permitData.vehicleDetails.vehicleSubType =
+    POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES;
 
   const validationResult2 = await policy.validate(validTros30Day);
   console.log(JSON.stringify(validationResult2, null, '   '));

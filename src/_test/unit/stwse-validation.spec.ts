@@ -8,6 +8,8 @@ import {
   getUtcDatetime,
   TIMEZONE_IDS,
 } from '../../helper/date.helper';
+import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
+import { TRAILER_CODES } from '../../constants/trailer-codes';
 
 describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () => {
   const policy: Policy = new Policy(currentConfig);
@@ -15,20 +17,16 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
   const getPermit = () => {
     const permit = JSON.parse(JSON.stringify(validSTWSE));
 
-    const today = convertToTimezone(
-      getUtcDatetime(),
-      TIMEZONE_IDS.PACIFIC,
-    );
+    const today = convertToTimezone(getUtcDatetime(), TIMEZONE_IDS.PACIFIC);
 
-    permit.permitData.startDate = today
-      .format(PermitAppInfo.PermitDateFormat);
+    permit.permitData.startDate = today.format(PermitAppInfo.PermitDateFormat);
 
     permit.permitData.permitDuration = 7;
-    
+
     permit.permitData.expiryDate = today
-      .add(6, "day")
+      .add(6, 'day')
       .format(PermitAppInfo.PermitDateFormat);
-    
+
     return permit;
   };
 
@@ -153,7 +151,7 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
 
   it('should fail validation when Vehicle subtype is not part of allowable vehicles', async () => {
     const permit = getPermit();
-    permit.permitData.vehicleDetails.vehicleSubType = "BUSCRUM";
+    permit.permitData.vehicleDetails.vehicleSubType = POWER_UNIT_CODES.BUSES;
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
     expect(validationResult.warnings).toHaveLength(0);
@@ -161,7 +159,8 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
 
   it('should pass when Vehicle subtype is part of allowable vehicles', async () => {
     const permit = getPermit();
-    permit.permitData.vehicleDetails.vehicleSubType = "LWBTRCT";
+    permit.permitData.vehicleDetails.vehicleSubType =
+      POWER_UNIT_CODES.LONG_WHEELBASE_TRUCK_TRACTORS;
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(0);
     expect(validationResult.warnings).toHaveLength(0);
@@ -169,8 +168,9 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
 
   it('should fail validation when Vehicle subtype is a Trailer', async () => {
     const permit = getPermit();
-    permit.permitData.vehicleDetails.vehicleType = "trailer";
-    permit.permitData.vehicleDetails.vehicleSubType = "FULLLTL";
+    permit.permitData.vehicleDetails.vehicleType = 'trailer';
+    permit.permitData.vehicleDetails.vehicleSubType =
+      TRAILER_CODES.FULL_TRAILERS;
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
     expect(validationResult.warnings).toHaveLength(0);
@@ -181,13 +181,19 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
 
     const conditions = policy.getConditionsForPermit(permit);
     expect(conditions).toHaveLength(2);
-    expect(conditions.filter(
-      condition => condition.condition === 'CVSE-1000' && condition.mandatory === true
-    )).toHaveLength(1);
+    expect(
+      conditions.filter(
+        (condition) =>
+          condition.condition === 'CVSE-1000' && condition.mandatory === true,
+      ),
+    ).toHaveLength(1);
 
-    expect(conditions.filter(
-      condition => condition.condition === 'CVSE-1070' && condition.mandatory === true
-    )).toHaveLength(1);
+    expect(
+      conditions.filter(
+        (condition) =>
+          condition.condition === 'CVSE-1070' && condition.mandatory === true,
+      ),
+    ).toHaveLength(1);
   });
 
   it('should calculate STWSE cost as a flat $15 oversize rate plus overload rate', async () => {
@@ -195,10 +201,10 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.cost.length).toBe(2);
-    expect(validationResult.cost[0].cost).toBe(15.00);
-    expect(validationResult.cost[1].cost).toBe(268.00);
-    expect(validationResult.cost[0].message).toBe("Oversize");
-    expect(validationResult.cost[1].message).toBe("Overload");
+    expect(validationResult.cost[0].cost).toBe(15.0);
+    expect(validationResult.cost[1].cost).toBe(268.0);
+    expect(validationResult.cost[0].message).toBe('Oversize');
+    expect(validationResult.cost[1].message).toBe('Overload');
   });
 
   it('should calculate STWSE cost as a flat $15 oversize rate plus minimum of $25 overload fee', async () => {
@@ -207,8 +213,8 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     permit.permitData.permittedRoute.manualRoute.totalDistance = 100;
     const validationResult = await policy.validate(permit);
     expect(validationResult.cost.length).toBe(2);
-    expect(validationResult.cost[0].cost).toBe(15.00);
-    expect(validationResult.cost[1].cost).toBe(25.00);
+    expect(validationResult.cost[0].cost).toBe(15.0);
+    expect(validationResult.cost[1].cost).toBe(25.0);
   });
 
   it('should calculate STWSE cost as a flat $15 oversize rate plus overload fee above 28000kg', async () => {
@@ -217,27 +223,24 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     permit.permitData.permittedRoute.manualRoute.totalDistance = 100;
     const validationResult = await policy.validate(permit);
     expect(validationResult.cost.length).toBe(2);
-    expect(validationResult.cost[0].cost).toBe(15.00);
-    expect(validationResult.cost[1].cost).toBe(270.00);
+    expect(validationResult.cost[0].cost).toBe(15.0);
+    expect(validationResult.cost[1].cost).toBe(270.0);
   });
 
   it('should calculate STWSE costs to be $0 for oversize and overload if no-fee flag is set', async () => {
     const permit = getPermit();
-    const noFeePolicy = new Policy(
-      currentConfig,
-      {
-        companyId: 1,
-        isLcvAllowed: false,
-        noFeeType: "CA_GOVT",
-      },
-    );
+    const noFeePolicy = new Policy(currentConfig, {
+      companyId: 1,
+      isLcvAllowed: false,
+      noFeeType: 'CA_GOVT',
+    });
 
     const validationResult = await noFeePolicy.validate(permit);
     expect(validationResult.cost.length).toBe(2);
     expect(validationResult.cost[0].cost).toBe(0);
     expect(validationResult.cost[1].cost).toBe(0);
-    expect(validationResult.cost[0].message).toBe("Oversize");
-    expect(validationResult.cost[1].message).toBe("Overload");
+    expect(validationResult.cost[0].message).toBe('Oversize');
+    expect(validationResult.cost[1].message).toBe('Overload');
   });
 
   it('should show warning when overall width is greater than 3.2m', async () => {

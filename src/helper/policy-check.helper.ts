@@ -17,12 +17,13 @@ import { AXLE_WEIGHT_LEGAL_MAXIMUMS } from '../constants/axle-weight-legal-maxim
 import { AXLE_WEIGHT_PERMITTABLE_MAXIMUMS } from '../constants/axle-weight-permittable-maximums';
 import { POWER_UNIT_AXLE_CODE_MULTIPLIER } from '../constants/power-unit-axle-code-multiplier';
 import { getAxleSpreadThreshold } from './axle-spread.helper';
-import { isSemiTrailerType } from '../constants/semi-trailer-types';
+import { isSemiTrailerType } from '../constants/semi-trailer-codes';
 import {
   getFailedInteraxleSpacingMessage,
   getInteraxleSpacingRequirement,
 } from './interaxle-spacing.helper';
 import { formatMeters } from './format-meters.helper';
+import { POWER_UNIT_CODES } from '../constants/power-unit-codes';
 
 /**
  * Type definition for policy check functions.
@@ -151,10 +152,10 @@ function getConfiguredAxleUnitWeightThreshold(
 
 function isFeatureLegalWeightPowerUnit(vehicleType?: string): boolean {
   return (
-    vehicleType === 'REGTRCK' ||
-    vehicleType === 'TRKTRAC' ||
-    vehicleType === 'TRCKPME' ||
-    vehicleType === 'TRACPME'
+    vehicleType === POWER_UNIT_CODES.TRUCKS ||
+    vehicleType === POWER_UNIT_CODES.TRUCK_TRACTORS ||
+    vehicleType === POWER_UNIT_CODES.TRUCK_WITH_PME ||
+    vehicleType === POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME
   );
 }
 
@@ -165,14 +166,16 @@ function getFeatureLegalPowerUnitWeightThreshold(
 ): number | undefined {
   const steerAxle = axleConfiguration[0];
   const driveAxle = axleConfiguration[1];
-  const hasPme = vehicleType === 'TRCKPME' || vehicleType === 'TRACPME';
+  const hasPme =
+    vehicleType === POWER_UNIT_CODES.TRUCK_WITH_PME ||
+    vehicleType === POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME;
 
   if (axleIndex === 0) {
     if (
       steerAxle.numberOfAxles === 1 &&
       (driveAxle.numberOfAxles === 1 || driveAxle.numberOfAxles === 2)
     ) {
-      return hasPme || vehicleType === 'REGTRCK'
+      return hasPme || vehicleType === POWER_UNIT_CODES.TRUCKS
         ? AXLE_WEIGHT_LEGAL_MAXIMUMS.SINGLE_AXLE
         : AXLE_WEIGHT_LEGAL_MAXIMUMS.STANDARD_TRUCK_TRACTOR_STEER;
     }
@@ -250,8 +253,8 @@ export function CheckLegalWeight(
       message: `Weight for axle unit ${axleUnitNumber} ${
         result ? 'is legal' : `must not exceed ${legalWeight} kgs`
       }`,
-      // We intentionally only return Pass/Warning, as we should never 
-      // show an error for being above legal amount, only permitable 
+      // We intentionally only return Pass/Warning, as we should never
+      // show an error for being above legal amount, only permitable
       // amount. But it's still useful info for things like OCD table.
       result: result
         ? PolicyCheckResultType.Pass
@@ -357,7 +360,7 @@ export function CheckAxleGroupMaximumLegalWeightThreshold(
       const isTandemDriveSingleJeepException =
         startAxleIndex === 1 &&
         endAxleIndex === 2 &&
-        vehicleConfiguration[0] === 'TRKTRAC' &&
+        vehicleConfiguration[0] === POWER_UNIT_CODES.TRUCK_TRACTORS &&
         vehicleConfiguration[1] === AccessoryVehicleType.Jeep &&
         axleUnitVehicleIndexes[1] === 0 &&
         axleUnitVehicleIndexes[2] === 1 &&
@@ -516,7 +519,7 @@ function getBridgeFormulaInputFailure(
  *
  * @example
  * // For a vehicle with 3 axle groups
- * const results = CheckBridgeFormula(policy, ['TRKTRAC', 'SEMITRL'], [
+ * const results = CheckBridgeFormula(policy, [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS], [
  *   { numberOfAxles: 2, axleSpread: 1.8, weight: 12000 },
  *   { numberOfAxles: 3, axleSpread: 4.2, weight: 34000 },
  *   { numberOfAxles: 3, axleSpread: 3.0, weight: 34000 }
@@ -571,7 +574,7 @@ export function CheckBridgeFormula(
  *
  * @example
  * // For a vehicle with 2 axle units
- * const results = CheckNumTiresPerAxle(policy, ['TRKTRAC'], [
+ * const results = CheckNumTiresPerAxle(policy, [POWER_UNIT_CODES.TRUCK_TRACTORS], [
  *   { numberOfAxles: 2, numberOfTires: 4 },  // tandem steer: 4 (valid)
  *   { numberOfAxles: 3, numberOfTires: 12 }  // tridem drive: 12 (valid)
  * ]);
@@ -579,7 +582,7 @@ export function CheckBridgeFormula(
  *
  * @example
  * // Invalid tire count example
- * const results = CheckNumTiresPerAxle(policy, ['TRKTRAC'], [
+ * const results = CheckNumTiresPerAxle(policy, [POWER_UNIT_CODES.TRUCK_TRACTORS], [
  *   { numberOfAxles: 1, numberOfTires: 8 }  // single drive: 8 (invalid)
  * ]);
  * // Returns fail result for the axle unit
@@ -648,7 +651,7 @@ export function CheckNumTiresPerAxle(
  *
  * @example
  * // For a truck-tractor with 2-axle steer, 3-axle drive, and a 3-axle semi-trailer
- * const results = CheckPermittableWeight(policy, ['TRKTRAC', 'SEMITRL'], [
+ * const results = CheckPermittableWeight(policy, [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS], [
  *   { numberOfAxles: 2, axleUnitWeight: 12000 },  // Steer axle unit
  *   { numberOfAxles: 3, axleUnitWeight: 34000 },  // Drive axle unit
  *   { numberOfAxles: 3, axleUnitWeight: 34000 }   // Trailer axle unit
@@ -657,7 +660,7 @@ export function CheckNumTiresPerAxle(
  *
  * @example
  * // For a single power unit with no trailers
- * const results = CheckPermittableWeight(policy, ['TRKTRAC'], [
+ * const results = CheckPermittableWeight(policy, [POWER_UNIT_CODES.TRUCK_TRACTORS], [
  *   { numberOfAxles: 2, axleUnitWeight: 12000 },  // Steer axle unit
  *   { numberOfAxles: 3, axleUnitWeight: 34000 }   // Drive axle unit
  * ]);
@@ -667,7 +670,7 @@ export function CheckNumTiresPerAxle(
  * // For a configured power unit with an additional axle unit
  * const results = CheckPermittableWeight(
  *   policy,
- *   ['CONCRET'],
+ *   [POWER_UNIT_CODES.CONCRETE_PUMPER_TRUCKS],
  *   [
  *     { numberOfAxles: 1, axleUnitWeight: 5000, vehicleIndex: 0 },
  *     { numberOfAxles: 1, axleUnitWeight: 5000, vehicleIndex: 0 },
@@ -775,7 +778,7 @@ export function CheckPermittableWeight(
  *
  * @example
  * // For a single steer, tridem drive configuration
- * const results = CheckMinSteerAxleWeight(policy, ['TRKTRAC'], [
+ * const results = CheckMinSteerAxleWeight(policy, [POWER_UNIT_CODES.TRUCK_TRACTORS], [
  *   { numberOfAxles: 1, axleUnitWeight: 8000 },  // Single steer axle
  *   { numberOfAxles: 3, axleUnitWeight: 30000 }  // Tridem drive axle
  * ]);
@@ -907,7 +910,7 @@ export function CheckPickerTruckTractorWeightRestrictions(
   ];
 
   if (
-    vehicleConfiguration[0] !== 'PICKRTT' ||
+    vehicleConfiguration[0] !== POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS ||
     !steerAxle ||
     !driveAxle ||
     steerAxle.numberOfAxles !== 2 ||
@@ -936,7 +939,10 @@ export function CheckPickerTruckTractorWeightRestrictions(
     return doesNotApply();
   }
 
-  const powerUnitWeights = policy.getDefaultPowerUnitWeight('PICKRTT', 23);
+  const powerUnitWeights = policy.getDefaultPowerUnitWeight(
+    POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+    23,
+  );
   const steerWeightDimension = policy.selectCorrectWeightDimension(
     powerUnitWeights,
     vehicleConfiguration,
@@ -1020,7 +1026,7 @@ export function CheckPickerTruckTractorWeightRestrictions(
  *
  * @example
  * // For a tandem drive configuration with GCVW of 120,000 kg
- * const results = CheckMinDriveAxleWeight(policy, ['TRKTRAC'], [
+ * const results = CheckMinDriveAxleWeight(policy, [POWER_UNIT_CODES.TRUCK_TRACTORS], [
  *   { numberOfAxles: 1, axleUnitWeight: 12000 },  // Steer axle
  *   { numberOfAxles: 2, axleUnitWeight: 24000 }   // Tandem drive axle
  * ]);
@@ -1052,11 +1058,11 @@ export function CheckMinDriveAxleWeight(
 
   const isSupportedVehicleSubtype = (value?: string): boolean => {
     return (
-      value === 'REGTRCK' ||
-      value === 'TRKTRAC' ||
-      value === 'PICKRTT' ||
-      value === 'TRCKPME' ||
-      value === 'TRACPME'
+      value === POWER_UNIT_CODES.TRUCKS ||
+      value === POWER_UNIT_CODES.TRUCK_TRACTORS ||
+      value === POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS ||
+      value === POWER_UNIT_CODES.TRUCK_WITH_PME ||
+      value === POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME
     );
   };
 
@@ -1119,7 +1125,7 @@ export function CheckMinDriveAxleWeight(
  *
  * @example
  * // For a vehicle with valid tire loads
- * const results = CheckMaxTireLoad(policy, ['TRKTRAC'], [
+ * const results = CheckMaxTireLoad(policy, [POWER_UNIT_CODES.TRUCK_TRACTORS], [
  *   { tireSize: 445, numberOfTires: 2, axleUnitWeight: 8000 },  // Steer axle: 8000kg ≤ 9100kg (pass)
  *   { tireSize: 445, numberOfTires: 8, axleUnitWeight: 30000 }  // Drive axle: 30000kg ≤ 30800kg (pass)
  * ]);
@@ -1127,7 +1133,7 @@ export function CheckMinDriveAxleWeight(
  *
  * @example
  * // For a vehicle with invalid tire loads
- * const results = CheckMaxTireLoad(policy, ['TRKTRAC'], [
+ * const results = CheckMaxTireLoad(policy, [POWER_UNIT_CODES.TRUCK_TRACTORS], [
  *   { tireSize: 460, numberOfTires: 2, axleUnitWeight: 8000 },  // Steer axle: tire size > 455mm (fail)
  *   { tireSize: 445, numberOfTires: 8, axleUnitWeight: 32000 }  // Drive axle: 32000kg > 30800kg (fail)
  * ]);
@@ -1148,9 +1154,11 @@ export function CheckMaxTireLoad(
 
   const powerUnitType = _vehicleConfiguration[0];
 
-  const isRubberTiredLoader = powerUnitType === 'RBTRLDR';
-  const isAllTerrainCrane = powerUnitType === 'CRANEAT';
-  const isMobileCrane = powerUnitType === 'CRANEMB';
+  const isRubberTiredLoader =
+    powerUnitType === POWER_UNIT_CODES.RUBBER_TIRED_LOADERS;
+  const isAllTerrainCrane =
+    powerUnitType === POWER_UNIT_CODES.CRANES_ALL_TERRAIN;
+  const isMobileCrane = powerUnitType === POWER_UNIT_CODES.CRANES_MOBILE;
 
   const addFailResult = (axleUnit: number) => {
     policyCheckResults.push({
@@ -1448,12 +1456,12 @@ export function CheckWheelbaseLegalLimits(
 
   const isSupportedVehicleSubtype = (value?: string): boolean => {
     return (
-      value === 'REGTRCK' ||
-      value === 'TRKTRAC' ||
-      value === 'PICKRTT' ||
-      value === 'OGBEDTK' ||
-      value === 'TRCKPME' ||
-      value === 'TRACPME'
+      value === POWER_UNIT_CODES.TRUCKS ||
+      value === POWER_UNIT_CODES.TRUCK_TRACTORS ||
+      value === POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS ||
+      value === POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS ||
+      value === POWER_UNIT_CODES.TRUCK_WITH_PME ||
+      value === POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME
     );
   };
 
@@ -1462,11 +1470,14 @@ export function CheckWheelbaseLegalLimits(
   const isTandemDrive = driveAxle.numberOfAxles === 2;
   const isTridemDrive = driveAxle.numberOfAxles === 3;
 
-  const isTruckTractor = powerUnitSubtype === 'TRKTRAC';
-  const isPickerTruckTractor = powerUnitSubtype === 'PICKRTT';
-  const isTruckWithPME = powerUnitSubtype === 'TRCKPME';
-  const isTruckTractorWithPME = powerUnitSubtype === 'TRACPME';
-  const isOilfieldBedTruck = powerUnitSubtype === 'OGBEDTK';
+  const isTruckTractor = powerUnitSubtype === POWER_UNIT_CODES.TRUCK_TRACTORS;
+  const isPickerTruckTractor =
+    powerUnitSubtype === POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS;
+  const isTruckWithPME = powerUnitSubtype === POWER_UNIT_CODES.TRUCK_WITH_PME;
+  const isTruckTractorWithPME =
+    powerUnitSubtype === POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME;
+  const isOilfieldBedTruck =
+    powerUnitSubtype === POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS;
 
   const wheelbase = isSingleSteer
     ? driveAxle.interaxleSpacing + driveAxle.axleSpread / 2

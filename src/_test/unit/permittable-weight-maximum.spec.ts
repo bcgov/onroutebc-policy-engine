@@ -2,6 +2,8 @@ import { Policy } from '../../policy-engine';
 import { PolicyCheckId, PolicyCheckResultType } from '../../enum/policy-check';
 import { AxleConfiguration, PolicyDefinition } from '../../types';
 import currentPolicyConfig from '../policy-config/_current-config.json';
+import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
+import { TRAILER_CODES } from '../../constants/trailer-codes';
 
 describe('ORV2-5709 permittable weight maximums', () => {
   const policy = new Policy(currentPolicyConfig);
@@ -24,9 +26,9 @@ describe('ORV2-5709 permittable weight maximums', () => {
     const hasTrailer = axleUnit === 3;
     const hasBooster = boosterAxleCount !== undefined;
     const vehicleConfiguration = [
-      'TRKTRAC',
-      ...(hasTrailer ? ['SEMITRL'] : []),
-      ...(hasBooster ? ['BOOSTER'] : []),
+      POWER_UNIT_CODES.TRUCK_TRACTORS,
+      ...(hasTrailer ? [TRAILER_CODES.SEMI_TRAILERS] : []),
+      ...(hasBooster ? [TRAILER_CODES.BOOSTER] : []),
     ];
     const axleConfiguration: Array<AxleConfiguration> = [
       {
@@ -233,7 +235,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
         },
       ];
       const results = policy.runAxleCalculation(
-        ['TRKTRAC'],
+        [POWER_UNIT_CODES.TRUCK_TRACTORS],
         axleConfiguration,
         100000,
       ).results;
@@ -279,7 +281,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
         },
       ];
       const results = policy.runAxleCalculation(
-        ['TRKTRAC'],
+        [POWER_UNIT_CODES.TRUCK_TRACTORS],
         axleConfiguration,
         100000,
       ).results;
@@ -330,7 +332,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
         },
       ];
       const results = policy.runAxleCalculation(
-        ['TRKTRAC', 'SEMITRL'],
+        [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS],
         axleConfiguration,
         100000,
       ).results;
@@ -368,7 +370,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
     const conflictingPolicy = new Policy(conflictingConfig);
     const results = conflictingPolicy
       .runAxleCalculation(
-        ['TRKTRAC'],
+        [POWER_UNIT_CODES.TRUCK_TRACTORS],
         [
           {
             numberOfAxles: 1,
@@ -406,7 +408,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
     const configuredPolicy = new Policy(configuredPolicyDefinition);
     const result = configuredPolicy
       .runAxleCalculation(
-        ['TRKTRAC'],
+        [POWER_UNIT_CODES.TRUCK_TRACTORS],
         [
           {
             numberOfAxles: 2,
