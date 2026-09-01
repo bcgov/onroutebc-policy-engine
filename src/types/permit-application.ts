@@ -71,7 +71,7 @@ export type PermitVehicleDetails = {
   provinceCode: string;
   /** Type of vehicle (e.g., 'powerUnit', 'trailer') */
   vehicleType: string;
-  /** Subtype of vehicle (e.g., 'TRKTRAC', 'SEMITRL') */
+  /** Subtype of vehicle (e.g., POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS) */
   vehicleSubType: string;
   /** Licensed Gross Vehicle Weight in kilograms (optional) */
   licensedGVW?: number | null;

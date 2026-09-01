@@ -2,6 +2,8 @@ import { Policy } from '../../policy-engine';
 import { PolicyCheckId, PolicyCheckResultType } from '../../enum/policy-check';
 import { AxleConfiguration } from '../../types';
 import currentPolicyConfig from '../policy-config/_current-config.json';
+import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
+import { TRAILER_CODES } from '../../constants/trailer-codes';
 
 describe('ORV2-5706 legal weight maximums', () => {
   const policy = new Policy(currentPolicyConfig);
@@ -57,11 +59,11 @@ describe('ORV2-5706 legal weight maximums', () => {
   // Source: ASW Legal Weight Maximums.feature @orv2-5706-1.
   describe('steering maximums from configuration inputs', () => {
     it.each([
-      ['REGTRCK', 1, 2, 9100],
-      ['TRKTRAC', 1, 2, 6000],
-      ['TRCKPME', 1, 3, 9100],
-      ['TRKTRAC', 2, 2, 17000],
-      ['TRACPME', 2, 3, 15200],
+      [POWER_UNIT_CODES.TRUCKS, 1, 2, 9100],
+      [POWER_UNIT_CODES.TRUCK_TRACTORS, 1, 2, 6000],
+      [POWER_UNIT_CODES.TRUCK_WITH_PME, 1, 3, 9100],
+      [POWER_UNIT_CODES.TRUCK_TRACTORS, 2, 2, 17000],
+      [POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME, 2, 3, 15200],
     ])(
       'uses the feature threshold for %s with %i steer and %i drive axles (%i kg)',
       (powerUnitType, steerAxleCount, driveAxleCount, thresholdWeight) => {
@@ -83,9 +85,21 @@ describe('ORV2-5706 legal weight maximums', () => {
   // Source: ASW Legal Weight Maximums.feature @orv2-5706-2.
   describe('single steer with single or tandem drive', () => {
     it.each([
-      ['REGTRCK', 1, 9100, 9100, PolicyCheckResultType.Pass],
-      ['TRKTRAC', 2, 6001, 6000, PolicyCheckResultType.Warning],
-      ['TRACPME', 2, 9100, 9100, PolicyCheckResultType.Pass],
+      [POWER_UNIT_CODES.TRUCKS, 1, 9100, 9100, PolicyCheckResultType.Pass],
+      [
+        POWER_UNIT_CODES.TRUCK_TRACTORS,
+        2,
+        6001,
+        6000,
+        PolicyCheckResultType.Warning,
+      ],
+      [
+        POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
+        2,
+        9100,
+        9100,
+        PolicyCheckResultType.Pass,
+      ],
     ])(
       'evaluates %s with %i drive axles at %i kg',
       (
@@ -113,9 +127,9 @@ describe('ORV2-5706 legal weight maximums', () => {
   // Source: ASW Legal Weight Maximums.feature @orv2-5706-3.
   describe('single steer with tridem drive', () => {
     it.each([
-      ['TRKTRAC', 7300, 7300, PolicyCheckResultType.Pass],
-      ['REGTRCK', 7301, 7300, PolicyCheckResultType.Warning],
-      ['TRCKPME', 9100, 9100, PolicyCheckResultType.Pass],
+      [POWER_UNIT_CODES.TRUCK_TRACTORS, 7300, 7300, PolicyCheckResultType.Pass],
+      [POWER_UNIT_CODES.TRUCKS, 7301, 7300, PolicyCheckResultType.Warning],
+      [POWER_UNIT_CODES.TRUCK_WITH_PME, 9100, 9100, PolicyCheckResultType.Pass],
     ])(
       'evaluates %s at %i kg',
       (powerUnitType, actualWeight, thresholdWeight, expectedResult) => {
@@ -137,8 +151,8 @@ describe('ORV2-5706 legal weight maximums', () => {
   // Source: ASW Legal Weight Maximums.feature @orv2-5706-4.
   describe('tandem steer with tandem drive', () => {
     it.each([
-      ['TRKTRAC', 17000, PolicyCheckResultType.Pass],
-      ['TRCKPME', 17001, PolicyCheckResultType.Warning],
+      [POWER_UNIT_CODES.TRUCK_TRACTORS, 17000, PolicyCheckResultType.Pass],
+      [POWER_UNIT_CODES.TRUCK_WITH_PME, 17001, PolicyCheckResultType.Warning],
     ])(
       'evaluates %s at %i kg',
       (powerUnitType, actualWeight, expectedResult) => {
@@ -160,9 +174,19 @@ describe('ORV2-5706 legal weight maximums', () => {
   // Source: ASW Legal Weight Maximums.feature @orv2-5706-5.
   describe('tandem steer with tridem drive', () => {
     it.each([
-      ['TRKTRAC', 13600, 13600, PolicyCheckResultType.Pass],
-      ['REGTRCK', 13601, 13600, PolicyCheckResultType.Warning],
-      ['TRACPME', 15200, 15200, PolicyCheckResultType.Pass],
+      [
+        POWER_UNIT_CODES.TRUCK_TRACTORS,
+        13600,
+        13600,
+        PolicyCheckResultType.Pass,
+      ],
+      [POWER_UNIT_CODES.TRUCKS, 13601, 13600, PolicyCheckResultType.Warning],
+      [
+        POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
+        15200,
+        15200,
+        PolicyCheckResultType.Pass,
+      ],
     ])(
       'evaluates %s at %i kg',
       (powerUnitType, actualWeight, thresholdWeight, expectedResult) => {
@@ -184,10 +208,10 @@ describe('ORV2-5706 legal weight maximums', () => {
   // Source: ASW Legal Weight Maximums.feature @orv2-5706-7.
   describe('drive maximums from configuration inputs', () => {
     it.each([
-      ['REGTRCK', 1, 9100],
-      ['TRACPME', 2, 17000],
-      ['REGTRCK', 3, 24000],
-      ['TRKTRAC', 3, 24000],
+      [POWER_UNIT_CODES.TRUCKS, 1, 9100],
+      [POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME, 2, 17000],
+      [POWER_UNIT_CODES.TRUCKS, 3, 24000],
+      [POWER_UNIT_CODES.TRUCK_TRACTORS, 3, 24000],
     ])(
       'uses the feature threshold for %s with %i drive axles (%i kg)',
       (powerUnitType, driveAxleCount, thresholdWeight) => {
@@ -213,7 +237,7 @@ describe('ORV2-5706 legal weight maximums', () => {
       [9101, PolicyCheckResultType.Warning],
     ])('evaluates %i kg', (actualWeight, expectedResult) => {
       expectLegalResult(
-        getLegalResult('REGTRCK', 1, 1, 2, actualWeight),
+        getLegalResult(POWER_UNIT_CODES.TRUCKS, 1, 1, 2, actualWeight),
         9100,
         expectedResult,
       );
@@ -227,7 +251,7 @@ describe('ORV2-5706 legal weight maximums', () => {
       [17001, PolicyCheckResultType.Warning],
     ])('evaluates %i kg', (actualWeight, expectedResult) => {
       expectLegalResult(
-        getLegalResult('TRKTRAC', 1, 2, 2, actualWeight),
+        getLegalResult(POWER_UNIT_CODES.TRUCK_TRACTORS, 1, 2, 2, actualWeight),
         17000,
         expectedResult,
       );
@@ -241,7 +265,7 @@ describe('ORV2-5706 legal weight maximums', () => {
       [24001, PolicyCheckResultType.Warning],
     ])('evaluates %i kg', (actualWeight, expectedResult) => {
       expectLegalResult(
-        getLegalResult('REGTRCK', 1, 3, 2, actualWeight),
+        getLegalResult(POWER_UNIT_CODES.TRUCKS, 1, 3, 2, actualWeight),
         24000,
         expectedResult,
       );
@@ -255,7 +279,7 @@ describe('ORV2-5706 legal weight maximums', () => {
       [24001, PolicyCheckResultType.Warning],
     ])('evaluates %i kg', (actualWeight, expectedResult) => {
       expectLegalResult(
-        getLegalResult('TRKTRAC', 1, 3, 2, actualWeight),
+        getLegalResult(POWER_UNIT_CODES.TRUCK_TRACTORS, 1, 3, 2, actualWeight),
         24000,
         expectedResult,
       );
@@ -284,7 +308,11 @@ describe('ORV2-5706 legal weight maximums', () => {
       },
     ];
     const results = policy
-      .runAxleCalculation(['TRCKPME', 'SEMITRL'], axleConfiguration, 100000)
+      .runAxleCalculation(
+        [POWER_UNIT_CODES.TRUCK_WITH_PME, TRAILER_CODES.SEMI_TRAILERS],
+        axleConfiguration,
+        100000,
+      )
       .results.filter((result) => result.id === PolicyCheckId.LegalWeight);
 
     expect(results).toHaveLength(axleConfiguration.length);
@@ -329,7 +357,11 @@ describe('ORV2-5706 legal weight maximums', () => {
       },
     ];
     const results = policy
-      .runAxleCalculation(['CONCRET', 'SEMITRL'], axleConfiguration, 100000)
+      .runAxleCalculation(
+        [POWER_UNIT_CODES.CONCRETE_PUMPER_TRUCKS, TRAILER_CODES.SEMI_TRAILERS],
+        axleConfiguration,
+        100000,
+      )
       .results.filter((result) => result.id === PolicyCheckId.LegalWeight);
 
     expect(results.map(({ thresholdWeight }) => thresholdWeight)).toEqual([

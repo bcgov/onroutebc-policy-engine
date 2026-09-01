@@ -1,5 +1,7 @@
 import { AXLE_SPREAD_LEGAL_LIMITS } from '../constants/axle-spread-legal-limits';
+import { POWER_UNIT_CODES } from '../constants/power-unit-codes';
 import { isSemiTrailerType } from '../constants/semi-trailer-codes';
+import { TRAILER_CODES } from '../constants/trailer-codes';
 import { AxleConfiguration } from '../types/axle-configuration';
 
 export function getTandemAxleSpreadThreshold(
@@ -7,7 +9,8 @@ export function getTandemAxleSpreadThreshold(
   vehicleIndex: number,
 ): { minCm: number; maxCm: number } {
   const vehicleType = vehicleConfiguration[vehicleIndex];
-  const isSpreadTandemSemiTrailer = vehicleType === 'STWDTAN';
+  const isSpreadTandemSemiTrailer =
+    vehicleType === TRAILER_CODES.SEMI_TRAILERS_SPREAD_TANDEMS;
 
   if (isSpreadTandemSemiTrailer) {
     return {
@@ -31,10 +34,12 @@ export function getTridemAxleSpreadThreshold(
   const vehicleType = vehicleConfiguration[vehicleIndex];
   const isDriveAxle = axleIndex === 1;
   const isTridemDrive = axleConfiguration[1].numberOfAxles === 3;
-  const isPonyTrailer = vehicleType === 'PONYTRL';
-  const isPoleTrailer = vehicleType === 'POLETRL';
-  const isOilfieldBedTruck = vehicleType === 'OGBEDTK';
-  const isPowerUnitTruckTractor = vehicleConfiguration[0] === 'TRKTRAC';
+  const isPonyTrailer = vehicleType === TRAILER_CODES.PONY_TRAILERS;
+  const isPoleTrailer = vehicleType === TRAILER_CODES.POLE_TRAILERS;
+  const isOilfieldBedTruck =
+    vehicleType === POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS;
+  const isPowerUnitTruckTractor =
+    vehicleConfiguration[0] === POWER_UNIT_CODES.TRUCK_TRACTORS;
 
   if (isOilfieldBedTruck && isDriveAxle) {
     return {

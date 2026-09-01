@@ -2415,7 +2415,7 @@ export const data: PolicyDefinition = {
         'TRKTRAC',
         'REGTRCK',
         'TRCKPME',
-        'TRACPME'
+        'TRACPME',
       ],
       rules: [
         {
@@ -2426,27 +2426,27 @@ export const data: PolicyDefinition = {
                   fact: 'permitData',
                   path: 'permitDuration',
                   operator: 'lessThanInclusive',
-                  value: 7
-                }
+                  value: 7,
+                },
               },
               {
                 not: {
                   fact: 'permitData',
                   path: 'permitDuration',
                   operator: 'greaterThan',
-                  value: 0
-                }
-              }
-            ]
+                  value: 0,
+                },
+              },
+            ],
           },
           event: {
             type: 'violation',
             params: {
               message: 'Duration must be 7 days or less',
               code: 'field-validation-error',
-              fieldReference: 'permitData.permitDuration'
-            }
-          }
+              fieldReference: 'permitData.permitDuration',
+            },
+          },
         },
         {
           conditions: {
@@ -2454,17 +2454,17 @@ export const data: PolicyDefinition = {
               fact: 'permitData',
               path: 'vehicleConfiguration.overallWidth',
               operator: 'greaterThan',
-              value: 0
-            }
+              value: 0,
+            },
           },
           event: {
             type: 'violation',
             params: {
               message: 'Must be greater than 0m.',
               code: 'field-validation-error',
-              fieldReference: 'permitData.vehicleConfiguration.overallWidth'
-            }
-          }
+              fieldReference: 'permitData.vehicleConfiguration.overallWidth',
+            },
+          },
         },
         {
           conditions: {
@@ -2473,18 +2473,19 @@ export const data: PolicyDefinition = {
                 fact: 'permitData',
                 path: 'vehicleConfiguration.overallWidth',
                 operator: 'greaterThan',
-                value: 3.2
-              }
-            ]
+                value: 3.2,
+              },
+            ],
           },
           event: {
             type: 'warning',
             params: {
-              message: 'The provided dimensions make this application ineligible for self-issue and must be reviewed by the Provincial Permit Centre.',
+              message:
+                'The provided dimensions make this application ineligible for self-issue and must be reviewed by the Provincial Permit Centre.',
               code: 'dimension-oversize',
-              fieldReference: 'permitData.vehicleConfiguration.overallWidth'
-            }
-          }
+              fieldReference: 'permitData.vehicleConfiguration.overallWidth',
+            },
+          },
         },
         {
           conditions: {
@@ -2492,17 +2493,17 @@ export const data: PolicyDefinition = {
               fact: 'permitData',
               path: 'vehicleConfiguration.overallHeight',
               operator: 'greaterThan',
-              value: 0
-            }
+              value: 0,
+            },
           },
           event: {
             type: 'violation',
             params: {
               message: 'Must be greater than 0m.',
               code: 'field-validation-error',
-              fieldReference: 'permitData.vehicleConfiguration.overallHeight'
-            }
-          }
+              fieldReference: 'permitData.vehicleConfiguration.overallHeight',
+            },
+          },
         },
         {
           conditions: {
@@ -2511,18 +2512,19 @@ export const data: PolicyDefinition = {
                 fact: 'permitData',
                 path: 'vehicleConfiguration.overallHeight',
                 operator: 'greaterThan',
-                value: 4.3
-              }
-            ]
+                value: 4.3,
+              },
+            ],
           },
           event: {
             type: 'warning',
             params: {
-              message: 'The provided dimensions make this application ineligible for self-issue and must be reviewed by the Provincial Permit Centre.',
+              message:
+                'The provided dimensions make this application ineligible for self-issue and must be reviewed by the Provincial Permit Centre.',
               code: 'dimension-oversize',
-              fieldReference: 'permitData.vehicleConfiguration.overallHeight'
-            }
-          }
+              fieldReference: 'permitData.vehicleConfiguration.overallHeight',
+            },
+          },
         },
         {
           conditions: {
@@ -2530,17 +2532,17 @@ export const data: PolicyDefinition = {
               fact: 'permitData',
               path: 'vehicleConfiguration.overallLength',
               operator: 'greaterThan',
-              value: 27.5
-            }
+              value: 27.5,
+            },
           },
           event: {
             type: 'violation',
             params: {
               message: 'Must be greater than 27.5m.',
               code: 'field-validation-error',
-              fieldReference: 'permitData.vehicleConfiguration.overallLength'
-            }
-          }
+              fieldReference: 'permitData.vehicleConfiguration.overallLength',
+            },
+          },
         },
         {
           conditions: {
@@ -2549,18 +2551,19 @@ export const data: PolicyDefinition = {
                 fact: 'permitData',
                 path: 'vehicleConfiguration.overallLength',
                 operator: 'greaterThan',
-                value: 31
-              }
-            ]
+                value: 31,
+              },
+            ],
           },
           event: {
             type: 'warning',
             params: {
-              message: 'The provided dimensions make this application ineligible for self-issue and must be reviewed by the Provincial Permit Centre.',
+              message:
+                'The provided dimensions make this application ineligible for self-issue and must be reviewed by the Provincial Permit Centre.',
               code: 'dimension-oversize',
-              fieldReference: 'permitData.vehicleConfiguration.overallLength'
-            }
-          }
+              fieldReference: 'permitData.vehicleConfiguration.overallLength',
+            },
+          },
         },
         {
           conditions: {
@@ -2568,17 +2571,17 @@ export const data: PolicyDefinition = {
               fact: 'permitData',
               path: 'vehicleConfiguration.frontProjection',
               operator: 'greaterThan',
-              value: 0
-            }
+              value: 0,
+            },
           },
           event: {
             type: 'violation',
             params: {
               message: 'Must be greater than 0m.',
               code: 'field-validation-error',
-              fieldReference: 'permitData.vehicleConfiguration.frontProjection'
-            }
-          }
+              fieldReference: 'permitData.vehicleConfiguration.frontProjection',
+            },
+          },
         },
         {
           conditions: {
@@ -2586,17 +2589,17 @@ export const data: PolicyDefinition = {
               fact: 'permitData',
               path: 'vehicleConfiguration.rearProjection',
               operator: 'greaterThan',
-              value: 0
-            }
+              value: 0,
+            },
           },
           event: {
             type: 'violation',
             params: {
               message: 'Must be greater than 0m.',
               code: 'field-validation-error',
-              fieldReference: 'permitData.vehicleConfiguration.rearProjection'
-            }
-          }
+              fieldReference: 'permitData.vehicleConfiguration.rearProjection',
+            },
+          },
         },
         {
           conditions: {
@@ -2604,17 +2607,17 @@ export const data: PolicyDefinition = {
               fact: 'permitData',
               path: 'vehicleConfiguration.overloadWeight',
               operator: 'greaterThan',
-              value: 0
-            }
+              value: 0,
+            },
           },
           event: {
             type: 'violation',
             params: {
               message: 'Must be greater than 0kg.',
               code: 'field-validation-error',
-              fieldReference: 'permitData.vehicleConfiguration.overloadWeight'
-            }
-          }
+              fieldReference: 'permitData.vehicleConfiguration.overloadWeight',
+            },
+          },
         },
         {
           conditions: {
@@ -2623,18 +2626,18 @@ export const data: PolicyDefinition = {
               path: 'vehicleDetails.vehicleSubType',
               operator: 'in',
               value: {
-                fact: 'allowedVehicles'
-              }
-            }
+                fact: 'allowedVehicles',
+              },
+            },
           },
           event: {
             type: 'violation',
             params: {
               message: 'Vehicle type not permittable for this permit type',
               code: 'field-validation-error',
-              fieldReference: 'permitData.vehicleDetails.vehicleSubType'
-            }
-          }
+              fieldReference: 'permitData.vehicleDetails.vehicleSubType',
+            },
+          },
         },
         {
           conditions: {
@@ -2642,17 +2645,17 @@ export const data: PolicyDefinition = {
               fact: 'permitData',
               path: 'permittedRoute.manualRoute.origin',
               operator: 'stringMinimumLength',
-              value: 1
-            }
+              value: 1,
+            },
           },
           event: {
             type: 'violation',
             params: {
               message: 'Route origin is required',
               code: 'field-validation-error',
-              fieldReference: 'permitData.permittedRoute.manualRoute.origin'
-            }
-          }
+              fieldReference: 'permitData.permittedRoute.manualRoute.origin',
+            },
+          },
         },
         {
           conditions: {
@@ -2660,17 +2663,17 @@ export const data: PolicyDefinition = {
               fact: 'permitData',
               path: 'permittedRoute.manualRoute.destination',
               operator: 'stringMinimumLength',
-              value: 1
-            }
+              value: 1,
+            },
           },
           event: {
             type: 'violation',
             params: {
               message: 'Route destination is required',
               code: 'field-validation-error',
-              fieldReference: 'permitData.permittedRoute.manualRoute.origin'
-            }
-          }
+              fieldReference: 'permitData.permittedRoute.manualRoute.origin',
+            },
+          },
         },
         {
           conditions: {
@@ -2678,44 +2681,45 @@ export const data: PolicyDefinition = {
               fact: 'permitData',
               path: 'permittedRoute.manualRoute.totalDistance',
               operator: 'greaterThan',
-              value: 0
-            }
+              value: 0,
+            },
           },
           event: {
             type: 'violation',
             params: {
               message: 'Trip distance must be greater than zero',
               code: 'field-validation-error',
-              fieldReference: 'permitData.permittedRoute.manualRoute.totalDistance'
-            }
-          }
-        }
+              fieldReference:
+                'permitData.permittedRoute.manualRoute.totalDistance',
+            },
+          },
+        },
       ],
       costRules: [
         {
           fact: 'fixedCost',
           params: {
             cost: 15,
-            description: 'Oversize'
-          }
+            description: 'Oversize',
+          },
         },
         {
           fact: 'overloadWeightCost',
           params: {
-            description: 'Overload'
-          }
-        }
+            description: 'Overload',
+          },
+        },
       ],
       conditions: [
         {
           condition: 'CVSE-1000',
-          mandatory: true
+          mandatory: true,
         },
         {
           condition: 'CVSE-1070',
-          mandatory: true
-        }
-      ]
+          mandatory: true,
+        },
+      ],
     },
     {
       id: 'STGVWI',
@@ -2750,7 +2754,7 @@ export const data: PolicyDefinition = {
         'SCRAPER',
         'STINGER',
         'TOWVEHC',
-        'TRKTRAC'
+        'TRKTRAC',
       ],
       rules: [
         {
@@ -2761,27 +2765,27 @@ export const data: PolicyDefinition = {
                   fact: 'permitData',
                   path: 'permitDuration',
                   operator: 'lessThanInclusive',
-                  value: 7
-                }
+                  value: 7,
+                },
               },
               {
                 not: {
                   fact: 'permitData',
                   path: 'permitDuration',
                   operator: 'greaterThan',
-                  value: 0
-                }
-              }
-            ]
+                  value: 0,
+                },
+              },
+            ],
           },
           event: {
             type: 'violation',
             params: {
               message: 'Duration must be 7 days or less',
               code: 'field-validation-error',
-              fieldReference: 'permitData.permitDuration'
-            }
-          }
+              fieldReference: 'permitData.permitDuration',
+            },
+          },
         },
         {
           conditions: {
@@ -2789,17 +2793,17 @@ export const data: PolicyDefinition = {
               fact: 'permitData',
               path: 'vehicleConfiguration.actualGVW',
               operator: 'greaterThan',
-              value: 0
-            }
+              value: 0,
+            },
           },
           event: {
             type: 'violation',
             params: {
               message: 'This is a required field',
               code: 'field-validation-error',
-              fieldReference: 'permitData.vehicleConfiguration.actualGVW'
-            }
-          }
+              fieldReference: 'permitData.vehicleConfiguration.actualGVW',
+            },
+          },
         },
         {
           conditions: {
@@ -2808,7 +2812,7 @@ export const data: PolicyDefinition = {
                 fact: 'permitData',
                 path: 'vehicleConfiguration.actualGVW',
                 operator: 'greaterThan',
-                value: 0
+                value: 0,
               },
               {
                 not: {
@@ -2817,20 +2821,20 @@ export const data: PolicyDefinition = {
                   operator: 'greaterThan',
                   value: {
                     fact: 'permitData',
-                    path: 'vehicleDetails.licensedGVW'
-                  }
-                }
-              }
-            ]
+                    path: 'vehicleDetails.licensedGVW',
+                  },
+                },
+              },
+            ],
           },
           event: {
             type: 'violation',
             params: {
               message: 'Must be greater than Licensed GVW.',
               code: 'field-validation-error',
-              fieldReference: 'permitData.vehicleConfiguration.actualGVW'
-            }
-          }
+              fieldReference: 'permitData.vehicleConfiguration.actualGVW',
+            },
+          },
         },
         {
           conditions: {
@@ -2839,24 +2843,24 @@ export const data: PolicyDefinition = {
                 fact: 'permitData',
                 path: 'vehicleConfiguration.actualGVW',
                 operator: 'greaterThan',
-                value: 0
+                value: 0,
               },
               {
                 fact: 'permitData',
                 path: 'vehicleConfiguration.actualGVW',
                 operator: 'greaterThan',
-                value: 63500
-              }
-            ]
+                value: 63500,
+              },
+            ],
           },
           event: {
             type: 'violation',
             params: {
               message: 'Cannot exceed 63,500kg',
               code: 'field-validation-error',
-              fieldReference: 'permitData.vehicleConfiguration.actualGVW'
-            }
-          }
+              fieldReference: 'permitData.vehicleConfiguration.actualGVW',
+            },
+          },
         },
         {
           conditions: {
@@ -2865,18 +2869,18 @@ export const data: PolicyDefinition = {
               path: 'vehicleDetails.vehicleSubType',
               operator: 'in',
               value: {
-                fact: 'allowedVehicles'
-              }
-            }
+                fact: 'allowedVehicles',
+              },
+            },
           },
           event: {
             type: 'violation',
             params: {
               message: 'Vehicle type not permittable for this permit type',
               code: 'field-validation-error',
-              fieldReference: 'permitData.vehicleDetails.vehicleSubType'
-            }
-          }
+              fieldReference: 'permitData.vehicleDetails.vehicleSubType',
+            },
+          },
         },
         {
           conditions: {
@@ -2884,17 +2888,17 @@ export const data: PolicyDefinition = {
               fact: 'permitData',
               path: 'permittedRoute.manualRoute.origin',
               operator: 'stringMinimumLength',
-              value: 1
-            }
+              value: 1,
+            },
           },
           event: {
             type: 'violation',
             params: {
               message: 'Route origin is required',
               code: 'field-validation-error',
-              fieldReference: 'permitData.permittedRoute.manualRoute.origin'
-            }
-          }
+              fieldReference: 'permitData.permittedRoute.manualRoute.origin',
+            },
+          },
         },
         {
           conditions: {
@@ -2902,17 +2906,17 @@ export const data: PolicyDefinition = {
               fact: 'permitData',
               path: 'permittedRoute.manualRoute.destination',
               operator: 'stringMinimumLength',
-              value: 1
-            }
+              value: 1,
+            },
           },
           event: {
             type: 'violation',
             params: {
               message: 'Route destination is required',
               code: 'field-validation-error',
-              fieldReference: 'permitData.permittedRoute.manualRoute.origin'
-            }
-          }
+              fieldReference: 'permitData.permittedRoute.manualRoute.origin',
+            },
+          },
         },
         {
           conditions: {
@@ -2920,33 +2924,35 @@ export const data: PolicyDefinition = {
               fact: 'permitData',
               path: 'permittedRoute.manualRoute.totalDistance',
               operator: 'greaterThan',
-              value: 0
-            }
+              value: 0,
+            },
           },
           event: {
             type: 'violation',
             params: {
               message: 'Trip distance must be greater than zero',
               code: 'field-validation-error',
-              fieldReference: 'permitData.permittedRoute.manualRoute.totalDistance'
-            }
-          }
-        }
+              fieldReference:
+                'permitData.permittedRoute.manualRoute.totalDistance',
+            },
+          },
+        },
       ],
       costRules: [
         {
           fact: 'overloadGvwCost',
           params: {
-            description: 'Calculates overload fee based on distance and licensed GVW increase'
-          }
-        }
+            description:
+              'Calculates overload fee based on distance and licensed GVW increase',
+          },
+        },
       ],
       conditions: [
         {
           condition: 'CVSE-1070',
-          mandatory: true
-        }
-      ]
+          mandatory: true,
+        },
+      ],
     },
     {
       id: 'STFR',

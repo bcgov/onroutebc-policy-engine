@@ -3,6 +3,8 @@ import { PolicyCheckId, PolicyCheckResultType } from '../../enum';
 import { getAxleUnitVehicleIndexes } from '../../helper/dimensions.helper';
 import currentPolicyConfig from '../policy-config/_current-config.json';
 import { AxleCalcResults } from '../../types';
+import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
+import { TRAILER_CODES } from '../../constants/trailer-codes';
 
 describe('Multi-Axle Unit Calculation Tests', () => {
   const policy: Policy = new Policy(currentPolicyConfig);
@@ -16,7 +18,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
 
   it('should pass when a power unit is explicitly configured with three axle units', () => {
     const results = policy.runAxleCalculation(
-      ['CONCRET'],
+      [POWER_UNIT_CODES.CONCRETE_PUMPER_TRUCKS],
       [
         {
           numberOfAxles: 1,
@@ -42,7 +44,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
 
     expect(() => {
       results = policy.runAxleCalculation(
-        ['CONCRET'],
+        [POWER_UNIT_CODES.CONCRETE_PUMPER_TRUCKS],
         [
           {
             numberOfAxles: 2,
@@ -90,7 +92,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
 
   it('should pass when a trailer is explicitly configured with an extra axle unit', () => {
     const results = policy.runAxleCalculation(
-      ['TRKTRAC', 'STROPRT'],
+      [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.STEERING_TRAILERS_MANNED],
       [
         {
           numberOfAxles: 1,
@@ -114,7 +116,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
 
   it('should calculate a truck tractor with a tridem semi-trailer axle unit', () => {
     const results = policy.runAxleCalculation(
-      ['TRKTRAC', 'SEMITRL'],
+      [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS],
       [
         {
           numberOfAxles: 1,
@@ -162,7 +164,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
 
   it('should calculate PICKRTT and PLATFRM with one-axle trailer defaults and report tire failures', () => {
     const results = policy.runAxleCalculation(
-      ['PICKRTT', 'PLATFRM'],
+      [POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS, TRAILER_CODES.PLATFORM_TRAILERS],
       [
         {
           numberOfAxles: 1,
@@ -208,7 +210,11 @@ describe('Multi-Axle Unit Calculation Tests', () => {
 
   it('should pass when explicit vehicleIndex disambiguates multiple trailer axle units', () => {
     const results = policy.runAxleCalculation(
-      ['TRKTRAC', 'STROPRT', 'STRSELF'],
+      [
+        POWER_UNIT_CODES.TRUCK_TRACTORS,
+        TRAILER_CODES.STEERING_TRAILERS_MANNED,
+        TRAILER_CODES.STEERING_TRAILERS_SELF_REMOTE,
+      ],
       [
         {
           numberOfAxles: 1,
@@ -233,7 +239,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
 
   it('should pass for a crane mounted boom with dollies', () => {
     const results = policy.runAxleCalculation(
-      ['CRANEMB', 'DOLLIES'],
+      [POWER_UNIT_CODES.CRANES_MOBILE, TRAILER_CODES.DOLLIES],
       [
         {
           numberOfAxles: 1,
@@ -271,7 +277,10 @@ describe('Multi-Axle Unit Calculation Tests', () => {
 
   it('should pass for a pickup truck tractor with a platform wheel trailer', () => {
     const results = policy.runAxleCalculation(
-      ['PICKRTT', 'PLATWHE'],
+      [
+        POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+        TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
+      ],
       [
         {
           numberOfAxles: 1,
@@ -310,7 +319,12 @@ describe('Multi-Axle Unit Calculation Tests', () => {
 
   it('should pass for an oilfield bed truck with jeep, trailer, and booster', () => {
     const results = policy.runAxleCalculation(
-      ['OGBEDTK', 'JEEPSRG', 'FEDRMMX', 'BOOSTER'],
+      [
+        POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS,
+        TRAILER_CODES.JEEPS,
+        TRAILER_CODES.FIXED_EQUIPMENT_COUNTER_FLOW_ASPHALT_DRUM_MIXERS,
+        TRAILER_CODES.BOOSTER,
+      ],
       [
         {
           numberOfAxles: 1,
@@ -368,7 +382,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
   it('should reject multi-axle calculation without vehicleIndex instead of guessing ownership', () => {
     expect(() =>
       policy.runAxleCalculation(
-        ['CONCRET'],
+        [POWER_UNIT_CODES.CONCRETE_PUMPER_TRUCKS],
         [
           {
             numberOfAxles: 1,
@@ -387,7 +401,10 @@ describe('Multi-Axle Unit Calculation Tests', () => {
   it('should reject partially supplied vehicleIndex values from runAxleCalculation', () => {
     expect(() =>
       policy.runAxleCalculation(
-        ['TRKTRAC', 'STROPRT'],
+        [
+          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          TRAILER_CODES.STEERING_TRAILERS_MANNED,
+        ],
         [
           {
             numberOfAxles: 1,
@@ -408,7 +425,10 @@ describe('Multi-Axle Unit Calculation Tests', () => {
   it('should reject vehicleIndex values that contradict steer and drive axle ownership', () => {
     expect(() =>
       policy.runAxleCalculation(
-        ['TRKTRAC', 'STROPRT'],
+        [
+          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          TRAILER_CODES.STEERING_TRAILERS_MANNED,
+        ],
         [
           {
             numberOfAxles: 1,
@@ -428,7 +448,10 @@ describe('Multi-Axle Unit Calculation Tests', () => {
   it('should reject vehicleIndex values that point backward in physical axle order', () => {
     expect(() =>
       policy.runAxleCalculation(
-        ['TRKTRAC', 'STROPRT'],
+        [
+          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          TRAILER_CODES.STEERING_TRAILERS_MANNED,
+        ],
         [
           {
             numberOfAxles: 1,
@@ -466,7 +489,7 @@ describe('Multi-Axle Unit Vehicle Mapping Tests', () => {
 
     const axleUnitVehicleIndexes = getAxleUnitVehicleIndexes(
       policy,
-      ['CONCRET'],
+      [POWER_UNIT_CODES.CONCRETE_PUMPER_TRUCKS],
       axleConfiguration,
     );
 
@@ -483,7 +506,7 @@ describe('Multi-Axle Unit Vehicle Mapping Tests', () => {
 
     const axleUnitVehicleIndexes = getAxleUnitVehicleIndexes(
       policy,
-      ['TRKTRAC', 'STROPRT'],
+      [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.STEERING_TRAILERS_MANNED],
       axleConfiguration,
     );
 
@@ -501,7 +524,11 @@ describe('Multi-Axle Unit Vehicle Mapping Tests', () => {
 
     const axleUnitVehicleIndexes = getAxleUnitVehicleIndexes(
       policy,
-      ['TRKTRAC', 'STROPRT', 'STRSELF'],
+      [
+        POWER_UNIT_CODES.TRUCK_TRACTORS,
+        TRAILER_CODES.STEERING_TRAILERS_MANNED,
+        TRAILER_CODES.STEERING_TRAILERS_SELF_REMOTE,
+      ],
       axleConfiguration,
     );
 
@@ -519,7 +546,7 @@ describe('Multi-Axle Unit Vehicle Mapping Tests', () => {
     expect(() =>
       getAxleUnitVehicleIndexes(
         policy,
-        ['CRANEAT', 'DOLLIES'],
+        [POWER_UNIT_CODES.CRANES_ALL_TERRAIN, TRAILER_CODES.DOLLIES],
         axleConfiguration,
       ),
     ).toThrow('All axle units must include vehicleIndex');
@@ -535,7 +562,7 @@ describe('Multi-Axle Unit Vehicle Mapping Tests', () => {
     expect(() =>
       getAxleUnitVehicleIndexes(
         policy,
-        ['TRKTRAC', 'SEMITRL'],
+        [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS],
         axleConfiguration,
       ),
     ).toThrow('All axle units must include vehicleIndex');
@@ -551,7 +578,7 @@ describe('Multi-Axle Unit Vehicle Mapping Tests', () => {
     expect(() =>
       getAxleUnitVehicleIndexes(
         policy,
-        ['TRKTRAC', 'SEMITRL'],
+        [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS],
         axleConfiguration,
       ),
     ).toThrow('Invalid vehicleIndex in axle configuration');
@@ -568,7 +595,11 @@ describe('Multi-Axle Unit Vehicle Mapping Tests', () => {
     expect(() =>
       getAxleUnitVehicleIndexes(
         policy,
-        ['TRKTRAC', 'STROPRT', 'STRSELF'],
+        [
+          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          TRAILER_CODES.STEERING_TRAILERS_MANNED,
+          TRAILER_CODES.STEERING_TRAILERS_SELF_REMOTE,
+        ],
         axleConfiguration,
       ),
     ).toThrow('Axle unit vehicleIndex values must be in vehicle order');
@@ -584,7 +615,7 @@ describe('Multi-Axle Unit Vehicle Mapping Tests', () => {
     expect(() =>
       getAxleUnitVehicleIndexes(
         policy,
-        ['TRKTRAC', 'SEMITRL'],
+        [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS],
         axleConfiguration,
       ),
     ).toThrow('First two axle units must belong to the power unit');

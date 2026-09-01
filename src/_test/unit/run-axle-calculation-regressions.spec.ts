@@ -6,6 +6,7 @@ import {
   AxleGroupPolicyCheckResult,
 } from '../../types';
 import currentPolicyConfig from '../policy-config/_current-config.json';
+import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
 
 describe('runAxleCalculation robustness regressions', () => {
   const policy = new Policy(currentPolicyConfig);
@@ -32,7 +33,7 @@ describe('runAxleCalculation robustness regressions', () => {
 
     expect(() => {
       calculation = policy.runAxleCalculation(
-        ['CRANEAT'],
+        [POWER_UNIT_CODES.CRANES_ALL_TERRAIN],
         axleConfiguration,
         100000,
       );

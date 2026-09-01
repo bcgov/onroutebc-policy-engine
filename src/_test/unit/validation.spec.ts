@@ -10,7 +10,12 @@ import allEventTypes from '../policy-config/all-event-types.sample.json';
 import specialAuth from '../policy-config/special-auth-lcv.sample.json';
 import { PermitAppInfo } from '../../enum/permit-app-info';
 import { ValidationResultCode } from '../../enum/validation-result-code';
-import { convertToTimezone, getUtcDatetime, TIMEZONE_IDS } from '../../helper/date.helper';
+import {
+  convertToTimezone,
+  getUtcDatetime,
+  TIMEZONE_IDS,
+} from '../../helper/date.helper';
+import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
 
 describe('Permit Engine Constructor', () => {
   it('should construct without error with special authorizations', () => {
@@ -50,9 +55,7 @@ describe('Policy Engine Validator', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    ).format(PermitAppInfo.PermitDateFormat.toString());
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(0);
@@ -65,7 +68,9 @@ describe('Policy Engine Validator', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).subtract(1, 'day').format(PermitAppInfo.PermitDateFormat.toString());
+    )
+      .subtract(1, 'day')
+      .format(PermitAppInfo.PermitDateFormat.toString());
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
@@ -78,7 +83,9 @@ describe('Policy Engine Validator', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).add(15, 'day').format(PermitAppInfo.PermitDateFormat.toString());
+    )
+      .add(15, 'day')
+      .format(PermitAppInfo.PermitDateFormat.toString());
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
@@ -91,7 +98,9 @@ describe('Policy Engine Validator', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).add(14, 'day').format(PermitAppInfo.PermitDateFormat.toString());
+    )
+      .add(14, 'day')
+      .format(PermitAppInfo.PermitDateFormat.toString());
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(0);
@@ -104,9 +113,7 @@ describe('Policy Engine Validator', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    ).format(PermitAppInfo.PermitDateFormat.toString());
 
     permit.permitType = '__INVALID';
 
@@ -121,9 +128,7 @@ describe('Policy Engine Validator', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    ).format(PermitAppInfo.PermitDateFormat.toString());
 
     // Set an invalid vehicle type
     permit.permitData.vehicleDetails.vehicleSubType = '__INVALID';
@@ -139,12 +144,11 @@ describe('Policy Engine Validator', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    ).format(PermitAppInfo.PermitDateFormat.toString());
 
     // Set an LCV vehicle type
-    permit.permitData.vehicleDetails.vehicleSubType = 'LCVRMDB';
+    permit.permitData.vehicleDetails.vehicleSubType =
+      POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES;
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
@@ -157,12 +161,11 @@ describe('Policy Engine Validator', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    ).format(PermitAppInfo.PermitDateFormat.toString());
 
     // Set an LCV vehicle type
-    permit.permitData.vehicleDetails.vehicleSubType = 'LCVRMDB';
+    permit.permitData.vehicleDetails.vehicleSubType =
+      POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES;
 
     const validationResult = await lcvPolicy.validate(permit);
     expect(validationResult.violations).toHaveLength(0);
@@ -175,12 +178,11 @@ describe('Policy Engine Validator', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    ).format(PermitAppInfo.PermitDateFormat.toString());
 
     // Set an LCV vehicle type
-    permit.permitData.vehicleDetails.vehicleSubType = 'LCVRMDB';
+    permit.permitData.vehicleDetails.vehicleSubType =
+      POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES;
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
@@ -211,9 +213,7 @@ describe('Policy Engine Validator', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    ).format(PermitAppInfo.PermitDateFormat.toString());
 
     // Set an invalid companyName
     permit.permitData.companyName = '';
@@ -232,9 +232,7 @@ describe('Policy Engine Validator', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    ).format(PermitAppInfo.PermitDateFormat.toString());
 
     // Set an invalid companyName
     permit.permitData.companyName = '';
@@ -257,9 +255,7 @@ describe('Master Policy Configuration Validator', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    ).format(PermitAppInfo.PermitDateFormat.toString());
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(0);
@@ -272,9 +268,7 @@ describe('Master Policy Configuration Validator', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    ).format(PermitAppInfo.PermitDateFormat.toString());
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(0);
@@ -291,9 +285,7 @@ describe('Policy Configuration Missing Elements', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    ).format(PermitAppInfo.PermitDateFormat.toString());
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
@@ -309,7 +301,7 @@ describe('Permit Engine Validation Results Aggregator', () => {
     const permit = JSON.parse(JSON.stringify(validTros30Day));
 
     const validationResult = await policy.validate(permit);
-    
+
     // Violation 1: expected structure
     // Violation 2: unknown event type (defaults to violation)
     expect(validationResult.violations).toHaveLength(2);

@@ -10,6 +10,7 @@ import {
   getUtcDatetime,
   TIMEZONE_IDS,
 } from '../../helper/date.helper';
+import { TRAILER_CODES } from '../../constants/trailer-codes';
 
 describe('Single Trip Oversize Policy Configuration Validator', () => {
   const policy: Policy = new Policy(currentConfig);
@@ -22,9 +23,7 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    ).format(PermitAppInfo.PermitDateFormat.toString());
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(0);
@@ -37,9 +36,7 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    ).format(PermitAppInfo.PermitDateFormat.toString());
 
     const validationResult = await lcvPolicy.validate(permit);
     expect(validationResult.violations).toHaveLength(0);
@@ -52,9 +49,7 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    ).format(PermitAppInfo.PermitDateFormat.toString());
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
@@ -67,9 +62,7 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    ).format(PermitAppInfo.PermitDateFormat.toString());
 
     // Set duration to 6
     permit.permitData.permitDuration = 6;
@@ -85,9 +78,7 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    ).format(PermitAppInfo.PermitDateFormat.toString());
 
     // Set duration to 7
     permit.permitData.permitDuration = 7;
@@ -103,9 +94,7 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    ).format(PermitAppInfo.PermitDateFormat.toString());
 
     // Set duration to 8
     permit.permitData.permitDuration = 8;
@@ -121,9 +110,7 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    ).format(PermitAppInfo.PermitDateFormat.toString());
 
     // Set duration to 0
     permit.permitData.permitDuration = 0;
@@ -139,17 +126,15 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    ).format(PermitAppInfo.PermitDateFormat.toString());
 
     // Add two boosters to the configuration list
     // Note that this configuration allows boosters.
     permit.permitData.vehicleConfiguration.trailers.push({
-      vehicleSubType: 'BOOSTER',
+      vehicleSubType: TRAILER_CODES.BOOSTER,
     });
     permit.permitData.vehicleConfiguration.trailers.push({
-      vehicleSubType: 'BOOSTER',
+      vehicleSubType: TRAILER_CODES.BOOSTER,
     });
 
     const validationResult = await policy.validate(permit);
@@ -163,9 +148,7 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    ).format(PermitAppInfo.PermitDateFormat.toString());
 
     // Add two jeeps to the configuration list
     // Note that this configuration allows jeeps.
@@ -173,10 +156,10 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
       1,
       0,
       {
-        vehicleSubType: 'JEEPSRG',
+        vehicleSubType: TRAILER_CODES.JEEPS,
       },
       {
-        vehicleSubType: 'JEEPSRG',
+        vehicleSubType: TRAILER_CODES.JEEPS,
       },
     );
 
@@ -191,14 +174,12 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    ).format(PermitAppInfo.PermitDateFormat.toString());
 
     // Add jeep to the end of the configuration.
     // Note that this configuration allows jeeps.
     permit.permitData.vehicleConfiguration.trailers.push({
-      vehicleSubType: 'JEEPSRG',
+      vehicleSubType: TRAILER_CODES.JEEPS,
     });
 
     const validationResult = await policy.validate(permit);
@@ -212,9 +193,7 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
     permit.permitData.startDate = convertToTimezone(
       getUtcDatetime(),
       TIMEZONE_IDS.PACIFIC,
-    ).format(
-      PermitAppInfo.PermitDateFormat.toString(),
-    );
+    ).format(PermitAppInfo.PermitDateFormat.toString());
 
     // Add an invalid trailer to the configuration list
     permit.permitData.vehicleConfiguration.trailers.push({

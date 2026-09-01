@@ -4,6 +4,7 @@ import fiveTypes from '../policy-config/five-types.sample.json';
 import weightSample from '../policy-config/weight-dimensions.sample.json';
 import trosOnly from '../policy-config/tros-only.sample.json';
 import specialAuth from '../policy-config/special-auth-lcv.sample.json';
+import { COMMODITY_CODES } from '../../constants/commodity-codes';
 
 describe('Permit Engine Utility Functions', () => {
   const policy: Policy = new Policy(fiveTypes);
@@ -28,9 +29,9 @@ describe('Permit Engine Utility Functions', () => {
     const policyAlt = new Policy(weightSample);
     const commodities: Map<string, string> = policyAlt.getCommodities('STOW');
     expect(commodities.size).toBe(3);
-    expect(commodities.get('XXXXXXX')).toBeTruthy();
-    expect(commodities.get('REDUCBL')).toBeTruthy();
-    expect(commodities.get('EMPTYXX')).toBeTruthy();
+    expect(commodities.get(COMMODITY_CODES.NONE)).toBeTruthy();
+    expect(commodities.get(COMMODITY_CODES.REDUCIBLE_LOADS)).toBeTruthy();
+    expect(commodities.get(COMMODITY_CODES.EMPTY)).toBeTruthy();
   });
 
   it('should return the correct number of power unit types', async () => {
