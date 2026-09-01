@@ -3,6 +3,7 @@ import completePolicyConfig from '../_test/policy-config/_current-config.json';
 import { COMMODITY_CODES } from '../constants/commodity-codes';
 import { POWER_UNIT_CODES } from '../constants/power-unit-codes';
 import { TRAILER_CODES } from '../constants/trailer-codes';
+import { PERMIT_CODES } from '../constants/permit-codes';
 
 function start() {
   const policy: Policy = new Policy(completePolicyConfig);
@@ -20,14 +21,14 @@ function start() {
   );
 
   console.log('***COMMODITIES FOR STOS***');
-  const stosCommodities = policy.getCommodities('STOS');
+  const stosCommodities = policy.getCommodities(PERMIT_CODES.SINGLE_TRIP_OVERSIZE);
   console.log(
     JSON.stringify(Array.from(stosCommodities.entries()), null, '   '),
   );
 
   console.log('***POWER UNITS PERMITTABLE FOR STOS AND EMPTY COMMODITY***');
   const puTypesEmpty = policy.getPermittablePowerUnitTypes(
-    'STOS',
+    PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
     COMMODITY_CODES.EMPTY,
   );
   console.log(JSON.stringify(Array.from(puTypesEmpty.entries()), null, '   '));
@@ -36,7 +37,7 @@ function start() {
     '***POWER UNITS PERMITTABLE FOR STOS AND BRIDGE BEAMS COMMODITY***',
   );
   const puTypesBridgeBeams = policy.getPermittablePowerUnitTypes(
-    'STOS',
+    PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
     COMMODITY_CODES.BRIDGE_BEAMS,
   );
   console.log(
@@ -47,7 +48,7 @@ function start() {
     '***PERMITTABLE NEXT VEHICLES WITH EMPTY CONFIGURATION, STOS AND EMPTY***',
   );
   const vehicleTypes1 = policy.getNextPermittableVehicles(
-    'STOS',
+    PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
     COMMODITY_CODES.EMPTY,
     [],
   );
@@ -57,7 +58,7 @@ function start() {
     '***PERMITTABLE NEXT VEHICLES WITH TRUCK TRACTOR AND JEEP, STOS AND EMPTY***',
   );
   const vehicleTypes2 = policy.getNextPermittableVehicles(
-    'STOS',
+    PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
     COMMODITY_CODES.EMPTY,
     [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.JEEPS],
   );
@@ -66,7 +67,7 @@ function start() {
   console.log(
     '***MAX SIZE FOR TRUCK TRACTOR, JEEP, HIBOEXP, STOS AND EMPTYXX***',
   );
-  const sizeDimension = policy.getSizeDimension('STOS', COMMODITY_CODES.EMPTY, [
+  const sizeDimension = policy.getSizeDimension(PERMIT_CODES.SINGLE_TRIP_OVERSIZE, COMMODITY_CODES.EMPTY, [
     POWER_UNIT_CODES.TRUCK_TRACTORS,
     TRAILER_CODES.JEEPS,
     TRAILER_CODES.HIBOYS_EXPANDOS,
@@ -77,7 +78,7 @@ function start() {
     '***MAX SIZE FOR TRUCK TRACTOR, JEEP, HIBOEXP, STOS AND EMPTYXX IN PEACE***',
   );
   const sizeDimensionPeace = policy.getSizeDimension(
-    'STOS',
+    PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
     COMMODITY_CODES.EMPTY,
     [
       POWER_UNIT_CODES.TRUCK_TRACTORS,
@@ -92,7 +93,7 @@ function start() {
     '***MAX SIZE FOR TRUCK TRACTOR, JEEP, HIBOEXP, STOS AND EMPTYXX IN PEACE,BC DEFAULT***',
   );
   const sizeDimensionPeaceBC = policy.getSizeDimension(
-    'STOS',
+    PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
     COMMODITY_CODES.EMPTY,
     [
       POWER_UNIT_CODES.TRUCK_TRACTORS,
@@ -107,7 +108,7 @@ function start() {
     '***MAX SIZE FOR TRUCK TRACTOR, JEEP, STWHELR, STOS AND EMPTYXX IN BC DEFAULT***',
   );
   const sizeDimensionBC = policy.getSizeDimension(
-    'STOS',
+    PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
     COMMODITY_CODES.EMPTY,
     [
       POWER_UNIT_CODES.TRUCK_TRACTORS,
@@ -122,7 +123,7 @@ function start() {
     '***MAX SIZE FOR TRUCK TRACTOR, JEEP, STWHELR, STOS AND EMPTYXX IN PEACE***',
   );
   const sizeDimensionStwhelrPce = policy.getSizeDimension(
-    'STOS',
+    PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
     COMMODITY_CODES.EMPTY,
     [
       POWER_UNIT_CODES.TRUCK_TRACTORS,

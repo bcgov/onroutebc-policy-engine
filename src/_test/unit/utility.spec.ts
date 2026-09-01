@@ -5,6 +5,7 @@ import weightSample from '../policy-config/weight-dimensions.sample.json';
 import trosOnly from '../policy-config/tros-only.sample.json';
 import specialAuth from '../policy-config/special-auth-lcv.sample.json';
 import { COMMODITY_CODES } from '../../constants/commodity-codes';
+import { PERMIT_CODES } from '../../constants/permit-codes';
 
 describe('Permit Engine Utility Functions', () => {
   const policy: Policy = new Policy(fiveTypes);
@@ -27,7 +28,7 @@ describe('Permit Engine Utility Functions', () => {
 
   it('should return the correct number of commodities for overweight', async () => {
     const policyAlt = new Policy(weightSample);
-    const commodities: Map<string, string> = policyAlt.getCommodities('STOW');
+    const commodities: Map<string, string> = policyAlt.getCommodities(PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT);
     expect(commodities.size).toBe(3);
     expect(commodities.get(COMMODITY_CODES.NONE)).toBeTruthy();
     expect(commodities.get(COMMODITY_CODES.REDUCIBLE_LOADS)).toBeTruthy();
@@ -51,7 +52,7 @@ describe('Permit Engine Utility Functions', () => {
 
   it('should return a TROS permit type', async () => {
     const permitType: PermitType | null =
-      policy.getPermitTypeDefinition('TROS');
+      policy.getPermitTypeDefinition(PERMIT_CODES.TERM_OVERSIZE);
     expect(permitType).not.toBeNull();
   });
 
@@ -70,7 +71,7 @@ describe('Permit Engine Permittable Vehicle Functions', () => {
     const permittableVehicles: Map<
       string,
       Map<string, string>
-    > = policy.getPermittableVehicleTypes('TROS');
+    > = policy.getPermittableVehicleTypes(PERMIT_CODES.TERM_OVERSIZE);
     expect(permittableVehicles.get('powerUnits')?.size).toBe(2);
     expect(permittableVehicles.get('trailers')?.size).toBe(3);
   });
@@ -79,7 +80,7 @@ describe('Permit Engine Permittable Vehicle Functions', () => {
     const permittableVehicles: Map<
       string,
       Map<string, string>
-    > = lcvPolicy.getPermittableVehicleTypes('TROS');
+    > = lcvPolicy.getPermittableVehicleTypes(PERMIT_CODES.TERM_OVERSIZE);
     expect(permittableVehicles.get('powerUnits')?.size).toBe(3);
     expect(permittableVehicles.get('trailers')?.size).toBe(3);
   });

@@ -14,10 +14,11 @@ import {
 import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
 import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { COMMODITY_CODES } from '../../constants/commodity-codes';
+import { PERMIT_CODES } from '../../constants/permit-codes';
 
 const reportedTrailerCrashInput = {
   currentFormData: {
-    permitType: 'STOW',
+    permitType: PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
     permitId: '35',
     originalPermitId: '35',
     applicationNumber: 'A2-00010029-791-A00',

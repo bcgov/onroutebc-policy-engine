@@ -1,4 +1,5 @@
 import { COMMODITY_CODES } from '../../constants/commodity-codes';
+import { PERMIT_CODES } from '../../constants/permit-codes';
 import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
 import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { Policy } from '../../policy-engine';
@@ -10,7 +11,7 @@ describe('Permit Engine Size Dimension Functions', () => {
   it('should assume all regions if none are supplied', async () => {
     // This configuration has minimum values pulled from multiple regions
     const sizeDimension = policy.getSizeDimension(
-      'STOS',
+      PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
       COMMODITY_CODES.EMPTY,
       [
         POWER_UNIT_CODES.TRUCK_TRACTORS,
@@ -27,7 +28,7 @@ describe('Permit Engine Size Dimension Functions', () => {
 
   it('should retrieve correct values for a single specified region', async () => {
     const sizeDimension = policy.getSizeDimension(
-      'STOS',
+      PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
       COMMODITY_CODES.EMPTY,
       [
         POWER_UNIT_CODES.TRUCK_TRACTORS,
@@ -55,7 +56,7 @@ describe('Permit Engine Size Dimension Functions', () => {
 
   it('should return null if an invalid configuration is specified', async () => {
     const sizeDimension = policy.getSizeDimension(
-      'STOS',
+      PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
       COMMODITY_CODES.EMPTY,
       ['_INVALID', TRAILER_CODES.JEEPS, TRAILER_CODES.SEMI_TRAILERS_WHEELERS],
     );
@@ -64,7 +65,7 @@ describe('Permit Engine Size Dimension Functions', () => {
 
   it('should return null if no dimensionable trailer is specified', async () => {
     const sizeDimension = policy.getSizeDimension(
-      'STOS',
+      PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
       COMMODITY_CODES.EMPTY,
       [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.JEEPS],
     );
@@ -73,7 +74,7 @@ describe('Permit Engine Size Dimension Functions', () => {
 
   it('should throw an error if an invalid commodity is specified', async () => {
     expect(() => {
-      policy.getSizeDimension('STOS', '_INVALID', [
+      policy.getSizeDimension(PERMIT_CODES.SINGLE_TRIP_OVERSIZE, '_INVALID', [
         POWER_UNIT_CODES.TRUCK_TRACTORS,
         TRAILER_CODES.JEEPS,
       ]);

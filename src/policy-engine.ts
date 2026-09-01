@@ -74,6 +74,7 @@ import {
 } from './helper/policy-check.helper';
 import { DEFAULT_COST_DESCRIPTION } from './constants/cost';
 import { calculateOverload } from './helper/overload.helper';
+import { PERMIT_CODES } from './constants/permit-codes';
 
 /** Class representing commercial vehicle policy. */
 export class Policy {
@@ -177,7 +178,7 @@ export class Policy {
       // Wrap the json-rules-engine result in a ValidationResult object
       const validationResults = new ValidationResults(engineResult);
       const shouldIncludeAxleCalculationResults =
-        permit.permitType === 'STOW' &&
+        permit.permitType === PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT &&
         permit.permitData?.vehicleConfiguration?.axleConfiguration;
 
       if (shouldIncludeAxleCalculationResults) {
@@ -206,7 +207,7 @@ export class Policy {
           0,
         );
 
-        if (permit.permitType !== 'STWSE') {
+        if (permit.permitType !== PERMIT_CODES.EMPTY_SINGLE_TRIP_OVER_LENGTH_27_5) {
           // Clear the cost array and replace with zero cost
           validationResults.cost.length = 0;
           const newPermitCostResult = new ValidationResult(

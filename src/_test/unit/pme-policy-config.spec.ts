@@ -1,4 +1,5 @@
 import { COMMODITY_CODES } from '../../constants/commodity-codes';
+import { PERMIT_CODES } from '../../constants/permit-codes';
 import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
 import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { Policy } from '../../policy-engine';
@@ -62,7 +63,7 @@ describe('PME power-unit policy configuration foundation', () => {
     'makes both PME types selectable wherever PICKRTT is selectable for STOW %s',
     (commodityType) => {
       const powerUnits = policy.getPermittablePowerUnitTypes(
-        'STOW',
+        PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
         commodityType,
       );
 
@@ -81,7 +82,7 @@ describe('PME power-unit policy configuration foundation', () => {
     (vehicleType) => {
       expect(
         policy.isConfigurationValid(
-          'STOW',
+          PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
           COMMODITY_CODES.NON_REDUCIBLE_LOADS,
           [vehicleType, TRAILER_CODES.SEMI_TRAILERS],
           false,
@@ -133,7 +134,7 @@ describe('PME power-unit policy configuration foundation', () => {
     });
     expect(
       policy.isConfigurationValid(
-        'STOW',
+        PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
         COMMODITY_CODES.NON_REDUCIBLE_LOADS,
         [POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS],
         false,
