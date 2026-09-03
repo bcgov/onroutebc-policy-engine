@@ -1517,7 +1517,7 @@ export function CheckWheelbaseLegalLimits(
             : PolicyCheckResultType.Warning,
           message:
             hasTrailer && !hasDisallowedTrailer
-              ? 'Wheelbase for Axle Unit X and Axle Unit Y is between 6.2m and 7.2m. Semi-Trailer wheelbase must be within dimensions table found in CTPM 5.3.7.A.'
+              ? 'Wheelbase for Axle Unit 1 and Axle Unit 2 is between 6.2m and 7.2m. Semi-Trailer wheelbase must be within dimensions table found in CTPM 5.3.7.A.'
               : 'Wheelbase for Axle Unit 1 and Axle Unit 2 is between 6.2m and 7.2m. See CTPM 5.3.7.A.',
         },
       ];
