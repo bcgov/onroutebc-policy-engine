@@ -605,6 +605,29 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
   );
 
   /**
+   * Calculate the STOW fee from the same selected overload used by OCD.
+   */
+  engine.addFact(
+    CostFacts.OverloadAxleCost.toString(),
+    async function (params, almanac) {
+      const axleResults: AxleCalcResults = await almanac.factValue(
+        AXLE_CALC_RESULTS_FACT,
+      );
+      const totalDistance: number = await almanac.factValue(
+        PermitAppInfo.PermitData,
+        {},
+        PermitAppInfo.TotalDistance,
+      );
+
+      if (!totalDistance) {
+        return 0;
+      }
+
+      return getOverloadCost(axleResults.overload, totalDistance);
+    },
+  );
+
+  /**
    * Add runtime fact to calculate the overload fee for STWSE permits
    * based on the Weight over 27.5m and Total Distance.
    */
