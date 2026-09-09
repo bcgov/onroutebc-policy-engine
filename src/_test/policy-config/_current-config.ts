@@ -2381,10 +2381,8 @@ export const data: PolicyDefinition = {
       ],
       costRules: [
         {
-          fact: 'fixedCost',
-          params: {
-            cost: 15,
-          },
+          fact: 'overloadAxleCost',
+          params: {},
         },
       ],
       conditions: [],
