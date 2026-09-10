@@ -240,9 +240,15 @@ describe('ORV2-5709 permittable weight maximums', () => {
         100000,
       ).results;
 
-      expect(policy.calculateBridge(axleConfiguration)[0].maxBridge).toBe(
-        21000,
-      );
+      const vehicleConfiguration = [
+        POWER_UNIT_CODES.TRUCK_TRACTORS,
+        TRAILER_CODES.SEMI_TRAILERS,
+      ];
+
+      expect(
+        policy.calculateBridge(axleConfiguration, vehicleConfiguration)[0]
+          .maxBridge,
+      ).toBe(21000);
       expect(
         getPermittableResult({
           axleUnit: 2,

@@ -207,7 +207,9 @@ export class Policy {
           0,
         );
 
-        if (permit.permitType !== PERMIT_CODES.EMPTY_SINGLE_TRIP_OVER_LENGTH_27_5) {
+        if (
+          permit.permitType !== PERMIT_CODES.EMPTY_SINGLE_TRIP_OVER_LENGTH_27_5
+        ) {
           // Clear the cost array and replace with zero cost
           validationResults.cost.length = 0;
           const newPermitCostResult = new ValidationResult(
@@ -961,16 +963,21 @@ export class Policy {
   /**
    * Convenience method of policy that delegates the bridge calculation
    * to the helper method.
-   * @param axleConfig Vehicle dimensions and weights per axle
+   * @param axleConfiguration Vehicle dimensions and weights per axle
    * @returns Array of BridgeCalculationResult objects, one for each
    * axle group in the vehicle configuration
    */
   calculateBridge(
-    axleConfig: Array<AxleConfiguration>,
+    axleConfiguration: Array<AxleConfiguration>,
+    vehicleConfiguration: Array<string>,
   ): Array<BridgeCalculationResult> {
     let bridgeResults;
     try {
-      bridgeResults = runBridgeFormula(axleConfig, this);
+      bridgeResults = runBridgeFormula(
+        this,
+        axleConfiguration,
+        vehicleConfiguration,
+      );
     } catch (e: any) {
       console.log(`Error calculating bridge formula: ${e.message}`);
       throw e;
