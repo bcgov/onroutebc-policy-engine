@@ -18,6 +18,7 @@ export enum CostFacts {
   CostPerKilometre = 'costPerKilometre',
   CostPerMonth = 'costPerMonth',
   FixedCost = 'fixedCost',
+  OverloadAxleCost = 'overloadAxleCost',
   OverloadGvwCost = 'overloadGvwCost',
   OverloadWeightCost = 'overloadWeightCost',
   RangeMatrixCostLookup = 'rangeMatrixCostLookup',
