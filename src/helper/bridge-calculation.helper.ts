@@ -5,7 +5,6 @@ import {
 import { Policy } from 'onroute-policy-engine';
 import { TRAILER_CODES } from '../constants/trailer-codes';
 import { getAxleUnitType } from '../types/axle-unit-type';
-import { getAxleUnitVehicleIndexLookup } from './dimensions.helper';
 
 /**
  * Runs the bridge formula against the supplied vehicle axle configuration.
@@ -36,12 +35,6 @@ export function runBridgeFormula(
       'Invalid axle configuration, bridge formula requires a minimum of two axle units',
     );
   }
-
-  const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
-    policy,
-    vehicleConfiguration,
-    axleConfiguration,
-  );
 
   // Loop through each axle unit in the configuration, and
   // calculate the bridge formula for each other axle unit. The

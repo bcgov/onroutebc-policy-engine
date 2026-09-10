@@ -2,7 +2,6 @@ import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
 import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { Policy } from '../../policy-engine';
 import { AxleConfiguration } from '../../types';
-import { PolicyCheckId, PolicyCheckResultType } from '../../enum/policy-check';
 import minimalPolicyDef from '../policy-config/mimimal.sample.json';
 
 const threeAxleConfig: Array<AxleConfiguration> = [
