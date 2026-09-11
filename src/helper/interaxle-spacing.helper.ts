@@ -54,7 +54,6 @@ export function getInteraxleSpacingRequirement(
   const previousAxleUnitType = getAxleUnitType(previousAxleUnit.numberOfAxles);
   const currentAxleUnitType = getAxleUnitType(axleUnit.numberOfAxles);
 
-  // TODO check if it matters where the jeep appears in the vehicle configuration, e.g. is the jeep always the vehicle immediately following the power unit in the configuration? Is it possible that the power unit has more than two axles?
   const vehicleIndex = axleUnitVehicleIndexes[axleIndex];
   const vehicleType = vehicleConfiguration[vehicleIndex];
   const isSingleAxleJeep =

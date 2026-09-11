@@ -14,7 +14,6 @@ export function getTandemAxleSpreadThreshold(
   const isSpreadTandemSemiTrailer =
     vehicleType === TRAILER_CODES.SEMI_TRAILERS_SPREAD_TANDEMS;
   const isDriveAxle = axleIndex === 1;
-  // TODO check if it matters where the jeep appears in the vehicle configuration, e.g. is the jeep always the vehicle immediately following the power unit in the configuration? Is it possible that the power unit has more than two axles?
   const hasSingleAxleJeep =
     vehicleConfiguration[1] === TRAILER_CODES.JEEPS &&
     axleConfiguration[2].numberOfAxles === 1;
