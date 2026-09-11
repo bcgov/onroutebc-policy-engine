@@ -10,6 +10,10 @@ export const AXLE_SPREAD_LEGAL_LIMITS = {
       MINIMUM: 186,
       MAXIMUM: 307,
     },
+    DRIVE_AXLE_WITH_SINGLE_AXLE_JEEP: {
+      MINIMUM: 240,
+      MAXIMUM: 370,
+    },
   },
 
   TRIDEM: {
