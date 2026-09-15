@@ -395,7 +395,8 @@ function meetsMinimumSteerPercentageOfDriveAxleWeight(
   minimumPercentage: number,
 ): boolean {
   return (
-    steerAxle.axleUnitWeight >= driveAxle.axleUnitWeight * minimumPercentage
+    steerAxle.axleUnitWeight >=
+    Math.round(driveAxle.axleUnitWeight * minimumPercentage)
   );
 }
 

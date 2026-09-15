@@ -1016,6 +1016,30 @@ describe('Axle Calculation Functions', () => {
     });
   });
 
+  it('should pass MinSteerAxleWeight with single steer / tridem drive where steer axle weight is slightly above 27%', async () => {
+    const ac = JSON.parse(
+      JSON.stringify(axleConfiguration),
+    ) as Array<AxleConfiguration>;
+    ac[0].numberOfAxles = 1;
+    ac[1].numberOfTires = 2;
+    ac[0].axleUnitWeight = 7020;
+    ac[1].numberOfAxles = 3;
+    ac[1].numberOfTires = 6;
+    ac[1].axleUnitWeight = 26000;
+
+    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const minSteerResult = results.results.find(
+      (r) => r.id === PolicyCheckId.MinSteerAxleWeight,
+    );
+
+    expect(minSteerResult).toMatchObject({
+      result: PolicyCheckResultType.Pass,
+      message: 'Single steer axle meets minimum weight requirements',
+      startAxleUnit: 1,
+      endAxleUnit: 2,
+    });
+  });
+
   it('should include failed minimum tandem steer axle weight results from axle calculation', async () => {
     const ac = JSON.parse(
       JSON.stringify(axleConfiguration),
