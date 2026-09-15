@@ -463,45 +463,45 @@ export function CheckNumberOfAxles(
   return policyCheckResults;
 }
 
-function getBridgeFormulaInputFailure(
+/**
+ * This function basically lets us skip Bridge Formula if we know it'll crash.
+ * 
+ * This function is a 'necessary evil.'  The Bridge Formula calculation is
+ * important legacy code, but with certain inputs it would throw an 
+ * exception and crash the entire calculation, especially in the ASW table.
+ * 
+ * These "crashing inputs" are always STOW eval errors, so even if we don't
+ * run bridge formula the user should be seeing seperate errors, so once they
+ * fix those errors then re-run it should include Bridge Formula.
+ * 
+ */
+function hasInvalidBridgeFormulaInput(
   axleConfiguration: Array<AxleConfiguration>,
-): AxleGroupPolicyCheckResult | undefined {
+): boolean {
   for (let axleIndex = 0; axleIndex < axleConfiguration.length; axleIndex++) {
     const axleUnit = axleConfiguration[axleIndex];
-    const axleUnitNumber = axleIndex + 1;
-    let message: string | undefined;
 
     if (
       !Number.isFinite(axleUnit.axleUnitWeight) ||
       axleUnit.axleUnitWeight <= 0
     ) {
-      message = `Axle unit weight for axle unit ${axleUnitNumber} must be a finite number greater than 0.`;
+      return true;
     } else if (
       axleUnit.numberOfAxles > 1 &&
       (!Number.isFinite(axleUnit.axleSpread) ||
         (axleUnit.axleSpread as number) <= 0)
     ) {
-      message = `Axle spread for axle unit ${axleUnitNumber} must be a finite number greater than 0 when the unit has multiple axles.`;
+      return true;
     } else if (
       axleIndex > 0 &&
       (!Number.isFinite(axleUnit.interaxleSpacing) ||
         (axleUnit.interaxleSpacing as number) <= 0)
     ) {
-      message = `Axle spacing before axle unit ${axleUnitNumber} must be a finite number greater than 0.`;
-    }
-
-    if (message) {
-      return {
-        id: PolicyCheckId.BridgeFormula,
-        message,
-        result: PolicyCheckResultType.Fail,
-        startAxleUnit: axleUnitNumber,
-        endAxleUnit: axleUnitNumber,
-      };
+      return true;
     }
   }
 
-  return undefined;
+  return false;
 }
 
 /**
@@ -537,10 +537,13 @@ export function CheckBridgeFormula(
 ): Array<PolicyCheckResult> {
   const policyCheckResults = new Array<AxleGroupPolicyCheckResult>();
   const policyId = PolicyCheckId.BridgeFormula;
-  const inputFailure = getBridgeFormulaInputFailure(axleConfiguration);
 
-  if (inputFailure) {
-    return [inputFailure];
+  // This basically skips Bridge Formula if the input is invalid.
+  // This is important for STOW, which in the ASW runs this as well as STOW evals
+  // Some of those STOW evals can accept inputs that would make Bridge Formula throw
+  // errors and crash.
+  if (hasInvalidBridgeFormulaInput(axleConfiguration)) {
+    return [];
   }
 
   const bridgeCalcResults = policy.calculateBridge(axleConfiguration);
@@ -1774,7 +1777,7 @@ export function CheckLegalAxleSpread(
     );
 
     if (
-      !axleUnit.axleSpread ||
+      axleUnit.axleSpread === undefined ||
       !threshold ||
       !Number.isFinite(axleUnit.axleSpread)
     ) {

@@ -3,7 +3,6 @@ import { PolicyCheckId, PolicyCheckResultType } from '../../enum';
 import {
   AxleCalcResults,
   AxleConfiguration,
-  AxleGroupPolicyCheckResult,
 } from '../../types';
 import currentPolicyConfig from '../policy-config/_current-config.json';
 import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
@@ -24,10 +23,8 @@ describe('runAxleCalculation robustness regressions', () => {
     interaxleSpacing: 300,
   };
 
-  const expectBridgeInputFailure = (
+  const expectBridgeCalculationSkipped = (
     axleConfiguration: AxleConfiguration[],
-    expectedMessage: string,
-    expectedAxleUnit: number,
   ) => {
     let calculation: AxleCalcResults | undefined;
 
@@ -39,27 +36,19 @@ describe('runAxleCalculation robustness regressions', () => {
       );
     }).not.toThrow();
 
-    expect(calculation!.results).toContainEqual(
-      expect.objectContaining<Partial<AxleGroupPolicyCheckResult>>({
-        id: PolicyCheckId.BridgeFormula,
-        result: PolicyCheckResultType.Fail,
-        message: expectedMessage,
-        startAxleUnit: expectedAxleUnit,
-        endAxleUnit: expectedAxleUnit,
-      }),
+    expect(calculation!.results).not.toContainEqual(
+      expect.objectContaining({ id: PolicyCheckId.BridgeFormula }),
     );
   };
 
-  it('returns a failed result for invalid interaxle spacing instead of throwing', () => {
-    expectBridgeInputFailure(
+  it('skips bridge formula for invalid interaxle spacing instead of throwing', () => {
+    expectBridgeCalculationSkipped(
       [{ ...validFirstAxle }, { ...validSecondAxle, interaxleSpacing: -1000 }],
-      'Axle spacing before axle unit 2 must be a finite number greater than 0.',
-      2,
     );
   });
 
-  it('returns a failed result for invalid first-unit axle spread instead of throwing', () => {
-    expectBridgeInputFailure(
+  it('skips bridge formula for invalid first-unit axle spread instead of throwing', () => {
+    expectBridgeCalculationSkipped(
       [
         {
           ...validFirstAxle,
@@ -69,13 +58,11 @@ describe('runAxleCalculation robustness regressions', () => {
         },
         { ...validSecondAxle },
       ],
-      'Axle spread for axle unit 1 must be a finite number greater than 0 when the unit has multiple axles.',
-      1,
     );
   });
 
-  it('returns a failed result for invalid later-unit axle spread instead of throwing', () => {
-    expectBridgeInputFailure(
+  it('skips bridge formula for invalid later-unit axle spread instead of throwing', () => {
+    expectBridgeCalculationSkipped(
       [
         { ...validFirstAxle },
         {
@@ -85,24 +72,53 @@ describe('runAxleCalculation robustness regressions', () => {
           axleSpread: -1000,
         },
       ],
-      'Axle spread for axle unit 2 must be a finite number greater than 0 when the unit has multiple axles.',
-      2,
     );
   });
 
-  it('returns a failed result for invalid first-unit weight instead of throwing', () => {
-    expectBridgeInputFailure(
+  it('skips bridge formula for invalid first-unit weight instead of throwing', () => {
+    expectBridgeCalculationSkipped(
       [{ ...validFirstAxle, axleUnitWeight: -100000 }, { ...validSecondAxle }],
-      'Axle unit weight for axle unit 1 must be a finite number greater than 0.',
-      1,
     );
   });
 
-  it('returns a failed result for invalid later-unit weight instead of throwing', () => {
-    expectBridgeInputFailure(
+  it('skips bridge formula for invalid later-unit weight instead of throwing', () => {
+    expectBridgeCalculationSkipped(
       [{ ...validFirstAxle }, { ...validSecondAxle, axleUnitWeight: -100000 }],
-      'Axle unit weight for axle unit 2 must be a finite number greater than 0.',
-      2,
+    );
+  });
+
+  it('returns the legal axle spread violation for a zero tandem drive spread', () => {
+    let calculation: AxleCalcResults | undefined;
+
+    expect(() => {
+      calculation = policy.runAxleCalculation(
+        [POWER_UNIT_CODES.TRUCK_TRACTORS],
+        [
+          { ...validFirstAxle, axleUnitWeight: 6700 },
+          {
+            ...validSecondAxle,
+            numberOfAxles: 2,
+            axleUnitWeight: 12000,
+            numberOfTires: 4,
+            axleSpread: 0,
+          },
+        ],
+        100000,
+      );
+    }).not.toThrow();
+
+    expect(calculation!.results).toContainEqual(
+      expect.objectContaining({
+        id: PolicyCheckId.LegalAxleSpread,
+        result: PolicyCheckResultType.Fail,
+        message:
+          'Axle Spread for Axle Unit 2 must be between 1.0 m and 1.85 m.',
+        startAxleUnit: 2,
+        endAxleUnit: 2,
+      }),
+    );
+    expect(calculation!.results).not.toContainEqual(
+      expect.objectContaining({ id: PolicyCheckId.BridgeFormula }),
     );
   });
 });
