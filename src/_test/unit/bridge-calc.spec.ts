@@ -1,3 +1,5 @@
+import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
+import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { Policy } from '../../policy-engine';
 import { AxleConfiguration } from '../../types';
 import minimalPolicyDef from '../policy-config/mimimal.sample.json';
@@ -21,11 +23,16 @@ const threeAxleConfig: Array<AxleConfiguration> = [
   },
 ];
 
+const vehicleConfiguration = [
+  POWER_UNIT_CODES.TRUCK_TRACTORS,
+  TRAILER_CODES.SEMI_TRAILERS,
+];
+
 describe('Bridge Calculation Results Validation Tests', () => {
   const policy: Policy = new Policy(minimalPolicyDef);
 
   it('should return three successful axle group results with a valid three axle configuration', async () => {
-    const res = policy.calculateBridge(threeAxleConfig);
+    const res = policy.calculateBridge(threeAxleConfig, vehicleConfiguration);
     // three results
     expect(res.length).toBe(3);
     // all successful
@@ -33,7 +40,7 @@ describe('Bridge Calculation Results Validation Tests', () => {
   });
 
   it('should return correct values in the bridge calc response', async () => {
-    const res = policy.calculateBridge(threeAxleConfig);
+    const res = policy.calculateBridge(threeAxleConfig, vehicleConfiguration);
     // three results
     expect(res.length).toBe(3);
     const group12 = res.find((r) => r.startAxleUnit == 1 && r.endAxleUnit == 2);
@@ -56,7 +63,7 @@ describe('Bridge Calculation Results Validation Tests', () => {
     const conf = JSON.parse(JSON.stringify(threeAxleConfig));
     conf[1].axleUnitWeight = 22000;
     conf[2].axleUnitWeight = 29000;
-    const res = policy.calculateBridge(conf);
+    const res = policy.calculateBridge(conf, vehicleConfiguration);
     // three results
     expect(res.length).toBe(3);
     // two successful
@@ -69,7 +76,7 @@ describe('Bridge Calculation Results Validation Tests', () => {
     const conf = JSON.parse(JSON.stringify(threeAxleConfig));
     conf[1].axleUnitWeight = 26000;
     conf[2].axleUnitWeight = 29000;
-    const res = policy.calculateBridge(conf);
+    const res = policy.calculateBridge(conf, vehicleConfiguration);
     // three results
     expect(res.length).toBe(3);
     // one successful
@@ -83,100 +90,143 @@ describe('Bridge Calculation Input Validation Error Tests', () => {
   const policy: Policy = new Policy(minimalPolicyDef);
 
   it('should throw no errors with valid input', async () => {
-    expect(() => policy.calculateBridge(threeAxleConfig)).not.toThrow();
+    expect(() =>
+      policy.calculateBridge(threeAxleConfig, vehicleConfiguration),
+    ).not.toThrow();
   });
 
   it('should throw an error with fewer than 2 axle units', async () => {
-    expect(() => policy.calculateBridge(threeAxleConfig.slice(2))).toThrow();
+    expect(() =>
+      policy.calculateBridge(threeAxleConfig.slice(2), vehicleConfiguration),
+    ).toThrow();
   });
 
   it('should throw an error with a zero-valued number of axles', async () => {
     const conf = JSON.parse(JSON.stringify(threeAxleConfig));
     conf[0].numberOfAxles = 0;
-    expect(() => policy.calculateBridge(conf)).toThrow();
+    expect(() => policy.calculateBridge(conf, vehicleConfiguration)).toThrow();
   });
 
   it('should throw an error with a negative-valued number of axles', async () => {
     const conf = JSON.parse(JSON.stringify(threeAxleConfig));
     conf[0].numberOfAxles = -1;
-    expect(() => policy.calculateBridge(conf)).toThrow();
+    expect(() => policy.calculateBridge(conf, vehicleConfiguration)).toThrow();
   });
 
   it('should throw an error with a zero-valued weight on first axle group', async () => {
     const conf = JSON.parse(JSON.stringify(threeAxleConfig));
     conf[0].axleUnitWeight = 0;
-    expect(() => policy.calculateBridge(conf)).toThrow();
+    expect(() => policy.calculateBridge(conf, vehicleConfiguration)).toThrow();
   });
 
   it('should throw an error with a zero-valued weight on last axle group', async () => {
     const conf = JSON.parse(JSON.stringify(threeAxleConfig));
     conf[2].axleUnitWeight = 0;
-    expect(() => policy.calculateBridge(conf)).toThrow();
+    expect(() => policy.calculateBridge(conf, vehicleConfiguration)).toThrow();
   });
 
   it('should throw an error with a negative-valued weight on first axle group', async () => {
     const conf = JSON.parse(JSON.stringify(threeAxleConfig));
     conf[0].axleUnitWeight = -1;
-    expect(() => policy.calculateBridge(conf)).toThrow();
+    expect(() => policy.calculateBridge(conf, vehicleConfiguration)).toThrow();
   });
 
   it('should throw an error with a negative-valued weight on last axle group', async () => {
     const conf = JSON.parse(JSON.stringify(threeAxleConfig));
     conf[2].axleUnitWeight = -1;
-    expect(() => policy.calculateBridge(conf)).toThrow();
+    expect(() => policy.calculateBridge(conf, vehicleConfiguration)).toThrow();
   });
 
   it('should throw an error with an undefined weight on first axle group', async () => {
     const conf = JSON.parse(JSON.stringify(threeAxleConfig));
     delete conf[0].axleUnitWeight;
-    expect(() => policy.calculateBridge(conf)).toThrow();
+    expect(() => policy.calculateBridge(conf, vehicleConfiguration)).toThrow();
   });
 
   it('should throw an error with an undefined weight on last axle group', async () => {
     const conf = JSON.parse(JSON.stringify(threeAxleConfig));
     delete conf[2].axleUnitWeight;
-    expect(() => policy.calculateBridge(conf)).toThrow();
+    expect(() => policy.calculateBridge(conf, vehicleConfiguration)).toThrow();
   });
 
   it('should throw an error with a zero-valued spread for a tandem axle unit', async () => {
     const conf = JSON.parse(JSON.stringify(threeAxleConfig));
     conf[1].axleSpread = 0;
-    expect(() => policy.calculateBridge(conf)).toThrow();
+    expect(() => policy.calculateBridge(conf, vehicleConfiguration)).toThrow();
   });
 
   it('should throw an error with a negative-valued spread for a tandem axle unit', async () => {
     const conf = JSON.parse(JSON.stringify(threeAxleConfig));
     conf[1].axleSpread = -1;
-    expect(() => policy.calculateBridge(conf)).toThrow();
+    expect(() => policy.calculateBridge(conf, vehicleConfiguration)).toThrow();
   });
 
   it('should throw an error with an undefined spread for a tandem axle unit', async () => {
     const conf = JSON.parse(JSON.stringify(threeAxleConfig));
     delete conf[1].axleSpread;
-    expect(() => policy.calculateBridge(conf)).toThrow();
+    expect(() => policy.calculateBridge(conf, vehicleConfiguration)).toThrow();
   });
 
   it('should throw an error with a negative-valued spread for a single axle unit', async () => {
     const conf = JSON.parse(JSON.stringify(threeAxleConfig));
     conf[0].axleSpread = -1;
-    expect(() => policy.calculateBridge(conf)).toThrow();
+    expect(() => policy.calculateBridge(conf, vehicleConfiguration)).toThrow();
   });
 
   it('should throw an error with a zero-valued spacing for the second axle unit', async () => {
     const conf = JSON.parse(JSON.stringify(threeAxleConfig));
     conf[1].interaxleSpacing = 0;
-    expect(() => policy.calculateBridge(conf)).toThrow();
+    expect(() => policy.calculateBridge(conf, vehicleConfiguration)).toThrow();
   });
 
   it('should throw an error with a negative-valued spacing for the second axle unit', async () => {
     const conf = JSON.parse(JSON.stringify(threeAxleConfig));
     conf[1].interaxleSpacing = -1;
-    expect(() => policy.calculateBridge(conf)).toThrow();
+    expect(() => policy.calculateBridge(conf, vehicleConfiguration)).toThrow();
   });
 
   it('should throw an error with an undefined spacing for the second axle unit', async () => {
     const conf = JSON.parse(JSON.stringify(threeAxleConfig));
     delete conf[1].interaxleSpacing;
-    expect(() => policy.calculateBridge(conf)).toThrow();
+    expect(() => policy.calculateBridge(conf, vehicleConfiguration)).toThrow();
+  });
+});
+
+describe('ASW Tandem Drive Single Axle Jeep Exception', () => {
+  const policy: Policy = new Policy(minimalPolicyDef);
+
+  it('should allow exception for tandem drive + single axle jeep', async () => {
+    const vehicleConfig = [
+      POWER_UNIT_CODES.TRUCK_TRACTORS,
+      TRAILER_CODES.JEEPS,
+    ];
+
+    const tandemDriveSingleAxleJepConfig = [
+      {
+        numberOfAxles: 1,
+        axleUnitWeight: 14000,
+        numberOfTires: 2,
+        tireSize: 279,
+      },
+      {
+        numberOfAxles: 2,
+        axleSpread: 250,
+        interaxleSpacing: 250,
+        axleUnitWeight: 14000,
+        numberOfTires: 4,
+        tireSize: 279,
+      },
+      {
+        numberOfAxles: 1,
+        interaxleSpacing: 200,
+        axleUnitWeight: 5000,
+        numberOfTires: 2,
+        tireSize: 279,
+      },
+    ];
+
+    expect(() =>
+      policy.calculateBridge(tandemDriveSingleAxleJepConfig, vehicleConfig),
+    ).not.toThrow();
   });
 });

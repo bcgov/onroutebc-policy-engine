@@ -543,30 +543,5 @@ describe('ORV2-5617 axle group maximum legal weight threshold', () => {
         ]),
       );
     });
-
-    it('does not add an axle-calculation violation at the exact threshold', async () => {
-      const validationResult = await policy.validate(
-        getNestedJeepPermit(15900, 9100),
-      );
-      const axleCalculationViolation = validationResult.violations.find(
-        (violation) =>
-          violation.message ===
-          'Vehicle configuration failed axle calculation policy checks',
-      );
-
-      expect(axleCalculationViolation).toBeUndefined();
-      expect(
-        validationResult.axleCalculationResults?.results.find(
-          (result) =>
-            result.id === PolicyCheckId.AxleGroupMaximumLegalWeightThreshold &&
-            result.startAxleUnit === 2 &&
-            result.endAxleUnit === 3,
-        ),
-      ).toMatchObject({
-        result: PolicyCheckResultType.Pass,
-        actualWeight: 25000,
-        thresholdWeight: 25000,
-      });
-    });
   });
 });

@@ -693,6 +693,24 @@ export function getAxleUnitVehicleIndexes(
 }
 
 /**
+ * Returns an array of vehicle indexes for each axle unit.
+ * Each entry maps an axle unit to the vehicle in vehicleConfiguration that it belongs to.
+ */
+export function getAxleUnitVehicleIndexLookup(
+  policy: Policy,
+  vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+): Array<number> {
+  return axleConfiguration.some(
+    (axleUnit) => axleUnit.vehicleIndex !== undefined,
+  )
+    ? getAxleUnitVehicleIndexes(policy, vehicleConfiguration, axleConfiguration)
+    : axleConfiguration.map((_, axleIndex) =>
+        axleIndex < 2 ? 0 : axleIndex - 1,
+      );
+}
+
+/**
  * Walks along the vehicle configuration from the start index
  * in the direction indicated by increment, which will typically
  * be either 1 (towards the rear of the vehicle) or -1 (towards

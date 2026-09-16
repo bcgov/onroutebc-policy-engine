@@ -5,7 +5,10 @@ import {
   AxleGroupPolicyCheckResult,
 } from 'onroute-policy-engine/types';
 import { Policy } from 'onroute-policy-engine';
-import { getAxleUnitVehicleIndexes } from './dimensions.helper';
+import {
+  getAxleUnitVehicleIndexes,
+  getAxleUnitVehicleIndexLookup,
+} from './dimensions.helper';
 import { getCtr717TableValue } from './ctr-717.helper';
 import {
   AccessoryVehicleType,
@@ -91,24 +94,6 @@ function getApplicableLegalWeightThreshold(
     axleConfiguration,
     axleIndex,
   )?.legal;
-}
-
-/**
- * Returns an array of vehicle indexes for each axle unit.
- * Each entry maps an axle unit to the vehicle in vehicleConfiguration that it belongs to.
- */
-function getAxleUnitVehicleIndexLookup(
-  policy: Policy,
-  vehicleConfiguration: Array<string>,
-  axleConfiguration: Array<AxleConfiguration>,
-): Array<number> {
-  return axleConfiguration.some(
-    (axleUnit) => axleUnit.vehicleIndex !== undefined,
-  )
-    ? getAxleUnitVehicleIndexes(policy, vehicleConfiguration, axleConfiguration)
-    : axleConfiguration.map((_, axleIndex) =>
-        axleIndex < 2 ? 0 : axleIndex - 1,
-      );
 }
 
 function getConfiguredAxleUnitWeightThreshold(
@@ -410,7 +395,8 @@ function meetsMinimumSteerPercentageOfDriveAxleWeight(
   minimumPercentage: number,
 ): boolean {
   return (
-    steerAxle.axleUnitWeight >= driveAxle.axleUnitWeight * minimumPercentage
+    steerAxle.axleUnitWeight >=
+    Math.round(driveAxle.axleUnitWeight * minimumPercentage)
   );
 }
 
@@ -532,7 +518,7 @@ function hasInvalidBridgeFormulaInput(
  */
 export function CheckBridgeFormula(
   policy: Policy,
-  _vehicleConfiguration: Array<string>,
+  vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
 ): Array<PolicyCheckResult> {
   const policyCheckResults = new Array<AxleGroupPolicyCheckResult>();
@@ -546,7 +532,10 @@ export function CheckBridgeFormula(
     return [];
   }
 
-  const bridgeCalcResults = policy.calculateBridge(axleConfiguration);
+  const bridgeCalcResults = policy.calculateBridge(
+    axleConfiguration,
+    vehicleConfiguration,
+  );
   bridgeCalcResults.forEach((br) => {
     const message = `Axle group ${br.startAxleUnit} to ${br.endAxleUnit} ${br.success ? 'passes' : 'does not pass'} bridge formula.`;
     policyCheckResults.push({
@@ -1712,16 +1701,24 @@ export function CheckDriveJeepLoadEqualization(
  * current axle unit and the next axle unit, per Table II.
  */
 export function CheckLegalInteraxleSpacing(
-  _policy: Policy,
-  _vehicleConfiguration: Array<string>,
+  policy: Policy,
+  vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
 ): Array<PolicyCheckResult> {
   const policyId = PolicyCheckId.LegalInteraxleSpacing;
+
+  const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
+    policy,
+    vehicleConfiguration,
+    axleConfiguration,
+  );
 
   return axleConfiguration.map((axleUnit, axleIndex) => {
     const requirement = getInteraxleSpacingRequirement(
       axleConfiguration,
       axleIndex,
+      vehicleConfiguration,
+      axleUnitVehicleIndexes,
     );
 
     // Pass when no requirement exists, interaxle spacing is missing, or interaxle spacing falls within the requirement's min/max bounds.
