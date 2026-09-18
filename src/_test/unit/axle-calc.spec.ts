@@ -627,6 +627,18 @@ describe('Axle Calculation Functions', () => {
       });
     });
 
+    it('rejects a trailer when the axle weights fail the 50% requirement', () => {
+      const trailerResult = getResults(9000, 20000, [
+        POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+        TRAILER_CODES.SEMI_TRAILERS,
+      ])[1];
+
+      expect(trailerResult).toMatchObject({
+        result: PolicyCheckResultType.Fail,
+        message: trailerMessage,
+      });
+    });
+
     it.each([
       {
         description: 'wheelbase below 6.6m',

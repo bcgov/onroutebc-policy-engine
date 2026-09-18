@@ -975,7 +975,8 @@ export function CheckPickerTruckTractorWeightRestrictions(
       steerAxle.axleUnitWeight > steerWeightDimension.legal) ||
     (driveWeightDimension?.legal !== undefined &&
       driveAxle.axleUnitWeight > driveWeightDimension.legal);
-  const trailerPasses = !hasRealTrailer || !exceedsLegalWeight;
+  const trailerPasses =
+    !hasRealTrailer || (ratioPasses && !exceedsLegalWeight);
 
   return [
     {
