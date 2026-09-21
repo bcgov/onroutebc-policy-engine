@@ -1,0 +1,51 @@
+{
+  "permitType": "EPTOP",
+  "permitData": {
+    "companyName": "Sonic Delivery Services",
+    "clientNumber": "B3-000102-466",
+    "permitDuration": 7,
+    "commodities": [],
+    "contactDetails": {
+      "firstName": "Chief",
+      "lastName": "Baker",
+      "phone1": "(250) 555-1234",
+      "phone1Extension": null,
+      "phone2": "(250) 555-4321",
+      "phone2Extension": null,
+      "email": "chief.baker@gov.bc.ca",
+      "additionalEmail": "baker.chief@gov.bc.ca",
+      "fax": null
+    },
+    "mailingAddress": {
+      "addressLine1": "940 Blanshard",
+      "addressLine2": null,
+      "city": "Victoria",
+      "provinceCode": "BC",
+      "countryCode": "CA",
+      "postalCode": "V8B1A2"
+    },
+    "permittedRoute": {
+      "manualRoute": {
+        "origin": "",
+        "destination": "",
+        "entryPoint": "BC / AB Border Hwy 16"
+      }
+    },
+    "vehicleDetails": {
+      "vehicleId": "101",
+      "unitNumber": "321",
+      "vin": "654321",
+      "plate": "D654321",
+      "make": "Custom",
+      "year": 2010,
+      "countryCode": "CA",
+      "provinceCode": "AB",
+      "vehicleType": "powerUnit",
+      "vehicleSubType": "BUSCRUM",
+      "saveVehicle": false
+    },
+    "feeSummary": "25",
+    "startDate": "2026-09-21",
+    "expiryDate": "2026-09-27"
+  }
+}

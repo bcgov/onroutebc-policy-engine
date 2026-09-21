@@ -4086,6 +4086,124 @@
           }
         }
       ]
+    },
+    {
+      "id": "EPTOP",
+      "name": "Extra-Provincial Temporary Operating Permit",
+      "routingRequired": true,
+      "weightDimensionRequired": false,
+      "sizeDimensionRequired": false,
+      "commodityRequired": false,
+      "allowedVehicles": [
+        "BUSCRUM",
+        "DDCKBUS",
+        "PUTAXIS"
+      ],
+      "rules": [
+        {
+          "conditions": {
+            "any": [
+              {
+                "not": {
+                  "fact": "permitData",
+                  "path": "permitDuration",
+                  "operator": "lessThanInclusive",
+                  "value": 7
+                }
+              },
+              {
+                "not": {
+                  "fact": "permitData",
+                  "path": "permitDuration",
+                  "operator": "greaterThan",
+                  "value": 0
+                }
+              }
+            ]
+          },
+          "event": {
+            "type": "violation",
+            "params": {
+              "message": "Duration must be 7 days or less",
+              "code": "field-validation-error",
+              "fieldReference": "permitData.permitDuration"
+            }
+          }
+        },
+        {
+          "conditions": {
+            "all": [
+              {
+                "fact": "permitData",
+                "path": "vehicleDetails.countryCode",
+                "operator": "equal",
+                "value": "CA"
+              },
+              {
+                "fact": "permitData",
+                "path": "vehicleDetails.provinceCode",
+                "operator": "equal",
+                "value": "BC"
+              }
+            ]
+          },
+          "event": {
+            "type": "violation",
+            "params": {
+              "message": "BC plated vehicles do not require this permit",
+              "code": "field-validation-error",
+              "fieldReference": "permitData.vehicleDetails.provinceCode"
+            }
+          }
+        },
+        {
+          "conditions": {
+            "not": {
+              "fact": "permitData",
+              "path": "vehicleDetails.vehicleSubType",
+              "operator": "in",
+              "value": {
+                "fact": "allowedVehicles"
+              }
+            }
+          },
+          "event": {
+            "type": "violation",
+            "params": {
+              "message": "Vehicle type not permittable for this permit type",
+              "code": "field-validation-error",
+              "fieldReference": "permitData.vehicleDetails.vehicleSubType"
+            }
+          }
+        },
+        {
+          "conditions": {
+            "not": {
+              "fact": "permitData",
+              "path": "permittedRoute.manualRoute.entryPoint",
+              "operator": "stringMinimumLength",
+              "value": 1
+            }
+          },
+          "event": {
+            "type": "violation",
+            "params": {
+              "message": "Entry Point is required",
+              "code": "field-validation-error",
+              "fieldReference": "permitData.permittedRoute.manualRoute.entryPoint"
+            }
+          }
+        }
+      ],
+      "costRules": [
+        {
+          "fact": "fixedCost",
+          "params": {
+            "cost": 25
+          }
+        }
+      ],
+      "conditions": []
     }
   ],
   "globalWeightDefaults": {
