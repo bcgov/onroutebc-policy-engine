@@ -140,7 +140,8 @@ function isFeatureLegalWeightPowerUnit(vehicleType?: string): boolean {
     vehicleType === POWER_UNIT_CODES.TRUCKS ||
     vehicleType === POWER_UNIT_CODES.TRUCK_TRACTORS ||
     vehicleType === POWER_UNIT_CODES.TRUCK_WITH_PME ||
-    vehicleType === POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME
+    vehicleType === POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME ||
+    vehicleType === POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS
   );
 }
 
@@ -153,7 +154,8 @@ function getFeatureLegalPowerUnitWeightThreshold(
   const driveAxle = axleConfiguration[1];
   const hasPme =
     vehicleType === POWER_UNIT_CODES.TRUCK_WITH_PME ||
-    vehicleType === POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME;
+    vehicleType === POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME ||
+    vehicleType === POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS;
 
   if (axleIndex === 0) {
     if (
@@ -970,11 +972,19 @@ export function CheckPickerTruckTractorWeightRestrictions(
     const vehicleDefinition = policy.getVehicleDefinition(vehicleType);
     return !vehicleDefinition?.ignoreForAxleCalculation;
   });
+  const steerLegal = getFeatureLegalPowerUnitWeightThreshold(
+    POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+    axleConfiguration,
+    0,
+  );
+  const driveLegal = getFeatureLegalPowerUnitWeightThreshold(
+    POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+    axleConfiguration,
+    1,
+  );
   const exceedsLegalWeight =
-    (steerWeightDimension?.legal !== undefined &&
-      steerAxle.axleUnitWeight > steerWeightDimension.legal) ||
-    (driveWeightDimension?.legal !== undefined &&
-      driveAxle.axleUnitWeight > driveWeightDimension.legal);
+    (steerLegal !== undefined && steerAxle.axleUnitWeight > steerLegal) ||
+    (driveLegal !== undefined && driveAxle.axleUnitWeight > driveLegal);
   const trailerPasses =
     !hasRealTrailer || (ratioPasses && !exceedsLegalWeight);
 

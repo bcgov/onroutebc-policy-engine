@@ -187,6 +187,18 @@ describe('ORV2-5706 legal weight maximums', () => {
         15200,
         PolicyCheckResultType.Pass,
       ],
+      [
+        POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+        15200,
+        15200,
+        PolicyCheckResultType.Pass,
+      ],
+      [
+        POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+        15201,
+        15200,
+        PolicyCheckResultType.Warning,
+      ],
     ])(
       'evaluates %s at %i kg',
       (powerUnitType, actualWeight, thresholdWeight, expectedResult) => {

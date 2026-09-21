@@ -748,8 +748,8 @@ describe('Axle Calculation Functions', () => {
       },
     );
 
-    it('allows a trailer while both axle units remain at legal maximums', () => {
-      const trailerResult = getResults(12000, 24000, [
+    it('allows a trailer at the 15,200 kg picker tandem-steer legal maximum', () => {
+      const trailerResult = getResults(15200, 24000, [
         POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
         TRAILER_CODES.SEMI_TRAILERS,
       ])[1];
@@ -760,23 +760,54 @@ describe('Axle Calculation Functions', () => {
       });
     });
 
-    it.each([
-      { steerAxleWeight: 13601, driveAxleWeight: 24000 },
-      { steerAxleWeight: 14000, driveAxleWeight: 24001 },
-    ])(
-      'rejects a trailer when an axle unit exceeds its legal maximum',
-      ({ steerAxleWeight, driveAxleWeight }) => {
-        const trailerResult = getResults(steerAxleWeight, driveAxleWeight, [
-          POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
-          TRAILER_CODES.SEMI_TRAILERS,
-        ])[1];
+    it('allows that legal-boundary trailer through runAxleCalculation', () => {
+      const axles = getPickerTruckTractorAxles(15200, 24000);
+      axles.push({
+        numberOfAxles: 1,
+        numberOfTires: 2,
+        tireSize: 355,
+        interaxleSpacing: 300,
+        axleUnitWeight: 1000,
+        vehicleIndex: 1,
+      });
 
-        expect(trailerResult).toMatchObject({
-          result: PolicyCheckResultType.Fail,
-          message: trailerMessage,
-        });
-      },
-    );
+      const results = policy
+        .runAxleCalculation(
+          [
+            POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+            TRAILER_CODES.SEMI_TRAILERS,
+          ],
+          axles,
+          100000,
+        )
+        .results.filter(
+          (result) =>
+            result.id === PolicyCheckId.PickerTruckTractorWeightRestrictions,
+        );
+
+      expect(results).toEqual([
+        expect.objectContaining({
+          result: PolicyCheckResultType.Pass,
+          message: '',
+        }),
+        expect.objectContaining({
+          result: PolicyCheckResultType.Pass,
+          message: '',
+        }),
+      ]);
+    });
+
+    it('rejects a trailer when the drive axle exceeds its legal maximum', () => {
+      const trailerResult = getResults(14000, 24001, [
+        POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+        TRAILER_CODES.SEMI_TRAILERS,
+      ])[1];
+
+      expect(trailerResult).toMatchObject({
+        result: PolicyCheckResultType.Fail,
+        message: trailerMessage,
+      });
+    });
 
     it('does not treat the None pseudo trailer as towing', () => {
       const trailerResult = getResults(14000, 24001, [
