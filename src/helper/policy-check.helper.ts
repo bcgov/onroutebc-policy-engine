@@ -235,8 +235,8 @@ export function CheckLegalWeight(
 
     return {
       id: policyId,
-      message: `Weight for axle unit ${axleUnitNumber} ${
-        result ? 'is legal' : `must not exceed ${legalWeight} kgs`
+      message: `Axle Unit Weight for Axle Unit ${axleUnitNumber} ${
+        result ? 'is legal' : `must not exceed ${legalWeight} kg.`
       }`,
       // We intentionally only return Pass/Warning, as we should never
       // show an error for being above legal amount, only permitable
@@ -451,15 +451,15 @@ export function CheckNumberOfAxles(
 
 /**
  * This function basically lets us skip Bridge Formula if we know it'll crash.
- * 
+ *
  * This function is a 'necessary evil.'  The Bridge Formula calculation is
- * important legacy code, but with certain inputs it would throw an 
+ * important legacy code, but with certain inputs it would throw an
  * exception and crash the entire calculation, especially in the ASW table.
- * 
+ *
  * These "crashing inputs" are always STOW eval errors, so even if we don't
  * run bridge formula the user should be seeing seperate errors, so once they
  * fix those errors then re-run it should include Bridge Formula.
- * 
+ *
  */
 function hasInvalidBridgeFormulaInput(
   axleConfiguration: Array<AxleConfiguration>,
