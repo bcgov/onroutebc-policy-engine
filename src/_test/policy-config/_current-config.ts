@@ -4120,11 +4120,7 @@ export const data: PolicyDefinition = {
       weightDimensionRequired: false,
       sizeDimensionRequired: false,
       commodityRequired: false,
-      allowedVehicles: [
-        'BUSCRUM',
-        'DDCKBUS',
-        'PUTAXIS'
-      ],
+      allowedVehicles: ['BUSCRUM', 'DDCKBUS', 'PUTAXIS'],
       rules: [
         {
           conditions: {
@@ -4134,27 +4130,27 @@ export const data: PolicyDefinition = {
                   fact: 'permitData',
                   path: 'permitDuration',
                   operator: 'lessThanInclusive',
-                  value: 7
-                }
+                  value: 7,
+                },
               },
               {
                 not: {
                   fact: 'permitData',
                   path: 'permitDuration',
                   operator: 'greaterThan',
-                  value: 0
-                }
-              }
-            ]
+                  value: 0,
+                },
+              },
+            ],
           },
           event: {
             type: 'violation',
             params: {
               message: 'Duration must be 7 days or less',
               code: 'field-validation-error',
-              fieldReference: 'permitData.permitDuration'
-            }
-          }
+              fieldReference: 'permitData.permitDuration',
+            },
+          },
         },
         {
           conditions: {
@@ -4163,24 +4159,24 @@ export const data: PolicyDefinition = {
                 fact: 'permitData',
                 path: 'vehicleDetails.countryCode',
                 operator: 'equal',
-                value: 'CA'
+                value: 'CA',
               },
               {
                 fact: 'permitData',
                 path: 'vehicleDetails.provinceCode',
                 operator: 'equal',
-                value: 'BC'
-              }
-            ]
+                value: 'BC',
+              },
+            ],
           },
           event: {
             type: 'violation',
             params: {
               message: 'BC plated vehicles do not require this permit',
               code: 'field-validation-error',
-              fieldReference: 'permitData.vehicleDetails.provinceCode'
-            }
-          }
+              fieldReference: 'permitData.vehicleDetails.provinceCode',
+            },
+          },
         },
         {
           conditions: {
@@ -4189,18 +4185,18 @@ export const data: PolicyDefinition = {
               path: 'vehicleDetails.vehicleSubType',
               operator: 'in',
               value: {
-                fact: 'allowedVehicles'
-              }
-            }
+                fact: 'allowedVehicles',
+              },
+            },
           },
           event: {
             type: 'violation',
             params: {
               message: 'Vehicle type not permittable for this permit type',
               code: 'field-validation-error',
-              fieldReference: 'permitData.vehicleDetails.vehicleSubType'
-            }
-          }
+              fieldReference: 'permitData.vehicleDetails.vehicleSubType',
+            },
+          },
         },
         {
           conditions: {
@@ -4208,29 +4204,30 @@ export const data: PolicyDefinition = {
               fact: 'permitData',
               path: 'permittedRoute.manualRoute.entryPoint',
               operator: 'stringMinimumLength',
-              value: 1
-            }
+              value: 1,
+            },
           },
           event: {
             type: 'violation',
             params: {
               message: 'Entry Point is required',
               code: 'field-validation-error',
-              fieldReference: 'permitData.permittedRoute.manualRoute.entryPoint'
-            }
-          }
-        }
+              fieldReference:
+                'permitData.permittedRoute.manualRoute.entryPoint',
+            },
+          },
+        },
       ],
       costRules: [
         {
           fact: 'fixedCost',
           params: {
-            cost: 25
-          }
-        }
+            cost: 25,
+          },
+        },
       ],
-      conditions: []
-    }
+      conditions: [],
+    },
   ],
   globalWeightDefaults: {
     powerUnits: [
@@ -8606,7 +8603,6 @@ export const data: PolicyDefinition = {
                   l: 40,
                 },
               ],
-              weightPermittable: true,
             },
             {
               type: 'HIBOEXP',
