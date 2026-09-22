@@ -4094,11 +4094,7 @@
       "weightDimensionRequired": false,
       "sizeDimensionRequired": false,
       "commodityRequired": false,
-      "allowedVehicles": [
-        "BUSCRUM",
-        "DDCKBUS",
-        "PUTAXIS"
-      ],
+      "allowedVehicles": ["BUSCRUM", "DDCKBUS", "PUTAXIS"],
       "rules": [
         {
           "conditions": {
@@ -8877,8 +8873,7 @@
                   "h": 4.15,
                   "l": 40
                 }
-              ],
-              "weightPermittable": true
+              ]
             },
             {
               "type": "HIBOEXP",
@@ -9479,8 +9474,7 @@
                   "h": 4.15,
                   "l": 31
                 }
-              ],
-              "weightPermittable": true
+              ]
             },
             {
               "type": "SEMITRL",
