@@ -14,6 +14,8 @@ describe('ORV2-5709 permittable weight maximums', () => {
     actualWeight: number;
     spread?: number;
     boosterAxleCount?: number;
+    powerUnitType?: string;
+    trailerType?: string;
   };
 
   const getPermittableResult = ({
@@ -22,12 +24,14 @@ describe('ORV2-5709 permittable weight maximums', () => {
     actualWeight,
     spread,
     boosterAxleCount,
+    powerUnitType = POWER_UNIT_CODES.TRUCK_TRACTORS,
+    trailerType = TRAILER_CODES.SEMI_TRAILERS,
   }: Scenario) => {
     const hasTrailer = axleUnit === 3;
     const hasBooster = boosterAxleCount !== undefined;
     const vehicleConfiguration = [
-      POWER_UNIT_CODES.TRUCK_TRACTORS,
-      ...(hasTrailer ? [TRAILER_CODES.SEMI_TRAILERS] : []),
+      powerUnitType,
+      ...(hasTrailer ? [trailerType] : []),
       ...(hasBooster ? [TRAILER_CODES.BOOSTER] : []),
     ];
     const axleConfiguration: Array<AxleConfiguration> = [
@@ -183,6 +187,49 @@ describe('ORV2-5709 permittable weight maximums', () => {
 
   // Source: ASW Permit Weight Maximums.feature @orv2-5709-6.
   describe('tridem spread and immediately following booster', () => {
+    it('keeps a qualifying Picker Truck Tractor drive at the 28,000 kg default', () => {
+      expectPermittableResult(
+        {
+          axleUnit: 2,
+          axleCount: 3,
+          actualWeight: 28001,
+          spread: 240,
+          powerUnitType: POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+        },
+        28000,
+        PolicyCheckResultType.Fail,
+      );
+    });
+
+    it('allows 29,000 kg on a qualifying lowbed semi-trailer tridem', () => {
+      expectPermittableResult(
+        {
+          axleUnit: 3,
+          axleCount: 3,
+          actualWeight: 29000,
+          spread: 240,
+          trailerType:
+            TRAILER_CODES.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED,
+        },
+        29000,
+        PolicyCheckResultType.Pass,
+      );
+    });
+
+    it('allows 29,000 kg on a qualifying jeep tridem', () => {
+      expectPermittableResult(
+        {
+          axleUnit: 3,
+          axleCount: 3,
+          actualWeight: 29000,
+          spread: 240,
+          trailerType: TRAILER_CODES.JEEPS,
+        },
+        29000,
+        PolicyCheckResultType.Pass,
+      );
+    });
+
     it.each([
       [240, undefined, 29000, 29000, PolicyCheckResultType.Pass],
       [370, 1, 29000, 29000, PolicyCheckResultType.Pass],

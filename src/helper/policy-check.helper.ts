@@ -711,6 +711,9 @@ export function CheckPermittableWeight(
       } else if (axleUnit.numberOfAxles === 2) {
         permittableWeight = AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.TANDEM;
       } else if (axleUnit.numberOfAxles === 3) {
+        const isTrailerAxleUnit =
+          policy.getTrailerDefinition(vehicleConfiguration[vehicleIndex]) !==
+          null;
         const spreadQualifies =
           axleUnit.axleSpread !== undefined &&
           axleUnit.axleSpread >= QUALIFYING_TRIDEM_SPREAD_CM.MINIMUM &&
@@ -728,7 +731,7 @@ export function CheckPermittableWeight(
           !hasImmediatelyFollowingBooster || boosterAxle?.numberOfAxles === 1;
 
         permittableWeight =
-          spreadQualifies && boosterQualifies
+          isTrailerAxleUnit && spreadQualifies && boosterQualifies
             ? AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.QUALIFYING_TRIDEM
             : AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.STANDARD_TRIDEM;
       }
