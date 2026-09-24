@@ -3,6 +3,7 @@ import { PERMIT_CODES } from '../../constants/permit-codes';
 import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
 import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { Policy } from '../../policy-engine';
+import { PolicyCheckId, PolicyCheckResultType } from '../../enum/policy-check';
 import currentPolicyConfig from '../policy-config/_current-config.json';
 
 // The purpose of this file is to basically add tests for the new PME type, make sure it's there and properly configured.
@@ -31,18 +32,22 @@ describe('PME power-unit policy configuration foundation', () => {
       );
       const pmePowerUnit = policy.getPowerUnitDefinition(vehicleType);
 
-      expect(pmePowerUnit).toEqual({
-        ...pickerTruckTractor,
+      // Display metadata is shared; subtype weight limits need not be identical.
+      expect(pmePowerUnit).toMatchObject({
         id: vehicleType,
         name: expectedName,
+        category: pickerTruckTractor!.category,
+        displayCodePrefix: pickerTruckTractor!.displayCodePrefix,
+        displayCodeSteerAxle: pickerTruckTractor!.displayCodeSteerAxle,
+        displayCodeDriveAxle: pickerTruckTractor!.displayCodeDriveAxle,
       });
     },
   );
 
   it.each(pmeTypes)(
-    'inherits the same configured dimensions as PICKRTT for %s',
+    'shares PICKRTT dimensions outside the Tandem/Tridem exception for %s',
     (vehicleType) => {
-      for (const axleConfiguration of [11, 12, 13, 22, 23]) {
+      for (const axleConfiguration of [11, 12, 13, 22]) {
         expect(
           policy.getDefaultPowerUnitWeight(vehicleType, axleConfiguration),
         ).toEqual(
@@ -54,6 +59,68 @@ describe('PME power-unit policy configuration foundation', () => {
       }
     },
   );
+
+  // Over Weight Dimension Set, commodity None, Tandem/Tridem: picker steer permits 17,000; separate PME types 15,200.
+  describe.each([
+    [POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS, 17000],
+    [POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME, 15200],
+    [POWER_UNIT_CODES.TRUCK_WITH_PME, 15200],
+  ] as const)('%s Tandem/Tridem limits', (vehicleType, steerPermittable) => {
+    it('preserves legal and drive limits alongside the subtype steer permit limit', () => {
+      expect(policy.getDefaultPowerUnitWeight(vehicleType, 23)).toEqual([
+        {
+          axles: 23,
+          saLegal: 15200,
+          saPermittable: steerPermittable,
+          daLegal: 24000,
+          daPermittable: 28000,
+        },
+      ]);
+    });
+
+    it.each([0, 1])(
+      'checks the steer permit limit plus %i kg through runAxleCalculation',
+      (excess) => {
+        const actualWeight = steerPermittable + excess;
+        const result = policy
+          .runAxleCalculation(
+            [vehicleType],
+            [
+              {
+                numberOfAxles: 2,
+                axleUnitWeight: actualWeight,
+                axleSpread: 100,
+                numberOfTires: 4,
+                tireSize: 455,
+                vehicleIndex: 0,
+              },
+              {
+                numberOfAxles: 3,
+                axleUnitWeight: 24000,
+                axleSpread: 240,
+                interaxleSpacing: 485,
+                numberOfTires: 12,
+                tireSize: 455,
+                vehicleIndex: 0,
+              },
+            ],
+            100000,
+          )
+          .results.find(
+            ({ id, startAxleUnit }) =>
+              id === PolicyCheckId.PermittableWeight && startAxleUnit === 1,
+          );
+        expect(result).toMatchObject({
+          actualWeight,
+          thresholdWeight: steerPermittable,
+          result:
+            excess === 0
+              ? PolicyCheckResultType.Pass
+              : PolicyCheckResultType.Fail,
+        });
+      },
+    );
+  });
 
   it.each([
     COMMODITY_CODES.NONE,
