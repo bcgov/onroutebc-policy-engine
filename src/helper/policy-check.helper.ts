@@ -631,11 +631,17 @@ export function CheckPermittableWeight(
       axleIndex === 0 && vehicleIndex === 0 && axleUnit.numberOfAxles === 2;
     let permittableWeight: number | undefined;
 
-    if (isSingleSteer) {
-      permittableWeight = AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.SINGLE_STEER;
-    } else if (!isTandemSteer) {
+    if (!isSingleSteer && !isTandemSteer) {
       if (axleUnit.numberOfAxles === 1) {
-        permittableWeight = AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.SINGLE_NON_STEER;
+        permittableWeight =
+          getConfiguredAxleUnitWeightThreshold(
+            policy,
+            vehicleConfiguration,
+            axleConfiguration,
+            axleUnitVehicleIndexes,
+            axleIndex,
+            'permittable',
+          ) || AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.SINGLE_NON_STEER;
       } else if (axleUnit.numberOfAxles === 2) {
         permittableWeight = AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.TANDEM;
       } else if (axleUnit.numberOfAxles === 3) {
@@ -658,10 +664,12 @@ export function CheckPermittableWeight(
         const boosterQualifies =
           !hasImmediatelyFollowingBooster || boosterAxle?.numberOfAxles === 1;
 
-        permittableWeight =
-          isTrailerAxleUnit && spreadQualifies && boosterQualifies
-            ? AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.QUALIFYING_TRIDEM
-            : AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.STANDARD_TRIDEM;
+        if (isTrailerAxleUnit) {
+          permittableWeight =
+            spreadQualifies && boosterQualifies
+              ? AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.QUALIFYING_TRIDEM
+              : AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.STANDARD_TRIDEM;
+        }
       }
     }
 

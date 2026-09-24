@@ -4470,6 +4470,36 @@
         "id": "GRADERS",
         "name": "Fixed Equipment - Trucks/Graders etc.",
         "category": "powerunit",
+        "defaultWeightDimensions": [
+          {
+            "axles": 11,
+            "saLegal": 9100,
+            "saPermittable": 9100,
+            "daLegal": 9100,
+            "daPermittable": 11000
+          },
+          {
+            "axles": 12,
+            "saLegal": 9100,
+            "saPermittable": 9100,
+            "daLegal": 17000,
+            "daPermittable": 23000
+          },
+          {
+            "axles": 13,
+            "saLegal": 9100,
+            "saPermittable": 9100,
+            "daLegal": 24000,
+            "daPermittable": 28000
+          },
+          {
+            "axles": 23,
+            "saLegal": 15200,
+            "saPermittable": 15200,
+            "daLegal": 24000,
+            "daPermittable": 28000
+          }
+        ],
         "displayCodePrefix": "MC",
         "displayCodeSteerAxle": "S",
         "displayCodeDriveAxle": "A"
@@ -4500,6 +4530,22 @@
         "name": "Long Combination Vehicles (LCV) - Rocky Mountain Doubles",
         "category": "powerunit",
         "isLcv": true,
+        "defaultWeightDimensions": [
+          {
+            "axles": 12,
+            "saLegal": 6000,
+            "saPermittable": 6000,
+            "daLegal": 17000,
+            "daPermittable": 17000
+          },
+          {
+            "axles": 13,
+            "saLegal": 7300,
+            "saPermittable": 7300,
+            "daLegal": 24000,
+            "daPermittable": 24000
+          }
+        ],
         "conditions": [
           {
             "condition": "CVSE-1014",
@@ -4515,6 +4561,22 @@
         "name": "Long Combination Vehicles (LCV) - Turnpike Doubles",
         "category": "powerunit",
         "isLcv": true,
+        "defaultWeightDimensions": [
+          {
+            "axles": 12,
+            "saLegal": 6000,
+            "saPermittable": 6000,
+            "daLegal": 17000,
+            "daPermittable": 17000
+          },
+          {
+            "axles": 13,
+            "saLegal": 7300,
+            "saPermittable": 7300,
+            "daLegal": 24000,
+            "daPermittable": 24000
+          }
+        ],
         "conditions": [
           {
             "condition": "CVSE-1014",
@@ -4580,7 +4642,7 @@
             "saLegal": 9100,
             "saPermittable": 9100,
             "daLegal": 9100,
-            "daPermittable": 11000
+            "daPermittable": 9100
           },
           {
             "axles": 12,
@@ -4618,7 +4680,7 @@
             "saLegal": 9100,
             "saPermittable": 9100,
             "daLegal": 9100,
-            "daPermittable": 11000
+            "daPermittable": 9100
           },
           {
             "axles": 12,
@@ -4656,7 +4718,7 @@
             "saLegal": 9100,
             "saPermittable": 9100,
             "daLegal": 9100,
-            "daPermittable": 11000
+            "daPermittable": 9100
           },
           {
             "axles": 12,
@@ -4688,6 +4750,36 @@
         "id": "PICKRTR",
         "name": "Picker Trucks",
         "category": "powerunit",
+        "defaultWeightDimensions": [
+          {
+            "axles": 11,
+            "saLegal": 9100,
+            "saPermittable": 9100,
+            "daLegal": 9100,
+            "daPermittable": 9100
+          },
+          {
+            "axles": 12,
+            "saLegal": 9100,
+            "saPermittable": 9100,
+            "daLegal": 17000,
+            "daPermittable": 23000
+          },
+          {
+            "axles": 13,
+            "saLegal": 9100,
+            "saPermittable": 9100,
+            "daLegal": 24000,
+            "daPermittable": 24000
+          },
+          {
+            "axles": 23,
+            "saLegal": 15200,
+            "saPermittable": 15200,
+            "daLegal": 24000,
+            "daPermittable": 28000
+          }
+        ],
         "displayCodePrefix": "TT",
         "displayCodeSteerAxle": "S",
         "displayCodeDriveAxle": "D"
@@ -4696,6 +4788,15 @@
         "id": "RBTRLDR",
         "name": "Rubber Tired Loaders",
         "category": "multisteer",
+        "defaultWeightDimensions": [
+          {
+            "axles": 11,
+            "saLegal": 9100,
+            "saPermittable": 9100,
+            "daLegal": 9100,
+            "daPermittable": 12000
+          }
+        ],
         "displayCodePrefix": "MC",
         "displayCodeSteerAxle": "S",
         "displayCodeDriveAxle": "A"
@@ -4704,6 +4805,15 @@
         "id": "SCRAPER",
         "name": "Scrapers",
         "category": "powerunit",
+        "defaultWeightDimensions": [
+          {
+            "axles": 11,
+            "saLegal": 9100,
+            "saPermittable": 23000,
+            "daLegal": 9100,
+            "daPermittable": 23000
+          }
+        ],
         "displayCodePrefix": "TT",
         "displayCodeSteerAxle": "S",
         "displayCodeDriveAxle": "D"
@@ -4722,6 +4832,36 @@
         "id": "TLSCONV",
         "name": "Telescopic Conveyor Trucks",
         "category": "powerunit",
+        "defaultWeightDimensions": [
+          {
+            "axles": 12,
+            "saLegal": 9100,
+            "saPermittable": 12000,
+            "daLegal": 17000,
+            "daPermittable": 23000
+          },
+          {
+            "axles": 13,
+            "saLegal": 9100,
+            "saPermittable": 12000,
+            "daLegal": 24000,
+            "daPermittable": 28000
+          },
+          {
+            "axles": 23,
+            "saLegal": 15200,
+            "saPermittable": 17000,
+            "daLegal": 24000,
+            "daPermittable": 28000
+          },
+          {
+            "axles": 33,
+            "saLegal": 24000,
+            "saPermittable": 24000,
+            "daLegal": 24000,
+            "daPermittable": 28000
+          }
+        ],
         "displayCodePrefix": "TT",
         "displayCodeSteerAxle": "S",
         "displayCodeDriveAxle": "D"

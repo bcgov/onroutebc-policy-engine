@@ -410,44 +410,58 @@ describe('ORV2-5709 permittable weight maximums', () => {
     });
   });
 
-  it('lets feature values override conflicting configured permittable values', () => {
-    const conflictingConfig = JSON.parse(
-      JSON.stringify(currentPolicyConfig),
-    ) as PolicyDefinition;
-    const singleSteerTandemDrive =
-      conflictingConfig.globalWeightDefaults!.powerUnits.find(
-        ({ axles }) => axles === 12,
-      )!;
-    singleSteerTandemDrive.saPermittable = 1;
-    singleSteerTandemDrive.daPermittable = 2;
-    const conflictingPolicy = new Policy(conflictingConfig);
-    const results = conflictingPolicy
-      .runAxleCalculation(
-        [POWER_UNIT_CODES.TRUCK_TRACTORS],
-        [
-          {
-            numberOfAxles: 1,
-            axleUnitWeight: 9100,
-            numberOfTires: 2,
-            tireSize: 455,
-          },
-          {
-            numberOfAxles: 2,
-            axleSpread: 160,
-            interaxleSpacing: 500,
-            axleUnitWeight: 23000,
-            numberOfTires: 8,
-            tireSize: 455,
-          },
-        ],
-        100000,
-      )
-      .results.filter(({ id }) => id === PolicyCheckId.PermittableWeight);
+  it.each([
+    [8750, 8750, PolicyCheckResultType.Pass],
+    [8750, 8751, PolicyCheckResultType.Fail],
+    [12000, 12000, PolicyCheckResultType.Pass],
+    [12000, 12001, PolicyCheckResultType.Fail],
+    [0, 0, PolicyCheckResultType.Pass],
+    [0, 1, PolicyCheckResultType.Fail],
+  ])(
+    'uses configured single-steer limit %i at %i kg',
+    (limit, actualWeight, expectedResult) => {
+      const conflictingConfig = JSON.parse(
+        JSON.stringify(currentPolicyConfig),
+      ) as PolicyDefinition;
+      const singleSteerTandemDrive =
+        conflictingConfig.globalWeightDefaults!.powerUnits.find(
+          ({ axles }) => axles === 12,
+        )!;
+      singleSteerTandemDrive.saPermittable = limit as number;
+      const conflictingPolicy = new Policy(conflictingConfig);
+      const results = conflictingPolicy
+        .runAxleCalculation(
+          [POWER_UNIT_CODES.TRUCK_TRACTORS],
+          [
+            {
+              numberOfAxles: 1,
+              axleUnitWeight: actualWeight as number,
+              numberOfTires: 2,
+              tireSize: 455,
+            },
+            {
+              numberOfAxles: 2,
+              axleSpread: 160,
+              interaxleSpacing: 500,
+              axleUnitWeight: 23000,
+              numberOfTires: 8,
+              tireSize: 455,
+            },
+          ],
+          100000,
+        )
+        .results.find(
+          ({ id, startAxleUnit }) =>
+            id === PolicyCheckId.PermittableWeight && startAxleUnit === 1,
+        );
 
-    expect(results.map(({ thresholdWeight }) => thresholdWeight)).toEqual([
-      9100, 23000,
-    ]);
-  });
+      expect(results).toMatchObject({
+        thresholdWeight: limit,
+        actualWeight,
+        result: expectedResult,
+      });
+    },
+  );
 
   it('preserves configured tandem-steering limits', () => {
     const configuredPolicyDefinition = JSON.parse(
