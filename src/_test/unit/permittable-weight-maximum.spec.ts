@@ -4,6 +4,7 @@ import { AxleConfiguration, PolicyDefinition } from '../../types';
 import currentPolicyConfig from '../policy-config/_current-config.json';
 import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
 import { TRAILER_CODES } from '../../constants/trailer-codes';
+import { CheckPermittableWeight } from '../../helper/policy-check.helper';
 
 describe('ORV2-5709 permittable weight maximums', () => {
   const policy = new Policy(currentPolicyConfig);
@@ -18,15 +19,19 @@ describe('ORV2-5709 permittable weight maximums', () => {
     trailerType?: string;
   };
 
-  const getPermittableResult = ({
-    axleUnit,
-    axleCount,
-    actualWeight,
-    spread,
-    boosterAxleCount,
-    powerUnitType = POWER_UNIT_CODES.TRUCK_TRACTORS,
-    trailerType = TRAILER_CODES.SEMI_TRAILERS,
-  }: Scenario) => {
+  const getPermittableResult = (
+    {
+      axleUnit,
+      axleCount,
+      actualWeight,
+      spread,
+      boosterAxleCount,
+      powerUnitType = POWER_UNIT_CODES.TRUCK_TRACTORS,
+      trailerType = TRAILER_CODES.SEMI_TRAILERS,
+    }: Scenario,
+    // Allow isolated tests to prove that modified JSON controls the limit.
+    configuredPolicy = policy,
+  ) => {
     const hasTrailer = axleUnit === 3;
     const hasBooster = boosterAxleCount !== undefined;
     const vehicleConfiguration = [
@@ -79,7 +84,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
       });
     }
 
-    return policy
+    return configuredPolicy
       .runAxleCalculation(vehicleConfiguration, axleConfiguration, 100000)
       .results.find(
         (result) =>
@@ -164,6 +169,115 @@ describe('ORV2-5709 permittable weight maximums', () => {
         expectedResult,
       );
     });
+  });
+
+  describe('configured power-unit tandem-drive limits', () => {
+    // Source: visible XLS J29 and J31, Single/Tandem LCVs.
+    it.each([
+      [
+        POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES,
+        17000,
+        PolicyCheckResultType.Pass,
+      ],
+      [
+        POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES,
+        17001,
+        PolicyCheckResultType.Fail,
+      ],
+      [
+        POWER_UNIT_CODES.LCV_TURNPIKE_DOUBLES,
+        17000,
+        PolicyCheckResultType.Pass,
+      ],
+      [
+        POWER_UNIT_CODES.LCV_TURNPIKE_DOUBLES,
+        17001,
+        PolicyCheckResultType.Fail,
+      ],
+    ])(
+      'evaluates %s drive at %i kg',
+      (powerUnitType, actualWeight, expectedResult) => {
+        expectPermittableResult(
+          {
+            axleUnit: 2,
+            axleCount: 2,
+            powerUnitType: powerUnitType as string,
+            actualWeight: actualWeight as number,
+          },
+          17000,
+          expectedResult as PolicyCheckResultType,
+        );
+      },
+    );
+
+    it.each([
+      [17000, 17000, PolicyCheckResultType.Pass],
+      [17000, 17001, PolicyCheckResultType.Fail],
+      [25000, 25000, PolicyCheckResultType.Pass],
+      [25000, 25001, PolicyCheckResultType.Fail],
+      [0, 0, PolicyCheckResultType.Pass],
+      [0, 1, PolicyCheckResultType.Fail],
+    ])(
+      'uses configured tandem-drive limit %i at %i kg',
+      (limit, actualWeight, expectedResult) => {
+        const configuredPolicyDefinition = JSON.parse(
+          JSON.stringify(currentPolicyConfig),
+        ) as PolicyDefinition;
+        configuredPolicyDefinition.globalWeightDefaults!.powerUnits.find(
+          ({ axles }) => axles === 12,
+        )!.daPermittable = limit as number;
+        expect(
+          getPermittableResult(
+            { axleUnit: 2, axleCount: 2, actualWeight: actualWeight as number },
+            new Policy(configuredPolicyDefinition),
+          ),
+        ).toMatchObject({
+          thresholdWeight: limit,
+          actualWeight,
+          result: expectedResult,
+        });
+      },
+    );
+
+    // Trailer and additional power-unit tandem migrations are separately scoped in A7.
+    it.each([
+      TRAILER_CODES.PONY_TRAILERS,
+      TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
+    ])('preserves the existing tandem limit for %s', (trailerType) => {
+      for (const actualWeight of [23000, 23001]) {
+        expectPermittableResult(
+          { axleUnit: 3, axleCount: 2, actualWeight, spread: 160, trailerType },
+          23000,
+          actualWeight === 23000
+            ? PolicyCheckResultType.Pass
+            : PolicyCheckResultType.Fail,
+        );
+      }
+    });
+
+    it.each([23000, 23001])(
+      'preserves an additional power-unit tandem at %i kg',
+      (actualWeight) => {
+        const results = CheckPermittableWeight(
+          policy,
+          [POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES],
+          [
+            { numberOfAxles: 1, axleUnitWeight: 6000, vehicleIndex: 0 },
+            { numberOfAxles: 2, axleUnitWeight: 17000, vehicleIndex: 0 },
+            { numberOfAxles: 2, axleUnitWeight: actualWeight, vehicleIndex: 0 },
+          ],
+        );
+        expect(results[2]).toMatchObject({
+          axleUnit: 3,
+          thresholdWeight: 23000,
+          actualWeight,
+          result:
+            actualWeight === 23000
+              ? PolicyCheckResultType.Pass
+              : PolicyCheckResultType.Fail,
+        });
+      },
+    );
   });
 
   // Source: ASW Permit Weight Maximums.feature @orv2-5709-5.
