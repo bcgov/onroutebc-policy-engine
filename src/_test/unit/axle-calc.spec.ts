@@ -733,7 +733,7 @@ describe('Axle Calculation Functions', () => {
     );
 
     it.each([
-      { steerAxleWeight: 15201, driveAxleWeight: 20000 },
+      { steerAxleWeight: 17001, driveAxleWeight: 20000 },
       { steerAxleWeight: 14000, driveAxleWeight: 28001 },
     ])(
       'defers weights above configured permit limits to the permittable weight check',
@@ -747,6 +747,21 @@ describe('Axle Calculation Functions', () => {
         });
       },
     );
+
+    it('still applies the towing restriction at the 17,000 kg steer permit maximum', () => {
+      const [ratioResult, trailerResult] = getResults(17000, 24000, [
+        POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+        TRAILER_CODES.SEMI_TRAILERS,
+      ]);
+      expect(ratioResult).toMatchObject({
+        result: PolicyCheckResultType.Pass,
+        message: '',
+      });
+      expect(trailerResult).toMatchObject({
+        result: PolicyCheckResultType.Fail,
+        message: trailerMessage,
+      });
+    });
 
     it('allows a trailer at the 15,200 kg picker tandem-steer legal maximum', () => {
       const trailerResult = getResults(15200, 24000, [
@@ -773,10 +788,7 @@ describe('Axle Calculation Functions', () => {
 
       const results = policy
         .runAxleCalculation(
-          [
-            POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
-            TRAILER_CODES.SEMI_TRAILERS,
-          ],
+          [POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS],
           axles,
           100000,
         )
