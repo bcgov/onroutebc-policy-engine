@@ -666,10 +666,12 @@ export function CheckPermittableWeight(
         const boosterQualifies =
           !hasImmediatelyFollowingBooster || boosterAxle?.numberOfAxles === 1;
 
-        permittableWeight =
-          isTrailerAxleUnit && spreadQualifies && boosterQualifies
-            ? AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.QUALIFYING_TRIDEM
-            : AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.STANDARD_TRIDEM;
+        if (isTrailerAxleUnit) {
+          permittableWeight =
+            spreadQualifies && boosterQualifies
+              ? AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.QUALIFYING_TRIDEM
+              : AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.STANDARD_TRIDEM;
+        }
       }
     }
 
