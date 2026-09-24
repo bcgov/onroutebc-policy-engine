@@ -4470,6 +4470,36 @@
         "id": "GRADERS",
         "name": "Fixed Equipment - Trucks/Graders etc.",
         "category": "powerunit",
+        "defaultWeightDimensions": [
+          {
+            "axles": 11,
+            "saLegal": 9100,
+            "saPermittable": 9100,
+            "daLegal": 9100,
+            "daPermittable": 11000
+          },
+          {
+            "axles": 12,
+            "saLegal": 9100,
+            "saPermittable": 9100,
+            "daLegal": 17000,
+            "daPermittable": 23000
+          },
+          {
+            "axles": 13,
+            "saLegal": 9100,
+            "saPermittable": 9100,
+            "daLegal": 24000,
+            "daPermittable": 28000
+          },
+          {
+            "axles": 23,
+            "saLegal": 15200,
+            "saPermittable": 15200,
+            "daLegal": 24000,
+            "daPermittable": 28000
+          }
+        ],
         "displayCodePrefix": "MC",
         "displayCodeSteerAxle": "S",
         "displayCodeDriveAxle": "A"
