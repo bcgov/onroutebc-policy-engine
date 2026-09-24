@@ -172,7 +172,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
   });
 
   describe('configured power-unit tandem-drive limits', () => {
-    // Source: visible XLS J29 and J31, Single/Tandem LCVs.
+    // Over Weight Dimension Set: Rocky Mountain/Turnpike LCVs, commodity None, Single/Tandem drive = 17,000 kg.
     it.each([
       [
         POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES,
@@ -301,19 +301,61 @@ describe('ORV2-5709 permittable weight maximums', () => {
 
   // Source: ASW Permit Weight Maximums.feature @orv2-5709-6.
   describe('tridem spread and immediately following booster', () => {
-    it('keeps a qualifying Picker Truck Tractor drive at the 28,000 kg default', () => {
-      expectPermittableResult(
-        {
-          axleUnit: 2,
-          axleCount: 3,
-          actualWeight: 28001,
-          spread: 240,
-          powerUnitType: POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
-        },
-        28000,
-        PolicyCheckResultType.Fail,
-      );
-    });
+    describe.each([
+      POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+      POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
+      POWER_UNIT_CODES.TRUCK_WITH_PME,
+    ])(
+      '%s drive does not receive the trailer spread allowance',
+      (powerUnitType) => {
+        // These below values come from the Overweight Dimension Set: Picker Truck Tractors, and truck/tractors with PME, commodity None
+        // Single-steer/tridem-drive = 24,000 kg; tandem-steer/tridem-drive = 28,000 kg.
+        // @orv2-5709-6 supplies the trailer-only allowance exclusion, not the 24,000 kg subtype limit (from Overweight Dimension Set xls)
+        it.each([
+          [1, 24000, 24000, PolicyCheckResultType.Pass],
+          [1, 24001, 24000, PolicyCheckResultType.Fail],
+          [2, 28000, 28000, PolicyCheckResultType.Pass],
+          [2, 28001, 28000, PolicyCheckResultType.Fail],
+        ])(
+          'evaluates %i steer axles and tridem drive at %i kg (limit %i)',
+          (steerAxles, actualWeight, thresholdWeight, expectedResult) => {
+            const result = policy
+              .runAxleCalculation(
+                [powerUnitType],
+                [
+                  {
+                    numberOfAxles: steerAxles as number,
+                    axleUnitWeight: 9100,
+                    axleSpread: steerAxles === 2 ? 160 : undefined,
+                    numberOfTires: (steerAxles as number) * 2,
+                    tireSize: 455,
+                    vehicleIndex: 0,
+                  },
+                  {
+                    numberOfAxles: 3,
+                    axleUnitWeight: actualWeight as number,
+                    axleSpread: 240,
+                    interaxleSpacing: 500,
+                    numberOfTires: 12,
+                    tireSize: 455,
+                    vehicleIndex: 0,
+                  },
+                ],
+                100000,
+              )
+              .results.find(
+                ({ id, startAxleUnit }) =>
+                  id === PolicyCheckId.PermittableWeight && startAxleUnit === 2,
+              );
+            expect(result).toMatchObject({
+              actualWeight,
+              thresholdWeight,
+              result: expectedResult,
+            });
+          },
+        );
+      },
+    );
 
     it('allows 29,000 kg on a qualifying lowbed semi-trailer tridem', () => {
       expectPermittableResult(
