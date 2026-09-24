@@ -4530,6 +4530,22 @@
         "name": "Long Combination Vehicles (LCV) - Rocky Mountain Doubles",
         "category": "powerunit",
         "isLcv": true,
+        "defaultWeightDimensions": [
+          {
+            "axles": 12,
+            "saLegal": 6000,
+            "saPermittable": 6000,
+            "daLegal": 17000,
+            "daPermittable": 17000
+          },
+          {
+            "axles": 13,
+            "saLegal": 7300,
+            "saPermittable": 7300,
+            "daLegal": 24000,
+            "daPermittable": 24000
+          }
+        ],
         "conditions": [
           {
             "condition": "CVSE-1014",
@@ -4545,6 +4561,22 @@
         "name": "Long Combination Vehicles (LCV) - Turnpike Doubles",
         "category": "powerunit",
         "isLcv": true,
+        "defaultWeightDimensions": [
+          {
+            "axles": 12,
+            "saLegal": 6000,
+            "saPermittable": 6000,
+            "daLegal": 17000,
+            "daPermittable": 17000
+          },
+          {
+            "axles": 13,
+            "saLegal": 7300,
+            "saPermittable": 7300,
+            "daLegal": 24000,
+            "daPermittable": 24000
+          }
+        ],
         "conditions": [
           {
             "condition": "CVSE-1014",
@@ -4610,7 +4642,7 @@
             "saLegal": 9100,
             "saPermittable": 9100,
             "daLegal": 9100,
-            "daPermittable": 11000
+            "daPermittable": 9100
           },
           {
             "axles": 12,
@@ -4648,7 +4680,7 @@
             "saLegal": 9100,
             "saPermittable": 9100,
             "daLegal": 9100,
-            "daPermittable": 11000
+            "daPermittable": 9100
           },
           {
             "axles": 12,
@@ -4686,7 +4718,7 @@
             "saLegal": 9100,
             "saPermittable": 9100,
             "daLegal": 9100,
-            "daPermittable": 11000
+            "daPermittable": 9100
           },
           {
             "axles": 12,
@@ -4756,6 +4788,15 @@
         "id": "RBTRLDR",
         "name": "Rubber Tired Loaders",
         "category": "multisteer",
+        "defaultWeightDimensions": [
+          {
+            "axles": 11,
+            "saLegal": 9100,
+            "saPermittable": 9100,
+            "daLegal": 9100,
+            "daPermittable": 12000
+          }
+        ],
         "displayCodePrefix": "MC",
         "displayCodeSteerAxle": "S",
         "displayCodeDriveAxle": "A"
