@@ -15,6 +15,9 @@ describe('ORV2-5706 legal weight maximums', () => {
     driveAxleCount: number,
     axleUnit: 1 | 2,
     actualWeight: number,
+    // Allow tests to supply modified JSON without changing the shared policy.
+    // This is important, as it enables us to test that changing JSON changes policy engine results
+    // i.e., it tests we haven't accidentally coded stuff in TS that should be in JSON.
     configuredPolicy = policy,
   ) => {
     const axleConfiguration: Array<AxleConfiguration> = [
@@ -181,6 +184,8 @@ describe('ORV2-5706 legal weight maximums', () => {
         weights[field] = 8000;
         const configuredPolicy = new Policy(config);
 
+        // Verify the modified JSON limit (8,000 kg), not a hardcoded value in TS, 
+        // policy config determines result.
         expectLegalResult(
           getLegalResult(
             powerUnitType,
