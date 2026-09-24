@@ -4752,6 +4752,36 @@
         "id": "TLSCONV",
         "name": "Telescopic Conveyor Trucks",
         "category": "powerunit",
+        "defaultWeightDimensions": [
+          {
+            "axles": 12,
+            "saLegal": 9100,
+            "saPermittable": 12000,
+            "daLegal": 17000,
+            "daPermittable": 23000
+          },
+          {
+            "axles": 13,
+            "saLegal": 9100,
+            "saPermittable": 12000,
+            "daLegal": 24000,
+            "daPermittable": 28000
+          },
+          {
+            "axles": 23,
+            "saLegal": 15200,
+            "saPermittable": 17000,
+            "daLegal": 24000,
+            "daPermittable": 28000
+          },
+          {
+            "axles": 33,
+            "saLegal": 24000,
+            "saPermittable": 24000,
+            "daLegal": 24000,
+            "daPermittable": 28000
+          }
+        ],
         "displayCodePrefix": "TT",
         "displayCodeSteerAxle": "S",
         "displayCodeDriveAxle": "D"
