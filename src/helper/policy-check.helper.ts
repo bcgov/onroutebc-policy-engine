@@ -16,7 +16,6 @@ import {
   VehicleCategory,
   PolicyCheckResultType,
 } from '../enum';
-import { AXLE_WEIGHT_LEGAL_MAXIMUMS } from '../constants/axle-weight-legal-maximums';
 import { AXLE_WEIGHT_PERMITTABLE_MAXIMUMS } from '../constants/axle-weight-permittable-maximums';
 import { POWER_UNIT_AXLE_CODE_MULTIPLIER } from '../constants/power-unit-axle-code-multiplier';
 import { getAxleSpreadThreshold } from './axle-spread.helper';
@@ -135,69 +134,10 @@ function getConfiguredAxleUnitWeightThreshold(
   );
 }
 
-function isFeatureLegalWeightPowerUnit(vehicleType?: string): boolean {
-  return (
-    vehicleType === POWER_UNIT_CODES.TRUCKS ||
-    vehicleType === POWER_UNIT_CODES.TRUCK_TRACTORS ||
-    vehicleType === POWER_UNIT_CODES.TRUCK_WITH_PME ||
-    vehicleType === POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME ||
-    vehicleType === POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS
-  );
-}
-
-function getFeatureLegalPowerUnitWeightThreshold(
-  vehicleType: string,
-  axleConfiguration: Array<AxleConfiguration>,
-  axleIndex: number,
-): number | undefined {
-  const steerAxle = axleConfiguration[0];
-  const driveAxle = axleConfiguration[1];
-  const hasPme =
-    vehicleType === POWER_UNIT_CODES.TRUCK_WITH_PME ||
-    vehicleType === POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME ||
-    vehicleType === POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS;
-
-  if (axleIndex === 0) {
-    if (
-      steerAxle.numberOfAxles === 1 &&
-      (driveAxle.numberOfAxles === 1 || driveAxle.numberOfAxles === 2)
-    ) {
-      return hasPme || vehicleType === POWER_UNIT_CODES.TRUCKS
-        ? AXLE_WEIGHT_LEGAL_MAXIMUMS.SINGLE_AXLE
-        : AXLE_WEIGHT_LEGAL_MAXIMUMS.STANDARD_TRUCK_TRACTOR_STEER;
-    }
-    if (steerAxle.numberOfAxles === 1 && driveAxle.numberOfAxles === 3) {
-      return hasPme
-        ? AXLE_WEIGHT_LEGAL_MAXIMUMS.SINGLE_AXLE
-        : AXLE_WEIGHT_LEGAL_MAXIMUMS.STANDARD_SINGLE_STEER_WITH_TRIDEM_DRIVE;
-    }
-    if (steerAxle.numberOfAxles === 2 && driveAxle.numberOfAxles === 2) {
-      return AXLE_WEIGHT_LEGAL_MAXIMUMS.TANDEM_AXLE;
-    }
-    if (steerAxle.numberOfAxles === 2 && driveAxle.numberOfAxles === 3) {
-      return hasPme
-        ? AXLE_WEIGHT_LEGAL_MAXIMUMS.PME_TANDEM_STEER_WITH_TRIDEM_DRIVE
-        : AXLE_WEIGHT_LEGAL_MAXIMUMS.STANDARD_TANDEM_STEER_WITH_TRIDEM_DRIVE;
-    }
-  }
-
-  if (axleIndex === 1) {
-    return {
-      1: AXLE_WEIGHT_LEGAL_MAXIMUMS.SINGLE_AXLE,
-      2: AXLE_WEIGHT_LEGAL_MAXIMUMS.TANDEM_AXLE,
-      3: AXLE_WEIGHT_LEGAL_MAXIMUMS.TRIDEM_AXLE,
-    }[driveAxle.numberOfAxles];
-  }
-
-  return undefined;
-}
-
 /**
  * Validates each axle unit against its legal weight maximum.
  *
- * The feature-defined steering and drive limits are authoritative for the
- * standard truck/truck-tractor and PME subtypes. Other axle units retain
- * their configured legal weight lookup.
+ * Resolves legal limits from subtype, category, or global weight dimensions.
  */
 export function CheckLegalWeight(
   policy: Policy,
@@ -205,7 +145,6 @@ export function CheckLegalWeight(
   axleConfiguration: Array<AxleConfiguration>,
 ): Array<PolicyCheckResult> {
   const policyId = PolicyCheckId.LegalWeight;
-  const powerUnitType = vehicleConfiguration[0];
   const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
     policy,
     vehicleConfiguration,
@@ -213,25 +152,14 @@ export function CheckLegalWeight(
   );
 
   return axleConfiguration.map((axleUnit, axleIndex) => {
-    const featureThreshold =
-      axleUnitVehicleIndexes[axleIndex] === 0 &&
-      isFeatureLegalWeightPowerUnit(powerUnitType)
-        ? getFeatureLegalPowerUnitWeightThreshold(
-            powerUnitType,
-            axleConfiguration,
-            axleIndex,
-          )
-        : undefined;
-    const legalWeight =
-      featureThreshold ??
-      getConfiguredAxleUnitWeightThreshold(
-        policy,
-        vehicleConfiguration,
-        axleConfiguration,
-        axleUnitVehicleIndexes,
-        axleIndex,
-        'legal',
-      );
+    const legalWeight = getConfiguredAxleUnitWeightThreshold(
+      policy,
+      vehicleConfiguration,
+      axleConfiguration,
+      axleUnitVehicleIndexes,
+      axleIndex,
+      'legal',
+    );
     const result = axleUnit.axleUnitWeight <= legalWeight;
     const axleUnitNumber = axleIndex + 1;
 
@@ -975,16 +903,8 @@ export function CheckPickerTruckTractorWeightRestrictions(
     const vehicleDefinition = policy.getVehicleDefinition(vehicleType);
     return !vehicleDefinition?.ignoreForAxleCalculation;
   });
-  const steerLegal = getFeatureLegalPowerUnitWeightThreshold(
-    POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
-    axleConfiguration,
-    0,
-  );
-  const driveLegal = getFeatureLegalPowerUnitWeightThreshold(
-    POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
-    axleConfiguration,
-    1,
-  );
+  const steerLegal = steerWeightDimension?.legal;
+  const driveLegal = driveWeightDimension?.legal;
   const exceedsLegalWeight =
     (steerLegal !== undefined && steerAxle.axleUnitWeight > steerLegal) ||
     (driveLegal !== undefined && driveAxle.axleUnitWeight > driveLegal);

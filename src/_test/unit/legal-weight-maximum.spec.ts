@@ -1,9 +1,10 @@
 import { Policy } from '../../policy-engine';
 import { PolicyCheckId, PolicyCheckResultType } from '../../enum/policy-check';
-import { AxleConfiguration } from '../../types';
+import { AxleConfiguration, PolicyDefinition } from '../../types';
 import currentPolicyConfig from '../policy-config/_current-config.json';
 import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
 import { TRAILER_CODES } from '../../constants/trailer-codes';
+import { CheckPickerTruckTractorWeightRestrictions } from '../../helper/policy-check.helper';
 
 describe('ORV2-5706 legal weight maximums', () => {
   const policy = new Policy(currentPolicyConfig);
@@ -14,6 +15,7 @@ describe('ORV2-5706 legal weight maximums', () => {
     driveAxleCount: number,
     axleUnit: 1 | 2,
     actualWeight: number,
+    configuredPolicy = policy,
   ) => {
     const axleConfiguration: Array<AxleConfiguration> = [
       {
@@ -35,7 +37,7 @@ describe('ORV2-5706 legal weight maximums', () => {
       },
     ];
 
-    return policy
+    return configuredPolicy
       .runAxleCalculation([powerUnitType], axleConfiguration, 100000)
       .results.find(
         (result) =>
@@ -55,6 +57,145 @@ describe('ORV2-5706 legal weight maximums', () => {
       actualWeight: result.actualWeight,
     });
   };
+
+  describe('configured legal limits', () => {
+    it.each(['saLegal', 'daLegal'] as const)(
+      'uses the configured picker %s limit for towing restrictions',
+      (field) => {
+        const config: PolicyDefinition = JSON.parse(
+          JSON.stringify(currentPolicyConfig),
+        );
+        const picker = config.vehicleTypes.powerUnitTypes.find(
+          ({ id }) => id === POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+        )!;
+        const weights = picker.defaultWeightDimensions!.find(
+          ({ axles }) => axles === 23,
+        )!;
+        weights[field] = field === 'saLegal' ? 13000 : 23000;
+        const results = CheckPickerTruckTractorWeightRestrictions(
+          new Policy(config),
+          [POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS],
+          [
+            {
+              numberOfAxles: 2,
+              axleSpread: 100,
+              axleUnitWeight: 14000,
+              vehicleIndex: 0,
+            },
+            {
+              numberOfAxles: 3,
+              axleSpread: 240,
+              interaxleSpacing: 485,
+              axleUnitWeight: 24000,
+              vehicleIndex: 0,
+            },
+            {
+              numberOfAxles: 1,
+              interaxleSpacing: 500,
+              axleUnitWeight: 1000,
+              vehicleIndex: 1,
+            },
+          ],
+        );
+
+        expect(results[0].result).toBe(PolicyCheckResultType.Pass);
+        expect(results[1]).toMatchObject({
+          result: PolicyCheckResultType.Fail,
+          message:
+            'Cannot tow a trailer if Axle Unit 1 and Axle Unit 2 are exceeding legal axle weights.',
+        });
+      },
+    );
+
+    it.each([
+      [POWER_UNIT_CODES.TRUCKS, [9100, 9100, 7300, 17000, 13600]],
+      [POWER_UNIT_CODES.TRUCK_TRACTORS, [6000, 6000, 7300, 17000, 13600]],
+      [
+        POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+        [9100, 9100, 9100, 17000, 15200],
+      ],
+      [POWER_UNIT_CODES.TRUCK_WITH_PME, [9100, 9100, 9100, 17000, 15200]],
+      [
+        POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
+        [9100, 9100, 9100, 17000, 15200],
+      ],
+    ])(
+      'preserves steering and drive boundaries for %s',
+      (powerUnitType, steerLimits) => {
+        const layouts = [
+          [1, 1],
+          [1, 2],
+          [1, 3],
+          [2, 2],
+          [2, 3],
+        ];
+        const driveLimits = [9100, 17000, 24000, 17000, 24000];
+
+        layouts.forEach(([steerCount, driveCount], index) => {
+          for (const axleUnit of [1, 2] as const) {
+            const threshold =
+              axleUnit === 1 ? steerLimits[index] : driveLimits[index];
+            for (const excess of [0, 1]) {
+              expectLegalResult(
+                getLegalResult(
+                  powerUnitType,
+                  steerCount,
+                  driveCount,
+                  axleUnit,
+                  threshold + excess,
+                ),
+                threshold,
+                excess === 0
+                  ? PolicyCheckResultType.Pass
+                  : PolicyCheckResultType.Warning,
+              );
+            }
+          }
+        });
+      },
+    );
+
+    it.each([
+      [POWER_UNIT_CODES.TRUCK_TRACTORS, 1, 2, 1, 'saLegal'],
+      [POWER_UNIT_CODES.TRUCKS, 1, 2, 1, 'saLegal'],
+      [POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS, 2, 3, 1, 'saLegal'],
+      [POWER_UNIT_CODES.TRUCK_WITH_PME, 1, 3, 1, 'saLegal'],
+      [POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME, 2, 3, 2, 'daLegal'],
+    ] as const)(
+      'uses supplied JSON for %s (%i steer, %i drive), axle %i, %s',
+      (powerUnitType, steerCount, driveCount, axleUnit, field) => {
+        const config: PolicyDefinition = JSON.parse(
+          JSON.stringify(currentPolicyConfig),
+        );
+        const subtype = config.vehicleTypes.powerUnitTypes.find(
+          ({ id }) => id === powerUnitType,
+        )!;
+        const axleCode = steerCount * 10 + driveCount;
+        const weights =
+          subtype.defaultWeightDimensions?.find(
+            ({ axles }) => axles === axleCode,
+          ) ??
+          config.globalWeightDefaults.powerUnits.find(
+            ({ axles }) => axles === axleCode,
+          )!;
+        weights[field] = 8000;
+        const configuredPolicy = new Policy(config);
+
+        expectLegalResult(
+          getLegalResult(
+            powerUnitType,
+            steerCount,
+            driveCount,
+            axleUnit,
+            8001,
+            configuredPolicy,
+          ),
+          8000,
+          PolicyCheckResultType.Warning,
+        );
+      },
+    );
+  });
 
   // Source: ASW Legal Weight Maximums.feature @orv2-5706-1.
   describe('steering maximums from configuration inputs', () => {
