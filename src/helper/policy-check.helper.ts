@@ -635,7 +635,15 @@ export function CheckPermittableWeight(
       permittableWeight = AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.SINGLE_STEER;
     } else if (!isTandemSteer) {
       if (axleUnit.numberOfAxles === 1) {
-        permittableWeight = AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.SINGLE_NON_STEER;
+        permittableWeight =
+          getConfiguredAxleUnitWeightThreshold(
+            policy,
+            vehicleConfiguration,
+            axleConfiguration,
+            axleUnitVehicleIndexes,
+            axleIndex,
+            'permittable',
+          ) || AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.SINGLE_NON_STEER;
       } else if (axleUnit.numberOfAxles === 2) {
         permittableWeight = AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.TANDEM;
       } else if (axleUnit.numberOfAxles === 3) {
