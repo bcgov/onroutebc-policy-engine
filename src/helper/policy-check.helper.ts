@@ -631,9 +631,7 @@ export function CheckPermittableWeight(
       axleIndex === 0 && vehicleIndex === 0 && axleUnit.numberOfAxles === 2;
     let permittableWeight: number | undefined;
 
-    if (isSingleSteer) {
-      permittableWeight = AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.SINGLE_STEER;
-    } else if (!isTandemSteer) {
+    if (!isSingleSteer && !isTandemSteer) {
       if (axleUnit.numberOfAxles === 1) {
         permittableWeight =
           getConfiguredAxleUnitWeightThreshold(
