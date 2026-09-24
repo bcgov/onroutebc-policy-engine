@@ -642,7 +642,11 @@ export function CheckPermittableWeight(
             axleIndex,
             'permittable',
           ) || AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.SINGLE_NON_STEER;
-      } else if (axleUnit.numberOfAxles === 2) {
+      } else if (
+        axleUnit.numberOfAxles === 2 &&
+        (vehicleIndex !== 0 || axleIndex !== 1)
+      ) {
+        // The power-unit drive uses JSON; other tandem units remain separately scoped.
         permittableWeight = AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.TANDEM;
       } else if (axleUnit.numberOfAxles === 3) {
         const isTrailerAxleUnit =
