@@ -118,6 +118,8 @@ describe('ORV2-5706 legal weight maximums', () => {
         [9100, 9100, 9100, 17000, 13600],
       ],
       [POWER_UNIT_CODES.TRUCK_TRACTORS, [6000, 6000, 7300, 17000, 13600]],
+      // Over Weight Dimension Set: Tow Vehicles / Tow Trucks and Disabled Vehicles; Single/* steer 9,100, Tandem/Tridem steer 15,200 kg.
+      [POWER_UNIT_CODES.TOW_VEHICLES, [9100, 9100, 9100, 17000, 15200]],
       // Over Weight Dimension Set: Bed Trucks / Oil Field Equipment; single-steer legal limit is 9,100 kg.
       [
         POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS,
