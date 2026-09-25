@@ -105,20 +105,25 @@ describe('ORV2-5709 permittable weight maximums', () => {
     });
   };
 
-  // Over Weight Dimension Set: Service Rigs / Oil Field Equipment; single-steer permit limit is 12,000 kg.
-  // Tandem/Tandem and Tandem/Tridem are unchanged controls; drive limits stay inherited.
+  // Over Weight Dimension Set, Oil Field Equipment: Service Rigs single-steer permits 12,000 kg;
+  // Bed Trucks Tandem/Tridem steer permits 17,000 kg. Other steer and all drive limits are controls.
   it.each([
-    [1, 1, 12000, 11000],
-    [1, 2, 12000, 23000],
-    [1, 3, 12000, 28000],
-    [2, 2, 17000, 23000],
-    [2, 3, 15200, 28000],
-  ])(
-    'preserves Service Rig %i/%i permit boundaries (steer %i, drive %i kg)',
-    (steerAxles, driveAxles, steerLimit, driveLimit) => {
+    [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS, 1, 1, 12000, 11000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS, 1, 2, 12000, 23000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS, 1, 3, 12000, 28000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS, 2, 2, 17000, 23000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS, 2, 3, 15200, 28000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 1, 1, 9100, 11000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 1, 2, 9100, 23000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 1, 3, 9100, 28000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 2, 2, 17000, 23000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 2, 3, 17000, 28000],
+  ] as const)(
+    'preserves %s %i/%i permit boundaries (steer %i, drive %i kg)',
+    (powerUnitType, steerAxles, driveAxles, steerLimit, driveLimit) => {
       for (const excess of [0, 1]) {
         const results = policy.runAxleCalculation(
-          [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS],
+          [powerUnitType],
           [
             {
               numberOfAxles: steerAxles,
