@@ -118,6 +118,28 @@ describe('ORV2-5709 permittable weight maximums', () => {
     [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 1, 3, 9100, 28000],
     [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 2, 2, 17000, 23000],
     [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 2, 3, 17000, 28000],
+    // Heavy-front-crane Service Rigs (>14,000 kg tare): tandem steer 20,000; tridem steer remains 24,000 kg.
+    [
+      POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+      2,
+      2,
+      20000,
+      23000,
+    ],
+    [
+      POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+      2,
+      3,
+      20000,
+      28000,
+    ],
+    [
+      POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+      3,
+      3,
+      24000,
+      28000,
+    ],
   ] as const)(
     'preserves %s %i/%i permit boundaries (steer %i, drive %i kg)',
     (powerUnitType, steerAxles, driveAxles, steerLimit, driveLimit) => {
