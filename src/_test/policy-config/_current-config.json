@@ -4681,6 +4681,29 @@
         "id": "OGSERVC",
         "name": "Oil and Gas - Service Rigs",
         "category": "powerunit",
+        "defaultWeightDimensions": [
+          {
+            "axles": 11,
+            "saLegal": 9100,
+            "saPermittable": 12000,
+            "daLegal": 9100,
+            "daPermittable": 11000
+          },
+          {
+            "axles": 12,
+            "saLegal": 9100,
+            "saPermittable": 12000,
+            "daLegal": 17000,
+            "daPermittable": 23000
+          },
+          {
+            "axles": 13,
+            "saLegal": 9100,
+            "saPermittable": 12000,
+            "daLegal": 24000,
+            "daPermittable": 28000
+          }
+        ],
         "displayCodePrefix": "TT",
         "displayCodeSteerAxle": "S",
         "displayCodeDriveAxle": "D"
