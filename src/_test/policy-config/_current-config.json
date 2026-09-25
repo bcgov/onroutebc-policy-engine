@@ -4742,6 +4742,22 @@
         "id": "OGSRRAH",
         "name": "Oil and Gas - Service Rigs and Rathole Augers Only Equipped with Heavy Front Projected Crane (must exceed 14,000 kg tare weight)",
         "category": "multisteer",
+        "defaultWeightDimensions": [
+          {
+            "axles": 22,
+            "saLegal": 17000,
+            "saPermittable": 20000,
+            "daLegal": 17000,
+            "daPermittable": 23000
+          },
+          {
+            "axles": 23,
+            "saLegal": 17000,
+            "saPermittable": 20000,
+            "daLegal": 24000,
+            "daPermittable": 28000
+          }
+        ],
         "displayCodePrefix": "MC",
         "displayCodeSteerAxle": "S",
         "displayCodeDriveAxle": "A"

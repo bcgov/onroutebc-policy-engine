@@ -110,6 +110,38 @@ describe('ORV2-5706 legal weight maximums', () => {
       },
     );
 
+    // Over Weight Dimension Set: heavy-front-crane Service Rigs (>14,000 kg tare), Oil Field Equipment.
+    it.each([
+      [2, 2, 17000, 17000],
+      [2, 3, 17000, 24000],
+      [3, 3, 24000, 24000],
+    ])(
+      'preserves heavy-front-crane %i/%i legal limits (steer %i, drive %i kg)',
+      (steerAxles, driveAxles, steerLimit, driveLimit) => {
+        for (const axleUnit of [1, 2] as const) {
+          const thresholdWeight = axleUnit === 1 ? steerLimit : driveLimit;
+          for (const excess of [0, 1]) {
+            expect(
+              getLegalResult(
+                POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+                steerAxles,
+                driveAxles,
+                axleUnit,
+                thresholdWeight + excess,
+              ),
+            ).toMatchObject({
+              actualWeight: thresholdWeight + excess,
+              thresholdWeight,
+              result:
+                excess === 0
+                  ? PolicyCheckResultType.Pass
+                  : PolicyCheckResultType.Warning,
+            });
+          }
+        }
+      },
+    );
+
     it.each([
       [POWER_UNIT_CODES.TRUCKS, [9100, 9100, 7300, 17000, 13600]],
       // Over Weight Dimension Set: Oilfield Sows / Oil Field Equipment; single-steer legal limit is 9,100 kg for all drive layouts.
