@@ -105,6 +105,64 @@ describe('ORV2-5709 permittable weight maximums', () => {
     });
   };
 
+  // Over Weight Dimension Set: Service Rigs / Oil Field Equipment; single-steer permit limit is 12,000 kg.
+  // Tandem/Tandem and Tandem/Tridem are unchanged controls; drive limits stay inherited.
+  it.each([
+    [1, 1, 12000, 11000],
+    [1, 2, 12000, 23000],
+    [1, 3, 12000, 28000],
+    [2, 2, 17000, 23000],
+    [2, 3, 15200, 28000],
+  ])(
+    'preserves Service Rig %i/%i permit boundaries (steer %i, drive %i kg)',
+    (steerAxles, driveAxles, steerLimit, driveLimit) => {
+      for (const excess of [0, 1]) {
+        const results = policy.runAxleCalculation(
+          [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS],
+          [
+            {
+              numberOfAxles: steerAxles,
+              axleUnitWeight: steerLimit + excess,
+              axleSpread: steerAxles > 1 ? 160 : undefined,
+              numberOfTires: steerAxles * 2,
+              tireSize: 455,
+              vehicleIndex: 0,
+            },
+            {
+              numberOfAxles: driveAxles,
+              axleUnitWeight: driveLimit + excess,
+              axleSpread: driveAxles > 1 ? 240 : undefined,
+              interaxleSpacing: 500,
+              numberOfTires: driveAxles * 4,
+              tireSize: 455,
+              vehicleIndex: 0,
+            },
+          ],
+          100000,
+        ).results;
+        for (const [index, thresholdWeight] of [
+          steerLimit,
+          driveLimit,
+        ].entries()) {
+          expect(
+            results.find(
+              ({ id, startAxleUnit }) =>
+                id === PolicyCheckId.PermittableWeight &&
+                startAxleUnit === index + 1,
+            ),
+          ).toMatchObject({
+            thresholdWeight,
+            actualWeight: thresholdWeight + excess,
+            result:
+              excess === 0
+                ? PolicyCheckResultType.Pass
+                : PolicyCheckResultType.Fail,
+          });
+        }
+      }
+    },
+  );
+
   // Source: ASW Permit Weight Maximums.feature @orv2-5709-1.
   describe('base axle-unit policy maximums', () => {
     it.each([

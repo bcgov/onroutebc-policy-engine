@@ -118,6 +118,11 @@ describe('ORV2-5706 legal weight maximums', () => {
         [9100, 9100, 9100, 17000, 13600],
       ],
       [POWER_UNIT_CODES.TRUCK_TRACTORS, [6000, 6000, 7300, 17000, 13600]],
+      // Over Weight Dimension Set: Service Rigs / Oil Field Equipment; single-steer legal limit is 9,100 kg.
+      [
+        POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS,
+        [9100, 9100, 9100, 17000, 13600],
+      ],
       [
         POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
         [9100, 9100, 9100, 17000, 15200],
