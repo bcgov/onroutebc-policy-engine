@@ -11,6 +11,7 @@ import {
   PowerUnitWeightDimension,
   TrailerWeightDimension,
   WeightDimension,
+  InteraxleSpacingRequirement,
 } from 'onroute-policy-engine/types';
 
 /**
@@ -22,6 +23,8 @@ export type VehicleCategory = IdentifiedObject & {
   defaultSizeDimensions?: SizeDimension;
   /** Default weight dimensions for this vehicle category (optional) */
   defaultWeightDimensions?: Array<WeightDimension>;
+  /** Interaxle spacing values for this vehicle category (optional) */
+  interaxleSpacings?: Array<InteraxleSpacingRequirement>;
 };
 
 /**

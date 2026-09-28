@@ -11,6 +11,7 @@ import {
   SizeDimension,
   PowerUnitWeightDimension,
   TrailerWeightDimension,
+  InteraxleSpacingRequirement,
 } from 'onroute-policy-engine/types';
 
 /**
@@ -32,6 +33,8 @@ export type VehicleType = IdentifiedObject & {
   conditions?: Array<ConditionRequirement>;
   /** Additional axle subtype identifier (optional) */
   additionalAxleSubType?: string;
+  /** Specfic interaxle spacing values for this vehicle type (optional) */
+  interaxleSpacings?: InteraxleSpacingRequirement[];
 };
 
 /**

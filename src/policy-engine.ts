@@ -75,6 +75,8 @@ import {
 import { DEFAULT_COST_DESCRIPTION } from './constants/cost';
 import { calculateOverload } from './helper/overload.helper';
 import { PERMIT_CODES } from './constants/permit-codes';
+import { InteraxleSpacingRequirement } from './types/interaxle-spacing-requirement';
+import { getDefaultInteraxleSpacingHelper } from './helper/interaxle-spacing.helper';
 
 /** Class representing commercial vehicle policy. */
 export class Policy {
@@ -1202,6 +1204,58 @@ export class Policy {
       subType,
       axles,
     ) as Array<PowerUnitWeightDimension>;
+  }
+
+  /**
+   * Gets the default legal and permittable weights for a
+   * given power unit type and number of axles. The number of
+   * axles is supplied as a 2-digit number, with the most
+   * significant digit representing the current (steer) axle unit and the
+   * least significant digit representing the next (drive) axle unit.
+   * @param subType Power unit subtype
+   * @param axles Number of axles in the power unit axle units
+   * @returns Array of power unit weights. Multiple power unit
+   * weights may be returned if there are different weights
+   * depending on prior / subsequent vehicles in the
+   * configuration (weight modifiers). Will return an empty array
+   * if the number of axles is not configured in policy.
+   */
+  getDefaultPowerUnitInteraxleSpacing(
+    subType: string,
+    axles: number,
+  ): InteraxleSpacingRequirement {
+    return getDefaultInteraxleSpacingHelper(
+      this,
+      subType,
+      axles,
+      true,
+    ) as InteraxleSpacingRequirement;
+  }
+
+  /**
+   * Gets the default legal and permittable weights for a
+   * given trailer type and number of axles. The number of
+   * axles is supplied as a 2-digit number, with the most
+   * significant digit representing the current axle unit and the
+   * least significant digit representing the next axle unit.
+   * @param subType Trailer subtype
+   * @param axles Number of axles in the trailer axle units
+   * @returns Array of trailer weights. Multiple trailer
+   * weights may be returned if there are different weights
+   * depending on prior / subsequent vehicles in the
+   * configuration (weight modifiers). Will return an empty array
+   * if the number of axles is not configured in policy.
+   */
+  getDefaultTrailerInteraxleSpacing(
+    subType: string,
+    axles: number,
+  ): InteraxleSpacingRequirement {
+    return getDefaultInteraxleSpacingHelper(
+      this,
+      subType,
+      axles,
+      false,
+    ) as InteraxleSpacingRequirement;
   }
 
   /**
