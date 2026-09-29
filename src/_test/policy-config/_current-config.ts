@@ -4285,6 +4285,44 @@ export const data: PolicyDefinition = {
       },
     ],
   },
+  globalInteraxleSpacingDefaults: [
+    {
+      axles: 11,
+      min: 300,
+    },
+    {
+      axles: 12,
+      min: 300,
+    },
+    {
+      axles: 13,
+      min: 300,
+    },
+    {
+      axles: 21,
+      min: 300,
+    },
+    {
+      axles: 22,
+      min: 500,
+    },
+    {
+      axles: 23,
+      min: 550,
+    },
+    {
+      axles: 31,
+      min: 300,
+    },
+    {
+      axles: 32,
+      min: 550,
+    },
+    {
+      axles: 33,
+      min: 600,
+    },
+  ],
   vehicleCategories: {
     trailerCategories: [
       {

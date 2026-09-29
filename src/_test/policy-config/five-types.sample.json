@@ -96,19 +96,7 @@
                   "fact": "permitData",
                   "path": "$.permitDuration",
                   "operator": "in",
-                  "value": [
-                    30,
-                    60,
-                    90,
-                    120,
-                    150,
-                    180,
-                    210,
-                    240,
-                    270,
-                    300,
-                    330
-                  ]
+                  "value": [30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330]
                 }
               },
               {
@@ -189,11 +177,7 @@
         "poletrailer",
         "hiboyexpando"
       ],
-      "allowedCommodities": [
-        "NONEXXX",
-        "DOGLOGG",
-        "GRTBBUK"
-      ]
+      "allowedCommodities": ["NONEXXX", "DOGLOGG", "GRTBBUK"]
     },
     {
       "id": "STWS",
@@ -211,12 +195,7 @@
         "poletrailer",
         "hiboyexpando"
       ],
-      "allowedCommodities": [
-        "bridgebeams",
-        "empty",
-        "fixed",
-        "laminatedbeams"
-      ]
+      "allowedCommodities": ["bridgebeams", "empty", "fixed", "laminatedbeams"]
     }
   ],
   "globalWeightDefaults": {
@@ -289,6 +268,7 @@
     "h": 4.15,
     "l": 31
   },
+  "globalInteraxleSpacingDefaults": [],
   "vehicleCategories": {
     "trailerCategories": [
       {

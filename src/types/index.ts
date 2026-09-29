@@ -66,3 +66,4 @@ export type {
   DefaultWeightDimensions,
   SingleAxleDimension,
 } from './weight-dimension';
+export type { InteraxleSpacingRequirement } from './interaxle-spacing-requirement';

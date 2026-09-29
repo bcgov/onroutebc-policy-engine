@@ -281,19 +281,7 @@
                 "not": {
                   "fact": "permitData",
                   "operator": "in",
-                  "value": [
-                    30,
-                    60,
-                    90,
-                    120,
-                    150,
-                    180,
-                    210,
-                    240,
-                    270,
-                    300,
-                    330
-                  ],
+                  "value": [30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330],
                   "path": "$.permitDuration"
                 }
               },
@@ -383,19 +371,7 @@
                 "not": {
                   "fact": "permitData",
                   "operator": "in",
-                  "value": [
-                    30,
-                    60,
-                    90,
-                    120,
-                    150,
-                    180,
-                    210,
-                    240,
-                    270,
-                    300,
-                    330
-                  ],
+                  "value": [30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330],
                   "path": "$.permitDuration"
                 }
               },
@@ -462,6 +438,7 @@
     "h": 4.15,
     "l": 31
   },
+  "globalInteraxleSpacingDefaults": [],
   "vehicleCategories": {
     "trailerCategories": [],
     "powerUnitCategories": []
