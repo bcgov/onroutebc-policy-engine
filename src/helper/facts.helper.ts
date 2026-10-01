@@ -38,6 +38,7 @@ type AxleCalculationInputs = {
   vehicleConfiguration: Array<string>;
   axleConfiguration: Array<AxleConfiguration>;
   licensedGVW: number;
+  commodityId: string | undefined;
 };
 
 const getAxleCalculationInputs = async (
@@ -75,6 +76,11 @@ const getAxleCalculationInputs = async (
     vehicleConfiguration,
     axleConfiguration,
     licensedGVW: vehicleDetails.licensedGVW || 0,
+    commodityId: await almanac.factValue(
+      PermitAppInfo.PermitData,
+      {},
+      PermitAppInfo.Commodity,
+    ),
   };
 };
 
@@ -315,8 +321,19 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
   engine.addFact(
     PolicyFacts.PolicyCheckPassed.toString(),
     async function (params, almanac) {
-      const { vehicleConfiguration, axleConfiguration } =
+      const { vehicleConfiguration, axleConfiguration, commodityId } =
         await getAxleCalculationInputs(policy, almanac);
+      const permitTypeId: string = await almanac.factValue(
+        PermitAppInfo.PermitType,
+      );
+      const commodityRequired =
+        policy.getPermitTypeDefinition(permitTypeId)?.commodityRequired;
+      if (
+        (commodityRequired || commodityId !== undefined) &&
+        !policy.getCommodityDefinition(commodityId)
+      ) {
+        return false;
+      }
       // Get the specific policy check ID from parameters
       const policyCheckId = params.policyId;
 
@@ -330,6 +347,7 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
         policy,
         vehicleConfiguration,
         axleConfiguration,
+        commodityId,
       );
       if (!policyCheckResults || policyCheckResults.length === 0) {
         // We did not get any policy check results returned which is an error
@@ -348,12 +366,19 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
    * is the structured ASW validation detail exposed by validate().
    */
   engine.addFact(AXLE_CALC_RESULTS_FACT, async function (params, almanac) {
-    const { vehicleConfiguration, axleConfiguration, licensedGVW } =
-      await getAxleCalculationInputs(policy, almanac);
+    const {
+      vehicleConfiguration,
+      axleConfiguration,
+      licensedGVW,
+      commodityId,
+    } = await getAxleCalculationInputs(policy, almanac);
+    if (!commodityId || !policy.getCommodityDefinition(commodityId))
+      return null;
     return policy.runAxleCalculation(
       vehicleConfiguration,
       axleConfiguration,
       licensedGVW,
+      commodityId,
     );
   });
 
@@ -365,9 +390,10 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
   engine.addFact(
     PolicyFacts.AxleCalcViolations,
     async function (params, almanac) {
-      const results: AxleCalcResults = await almanac.factValue(
+      const results: AxleCalcResults | null = await almanac.factValue(
         AXLE_CALC_RESULTS_FACT,
       );
+      if (!results) return [];
       const violations = results.results.filter(
         (r) => r.result === PolicyCheckResultType.Fail,
       );
@@ -610,7 +636,7 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
   engine.addFact(
     CostFacts.OverloadAxleCost.toString(),
     async function (params, almanac) {
-      const axleResults: AxleCalcResults = await almanac.factValue(
+      const axleResults: AxleCalcResults | null = await almanac.factValue(
         AXLE_CALC_RESULTS_FACT,
       );
       const totalDistance: number = await almanac.factValue(
@@ -619,7 +645,7 @@ export function addRuntimeFacts(engine: Engine, policy: Policy): void {
         PermitAppInfo.TotalDistance,
       );
 
-      if (!totalDistance) {
+      if (!axleResults || !totalDistance) {
         return 0;
       }
 
