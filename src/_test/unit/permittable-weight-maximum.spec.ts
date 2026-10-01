@@ -1,3 +1,4 @@
+import { COMMODITY_CODES } from '../../constants/commodity-codes';
 import { Policy } from '../../policy-engine';
 import { PolicyCheckId, PolicyCheckResultType } from '../../enum/policy-check';
 import { AxleConfiguration, PolicyDefinition } from '../../types';
@@ -85,7 +86,12 @@ describe('ORV2-5709 permittable weight maximums', () => {
     }
 
     return configuredPolicy
-      .runAxleCalculation(vehicleConfiguration, axleConfiguration, 100000)
+      .runAxleCalculation(
+      vehicleConfiguration,
+      axleConfiguration,
+      100000,
+      COMMODITY_CODES.NONE,
+    )
       .results.find(
         (result) =>
           result.id === PolicyCheckId.PermittableWeight &&
@@ -166,6 +172,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
             },
           ],
           100000,
+          COMMODITY_CODES.NONE,
         ).results;
         for (const [index, thresholdWeight] of [
           steerLimit,
@@ -427,6 +434,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
                   },
                 ],
                 100000,
+                COMMODITY_CODES.NONE,
               )
               .results.find(
                 ({ id, startAxleUnit }) =>
@@ -526,6 +534,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
         [POWER_UNIT_CODES.TRUCK_TRACTORS],
         axleConfiguration,
         100000,
+        COMMODITY_CODES.NONE,
       ).results;
 
       const vehicleConfiguration = [
@@ -578,6 +587,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
         [POWER_UNIT_CODES.TRUCK_TRACTORS],
         axleConfiguration,
         100000,
+        COMMODITY_CODES.NONE,
       ).results;
 
       expect(results).toEqual(
@@ -629,6 +639,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
         [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS],
         axleConfiguration,
         100000,
+        COMMODITY_CODES.NONE,
       ).results;
 
       expect(results).toEqual(
@@ -690,6 +701,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
             },
           ],
           100000,
+          COMMODITY_CODES.NONE,
         )
         .results.find(
           ({ id, startAxleUnit }) =>
@@ -735,6 +747,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
           },
         ],
         100000,
+        COMMODITY_CODES.NONE,
       )
       .results.find(
         ({ id, startAxleUnit }) =>

@@ -5365,7 +5365,14 @@
         "id": "STWDTAN",
         "name": "Semi-Trailers - Spread Tandems",
         "category": "semi",
-        "displayCode": "T"
+        "displayCode": "T",
+        "defaultWeightDimensions": [
+          {
+            "axles": 2,
+            "legal": 9100,
+            "permittable": 18200
+          }
+        ]
       },
       {
         "id": "STSTEER",
@@ -10025,6 +10032,22 @@
         },
         {
           "type": "PICKRTT",
+          "weightDimensions": [
+            {
+              "axles": 11,
+              "saLegal": 9100,
+              "saPermittable": 9100,
+              "daLegal": 9100,
+              "daPermittable": 11000
+            },
+            {
+              "axles": 13,
+              "saLegal": 9100,
+              "saPermittable": 9100,
+              "daLegal": 24000,
+              "daPermittable": 28000
+            }
+          ],
           "trailers": [
             {
               "type": "OGOSFDT",
@@ -10285,6 +10308,22 @@
         },
         {
           "type": "TRCKPME",
+          "weightDimensions": [
+            {
+              "axles": 11,
+              "saLegal": 9100,
+              "saPermittable": 9100,
+              "daLegal": 9100,
+              "daPermittable": 11000
+            },
+            {
+              "axles": 13,
+              "saLegal": 9100,
+              "saPermittable": 9100,
+              "daLegal": 24000,
+              "daPermittable": 28000
+            }
+          ],
           "trailers": [
             {
               "type": "OGOSFDT",
@@ -10545,6 +10584,22 @@
         },
         {
           "type": "TRACPME",
+          "weightDimensions": [
+            {
+              "axles": 11,
+              "saLegal": 9100,
+              "saPermittable": 9100,
+              "daLegal": 9100,
+              "daPermittable": 11000
+            },
+            {
+              "axles": 13,
+              "saLegal": 9100,
+              "saPermittable": 9100,
+              "daLegal": 24000,
+              "daPermittable": 28000
+            }
+          ],
           "trailers": [
             {
               "type": "OGOSFDT",
@@ -11202,6 +11257,22 @@
         },
         {
           "type": "PICKRTR",
+          "weightDimensions": [
+            {
+              "axles": 11,
+              "saLegal": 9100,
+              "saPermittable": 9100,
+              "daLegal": 9100,
+              "daPermittable": 11000
+            },
+            {
+              "axles": 13,
+              "saLegal": 9100,
+              "saPermittable": 9100,
+              "daLegal": 24000,
+              "daPermittable": 28000
+            }
+          ],
           "trailers": [
             {
               "type": "XXXXXXX",
