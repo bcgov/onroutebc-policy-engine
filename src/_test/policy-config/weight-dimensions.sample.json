@@ -785,8 +785,8 @@
               "category": "semi",
               "position": "before",
               "axles": 3,
-              "minInterAxleSpacing": 0,
-              "maxInterAxleSpacing": 419
+              "minInteraxleSpacing": 0,
+              "maxInteraxleSpacing": 419
             },
             "legal": 9198,
             "permittable": 9199
