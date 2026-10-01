@@ -21,6 +21,7 @@ import {
   VehicleDisplayCodeDefaults,
 } from 'onroute-policy-engine/types';
 import { RuleProperties } from 'json-rules-engine';
+import { InteraxleSpacingRequirement } from './interaxle-spacing-requirement';
 
 /**
  * Complete policy definition containing all configuration data for the policy engine
@@ -38,6 +39,8 @@ export type PolicyDefinition = {
   globalWeightDefaults: DefaultWeightDimensions;
   /** Global default size dimensions for vehicles */
   globalSizeDefaults: SizeDimension;
+  /** Global default interaxle spacing values for vehicles */
+  globalInteraxleSpacingDefaults: InteraxleSpacingRequirement[];
   /** Vehicle categories configuration */
   vehicleCategories: VehicleCategories;
   /** Vehicle types configuration */

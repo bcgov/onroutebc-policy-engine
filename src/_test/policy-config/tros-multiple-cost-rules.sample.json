@@ -36,6 +36,7 @@
     "powerUnits": [],
     "trailers": []
   },
+  "globalInteraxleSpacingDefaults": [],
   "vehicleCategories": {
     "trailerCategories": [],
     "powerUnitCategories": []

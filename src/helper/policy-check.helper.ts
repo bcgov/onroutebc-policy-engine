@@ -920,8 +920,7 @@ export function CheckPickerTruckTractorWeightRestrictions(
   const exceedsLegalWeight =
     (steerLegal !== undefined && steerAxle.axleUnitWeight > steerLegal) ||
     (driveLegal !== undefined && driveAxle.axleUnitWeight > driveLegal);
-  const trailerPasses =
-    !hasRealTrailer || (ratioPasses && !exceedsLegalWeight);
+  const trailerPasses = !hasRealTrailer || (ratioPasses && !exceedsLegalWeight);
 
   return [
     {
@@ -1661,6 +1660,7 @@ export function CheckLegalInteraxleSpacing(
 
   return axleConfiguration.map((axleUnit, axleIndex) => {
     const requirement = getInteraxleSpacingRequirement(
+      policy,
       axleConfiguration,
       axleIndex,
       vehicleConfiguration,
@@ -1674,7 +1674,7 @@ export function CheckLegalInteraxleSpacing(
       ((!requirement.min || axleUnit.interaxleSpacing >= requirement.min) &&
         (!requirement.max || axleUnit.interaxleSpacing <= requirement.max));
 
-    const axleUnitNumber = axleIndex + 1;
+    const currentAxleUnitNumber = axleIndex + 1;
     const previousAxleUnitNumber = axleIndex;
 
     const message = shouldPass
@@ -1682,7 +1682,7 @@ export function CheckLegalInteraxleSpacing(
       : getFailedInteraxleSpacingMessage(
           requirement,
           previousAxleUnitNumber,
-          axleUnitNumber,
+          currentAxleUnitNumber,
         );
 
     return {
@@ -1691,7 +1691,7 @@ export function CheckLegalInteraxleSpacing(
       result: shouldPass
         ? PolicyCheckResultType.Pass
         : PolicyCheckResultType.Fail,
-      axleUnit: axleUnitNumber,
+      axleUnit: currentAxleUnitNumber,
     };
   });
 }

@@ -50,6 +50,7 @@
     "h": 4.15,
     "l": 31
   },
+  "globalInteraxleSpacingDefaults": [],
   "vehicleCategories": {
     "trailerCategories": [],
     "powerUnitCategories": []

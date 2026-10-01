@@ -31,12 +31,7 @@
       "weightDimensionRequired": false,
       "sizeDimensionRequired": true,
       "commodityRequired": true,
-      "allowedCommodities": [
-        "EMPTYXX",
-        "BRGBEAM",
-        "AUTOCRR",
-        "BRSHCUT"
-      ],
+      "allowedCommodities": ["EMPTYXX", "BRGBEAM", "AUTOCRR", "BRSHCUT"],
       "allowedVehicles": [
         "DOLLIES",
         "FEBGHSE",
@@ -125,9 +120,7 @@
       "weightDimensionRequired": false,
       "sizeDimensionRequired": false,
       "commodityRequired": false,
-      "allowedVehicles": [
-        "TRKTRAC"
-      ],
+      "allowedVehicles": ["TRKTRAC"],
       "rules": []
     }
   ],
@@ -135,6 +128,7 @@
     "powerUnits": [],
     "trailers": []
   },
+  "globalInteraxleSpacingDefaults": [],
   "vehicleCategories": {
     "trailerCategories": [
       {
