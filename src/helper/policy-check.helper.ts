@@ -629,6 +629,8 @@ export function CheckPermittableWeight(
       axleIndex === 0 && vehicleIndex === 0 && axleUnit.numberOfAxles === 1;
     const isTandemSteer =
       axleIndex === 0 && vehicleIndex === 0 && axleUnit.numberOfAxles === 2;
+    const isOtherTandemAxleUnit =
+      axleUnit.numberOfAxles === 2 && (vehicleIndex !== 0 || axleIndex !== 1);
     let permittableWeight: number | undefined;
 
     if (!isSingleSteer && !isTandemSteer) {
@@ -642,10 +644,7 @@ export function CheckPermittableWeight(
             axleIndex,
             'permittable',
           ) || AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.SINGLE_NON_STEER;
-      } else if (
-        axleUnit.numberOfAxles === 2 &&
-        (vehicleIndex !== 0 || axleIndex !== 1)
-      ) {
+      } else if (isOtherTandemAxleUnit) {
         // The power-unit drive uses JSON; other tandem units remain separately scoped.
         permittableWeight = AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.TANDEM;
       } else if (axleUnit.numberOfAxles === 3) {
