@@ -105,6 +105,7 @@ describe('PME power-unit policy configuration foundation', () => {
               },
             ],
             100000,
+            COMMODITY_CODES.NONE,
           )
           .results.find(
             ({ id, startAxleUnit }) =>
