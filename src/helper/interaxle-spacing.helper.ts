@@ -130,8 +130,7 @@ export function selectCorrectInteraxleSpacingRequirementHelper(
 
     if (modifier.position === 'before') {
       isMatch =
-        matcher ==
-        (isTypeMatch ? relatives.prevType : relatives.prevCategory);
+        matcher == (isTypeMatch ? relatives.prevType : relatives.prevCategory);
 
       if (isMatch && modifier.axles) {
         isMatch = modifier.axles === previousAxleUnit.numberOfAxles;

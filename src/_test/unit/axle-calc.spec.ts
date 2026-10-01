@@ -809,10 +809,7 @@ describe('Axle Calculation Functions', () => {
 
       const results = policy
         .runAxleCalculation(
-          [
-            POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
-            TRAILER_CODES.SEMI_TRAILERS,
-          ],
+          [POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS],
           axles,
           100000,
         )

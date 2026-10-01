@@ -4888,6 +4888,24 @@ export const data: PolicyDefinition = {
           },
         ],
         displayCode: 'B',
+        interaxleSpacings: [
+          {
+            axles: 2,
+            modifier: {
+              category: 'trailer',
+              position: 'before',
+            },
+            min: 420,
+          },
+          {
+            axles: 3,
+            modifier: {
+              category: 'trailer',
+              position: 'before',
+            },
+            min: 420,
+          },
+        ],
       },
       {
         id: 'DOLLIES',
