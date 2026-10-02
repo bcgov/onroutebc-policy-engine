@@ -1,3 +1,4 @@
+import { COMMODITY_CODES } from '../../constants/commodity-codes';
 import { Policy } from 'onroute-policy-engine';
 
 import currentPolicyConfig from '../policy-config/_current-config.json';
@@ -733,7 +734,7 @@ describe('Axle Calculation Functions', () => {
     );
 
     it.each([
-      { steerAxleWeight: 15201, driveAxleWeight: 20000 },
+      { steerAxleWeight: 17001, driveAxleWeight: 20000 },
       { steerAxleWeight: 14000, driveAxleWeight: 28001 },
     ])(
       'defers weights above configured permit limits to the permittable weight check',
@@ -747,6 +748,21 @@ describe('Axle Calculation Functions', () => {
         });
       },
     );
+
+    it('still applies the towing restriction at the 17,000 kg steer permit maximum', () => {
+      const [ratioResult, trailerResult] = getResults(17000, 24000, [
+        POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+        TRAILER_CODES.SEMI_TRAILERS,
+      ]);
+      expect(ratioResult).toMatchObject({
+        result: PolicyCheckResultType.Pass,
+        message: '',
+      });
+      expect(trailerResult).toMatchObject({
+        result: PolicyCheckResultType.Fail,
+        message: trailerMessage,
+      });
+    });
 
     it('allows a trailer at the 15,200 kg picker tandem-steer legal maximum', () => {
       const trailerResult = getResults(15200, 24000, [
@@ -773,12 +789,10 @@ describe('Axle Calculation Functions', () => {
 
       const results = policy
         .runAxleCalculation(
-          [
-            POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
-            TRAILER_CODES.SEMI_TRAILERS,
-          ],
+          [POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS],
           axles,
           100000,
+          COMMODITY_CODES.NONE,
         )
         .results.filter(
           (result) =>
@@ -1029,6 +1043,7 @@ describe('Axle Calculation Functions', () => {
       vehicleConfiguration,
       legalAxleConfiguration,
       0,
+      COMMODITY_CODES.NONE,
     );
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
@@ -1045,7 +1060,12 @@ describe('Axle Calculation Functions', () => {
     ac[1].numberOfTires = 12;
     ac[1].axleUnitWeight = 20000;
 
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const results = policy.runAxleCalculation(
+      vehicleConfiguration,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
     const minSteerResult = results.results.find(
       (r) => r.id === PolicyCheckId.MinSteerAxleWeight,
     );
@@ -1070,7 +1090,12 @@ describe('Axle Calculation Functions', () => {
     ac[1].numberOfTires = 6;
     ac[1].axleUnitWeight = 26000;
 
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const results = policy.runAxleCalculation(
+      vehicleConfiguration,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
     const minSteerResult = results.results.find(
       (r) => r.id === PolicyCheckId.MinSteerAxleWeight,
     );
@@ -1095,7 +1120,12 @@ describe('Axle Calculation Functions', () => {
     ac[1].numberOfTires = 12;
     ac[1].axleUnitWeight = 20000;
 
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const results = policy.runAxleCalculation(
+      vehicleConfiguration,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
     const minTandemSteerResult = results.results.find(
       (r) => r.id === PolicyCheckId.MinTandemSteerAxleWeight,
     );
@@ -1132,6 +1162,7 @@ describe('Axle Calculation Functions', () => {
       [POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS],
       ac,
       0,
+      COMMODITY_CODES.NONE,
     );
     const pickerTruckResult = results.results.find(
       (result) =>
@@ -1170,6 +1201,7 @@ describe('Axle Calculation Functions', () => {
       [POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS],
       ac,
       0,
+      COMMODITY_CODES.NONE,
     );
 
     expect(results.results).toEqual(
@@ -1191,7 +1223,12 @@ describe('Axle Calculation Functions', () => {
       JSON.stringify(axleConfiguration),
     ) as Array<AxleConfiguration>;
     ac[0].numberOfTires = 3;
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const results = policy.runAxleCalculation(
+      vehicleConfiguration,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(false);
@@ -1209,7 +1246,12 @@ describe('Axle Calculation Functions', () => {
     ) as Array<AxleConfiguration>;
     ac[0].numberOfTires = 3;
 
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const results = policy.runAxleCalculation(
+      vehicleConfiguration,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
     const numTiresResult = results.results.find(
       (r) => r.id === PolicyCheckId.NumberOfWheelsPerAxle,
     );
@@ -1228,7 +1270,12 @@ describe('Axle Calculation Functions', () => {
     ac[0].numberOfAxles = 1;
     ac[0].numberOfTires = 4;
 
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const results = policy.runAxleCalculation(
+      vehicleConfiguration,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
     const numTiresResult = results.results.find(
       (r) => r.id === PolicyCheckId.NumberOfWheelsPerAxle,
     );
@@ -1248,7 +1295,12 @@ describe('Axle Calculation Functions', () => {
     ac[1].numberOfAxles = 1;
     ac[1].numberOfTires = 8;
 
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const results = policy.runAxleCalculation(
+      vehicleConfiguration,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
     const numTiresResult = results.results.find(
       (r) =>
         r.id === PolicyCheckId.NumberOfWheelsPerAxle && r.startAxleUnit === 2,
@@ -1270,7 +1322,12 @@ describe('Axle Calculation Functions', () => {
 
     let results: AxleCalcResults | undefined;
     expect(() => {
-      results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+      results = policy.runAxleCalculation(
+        vehicleConfiguration,
+        ac,
+        0,
+        COMMODITY_CODES.NONE,
+      );
     }).not.toThrow();
     const numberOfAxlesResult = results?.results.find(
       (r) =>
@@ -1291,7 +1348,12 @@ describe('Axle Calculation Functions', () => {
     ) as Array<AxleConfiguration>;
     ac[1].numberOfAxles = -1;
 
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const results = policy.runAxleCalculation(
+      vehicleConfiguration,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
     const numberOfAxlesResult = results.results.find(
       (r) =>
         r.id === PolicyCheckId.NumberOfAxles &&
@@ -1311,7 +1373,12 @@ describe('Axle Calculation Functions', () => {
     ) as Array<AxleConfiguration>;
     ac[1].numberOfAxles = 4;
 
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const results = policy.runAxleCalculation(
+      vehicleConfiguration,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
     const numberOfAxlesResult = results.results.find(
       (r) =>
         r.id === PolicyCheckId.NumberOfAxles &&
@@ -1331,7 +1398,12 @@ describe('Axle Calculation Functions', () => {
     ) as Array<AxleConfiguration>;
     ac[1].numberOfAxles = 5;
 
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const results = policy.runAxleCalculation(
+      vehicleConfiguration,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
     const numberOfAxlesResult = results.results.find(
       (r) =>
         r.id === PolicyCheckId.NumberOfAxles &&
@@ -1351,7 +1423,12 @@ describe('Axle Calculation Functions', () => {
     ) as Array<AxleConfiguration>;
     ac[1].numberOfAxles = 5;
 
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const results = policy.runAxleCalculation(
+      vehicleConfiguration,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
 
     expect(results).toMatchObject({
       overload: 57700,
@@ -1402,7 +1479,12 @@ describe('Axle Calculation Functions', () => {
     ac[1].numberOfAxles = 3;
     ac[1].numberOfTires = 12;
 
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const results = policy.runAxleCalculation(
+      vehicleConfiguration,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
     const numberOfAxlesResult = results.results.find((r) => {
       const axleGroupResult = r as AxleGroupPolicyCheckResult;
       return (
@@ -1424,7 +1506,12 @@ describe('Axle Calculation Functions', () => {
       JSON.stringify(axleConfiguration),
     ) as Array<AxleConfiguration>;
     ac[0].axleUnitWeight = 40000;
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const results = policy.runAxleCalculation(
+      vehicleConfiguration,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(false);
@@ -1441,7 +1528,12 @@ describe('Axle Calculation Functions', () => {
       JSON.stringify(axleConfiguration),
     ) as Array<AxleConfiguration>;
     ac[ac.length - 1].axleUnitWeight = 40000;
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const results = policy.runAxleCalculation(
+      vehicleConfiguration,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(false);
@@ -1462,7 +1554,12 @@ describe('Axle Calculation Functions', () => {
     // The final vehicle in this configuration is a tandem booster which uses
     // default weight dimensions
     ac[ac.length - 1].axleUnitWeight = 23000;
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const results = policy.runAxleCalculation(
+      vehicleConfiguration,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
     const permittableWeightResults = results.results.filter(
       (r) => r.id === PolicyCheckId.PermittableWeight,
     );
@@ -1478,7 +1575,12 @@ describe('Axle Calculation Functions', () => {
       JSON.stringify(axleConfiguration),
     ) as Array<AxleConfiguration>;
 
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const results = policy.runAxleCalculation(
+      vehicleConfiguration,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
     const boosterAxleLimitResults = results.results.filter(
       (r) => r.id === PolicyCheckId.BoosterAxleLimit,
     );
@@ -1530,7 +1632,12 @@ describe('Axle Calculation Functions', () => {
       },
     ];
 
-    const results = policy.runAxleCalculation(vc, ac, 0);
+    const results = policy.runAxleCalculation(
+      vc,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
     const boosterAxleLimitResult = results.results.find(
       (r) => r.id === PolicyCheckId.BoosterAxleLimit,
     );
@@ -1919,7 +2026,12 @@ describe('Axle Calculation Functions', () => {
     ac[1].axleSpread = 140;
     ac[1].interaxleSpacing = 650;
 
-    const results = policy.runAxleCalculation(vc, ac, 0);
+    const results = policy.runAxleCalculation(
+      vc,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
     const wheelbaseResult = results.results.find(
       (r) => r.id === PolicyCheckId.WheelbaseLegalLimits,
     );
@@ -1945,7 +2057,12 @@ describe('Axle Calculation Functions', () => {
         ac,
       )[0];
       const runAxleCalculationResult = policy
-        .runAxleCalculation(vehicleConfiguration, ac, 0)
+        .runAxleCalculation(
+        vehicleConfiguration,
+        ac,
+        0,
+        COMMODITY_CODES.NONE,
+      )
         .results.find((r) => r.id === PolicyCheckId.WheelbaseLegalLimits);
 
       expect(runAxleCalculationResult).toMatchObject(directResult);
@@ -2335,7 +2452,12 @@ describe('Axle Calculation Functions', () => {
       ac[1].axleUnitWeight = 12000;
       ac[2].axleUnitWeight = 10999;
 
-      const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+      const results = policy.runAxleCalculation(
+        vehicleConfiguration,
+        ac,
+        0,
+        COMMODITY_CODES.NONE,
+      );
       const loadEqualizationResult = results.results.find(
         (r) => r.id === PolicyCheckId.DriveJeepLoadEqualization,
       );
@@ -2355,7 +2477,12 @@ describe('Axle Calculation Functions', () => {
     ) as Array<AxleConfiguration>;
     ac[0].tireSize = 445;
     ac[0].axleUnitWeight = 9200;
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const results = policy.runAxleCalculation(
+      vehicleConfiguration,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(false);
@@ -2373,7 +2500,12 @@ describe('Axle Calculation Functions', () => {
     ) as Array<AxleConfiguration>;
     ac[0].tireSize = 330;
     ac[0].axleUnitWeight = 6700;
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const results = policy.runAxleCalculation(
+      vehicleConfiguration,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(false);
@@ -2390,7 +2522,12 @@ describe('Axle Calculation Functions', () => {
       JSON.stringify(axleConfiguration),
     ) as Array<AxleConfiguration>;
     delete ac[0].tireSize;
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const results = policy.runAxleCalculation(
+      vehicleConfiguration,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(false);
@@ -2407,7 +2544,12 @@ describe('Axle Calculation Functions', () => {
       JSON.stringify(axleConfiguration),
     ) as Array<AxleConfiguration>;
     delete ac[2].tireSize;
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const results = policy.runAxleCalculation(
+      vehicleConfiguration,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(false);
@@ -2425,7 +2567,12 @@ describe('Axle Calculation Functions', () => {
     ) as Array<AxleConfiguration>;
     ac[2].tireSize = 445;
     ac[2].axleUnitWeight = 4550 * (ac[2].numberOfTires || 0) + 1;
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const results = policy.runAxleCalculation(
+      vehicleConfiguration,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(false);
@@ -2443,7 +2590,12 @@ describe('Axle Calculation Functions', () => {
     ) as Array<AxleConfiguration>;
     ac[2].tireSize = 330;
     ac[2].axleUnitWeight = 3000 * (ac[2].numberOfTires || 0) + 1;
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const results = policy.runAxleCalculation(
+      vehicleConfiguration,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(false);
@@ -2461,7 +2613,12 @@ describe('Axle Calculation Functions', () => {
     ) as Array<AxleConfiguration>;
     ac[2].tireSize = 279;
     ac[2].axleUnitWeight = 2790 * (ac[2].numberOfTires || 0) + 1;
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const results = policy.runAxleCalculation(
+      vehicleConfiguration,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
     expect(
       results.results.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(false);
@@ -2492,7 +2649,12 @@ describe('Axle Calculation Functions', () => {
       targetAxle.axleUnitWeight = axleUnitWeight;
 
       return policy
-        .runAxleCalculation(vehicleConfiguration, ac, 0)
+        .runAxleCalculation(
+        vehicleConfiguration,
+        ac,
+        0,
+        COMMODITY_CODES.NONE,
+      )
         .results.find((result) => result.id === PolicyCheckId.MaxTireLoad);
     };
 
@@ -2522,7 +2684,12 @@ describe('Axle Calculation Functions', () => {
       });
 
       const maxTireLoadResults = policy
-        .runAxleCalculation(vehicleConfiguration, ac, 0)
+        .runAxleCalculation(
+        vehicleConfiguration,
+        ac,
+        0,
+        COMMODITY_CODES.NONE,
+      )
         .results.filter((result) => result.id === PolicyCheckId.MaxTireLoad);
 
       expect(maxTireLoadResults).toEqual([
