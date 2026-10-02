@@ -4880,14 +4880,32 @@ export const data: PolicyDefinition = {
               category: 'semi',
               position: 'before',
               axles: 3,
-              minInterAxleSpacing: 0,
-              maxInterAxleSpacing: 419,
+              minInteraxleSpacing: 0,
+              maxInteraxleSpacing: 419,
             },
             legal: 9100,
             permittable: 9100,
           },
         ],
         displayCode: 'B',
+        interaxleSpacings: [
+          {
+            axles: 2,
+            modifier: {
+              category: 'trailer',
+              position: 'before',
+            },
+            min: 420,
+          },
+          {
+            axles: 3,
+            modifier: {
+              category: 'trailer',
+              position: 'before',
+            },
+            min: 420,
+          },
+        ],
       },
       {
         id: 'DOLLIES',
@@ -4961,6 +4979,24 @@ export const data: PolicyDefinition = {
         category: 'accessory',
         ignoreForSizeDimensions: true,
         displayCode: 'J',
+        interaxleSpacings: [
+          {
+            axles: 2,
+            modifier: {
+              category: 'trailer',
+              position: 'before',
+            },
+            min: 420,
+          },
+          {
+            axles: 3,
+            modifier: {
+              category: 'trailer',
+              position: 'before',
+            },
+            min: 420,
+          },
+        ],
       },
       {
         id: 'LOGNTAC',

@@ -486,11 +486,11 @@ export function selectCorrectWeightDimensionHelper(
               );
               isMatch = false;
               break;
-            } else if (isMatch && m.minInterAxleSpacing) {
-              isMatch = m.minInterAxleSpacing <= spacingFromPrev;
+            } else if (isMatch && m.minInteraxleSpacing) {
+              isMatch = m.minInteraxleSpacing <= spacingFromPrev;
             }
-            if (isMatch && m.maxInterAxleSpacing) {
-              isMatch = m.maxInterAxleSpacing >= spacingFromPrev;
+            if (isMatch && m.maxInteraxleSpacing) {
+              isMatch = m.maxInteraxleSpacing >= spacingFromPrev;
             }
             break;
           }
@@ -513,11 +513,11 @@ export function selectCorrectWeightDimensionHelper(
               );
               isMatch = false;
               break;
-            } else if (isMatch && m.minInterAxleSpacing) {
-              isMatch = m.minInterAxleSpacing <= spacingToNext;
+            } else if (isMatch && m.minInteraxleSpacing) {
+              isMatch = m.minInteraxleSpacing <= spacingToNext;
             }
-            if (isMatch && m.maxInterAxleSpacing) {
-              isMatch = m.maxInterAxleSpacing >= spacingToNext;
+            if (isMatch && m.maxInteraxleSpacing) {
+              isMatch = m.maxInteraxleSpacing >= spacingToNext;
             }
             break;
           }

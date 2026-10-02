@@ -1,5 +1,5 @@
-import { DimensionModifier } from './dimension-modifier';
 import { SelfIssuable } from './self-issuable';
+import { InteraxleSpacingModifier } from './interaxle-spacing-modifier';
 
 /**
  * Base interaxle spacing requirement with axle count and modifier
@@ -12,6 +12,6 @@ export type InteraxleSpacingRequirement = SelfIssuable & {
   min?: number;
   /** The maximum interaxle spacing value (optional) */
   max?: number;
-  /** Dimension modifier for special configurations (optional) */
-  modifier?: DimensionModifier;
+  /** Modifier for selecting the applicable spacing rule (optional) */
+  modifier?: InteraxleSpacingModifier;
 };

@@ -103,10 +103,11 @@ describe('Axle Calculation Functions', () => {
       axleUnit: number,
       expectedResult: PolicyCheckResultType,
       expectedMessage?: string,
+      configuration: Array<string> = vehicleConfiguration,
     ) => {
       const results = CheckLegalInteraxleSpacing(
         policy,
-        vehicleConfiguration,
+        configuration,
         axleConfiguration,
       );
 
@@ -149,6 +150,41 @@ describe('Axle Calculation Functions', () => {
 
       expectInteraxleSpacingResult(ac, 1, PolicyCheckResultType.Pass);
     });
+
+    it.each([
+      ['tandem jeep at minimum', 2, 420, PolicyCheckResultType.Pass],
+      ['tridem jeep at minimum', 3, 420, PolicyCheckResultType.Pass],
+      ['jeep below minimum', 2, 419, PolicyCheckResultType.Fail],
+    ])(
+      'validates jeep spacing for %s',
+      (_description, jeepAxles, spacingCm, expectedResult) => {
+        const ac: Array<AxleConfiguration> = [
+          { numberOfAxles: 1, axleUnitWeight: 5000 },
+          { numberOfAxles: 2, interaxleSpacing: 500, axleUnitWeight: 10000 },
+          { numberOfAxles: 2, interaxleSpacing: 500, axleUnitWeight: 12000 },
+          {
+            numberOfAxles: jeepAxles,
+            interaxleSpacing: spacingCm,
+            axleUnitWeight: 12000,
+          },
+        ];
+
+        const expectedMessage =
+          expectedResult === PolicyCheckResultType.Fail
+            ? `Interaxle Spacing between Axle Unit 3 and Axle Unit 4 must be at least 4.2 m.`
+            : '';
+
+        const customVehicleConfiguration = ['TRKTRAC', 'FEDRMMX', 'JEEPSRG'];
+
+        expectInteraxleSpacingResult(
+          ac,
+          4,
+          expectedResult,
+          expectedMessage,
+          customVehicleConfiguration,
+        );
+      },
+    );
   });
 
   describe('number of wheels per axle unit policy check', () => {
@@ -773,10 +809,7 @@ describe('Axle Calculation Functions', () => {
 
       const results = policy
         .runAxleCalculation(
-          [
-            POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
-            TRAILER_CODES.SEMI_TRAILERS,
-          ],
+          [POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS],
           axles,
           100000,
         )
