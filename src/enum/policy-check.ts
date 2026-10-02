@@ -19,6 +19,7 @@ export enum PolicyCheckId {
   NumberOfAxles = 'number-of-axles',
   NumberOfWheelsPerAxle = 'number-of-wheels',
   PermittableWeight = 'permittable-weight',
+  PermittableInteraxleSpacing = 'permittable-interaxle-spacing',
   PickerTruckTractorWeightRestrictions = 'picker-truck-tractor-weight-restrictions',
   WheelbaseLegalLimits = 'wheelbase-legal-limits',
 }

@@ -1661,6 +1661,58 @@ export function CheckLegalInteraxleSpacing(
       axleIndex,
       vehicleConfiguration,
       axleUnitVehicleIndexes,
+      'legal',
+    );
+
+    // Pass when no requirement exists, interaxle spacing is missing, or interaxle spacing falls within the requirement's min/max bounds.
+    const shouldPass =
+      !requirement ||
+      !axleUnit.interaxleSpacing ||
+      ((!requirement.min || axleUnit.interaxleSpacing >= requirement.min) &&
+        (!requirement.max || axleUnit.interaxleSpacing <= requirement.max));
+
+    const currentAxleUnitNumber = axleIndex + 1;
+    const previousAxleUnitNumber = axleIndex;
+
+    const message = shouldPass
+      ? ''
+      : getFailedInteraxleSpacingMessage(
+          requirement,
+          previousAxleUnitNumber,
+          currentAxleUnitNumber,
+        );
+
+    return {
+      id: policyId,
+      message,
+      result: shouldPass
+        ? PolicyCheckResultType.Pass
+        : PolicyCheckResultType.Fail,
+      axleUnit: currentAxleUnitNumber,
+    };
+  });
+}
+
+export function CheckPermittableInteraxleSpacing(
+  policy: Policy,
+  vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+): Array<PolicyCheckResult> {
+  const policyId = PolicyCheckId.PermittableInteraxleSpacing;
+  const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
+    policy,
+    vehicleConfiguration,
+    axleConfiguration,
+  );
+
+  return axleConfiguration.map((axleUnit, axleIndex) => {
+    const requirement = getInteraxleSpacingRequirement(
+      policy,
+      axleConfiguration,
+      axleIndex,
+      vehicleConfiguration,
+      axleUnitVehicleIndexes,
+      'permittable',
     );
 
     // Pass when no requirement exists, interaxle spacing is missing, or interaxle spacing falls within the requirement's min/max bounds.
@@ -1796,6 +1848,7 @@ export const policyCheckMap = new Map<string, PolicyCheck>([
   ],
   [PolicyCheckId.NumberOfWheelsPerAxle, CheckNumTiresPerAxle],
   [PolicyCheckId.LegalInteraxleSpacing, CheckLegalInteraxleSpacing],
+  [PolicyCheckId.PermittableInteraxleSpacing, CheckPermittableInteraxleSpacing],
   [PolicyCheckId.BoosterAxleLimit, CheckBoosterAxleLimit],
   [PolicyCheckId.DriveJeepLoadEqualization, CheckDriveJeepLoadEqualization],
   [PolicyCheckId.WheelbaseLegalLimits, CheckWheelbaseLegalLimits],

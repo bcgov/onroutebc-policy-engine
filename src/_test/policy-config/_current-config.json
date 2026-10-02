@@ -4998,6 +4998,15 @@
             },
             "legal": 9100,
             "permittable": 9100
+          },
+          {
+            "axles": 1,
+            "modifier": {
+              "category": "semi",
+              "position": "before",
+              "minInterAxleSpacing": 420
+            },
+            "permittable": 9100
           }
         ],
         "displayCode": "B"

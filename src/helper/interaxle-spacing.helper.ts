@@ -37,6 +37,7 @@ export function getInteraxleSpacingRequirement(
   axleIndex: number,
   vehicleConfiguration: Array<string>,
   axleUnitVehicleIndexes: Array<number>,
+  requirementType: 'legal' | 'permittable',
 ): InteraxleSpacingRequirement | undefined {
   // the first axle unit will never have an interaxle spacing value or previous axle unit to compare against
   if (axleIndex === 0) {
