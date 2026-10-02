@@ -1,6 +1,7 @@
 import { Policy } from '../../policy-engine';
 import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
 import { COMMODITY_CODES } from '../../constants/commodity-codes';
+import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { PolicyCheckId, PolicyCheckResultType } from '../../enum';
 import { AxleConfiguration } from '../../types';
 import { PermitAppInfo } from '../../enum/permit-app-info';
@@ -64,6 +65,54 @@ describe.each([
     },
   );
 });
+
+// Trailer XLS J/K176–177, with None/Reducible controls J/K237–238 and 249–250.
+describe.each([
+  [COMMODITY_CODES.NON_REDUCIBLE_LOADS, 1, 17000, 21000],
+  [COMMODITY_CODES.NON_REDUCIBLE_LOADS, 2, 21000, 21000],
+  [COMMODITY_CODES.NONE, 1, 9100, 11000],
+  [COMMODITY_CODES.NONE, 2, 17000, 23000],
+  [COMMODITY_CODES.REDUCIBLE_LOADS, 1, 9100, 11000],
+  [COMMODITY_CODES.REDUCIBLE_LOADS, 2, 17000, 23000],
+])(
+  'semi-trailer commodity %s with %i axles',
+  (commodity, count, legal, permittable) => {
+    it.each([
+      [PolicyCheckId.LegalWeight, legal, PolicyCheckResultType.Warning],
+      [
+        PolicyCheckId.PermittableWeight,
+        permittable,
+        PolicyCheckResultType.Fail,
+      ],
+    ])('uses %s threshold %i', (id, limit, above) => {
+      for (const excess of [0, 1]) {
+        const calculated = policy.runAxleCalculation(
+          [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS],
+          [
+            ...axles(2),
+            {
+              numberOfAxles: count,
+              vehicleIndex: 1,
+              axleUnitWeight: limit + excess,
+              axleSpread: 240,
+              interaxleSpacing: 600,
+            },
+          ],
+          100000,
+          commodity,
+        );
+        expect(
+          calculated.results.find(
+            (result) => result.id === id && result.startAxleUnit === 3,
+          ),
+        ).toMatchObject({
+          thresholdWeight: limit,
+          result: excess === 0 ? PolicyCheckResultType.Pass : above,
+        });
+      }
+    });
+  },
+);
 
 describe('invalid commodity', () => {
   it.each([undefined, 'UNKNOWN'])(
