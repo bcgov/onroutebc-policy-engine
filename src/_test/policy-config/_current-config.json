@@ -10930,7 +10930,19 @@
                   ]
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "weightDimensions": [
+                {
+                  "axles": 1,
+                  "legal": 17000,
+                  "permittable": 21000
+                },
+                {
+                  "axles": 2,
+                  "legal": 21000,
+                  "permittable": 21000
+                }
+              ]
             },
             {
               "type": "STACTRN",
