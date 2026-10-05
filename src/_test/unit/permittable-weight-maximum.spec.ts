@@ -331,21 +331,27 @@ describe('ORV2-5709 permittable weight maximums', () => {
       },
     );
 
-    // Trailer and additional power-unit tandem migrations are separately scoped in A7.
-    it.each([
-      TRAILER_CODES.PONY_TRAILERS,
-      TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
-    ])('preserves the existing tandem limit for %s', (trailerType) => {
-      for (const actualWeight of [23000, 23001]) {
-        expectPermittableResult(
-          { axleUnit: 3, axleCount: 2, actualWeight, spread: 160, trailerType },
-          23000,
-          actualWeight === 23000
-            ? PolicyCheckResultType.Pass
-            : PolicyCheckResultType.Fail,
-        );
-      }
-    });
+    // Other wheeler and additional power-unit tandem migrations remain separately scoped.
+    it.each([TRAILER_CODES.SEMI_TRAILERS_WHEELERS])(
+      'preserves the existing tandem limit for %s',
+      (trailerType) => {
+        for (const actualWeight of [23000, 23001]) {
+          expectPermittableResult(
+            {
+              axleUnit: 3,
+              axleCount: 2,
+              actualWeight,
+              spread: 160,
+              trailerType,
+            },
+            23000,
+            actualWeight === 23000
+              ? PolicyCheckResultType.Pass
+              : PolicyCheckResultType.Fail,
+          );
+        }
+      },
+    );
 
     it.each([23000, 23001])(
       'preserves an additional power-unit tandem at %i kg',

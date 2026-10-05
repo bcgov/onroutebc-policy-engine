@@ -25,6 +25,7 @@ import {
 } from './interaxle-spacing.helper';
 import { formatMeters } from './format-meters.helper';
 import { POWER_UNIT_CODES } from '../constants/power-unit-codes';
+import { TRAILER_CODES } from '../constants/trailer-codes';
 
 /**
  * Type definition for policy check functions.
@@ -614,10 +615,18 @@ export function CheckPermittableWeight(
       axleIndex === 0 && vehicleIndex === 0 && axleUnit.numberOfAxles === 2;
     const isOtherTandemAxleUnit =
       axleUnit.numberOfAxles === 2 && (vehicleIndex !== 0 || axleIndex !== 1);
-    const isSemiTrailerAxleUnit =
-      vehicleIndex !== 0 &&
-      policy.getTrailerDefinition(vehicleConfiguration[vehicleIndex])
-        ?.category === 'semi';
+
+      // I know this trailerDefinition and isConfiguredTandemTrilerAxleUnit are a bit ugly, but they should be temporary
+      // As we migrate more stuff over to the JSON/XLS instead of the policy engine, this will get a bit gnarly until we fix it all.
+    const trailerDefinition =
+      vehicleIndex !== 0
+        ? policy.getTrailerDefinition(vehicleConfiguration[vehicleIndex])
+        : null;
+    const isConfiguredTandemTrailerAxleUnit =
+      trailerDefinition?.category === 'semi' ||
+      trailerDefinition?.category === 'pony' ||
+      trailerDefinition?.id ===
+        TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS;
     let permittableWeight: number | undefined;
 
     if (!isSingleSteer && !isTandemSteer) {
@@ -632,8 +641,8 @@ export function CheckPermittableWeight(
             'permittable',
             commodityId,
           ) || AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.SINGLE_NON_STEER;
-      } else if (isOtherTandemAxleUnit && !isSemiTrailerAxleUnit) {
-        // Power-unit drives and semi-trailer tandems use JSON; other units remain separately scoped.
+      } else if (isOtherTandemAxleUnit && !isConfiguredTandemTrailerAxleUnit) {
+        // Other trailer and additional power-unit tandems remain separately scoped.
         permittableWeight = AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.TANDEM;
       } else if (axleUnit.numberOfAxles === 3) {
         const isTrailerAxleUnit =
