@@ -244,8 +244,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
 
   it('should not have approval number when extraordinary load request is false', async () => {
     const permit = getDatedPermit();
-    permit.permitData.extraordinaryLoadRequest.isExtraordinaryLoadRequest =
-      false;
+    permit.permitData.extraordinaryLoadRequest.isExtraordinaryLoadRequest = false;
     permit.permitData.extraordinaryLoadRequest.approvalNumber = 'abc123';
 
     const validationResult = await policy.validate(permit);
@@ -254,8 +253,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
 
   it('should require approval number when extraordinary load request is true', async () => {
     const permit = getDatedPermit();
-    permit.permitData.extraordinaryLoadRequest.isExtraordinaryLoadRequest =
-      true;
+    permit.permitData.extraordinaryLoadRequest.isExtraordinaryLoadRequest = true;
     permit.permitData.extraordinaryLoadRequest.approvalNumber = '';
 
     const validationResult = await policy.validate(permit);
@@ -287,7 +285,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
           startAxleUnit: 1,
           endAxleUnit: 1,
           actualWeight: 6001,
-          legalMaxWeight: 6000,
+          maxWeight: 6000,
           overload: 1,
         },
       ],

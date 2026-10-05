@@ -4886,21 +4886,32 @@ export const data: PolicyDefinition = {
             legal: 9100,
             permittable: 9100,
           },
-        ],
-        displayCode: 'B',
-        interaxleSpacings: [
           {
-            axles: 2,
+            axles: 1,
             modifier: {
-              category: 'trailer',
+              category: 'semi',
               position: 'before',
+              minInteraxleSpacing: 420,
             },
-            min: 420,
+            permittable: 11000,
           },
           {
             axles: 3,
             modifier: {
-              category: 'trailer',
+              category: 'semi',
+              position: 'before',
+              minInteraxleSpacing: 420,
+            },
+            permittable: 28000,
+          },
+        ],
+        displayCode: 'B',
+        interaxleSpacings: [
+          {
+            axles: 3,
+            maxAxleUnitWeight: 28000,
+            modifier: {
+              category: 'semi',
               position: 'before',
             },
             min: 420,

@@ -5004,12 +5004,32 @@
             "modifier": {
               "category": "semi",
               "position": "before",
-              "minInterAxleSpacing": 420
+              "minInteraxleSpacing": 420
             },
-            "permittable": 9100
+            "permittable": 11000
+          },
+          {
+            "axles": 3,
+            "modifier": {
+              "category": "semi",
+              "position": "before",
+              "minInteraxleSpacing": 420
+            },
+            "permittable": 28000
           }
         ],
-        "displayCode": "B"
+        "displayCode": "B",
+        "interaxleSpacings": [
+          {
+            "axles": 3,
+            "axleUnitWeight": 28000,
+            "modifier": {
+              "category": "semi",
+              "position": "before"
+            },
+            "min": 420
+          }
+        ]
       },
       {
         "id": "DOLLIES",

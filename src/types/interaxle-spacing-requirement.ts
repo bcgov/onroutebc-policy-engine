@@ -7,11 +7,13 @@ import { InteraxleSpacingModifier } from './interaxle-spacing-modifier';
  */
 export type InteraxleSpacingRequirement = SelfIssuable & {
   /** Number of axles applicable to this requirement */
-  axles: number;
-  /** The minimum interaxle spacing value (optional) */
+  axles?: number;
+  /** The minimum permittable interaxle spacing value in centimetres (optional) */
   min?: number;
-  /** The maximum interaxle spacing value (optional) */
+  /** The maximum permittable interaxle spacing value in centimetres (optional) */
   max?: number;
   /** Modifier for selecting the applicable spacing rule (optional) */
   modifier?: InteraxleSpacingModifier;
+  /** Maximum weight of the axle unit in kilograms in order for the requirement to apply (optional) */
+  maxAxleUnitWeight?: number;
 };

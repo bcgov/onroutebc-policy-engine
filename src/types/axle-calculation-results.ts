@@ -41,7 +41,7 @@ export type AxleWeightOverloadCalculationDetail = {
   startAxleUnit: number;
   endAxleUnit: number;
   actualWeight: number;
-  legalMaxWeight: number;
+  maxWeight: number;
   overload: number;
 };
 
