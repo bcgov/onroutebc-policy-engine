@@ -77,18 +77,80 @@ describe('configured semi-trailer tandem weights', () => {
     });
   });
 
-  it.each([TRAILER_CODES.PONY_TRAILERS, TRAILER_CODES.SEMI_TRAILERS_WHEELERS])(
-    'preserves the existing tandem maximum for %s',
-    (trailerType) => {
-      const results = CheckPermittableWeight(
-        new Policy(config),
+  it.each([
+    TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
+    TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
+    TRAILER_CODES.DOLLIES,
+    TRAILER_CODES.BOOSTER,
+  ])('preserves the existing tandem maximum for %s', (trailerType) => {
+    const results = CheckPermittableWeight(
+      new Policy(config),
+      [POWER_UNIT_CODES.TRUCK_TRACTORS, trailerType],
+      axles(23000),
+      COMMODITY_CODES.NONE,
+    );
+    expect(results[2]).toMatchObject({
+      thresholdWeight: 23000,
+      result: PolicyCheckResultType.Pass,
+    });
+  });
+});
+
+// XLS K119–121/128–130/137–139/144/149–151: pony 21,000; K297: fixed wheeler 31,000.
+describe('configured pony and fixed wheeler tandem weights', () => {
+  it.each<[string, number]>([
+    [TRAILER_CODES.PONY_TRAILERS, 21000],
+    [TRAILER_CODES.FIXED_EQUIPMENT_PONY_TRAILERS, 21000],
+    [TRAILER_CODES.MANUFACTURED_HOMES_OVER_5M, 21000],
+    [TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS, 31000],
+  ])('uses the configured %s maximum of %i kg', (trailerType, limit) => {
+    for (const weight of [limit, limit + 1]) {
+      const calculated = new Policy(config).runAxleCalculation(
         [POWER_UNIT_CODES.TRUCK_TRACTORS, trailerType],
-        axles(23000),
+        axles(weight),
+        100000,
+        COMMODITY_CODES.NONE,
+      );
+      expect(
+        calculated.results.find(
+          ({ id, startAxleUnit }) =>
+            id === PolicyCheckId.PermittableWeight && startAxleUnit === 3,
+        ),
+      ).toMatchObject({
+        thresholdWeight: limit,
+        actualWeight: weight,
+        result:
+          weight === limit
+            ? PolicyCheckResultType.Pass
+            : PolicyCheckResultType.Fail,
+      });
+    }
+  });
+
+  it.each<[string, string, number]>([
+    [TRAILER_CODES.PONY_TRAILERS, 'pony', 19500],
+    [TRAILER_CODES.PONY_TRAILERS, 'pony', 0],
+    [TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS, 'wheeler', 31500],
+    [TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS, 'wheeler', 0],
+  ])(
+    'reads %s category %s tandem limit %i kg',
+    (trailerType, category, limit) => {
+      const changed = JSON.parse(JSON.stringify(config)) as typeof config;
+      changed.vehicleCategories.trailerCategories
+        .find(({ id }) => id === category)!
+        .defaultWeightDimensions!.find(
+          ({ axles }) => axles === 2,
+        )!.permittable = limit;
+
+      const results = CheckPermittableWeight(
+        new Policy(changed),
+        [POWER_UNIT_CODES.TRUCK_TRACTORS, trailerType],
+        axles(limit + 1),
         COMMODITY_CODES.NONE,
       );
       expect(results[2]).toMatchObject({
-        thresholdWeight: 23000,
-        result: PolicyCheckResultType.Pass,
+        thresholdWeight: limit,
+        result: PolicyCheckResultType.Fail,
       });
     },
   );
