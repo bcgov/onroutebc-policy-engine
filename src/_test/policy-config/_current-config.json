@@ -7220,7 +7220,14 @@
               "type": "STWHELR",
               "jeep": false,
               "booster": false,
-              "weightPermittable": true
+              "weightPermittable": true,
+              "weightDimensions": [
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 28000
+                }
+              ]
             }
           ]
         }
@@ -8655,7 +8662,14 @@
                   ]
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "weightDimensions": [
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 40000
+                }
+              ]
             },
             {
               "type": "STWIDWH",
@@ -8682,7 +8696,14 @@
                   ]
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "weightDimensions": [
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 52000
+                }
+              ]
             },
             {
               "type": "EXPANDO",
@@ -11080,7 +11101,14 @@
                   ]
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "weightDimensions": [
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 40000
+                }
+              ]
             },
             {
               "type": "STCRANE",
@@ -11172,7 +11200,14 @@
                   ]
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "weightDimensions": [
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 52000
+                }
+              ]
             },
             {
               "type": "STWDTAN",
