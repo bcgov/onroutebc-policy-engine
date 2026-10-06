@@ -113,7 +113,8 @@ const results = policy.runAxleCalculation(
     { numberOfAxles: 3, axleUnitWeight: 34000, numberOfTires: 12, tireSize: 445 }, // Drive axle
     { numberOfAxles: 3, axleUnitWeight: 34000, numberOfTires: 12, tireSize: 445 }  // Trailer axle
   ],
-  63500  // Licensed GVW
+  63500, // Licensed GVW
+  'NONREDU' // Selected commodity ID
 );
 ```
 
