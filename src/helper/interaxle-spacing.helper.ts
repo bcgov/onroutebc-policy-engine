@@ -109,8 +109,23 @@ export function selectCorrectInteraxleSpacingRequirementHelper(
     axleIndex,
     axleUnitVehicleIndexes,
   );
+  const appliesToCurrentAxleWeight = (
+    requirement: InteraxleSpacingRequirement,
+  ): boolean => {
+    const maxAxleUnitWeight = requirement.maxAxleUnitWeight;
+
+    return (
+      maxAxleUnitWeight === undefined ||
+      !Number.isFinite(currentAxleUnit.axleUnitWeight) ||
+      currentAxleUnit.axleUnitWeight <= maxAxleUnitWeight
+    );
+  };
 
   for (const requirement of interaxleSpacingRequirements) {
+    if (!appliesToCurrentAxleWeight(requirement)) {
+      continue;
+    }
+
     const modifier = requirement.modifier;
     if (!modifier) {
       return requirement;
@@ -161,10 +176,17 @@ export function selectCorrectInteraxleSpacingRequirementHelper(
     }
   }
 
-  return (
-    interaxleSpacingRequirements.find((requirement) => !requirement.modifier) ??
-    interaxleSpacingRequirements[0]
-  );
+  const fallbackRequirement =
+    interaxleSpacingRequirements.find(
+      (requirement) =>
+        !requirement.modifier && appliesToCurrentAxleWeight(requirement),
+    ) ??
+    interaxleSpacingRequirements.find((requirement) =>
+      appliesToCurrentAxleWeight(requirement),
+    ) ??
+    null;
+
+  return fallbackRequirement;
 }
 
 /**

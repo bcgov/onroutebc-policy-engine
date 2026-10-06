@@ -5006,6 +5006,7 @@
               "position": "before",
               "minInteraxleSpacing": 420
             },
+            "legal": 9100,
             "permittable": 11000
           },
           {
@@ -5015,14 +5016,24 @@
               "position": "before",
               "minInteraxleSpacing": 420
             },
+            "legal": 9100,
             "permittable": 28000
           }
         ],
         "displayCode": "B",
         "interaxleSpacings": [
           {
+            "axles": 2,
+            "maxAxleUnitWeight": 23000,
+            "modifier": {
+              "category": "semi",
+              "position": "before"
+            },
+            "min": 420
+          },
+          {
             "axles": 3,
-            "axleUnitWeight": 28000,
+            "maxAxleUnitWeight": 28000,
             "modifier": {
               "category": "semi",
               "position": "before"

@@ -185,6 +185,53 @@ describe('Axle Calculation Functions', () => {
         );
       },
     );
+
+    it('applies the tridem booster interaxle-spacing exception when the booster axle unit is at or below maxAxleUnitWeight', () => {
+      const customVehicleConfiguration = ['TRKTRAC', 'SEMITRL', 'BOOSTER'];
+      const customAxleConfiguration: Array<AxleConfiguration> = [
+        { numberOfAxles: 1, axleUnitWeight: 6000 },
+        { numberOfAxles: 2, axleUnitWeight: 18000 },
+        { numberOfAxles: 3, axleUnitWeight: 27000, interaxleSpacing: 500 },
+        { numberOfAxles: 1, axleUnitWeight: 28000, interaxleSpacing: 410 },
+      ];
+
+      const results = CheckLegalInteraxleSpacing(
+        policy,
+        customVehicleConfiguration,
+        customAxleConfiguration,
+      );
+
+      expect(results[3]).toMatchObject({
+        id: PolicyCheckId.LegalInteraxleSpacing,
+        axleUnit: 4,
+        result: PolicyCheckResultType.Fail,
+        message:
+          'Interaxle Spacing between Axle Unit 3 and Axle Unit 4 must be at least 4.2 m.',
+      });
+    });
+
+    it('skips the booster tridem interaxle-spacing exception when the booster axle unit exceeds maxAxleUnitWeight', () => {
+      const customVehicleConfiguration = ['TRKTRAC', 'SEMITRL', 'BOOSTER'];
+      const customAxleConfiguration: Array<AxleConfiguration> = [
+        { numberOfAxles: 1, axleUnitWeight: 6000 },
+        { numberOfAxles: 2, axleUnitWeight: 18000 },
+        { numberOfAxles: 3, axleUnitWeight: 27000, interaxleSpacing: 500 },
+        { numberOfAxles: 1, axleUnitWeight: 30000, interaxleSpacing: 410 },
+      ];
+
+      const results = CheckLegalInteraxleSpacing(
+        policy,
+        customVehicleConfiguration,
+        customAxleConfiguration,
+      );
+
+      expect(results[3]).toMatchObject({
+        id: PolicyCheckId.LegalInteraxleSpacing,
+        axleUnit: 4,
+        result: PolicyCheckResultType.Pass,
+        message: '',
+      });
+    });
   });
 
   describe('number of wheels per axle unit policy check', () => {
