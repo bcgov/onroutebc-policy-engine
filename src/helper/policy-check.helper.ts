@@ -616,17 +616,18 @@ export function CheckPermittableWeight(
     const isOtherTandemAxleUnit =
       axleUnit.numberOfAxles === 2 && (vehicleIndex !== 0 || axleIndex !== 1);
 
-      // I know this trailerDefinition and isConfiguredTandemTrilerAxleUnit are a bit ugly, but they should be temporary
+      // I know this trailerDefinition and usesJSONTandemWeight are a bit ugly, but they should be temporary
       // As we migrate more stuff over to the JSON/XLS instead of the policy engine, this will get a bit gnarly until we fix it all.
     const trailerDefinition =
       vehicleIndex !== 0
         ? policy.getTrailerDefinition(vehicleConfiguration[vehicleIndex])
         : null;
-    const isConfiguredTandemTrailerAxleUnit =
-      trailerDefinition?.category === 'semi' ||
+    const usesJSONTridemWeight =
       trailerDefinition?.category === 'pony' ||
       trailerDefinition?.id ===
         TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS;
+    const usesJSONTandemWeight =
+      trailerDefinition?.category === 'semi' || usesJSONTridemWeight;
     let permittableWeight: number | undefined;
 
     if (!isSingleSteer && !isTandemSteer) {
@@ -641,7 +642,7 @@ export function CheckPermittableWeight(
             'permittable',
             commodityId,
           ) || AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.SINGLE_NON_STEER;
-      } else if (isOtherTandemAxleUnit && !isConfiguredTandemTrailerAxleUnit) {
+      } else if (isOtherTandemAxleUnit && !usesJSONTandemWeight) {
         // Other trailer and additional power-unit tandems remain separately scoped.
         permittableWeight = AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.TANDEM;
       } else if (axleUnit.numberOfAxles === 3) {
@@ -664,7 +665,7 @@ export function CheckPermittableWeight(
         const boosterQualifies =
           !hasImmediatelyFollowingBooster || boosterAxle?.numberOfAxles === 1;
 
-        if (isTrailerAxleUnit) {
+        if (isTrailerAxleUnit && !usesJSONTridemWeight) {
           permittableWeight =
             spreadQualifies && boosterQualifies
               ? AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.QUALIFYING_TRIDEM
