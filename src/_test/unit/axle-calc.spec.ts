@@ -2349,6 +2349,29 @@ describe('Axle Calculation Functions', () => {
     });
   });
 
+  it('should pass policy check for steer axle up to 9,100 kg with 445 tires', async () => {
+    const ac = JSON.parse(
+      JSON.stringify(axleConfiguration),
+    ) as Array<AxleConfiguration>;
+
+    // Setup Axle 1 (Steer Axle)
+    ac[0].numberOfAxles = 1;
+    ac[0].numberOfTires = 2; // Required for the exemption
+    ac[0].tireSize = 445;
+    ac[0].axleUnitWeight = 9100;
+
+    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+
+    const maxTireResults = results.results.filter(
+      (r) => r.id === PolicyCheckId.MaxTireLoad,
+    );
+
+    // Expect the MaxTireLoad check to explicitly pass
+    expect(
+      maxTireResults.every((r) => r.result === PolicyCheckResultType.Pass),
+    ).toBe(true);
+  });
+
   it('should fail policy check for steer axle too heavy with 445 tires', async () => {
     const ac = JSON.parse(
       JSON.stringify(axleConfiguration),
