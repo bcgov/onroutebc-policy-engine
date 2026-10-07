@@ -1223,11 +1223,17 @@ export function CheckMaxTireLoad(
      * Rate 100 kg/cm; lower of rate or cap is binding:
      *   <445 mm  => rate only (no cap)
      *   >=445 mm => min(100 kg/cm rate, 9,100 kg/axle)
-     *
-     * e.g. 445mm * 2 tires => min(8,900, 9,100) = 8,900 kg  <- rate binding
-     * e.g. 457mm * 2 tires => min(9,140, 9,100) = 9,100 kg  <- cap  binding
      */
-    if (isSteeringAxle) {
+   if (isSteeringAxle) {
+      //Exemption: 445 mm tires on a 2-wheel steer axle are permitted up to 9,100 kg. We handle this explicitly tobypass the 100 kg/cm rate calculation.
+      if (tireSize === 445 && numberOfTires === 2) {
+        if (axleWeight > 9100) {
+          addFailResult(axleUnit);
+        }
+        return;
+      }
+
+      // For all other steering axle tires, apply standard rate limits and caps
       const capWeight = tireSize >= 445 ? 9100 : undefined;
 
       if (
@@ -1244,9 +1250,7 @@ export function CheckMaxTireLoad(
 
       return;
     }
-
     // ORV2-5903 keeps this exact configuration as a grandfathered TPS case.
-    // The application stores the 279.4 mm option as 279 to match f
     const hasGrandfatheredTpsTireSize = tireSize === 279.4 || tireSize === 279;
     const hasGrandfatheredTpsTireLimit =
       ac.numberOfAxles === 2 &&

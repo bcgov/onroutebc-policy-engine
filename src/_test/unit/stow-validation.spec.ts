@@ -626,23 +626,33 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     };
 
     describe('Standard Vehicle Steer Axle (Rate Limit & Single Steer Cap)', () => {
-      it('should pass exactly at 100 kg/cm rate limit - 445mm', async () => {
+      it('should pass exactly at the 9,100 kg limit - 445mm', async () => {
         await testTireLoadResult(
           POWER_UNIT_CODES.TRUCK_TRACTORS,
           0,
           445,
           2,
-          8900,
+          9100,
           false,
         );
       });
-      it('should fail just above 100 kg/cm rate limit - 445mm', async () => {
+      it('should fail just above the 9,100 kg limit - 445mm', async () => {
         await testTireLoadResult(
           POWER_UNIT_CODES.TRUCK_TRACTORS,
           0,
           445,
           2,
-          8901,
+          9101, 
+          true,
+        );
+      });
+      it('should fail just above the 8900 kg limit for non-steering axles - 445mm', async () => {
+        await testTireLoadResult(
+          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          1,
+          445,
+          2,
+          9101, 
           true,
         );
       });
