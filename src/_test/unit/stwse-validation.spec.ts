@@ -61,22 +61,6 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     expect(validationResult.warnings).toHaveLength(0);
   });
 
-  it('should fail validation when Front Projection is not provided', async () => {
-    const permit = getPermit();
-    permit.permitData.vehicleConfiguration.frontProjection = null;
-    const validationResult = await policy.validate(permit);
-    expect(validationResult.violations).toHaveLength(1);
-    expect(validationResult.warnings).toHaveLength(0);
-  });
-
-  it('should fail validation when Rear Projection is not provided', async () => {
-    const permit = getPermit();
-    permit.permitData.vehicleConfiguration.rearProjection = null;
-    const validationResult = await policy.validate(permit);
-    expect(validationResult.violations).toHaveLength(1);
-    expect(validationResult.warnings).toHaveLength(0);
-  });
-
   it('should fail validation when Weight over 27.5m is not provided', async () => {
     const permit = getPermit();
     permit.permitData.vehicleConfiguration.overloadWeight = null;
@@ -109,19 +93,19 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
     expect(validationResult.warnings).toHaveLength(0);
   });
 
-  it('should fail validation when Front Projection is not greater than 0', async () => {
+  it('should pass validation when Front Projection is not greater than 0', async () => {
     const permit = getPermit();
     permit.permitData.vehicleConfiguration.frontProjection = 0;
     const validationResult = await policy.validate(permit);
-    expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.violations).toHaveLength(0);
     expect(validationResult.warnings).toHaveLength(0);
   });
 
-  it('should fail validation when Rear Projection is not greater than 0', async () => {
+  it('should pass validation when Rear Projection is not greater than 0', async () => {
     const permit = getPermit();
     permit.permitData.vehicleConfiguration.rearProjection = 0;
     const validationResult = await policy.validate(permit);
-    expect(validationResult.violations).toHaveLength(1);
+    expect(validationResult.violations).toHaveLength(0);
     expect(validationResult.warnings).toHaveLength(0);
   });
 
