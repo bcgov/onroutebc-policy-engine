@@ -1,3 +1,4 @@
+import { COMMODITY_CODES } from '../../constants/commodity-codes';
 import { Policy } from '../../policy-engine';
 import { PolicyCheckId, PolicyCheckResultType } from '../../enum';
 import { getAxleUnitVehicleIndexes } from '../../helper/dimensions.helper';
@@ -31,6 +32,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
         { ...axleUnit, vehicleIndex: 0 },
       ],
       15000,
+      COMMODITY_CODES.NONE,
     );
 
     expect(results.overload).toBe(0);
@@ -64,6 +66,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
           },
         ],
         4000,
+        COMMODITY_CODES.NONE,
       );
     }).not.toThrow();
 
@@ -106,6 +109,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
         { ...axleUnit, vehicleIndex: 1 },
       ],
       20000,
+      COMMODITY_CODES.NONE,
     );
 
     expect(results.overload).toBe(0);
@@ -145,6 +149,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
         },
       ],
       30000,
+      COMMODITY_CODES.NONE,
     );
 
     expect(results.totalGCVW).toBe(15000);
@@ -191,6 +196,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
         },
       ],
       15000,
+      COMMODITY_CODES.NONE,
     );
 
     expect(results.overload).toBe(0);
@@ -229,6 +235,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
         { ...axleUnit, vehicleIndex: 2 },
       ],
       25000,
+      COMMODITY_CODES.NONE,
     );
 
     expect(results.overload).toBe(0);
@@ -267,6 +274,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
         },
       ],
       15000,
+      COMMODITY_CODES.NONE,
     );
 
     expect(results.overload).toBe(0);
@@ -309,6 +317,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
         },
       ],
       15000,
+      COMMODITY_CODES.NONE,
     );
 
     expect(results.overload).toBe(0);
@@ -371,6 +380,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
         },
       ],
       25000,
+      COMMODITY_CODES.NONE,
     );
 
     expect(results.overload).toBe(0);
@@ -394,6 +404,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
           { ...axleUnit },
         ],
         15000,
+        COMMODITY_CODES.NONE,
       ),
     ).toThrow('Wrong number of axles configured for vehicle configuration');
   });
@@ -418,6 +429,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
           { ...axleUnit, vehicleIndex: 1 },
         ],
         20000,
+        COMMODITY_CODES.NONE,
       ),
     ).toThrow('All axle units must include vehicleIndex');
   });
@@ -441,6 +453,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
           { ...axleUnit, vehicleIndex: 1 },
         ],
         15000,
+        COMMODITY_CODES.NONE,
       ),
     ).toThrow('First two axle units must belong to the power unit');
   });
@@ -465,6 +478,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
           { ...axleUnit, vehicleIndex: 0 },
         ],
         20000,
+        COMMODITY_CODES.NONE,
       ),
     ).toThrow('Axle unit vehicleIndex values must be in vehicle order');
   });

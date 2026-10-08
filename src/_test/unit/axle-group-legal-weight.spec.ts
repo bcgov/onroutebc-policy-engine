@@ -1,3 +1,4 @@
+import { COMMODITY_CODES } from '../../constants/commodity-codes';
 import { Policy } from 'onroute-policy-engine';
 
 import {
@@ -453,6 +454,7 @@ describe('ORV2-5617 axle group maximum legal weight threshold', () => {
         vehicleConfiguration,
         axleConfiguration,
         100000,
+        COMMODITY_CODES.NONE,
       );
       const failure = results.results.find(
         (result) =>
