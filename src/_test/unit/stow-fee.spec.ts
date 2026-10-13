@@ -1,3 +1,4 @@
+import { COMMODITY_CODES } from '../../constants/commodity-codes';
 import { Policy } from '../../policy-engine';
 import currentConfig from '../policy-config/_current-config.json';
 import testStow from '../permit-app/test-stow.json';
@@ -59,6 +60,7 @@ describe('ORV2-5692 STOW fee uses the selected OCD overload', () => {
       [POWER_UNIT_CODES.CRANES_ALL_TERRAIN],
       permit.permitData.vehicleConfiguration.axleConfiguration,
       permit.permitData.vehicleDetails.licensedGVW,
+      COMMODITY_CODES.NONE,
     );
     expect(axleResults.overload).toBe(overload);
     const result = await policy.validate(permit);
@@ -103,6 +105,7 @@ describe('ORV2-5692 STOW fee uses the selected OCD overload', () => {
       [POWER_UNIT_CODES.CRANES_ALL_TERRAIN],
       permit.permitData.vehicleConfiguration.axleConfiguration,
       60000,
+      COMMODITY_CODES.NONE,
     );
     expect(axleResults.overload).toBe(1000);
     expect(axleResults.overloadDetails[0].overload).toBe(1000);
