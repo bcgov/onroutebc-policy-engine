@@ -535,6 +535,10 @@ export function selectCorrectWeightDimensionHelper(
         const twd = weightDimension as TrailerWeightDimension;
         const { legal, permittable } = twd;
         matchingDimension = { legal, permittable };
+
+        if (m.minInteraxleSpacing || m.maxInteraxleSpacing) {
+          matchingDimension.hasInteraxleSpacingRestriction = true;
+        }
         break;
       }
     }

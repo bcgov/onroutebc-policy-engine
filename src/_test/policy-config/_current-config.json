@@ -4993,54 +4993,15 @@
               "category": "semi",
               "position": "before",
               "axles": 3,
-              "minInteraxleSpacing": 0,
+              "minInteraxleSpacing": 300,
               "maxInteraxleSpacing": 419
             },
             "legal": 9100,
             "permittable": 9100
-          },
-          {
-            "axles": 1,
-            "modifier": {
-              "category": "semi",
-              "position": "before",
-              "minInteraxleSpacing": 420
-            },
-            "legal": 9100,
-            "permittable": 11000
-          },
-          {
-            "axles": 3,
-            "modifier": {
-              "category": "semi",
-              "position": "before",
-              "minInteraxleSpacing": 420
-            },
-            "legal": 9100,
-            "permittable": 28000
           }
         ],
-        "displayCode": "B",
-        "interaxleSpacings": [
-          {
-            "axles": 2,
-            "maxAxleUnitWeight": 23000,
-            "modifier": {
-              "category": "semi",
-              "position": "before"
-            },
-            "min": 420
-          },
-          {
-            "axles": 3,
-            "maxAxleUnitWeight": 28000,
-            "modifier": {
-              "category": "semi",
-              "position": "before"
-            },
-            "min": 420
-          }
-        ]
+        "interaxleSpacings": [],
+        "displayCode": "B"
       },
       {
         "id": "DOLLIES",
@@ -5113,25 +5074,7 @@
         "name": "Jeeps",
         "category": "accessory",
         "ignoreForSizeDimensions": true,
-        "displayCode": "J",
-        "interaxleSpacings": [
-          {
-            "axles": 2,
-            "modifier": {
-              "category": "trailer",
-              "position": "before"
-            },
-            "min": 420
-          },
-          {
-            "axles": 3,
-            "modifier": {
-              "category": "trailer",
-              "position": "before"
-            },
-            "min": 420
-          }
-        ]
+        "displayCode": "J"
       },
       {
         "id": "LOGNTAC",
@@ -6019,7 +5962,7 @@
             {
               "type": "XXXXXXX",
               "jeep": false,
-              "booster": true,
+              "booster": false,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [
@@ -6040,7 +5983,7 @@
             {
               "type": "XXXXXXX",
               "jeep": false,
-              "booster": true,
+              "booster": false,
               "selfIssue": true,
               "sizePermittable": true,
               "sizeDimensions": [

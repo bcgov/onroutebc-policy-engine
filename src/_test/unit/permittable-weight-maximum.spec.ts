@@ -505,4 +505,67 @@ describe('ORV2-5709 permittable weight maximums', () => {
       result: PolicyCheckResultType.Pass,
     });
   });
+
+  it('raises interaxle spacing restriction for single axle booster behind semi trailer', () => {
+    const configuredPolicyDefinition = JSON.parse(
+      JSON.stringify(currentPolicyConfig),
+    ) as PolicyDefinition;
+    const tandemSteerTandemDrive =
+      configuredPolicyDefinition.globalWeightDefaults!.powerUnits.find(
+        ({ axles }) => axles === 22,
+      )!;
+    tandemSteerTandemDrive.saPermittable = 16555;
+    const configuredPolicy = new Policy(configuredPolicyDefinition);
+
+    const vehicleConfiguration = ['TRKTRAC', 'FESEMTR', 'BOOSTER'];
+
+    const axleConfiguration: Array<AxleConfiguration> = [
+      {
+        numberOfAxles: 1,
+        axleUnitWeight: 6000,
+        numberOfTires: 2,
+        tireSize: 711.2,
+        vehicleIndex: 0,
+      },
+      {
+        numberOfAxles: 1,
+        interaxleSpacing: 300,
+        axleUnitWeight: 7000,
+        numberOfTires: 2,
+        tireSize: 711.2,
+        vehicleIndex: 0,
+      },
+      {
+        numberOfAxles: 3,
+        axleSpread: 240,
+        interaxleSpacing: 300,
+        axleUnitWeight: 17000,
+        numberOfTires: 6,
+        tireSize: 711.2,
+        vehicleIndex: 1,
+      },
+      {
+        numberOfAxles: 1,
+        interaxleSpacing: 300,
+        axleUnitWeight: 9101,
+        numberOfTires: 4,
+        tireSize: 711.2,
+        vehicleIndex: 2,
+      },
+    ];
+
+    const results = configuredPolicy.runAxleCalculation(
+      vehicleConfiguration,
+      axleConfiguration,
+      100000,
+    ).results;
+
+    const failedResult = results.find(
+      (result) => result.result === PolicyCheckResultType.Fail,
+    );
+
+    expect(failedResult?.message).toBe(
+      'Interaxle Spacing for Axle Unit 4 restricts Axle Weight to 9100 kg',
+    );
+  });
 });
