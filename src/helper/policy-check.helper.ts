@@ -649,6 +649,9 @@ export function CheckPermittableWeight(
         const isTrailerAxleUnit =
           policy.getTrailerDefinition(vehicleConfiguration[vehicleIndex]) !==
           null;
+        const isJeepOrBooster =
+          trailerDefinition?.id === TRAILER_CODES.JEEPS ||
+          trailerDefinition?.id === TRAILER_CODES.BOOSTER;
         const spreadQualifies =
           axleUnit.axleSpread !== undefined &&
           axleUnit.axleSpread >= QUALIFYING_TRIDEM_SPREAD_CM.MINIMUM &&
@@ -665,7 +668,8 @@ export function CheckPermittableWeight(
         const boosterQualifies =
           !hasImmediatelyFollowingBooster || boosterAxle?.numberOfAxles === 1;
 
-        if (isTrailerAxleUnit && !usesJSONTridemWeight) {
+        // Jeep and Booster tridem limits come from JSON.
+        if (isTrailerAxleUnit && !usesJSONTridemWeight && !isJeepOrBooster) {
           permittableWeight =
             spreadQualifies && boosterQualifies
               ? AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.QUALIFYING_TRIDEM
