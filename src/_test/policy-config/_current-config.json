@@ -4975,34 +4975,68 @@
             "modifier": {
               "category": "semi",
               "position": "before",
-              "minInteraxleSpacing": 300,
               "maxInteraxleSpacing": 419
             },
             "legal": 9100,
             "permittable": 9100
-          },
-          {
-            "axles": 2,
-            "modifier": {
-              "category": "semi",
-              "position": "before",
-              "minInteraxleSpacing": 420
-            },
-            "legal": 17000,
-            "permittable": 23000
-          },
-          {
-            "axles": 3,
-            "modifier": {
-              "category": "semi",
-              "position": "before",
-              "minInteraxleSpacing": 420
-            },
-            "legal": 24000,
-            "permittable": 28000
           }
         ],
-        "interaxleSpacings": [],
+        "interaxleSpacings": [
+          {
+            "axles": 12,
+            "maxAxleUnitWeight": 23000,
+            "modifier": {
+              "category": "semi",
+              "position": "before"
+            },
+            "min": 420
+          },
+          {
+            "axles": 22,
+            "maxAxleUnitWeight": 23000,
+            "modifier": {
+              "category": "semi",
+              "position": "before"
+            },
+            "min": 420
+          },
+          {
+            "axles": 32,
+            "maxAxleUnitWeight": 23000,
+            "modifier": {
+              "category": "semi",
+              "position": "before"
+            },
+            "min": 420
+          },
+          {
+            "axles": 13,
+            "maxAxleUnitWeight": 28000,
+            "modifier": {
+              "category": "semi",
+              "position": "before"
+            },
+            "min": 420
+          },
+          {
+            "axles": 23,
+            "maxAxleUnitWeight": 28000,
+            "modifier": {
+              "category": "semi",
+              "position": "before"
+            },
+            "min": 420
+          },
+          {
+            "axles": 33,
+            "maxAxleUnitWeight": 28000,
+            "modifier": {
+              "category": "semi",
+              "position": "before"
+            },
+            "min": 420
+          }
+        ],
         "displayCode": "B"
       },
       {

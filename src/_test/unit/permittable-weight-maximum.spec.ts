@@ -585,7 +585,7 @@ describe('booster exceptions', () => {
   });
 
   // Source: ASW Permittable Interaxle Spacing - Boosters.feature @orv2-6030-3
-  // TODO bridge formula should not be applied in this case, currently fails
+  // bridge formula will not be applied in this case, see 'Single Axle Booster Exception' test in bridge-calc.spec.ts
   it('raises interaxle spacing restriction for single axle booster with interaxle spacing below 3.0 m or below behind semi trailer', () => {
     axleConfiguration[3].numberOfAxles = 1;
     axleConfiguration[3].interaxleSpacing = 299;
@@ -608,49 +608,49 @@ describe('booster exceptions', () => {
     );
   });
 
-  // Source: ASW Permittable Interaxle Spacing - Boosters.feature @orv2-6030-4
-  it('raises interaxle spacing restriction for tandem axle booster with interaxle spacing of 4.2 m or greater behind semi trailer', () => {
-    axleConfiguration[3].numberOfAxles = 2;
-    axleConfiguration[3].interaxleSpacing = 420;
-    axleConfiguration[3].axleUnitWeight = 23001;
+  // // Source: ASW Permittable Interaxle Spacing - Boosters.feature @orv2-6030-4
+  // it('raises interaxle spacing restriction for tandem axle booster with interaxle spacing of 4.2 m or greater behind semi trailer', () => {
+  //   axleConfiguration[3].numberOfAxles = 2;
+  //   axleConfiguration[3].interaxleSpacing = 420;
+  //   axleConfiguration[3].axleUnitWeight = 23001;
 
-    const results = configuredPolicy.runAxleCalculation(
-      vehicleConfiguration,
-      axleConfiguration,
-      100000,
-    ).results;
+  //   const results = configuredPolicy.runAxleCalculation(
+  //     vehicleConfiguration,
+  //     axleConfiguration,
+  //     100000,
+  //   ).results;
 
-    const failedResult = results.find(
-      (result) =>
-        result.id === PolicyCheckId.PermittableWeight &&
-        result.result === PolicyCheckResultType.Fail,
-    );
+  //   const failedResult = results.find(
+  //     (result) =>
+  //       result.id === PolicyCheckId.PermittableWeight &&
+  //       result.result === PolicyCheckResultType.Fail,
+  //   );
 
-    expect(failedResult?.message).toBe(
-      'Interaxle Spacing for Axle Unit 4 restricts Axle Weight to 23000 kg',
-    );
-  });
+  //   expect(failedResult?.message).toBe(
+  //     'Interaxle Spacing for Axle Unit 4 restricts Axle Weight to 23000 kg',
+  //   );
+  // });
 
-  // Source: ASW Permittable Interaxle Spacing - Boosters.feature @orv2-6030-5
-  it('raises interaxle spacing restriction for tridem axle booster with interaxle spacing of 4.2 or greater behind semi trailer', () => {
-    axleConfiguration[3].numberOfAxles = 3;
-    axleConfiguration[3].interaxleSpacing = 420;
-    axleConfiguration[3].axleUnitWeight = 28001;
+  // // Source: ASW Permittable Interaxle Spacing - Boosters.feature @orv2-6030-5
+  // it('raises interaxle spacing restriction for tridem axle booster with interaxle spacing of 4.2 or greater behind semi trailer', () => {
+  //   axleConfiguration[3].numberOfAxles = 3;
+  //   axleConfiguration[3].interaxleSpacing = 420;
+  //   axleConfiguration[3].axleUnitWeight = 28001;
 
-    const results = configuredPolicy.runAxleCalculation(
-      vehicleConfiguration,
-      axleConfiguration,
-      100000,
-    ).results;
+  //   const results = configuredPolicy.runAxleCalculation(
+  //     vehicleConfiguration,
+  //     axleConfiguration,
+  //     100000,
+  //   ).results;
 
-    const failedResult = results.find(
-      (result) =>
-        result.id === PolicyCheckId.PermittableWeight &&
-        result.result === PolicyCheckResultType.Fail,
-    );
+  //   const failedResult = results.find(
+  //     (result) =>
+  //       result.id === PolicyCheckId.PermittableWeight &&
+  //       result.result === PolicyCheckResultType.Fail,
+  //   );
 
-    expect(failedResult?.message).toBe(
-      'Interaxle Spacing for Axle Unit 4 restricts Axle Weight to 28000 kg',
-    );
-  });
+  //   expect(failedResult?.message).toBe(
+  //     'Interaxle Spacing for Axle Unit 4 restricts Axle Weight to 28000 kg',
+  //   );
+  // });
 });

@@ -506,14 +506,6 @@ describe('Single Axle Booster Exception', () => {
       axleConfiguration,
     );
 
-    console.log(
-      policy.calculateBridge(
-        axleConfiguration,
-        vehicleConfiguration,
-        axleUnitVehicleIndexes,
-      ),
-    );
-
     expect(() =>
       policy.calculateBridge(
         axleConfiguration,

@@ -12,6 +12,7 @@ import {
   AxleCalcResults,
   AxleConfiguration,
   AxleGroupPolicyCheckResult,
+  PolicyDefinition,
 } from '../../types';
 
 import {
@@ -2598,5 +2599,94 @@ describe('Axle Calculation Functions', () => {
         result: PolicyCheckResultType.Fail,
       });
     });
+  });
+});
+
+/* Source: ASW Permittable Interaxle Spacing - Boosters.feature */
+describe('booster exceptions', () => {
+  const configuredPolicyDefinition = JSON.parse(
+    JSON.stringify(currentPolicyConfig),
+  ) as PolicyDefinition;
+  const configuredPolicy = new Policy(configuredPolicyDefinition);
+  const vehicleConfiguration = ['TRKTRAC', 'SEMITRL', 'BOOSTER'];
+  const axleConfiguration: Array<AxleConfiguration> = [
+    {
+      numberOfAxles: 1,
+      axleUnitWeight: 6000,
+      numberOfTires: 2,
+      tireSize: 711.2,
+      vehicleIndex: 0,
+    },
+    {
+      numberOfAxles: 1,
+      interaxleSpacing: 300,
+      axleUnitWeight: 7000,
+      numberOfTires: 2,
+      tireSize: 711.2,
+      vehicleIndex: 0,
+    },
+    {
+      numberOfAxles: 3,
+      axleSpread: 240,
+      interaxleSpacing: 300,
+      axleUnitWeight: 17000,
+      numberOfTires: 6,
+      tireSize: 711.2,
+      vehicleIndex: 1,
+    },
+    {
+      numberOfAxles: 1,
+      interaxleSpacing: 300,
+      axleUnitWeight: 9100,
+      numberOfTires: 4,
+      tireSize: 711.2,
+      vehicleIndex: 2,
+    },
+  ];
+
+  // Source: ASW Permittable Interaxle Spacing - Boosters.feature @orv2-6030-4
+  it('raises interaxle spacing restriction for tandem axle booster with interaxle spacing of less than 4.2 m behind semi trailer', () => {
+    axleConfiguration[3].numberOfAxles = 2;
+    axleConfiguration[3].interaxleSpacing = 419;
+    axleConfiguration[3].axleUnitWeight = 23000;
+
+    const results = configuredPolicy.runAxleCalculation(
+      vehicleConfiguration,
+      axleConfiguration,
+      100000,
+    ).results;
+
+    const failedResult = results.find(
+      (result) =>
+        result.id === PolicyCheckId.PermittableInteraxleSpacing &&
+        result.result === PolicyCheckResultType.Fail,
+    );
+
+    expect(failedResult?.message).toBe(
+      'Interaxle Spacing between Axle Unit 3 and Axle Unit 4 must be at least 4.2 m.',
+    );
+  });
+
+  // Source: ASW Permittable Interaxle Spacing - Boosters.feature @orv2-6030-5
+  it('raises interaxle spacing restriction for tridem axle booster with interaxle spacing of less than 4.2 m behind semi trailer', () => {
+    axleConfiguration[3].numberOfAxles = 3;
+    axleConfiguration[3].interaxleSpacing = 419;
+    axleConfiguration[3].axleUnitWeight = 28000;
+
+    const results = configuredPolicy.runAxleCalculation(
+      vehicleConfiguration,
+      axleConfiguration,
+      100000,
+    ).results;
+
+    const failedResult = results.find(
+      (result) =>
+        result.id === PolicyCheckId.PermittableInteraxleSpacing &&
+        result.result === PolicyCheckResultType.Fail,
+    );
+
+    expect(failedResult?.message).toBe(
+      'Interaxle Spacing between Axle Unit 3 and Axle Unit 4 must be at least 4.2 m.',
+    );
   });
 });

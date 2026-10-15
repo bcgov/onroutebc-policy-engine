@@ -16,6 +16,4 @@ export type InteraxleSpacingModifier = SelfIssuable & {
   type?: string;
   /** Matching vehicle category for this modifier */
   category?: string;
-  /** Number of axles in the adjacent axle unit for this modifier */
-  axles?: number;
 };

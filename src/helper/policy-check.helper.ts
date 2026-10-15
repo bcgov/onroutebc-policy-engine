@@ -713,10 +713,8 @@ export function CheckPermittableWeight(
     if (
       getConfiguredAxleUnitWeightThresholdResult?.hasInteraxleSpacingRestriction
     ) {
-      console.log('interaxleSpacingRestriction found');
       message = `Interaxle Spacing for Axle Unit ${axleUnitNumber} restricts Axle Weight to ${getConfiguredAxleUnitWeightThresholdResult?.permittable} kg`;
     } else {
-      console.log('interaxleSpacingRestriction not found');
       message = `Weight for axle unit ${axleUnitNumber} ${
         result
           ? 'is permittable'
@@ -1743,6 +1741,11 @@ export function CheckPermittableInteraxleSpacing(
   );
 
   return axleConfiguration.map((axleUnit, axleIndex) => {
+    const currentAxleVehicleType = axleUnitVehicleIndexes[axleIndex];
+
+    const isCurrentAxleVehicleTypeBooster =
+      vehicleConfiguration[currentAxleVehicleType] === TRAILER_CODES.BOOSTER;
+
     const requirement = getInteraxleSpacingRequirement(
       policy,
       axleConfiguration,
@@ -1759,6 +1762,35 @@ export function CheckPermittableInteraxleSpacing(
       ((!requirement.min || axleUnit.interaxleSpacing >= requirement.min) &&
         (!requirement.max || axleUnit.interaxleSpacing <= requirement.max));
 
+    if (isCurrentAxleVehicleTypeBooster) {
+      console.log('!requirement: ', !requirement);
+      console.log('!axleUnit.interaxleSpacing: ', !axleUnit.interaxleSpacing);
+      console.log('!requirement.min: ', !requirement?.min);
+      if (axleUnit.interaxleSpacing && requirement?.min) {
+        console.log(
+          `axleUnit.interaxleSpacing >= requirement.min:
+          ${axleUnit.interaxleSpacing >= requirement.min}`,
+        );
+      }
+      if (axleUnit.interaxleSpacing && requirement?.max) {
+        console.log(
+          `axleUnit.interaxleSpacing <= requirement.max:
+          ${axleUnit.interaxleSpacing <= requirement.max}`,
+        );
+      }
+
+      console.log({ shouldPass });
+
+      if (requirement) {
+        console.log(
+          getFailedInteraxleSpacingMessage(
+            requirement,
+            axleIndex,
+            axleIndex + 1,
+          ),
+        );
+      }
+    }
     const currentAxleUnitNumber = axleIndex + 1;
     const previousAxleUnitNumber = axleIndex;
 
