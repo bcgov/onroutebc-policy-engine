@@ -1103,6 +1103,7 @@ export class Policy {
       );
     }
     updateOverloadCalculation();
+
     return axleCalcResults;
   }
 

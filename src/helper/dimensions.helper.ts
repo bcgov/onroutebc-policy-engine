@@ -431,15 +431,6 @@ export function selectCorrectWeightDimensionHelper(
     axleUnitVehicleIndexes,
   );
 
-  //  weightDimensions selected for booster:  [
-  //     {
-  //       axles: 2,
-  //       modifier: { category: 'semi', position: 'before', minInteraxleSpacing: 420 },
-  //       legal: 17000,
-  //       permittable: 23000
-  //     }
-  //   ]
-
   for (const weightDimension of weightDimensions) {
     // Just renaming this for conciseness
     const modifier = weightDimension.modifier;

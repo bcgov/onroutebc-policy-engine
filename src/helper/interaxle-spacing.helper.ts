@@ -79,7 +79,6 @@ export function getInteraxleSpacingRequirement(
   );
 
   if (matchingRequirement) {
-    console.log('MATCHING REQUIREMENT: ', matchingRequirement);
     return JSON.parse(JSON.stringify(matchingRequirement));
   }
 
@@ -120,20 +119,7 @@ export function selectCorrectInteraxleSpacingRequirementHelper(
     requirement: InteraxleSpacingRequirement,
   ): boolean => {
     const maxAxleUnitWeight = requirement.maxAxleUnitWeight;
-    if (isCurrentAxleVehicleTypeBooster && maxAxleUnitWeight) {
-      console.log(
-        'booster axle weight is less than maxAxleUnitWeight: ',
-        currentAxleUnit.axleUnitWeight <= maxAxleUnitWeight,
-      );
-    }
 
-    console.log(
-      `appliesToCurrentAxleWeight: ${
-        maxAxleUnitWeight === undefined ||
-        !Number.isFinite(currentAxleUnit.axleUnitWeight) ||
-        currentAxleUnit.axleUnitWeight <= maxAxleUnitWeight
-      }`,
-    );
     return (
       maxAxleUnitWeight === undefined ||
       !Number.isFinite(currentAxleUnit.axleUnitWeight) ||
@@ -141,24 +127,13 @@ export function selectCorrectInteraxleSpacingRequirementHelper(
     );
   };
 
-  console.log({ isCurrentAxleVehicleTypeBooster });
-
   for (const requirement of interaxleSpacingRequirements) {
     if (!appliesToCurrentAxleWeight(requirement)) {
       continue;
     }
 
     const modifier = requirement.modifier;
-    if (isCurrentAxleVehicleTypeBooster) {
-      console.log(`booster modifier found: `, requirement.modifier);
-    }
     if (!modifier) {
-      if (isCurrentAxleVehicleTypeBooster) {
-        console.log(
-          `booster modifier not found, returning requirement: `,
-          requirement,
-        );
-      }
       return requirement;
     }
 
@@ -180,7 +155,6 @@ export function selectCorrectInteraxleSpacingRequirementHelper(
         matcher == (isTypeMatch ? relatives.prevType : relatives.prevCategory);
 
       if (isMatch) {
-        console.log('match found: ', requirement);
         return requirement;
       }
     }
@@ -244,9 +218,6 @@ export function getDefaultInteraxleSpacingHelper(
     (exception) => exception.axles === axles,
   );
   if (interaxleSpacings && interaxleSpacings.length > 0) {
-    console.log(
-      `using vehicle definition interaxle spacing defaults for ${subType}`,
-    );
     return JSON.parse(JSON.stringify(interaxleSpacings[0]));
   }
 
@@ -264,7 +235,6 @@ export function getDefaultInteraxleSpacingHelper(
       (override) => override.axles === axles,
     );
     if (overridesForAxle && overridesForAxle.length > 0) {
-      console.log(`using category interaxle spacing defaults for ${subType}`);
       return JSON.parse(JSON.stringify(overridesForAxle[0]));
     }
   }
@@ -276,12 +246,7 @@ export function getDefaultInteraxleSpacingHelper(
     (specification) => specification.axles === axles,
   );
   if (vehicleDefaults && vehicleDefaults.length > 0) {
-    if (subType === TRAILER_CODES.BOOSTER) {
-      console.log(`using global interaxle spacing defaults for ${subType}`);
-      console.log(vehicleDefaults);
-    }
     return JSON.parse(JSON.stringify(vehicleDefaults[0]));
   }
-  console.log(`no interaxle spacing defaults for ${subType}`);
   return {} as InteraxleSpacingRequirement;
 }
