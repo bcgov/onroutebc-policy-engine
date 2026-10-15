@@ -1848,7 +1848,6 @@ export function CheckLegalAxleSpread(
  *
  * Currently includes:
  * - AxleGroupMaximumLegalWeightThreshold: Validates axle groups within 8 m against CTR 7.17
- * - AxleGroupMaximumPermittableWeightThreshold: Validates axle groups within 8 m against CTR 7.17
  * - BridgeFormula: Validates axle groups against bridge formula requirements
  * - CheckLegalWeight: Validates axle units against legal weight limits
  * - CheckLegalAxleSpread: Validates axle units against legal axle spread limits
