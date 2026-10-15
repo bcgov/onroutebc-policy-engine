@@ -5,6 +5,7 @@ import {
 import { Policy } from 'onroute-policy-engine';
 import { TRAILER_CODES } from '../constants/trailer-codes';
 import { getAxleUnitType } from '../types/axle-unit-type';
+import { isSemiTrailerType } from '../constants/semi-trailer-codes';
 
 /**
  * Runs the bridge formula against the supplied vehicle axle configuration.
@@ -20,6 +21,7 @@ export function runBridgeFormula(
   policy: Policy,
   axleConfiguration: Array<AxleConfiguration>,
   vehicleConfiguration: Array<string>,
+  axleUnitVehicleIndexes: Array<number>,
 ): Array<BridgeCalculationResult> {
   const BRIDGE_MULTIPLIER =
     policy.policyDefinition.bridgeCalculationConstants.multiplier;
@@ -144,6 +146,32 @@ export function runBridgeFormula(
           maxBridge = Math.max(formulaMaxBridge, 29000);
         }
 
+        /* Source: ASW Permittable Interaxle Spacing - Boosters.feature
+         * @orv2-6030-3 bridge formula result is not applicable
+         */
+        // const currentAxleVehicleType = axleUnitVehicleIndexes[currentAxleIdex];
+        // const nextAxleVehicleType = axleUnitVehicleIndexes[nextAxleIndex];
+
+        // const isCurrentAxleVehicleTypeSemiTrailer = isSemiTrailerType(
+        //   vehicleConfiguration[currentAxleVehicleType],
+        // );
+
+        // const isNextAxleVehicleTypeBooster =
+        //   vehicleConfiguration[nextAxleVehicleType] === TRAILER_CODES.BOOSTER;
+
+        // const exception =
+        //   isCurrentAxleVehicleTypeSemiTrailer && isNextAxleVehicleTypeBooster;
+
+        const hasSemiTrailer = vehicleConfiguration.some((vehicleType) =>
+          isSemiTrailerType(vehicleType),
+        );
+
+        const hasBooster = vehicleConfiguration.some(
+          (vehicleType) => vehicleType === TRAILER_CODES.BOOSTER,
+        );
+
+        const exception = hasSemiTrailer && hasBooster;
+
         // Push the axle group result to the results array, including
         // a convenience success indicator.
         results.push({
@@ -151,7 +179,7 @@ export function runBridgeFormula(
           endAxleUnit: nextAxleIndex,
           maxBridge: maxBridge,
           actualWeight: totalWeight,
-          success: totalWeight <= maxBridge,
+          success: !exception ? totalWeight <= maxBridge : true,
         });
 
         nextAxleIndex++;

@@ -4312,34 +4312,7 @@
       },
       {
         "id": "semi",
-        "name": "Semi-Trailer",
-        "defaultWeightDimensions": [
-          {
-            "axles": 3,
-            "legal": 24000,
-            "permittable": 29000
-          },
-          {
-            "axles": 3,
-            "modifier": {
-              "type": "BOOSTER",
-              "position": "after",
-              "axles": 2
-            },
-            "legal": 24000,
-            "permittable": 28000
-          },
-          {
-            "axles": 3,
-            "modifier": {
-              "type": "BOOSTER",
-              "position": "after",
-              "axles": 3
-            },
-            "legal": 24000,
-            "permittable": 28000
-          }
-        ]
+        "name": "Semi-Trailer"
       },
       {
         "id": "wheeler",
@@ -4988,16 +4961,45 @@
             "permittable": 11000
           },
           {
+            "axles": 2,
+            "legal": 17000,
+            "permittable": 23000
+          },
+          {
+            "axles": 3,
+            "legal": 24000,
+            "permittable": 28000
+          },
+          {
             "axles": 1,
             "modifier": {
               "category": "semi",
               "position": "before",
-              "axles": 3,
               "minInteraxleSpacing": 300,
               "maxInteraxleSpacing": 419
             },
             "legal": 9100,
             "permittable": 9100
+          },
+          {
+            "axles": 2,
+            "modifier": {
+              "category": "semi",
+              "position": "before",
+              "minInteraxleSpacing": 420
+            },
+            "legal": 17000,
+            "permittable": 23000
+          },
+          {
+            "axles": 3,
+            "modifier": {
+              "category": "semi",
+              "position": "before",
+              "minInteraxleSpacing": 420
+            },
+            "legal": 24000,
+            "permittable": 28000
           }
         ],
         "interaxleSpacings": [],

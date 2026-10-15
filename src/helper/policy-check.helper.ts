@@ -27,6 +27,7 @@ import {
 } from './interaxle-spacing.helper';
 import { formatMeters } from './format-meters.helper';
 import { POWER_UNIT_CODES } from '../constants/power-unit-codes';
+import { TRAILER_CODES } from '../constants/trailer-codes';
 
 /**
  * Type definition for policy check functions.
@@ -465,9 +466,16 @@ export function CheckBridgeFormula(
     return [];
   }
 
+  const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
+    policy,
+    vehicleConfiguration,
+    axleConfiguration,
+  );
+
   const bridgeCalcResults = policy.calculateBridge(
     axleConfiguration,
     vehicleConfiguration,
+    axleUnitVehicleIndexes,
   );
   bridgeCalcResults.forEach((br) => {
     const message = `Axle group ${br.startAxleUnit} to ${br.endAxleUnit} ${br.success ? 'passes' : 'does not pass'} bridge formula.`;
@@ -635,55 +643,55 @@ export function CheckPermittableWeight(
 
     let getConfiguredAxleUnitWeightThresholdResult: SingleAxleDimension | null;
 
-    if (!isSingleSteer && !isTandemSteer) {
-      if (axleUnit.numberOfAxles === 1) {
-        getConfiguredAxleUnitWeightThresholdResult =
-          getConfiguredAxleUnitWeightThreshold(
-            policy,
-            vehicleConfiguration,
-            axleConfiguration,
-            axleUnitVehicleIndexes,
-            axleIndex,
-          ) || {
-            permittable: AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.SINGLE_NON_STEER,
-          };
-      } else if (axleUnit.numberOfAxles === 2) {
-        getConfiguredAxleUnitWeightThresholdResult = {
-          permittable: AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.TANDEM,
-        };
-      } else if (axleUnit.numberOfAxles === 3) {
-        const isTrailerAxleUnit =
-          policy.getTrailerDefinition(vehicleConfiguration[vehicleIndex]) !==
-          null;
-        const spreadQualifies =
-          axleUnit.axleSpread !== undefined &&
-          axleUnit.axleSpread >= QUALIFYING_TRIDEM_SPREAD_CM.MINIMUM &&
-          axleUnit.axleSpread <= QUALIFYING_TRIDEM_SPREAD_CM.MAXIMUM;
-        const nextVehicleIndex = vehicleIndex + 1;
-        const hasImmediatelyFollowingBooster =
-          vehicleConfiguration[nextVehicleIndex] ===
-          AccessoryVehicleType.Booster;
-        const boosterAxle = axleConfiguration.find(
-          (_, candidateIndex) =>
-            candidateIndex > axleIndex &&
-            axleUnitVehicleIndexes[candidateIndex] === nextVehicleIndex,
-        );
-        const boosterQualifies =
-          !hasImmediatelyFollowingBooster || boosterAxle?.numberOfAxles === 1;
+    // if (!isSingleSteer && !isTandemSteer) {
+    //   if (axleUnit.numberOfAxles === 1) {
+    //     getConfiguredAxleUnitWeightThresholdResult =
+    //       getConfiguredAxleUnitWeightThreshold(
+    //         policy,
+    //         vehicleConfiguration,
+    //         axleConfiguration,
+    //         axleUnitVehicleIndexes,
+    //         axleIndex,
+    //       ) || {
+    //         permittable: AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.SINGLE_NON_STEER,
+    //       };
+    //   } else if (axleUnit.numberOfAxles === 2) {
+    //     getConfiguredAxleUnitWeightThresholdResult = {
+    //       permittable: AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.TANDEM,
+    //     };
+    //   } else if (axleUnit.numberOfAxles === 3) {
+    //     const isTrailerAxleUnit =
+    //       policy.getTrailerDefinition(vehicleConfiguration[vehicleIndex]) !==
+    //       null;
+    //     const spreadQualifies =
+    //       axleUnit.axleSpread !== undefined &&
+    //       axleUnit.axleSpread >= QUALIFYING_TRIDEM_SPREAD_CM.MINIMUM &&
+    //       axleUnit.axleSpread <= QUALIFYING_TRIDEM_SPREAD_CM.MAXIMUM;
+    //     const nextVehicleIndex = vehicleIndex + 1;
+    //     const hasImmediatelyFollowingBooster =
+    //       vehicleConfiguration[nextVehicleIndex] ===
+    //       AccessoryVehicleType.Booster;
+    //     const boosterAxle = axleConfiguration.find(
+    //       (_, candidateIndex) =>
+    //         candidateIndex > axleIndex &&
+    //         axleUnitVehicleIndexes[candidateIndex] === nextVehicleIndex,
+    //     );
+    //     const boosterQualifies =
+    //       !hasImmediatelyFollowingBooster || boosterAxle?.numberOfAxles === 1;
 
-        if (isTrailerAxleUnit) {
-          getConfiguredAxleUnitWeightThresholdResult =
-            spreadQualifies && boosterQualifies
-              ? {
-                  permittable:
-                    AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.QUALIFYING_TRIDEM,
-                }
-              : {
-                  permittable: AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.STANDARD_TRIDEM,
-                };
-        }
-      }
-    }
+    //     if (isTrailerAxleUnit) {
+    //       getConfiguredAxleUnitWeightThresholdResult =
+    //         spreadQualifies && boosterQualifies
+    //           ? {
+    //               permittable:
+    //                 AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.QUALIFYING_TRIDEM,
+    //             }
+    //           : {
+    //               permittable: AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.STANDARD_TRIDEM,
+    //             };
+    //     }
+    //   }
+    // }
 
     getConfiguredAxleUnitWeightThresholdResult ??=
       getConfiguredAxleUnitWeightThreshold(
@@ -705,8 +713,10 @@ export function CheckPermittableWeight(
     if (
       getConfiguredAxleUnitWeightThresholdResult?.hasInteraxleSpacingRestriction
     ) {
+      console.log('interaxleSpacingRestriction found');
       message = `Interaxle Spacing for Axle Unit ${axleUnitNumber} restricts Axle Weight to ${getConfiguredAxleUnitWeightThresholdResult?.permittable} kg`;
     } else {
+      console.log('interaxleSpacingRestriction not found');
       message = `Weight for axle unit ${axleUnitNumber} ${
         result
           ? 'is permittable'
@@ -719,7 +729,7 @@ export function CheckPermittableWeight(
       result: result ? PolicyCheckResultType.Pass : PolicyCheckResultType.Fail,
       axleUnit: axleUnitNumber,
       actualWeight: axleUnit.axleUnitWeight,
-      thresholdWeight: getConfiguredAxleUnitWeightThresholdResult,
+      thresholdWeight: getConfiguredAxleUnitWeightThresholdResult?.permittable,
     } as AxleUnitPolicyCheckResult;
   });
 }

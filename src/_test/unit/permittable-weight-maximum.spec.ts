@@ -4,10 +4,10 @@ import { AxleConfiguration, PolicyDefinition } from '../../types';
 import currentPolicyConfig from '../policy-config/_current-config.json';
 import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
 import { TRAILER_CODES } from '../../constants/trailer-codes';
+import { getAxleUnitVehicleIndexLookup } from '../../helper/dimensions.helper';
 
 describe('ORV2-5709 permittable weight maximums', () => {
   const policy = new Policy(currentPolicyConfig);
-
   type Scenario = {
     axleUnit: 1 | 2 | 3;
     axleCount: number;
@@ -292,9 +292,18 @@ describe('ORV2-5709 permittable weight maximums', () => {
         TRAILER_CODES.SEMI_TRAILERS,
       ];
 
+      const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
+        policy,
+        vehicleConfiguration,
+        axleConfiguration,
+      );
+
       expect(
-        policy.calculateBridge(axleConfiguration, vehicleConfiguration)[0]
-          .maxBridge,
+        policy.calculateBridge(
+          axleConfiguration,
+          vehicleConfiguration,
+          axleUnitVehicleIndexes,
+        )[0].maxBridge,
       ).toBe(21000);
       expect(
         getPermittableResult({
@@ -505,54 +514,58 @@ describe('ORV2-5709 permittable weight maximums', () => {
       result: PolicyCheckResultType.Pass,
     });
   });
+});
 
-  it('raises interaxle spacing restriction for single axle booster behind semi trailer', () => {
-    const configuredPolicyDefinition = JSON.parse(
-      JSON.stringify(currentPolicyConfig),
-    ) as PolicyDefinition;
-    const tandemSteerTandemDrive =
-      configuredPolicyDefinition.globalWeightDefaults!.powerUnits.find(
-        ({ axles }) => axles === 22,
-      )!;
-    tandemSteerTandemDrive.saPermittable = 16555;
-    const configuredPolicy = new Policy(configuredPolicyDefinition);
+/* Source: ASW Permittable Interaxle Spacing - Boosters.feature
+ * Although this feature title appears to describe Interaxle Spacing outcomes, the actual outcomes are related to Permittable Weight maximums for booster axles, therefore these tests have been included here.
+ */
+describe('booster exceptions', () => {
+  const configuredPolicyDefinition = JSON.parse(
+    JSON.stringify(currentPolicyConfig),
+  ) as PolicyDefinition;
+  const configuredPolicy = new Policy(configuredPolicyDefinition);
+  const vehicleConfiguration = ['TRKTRAC', 'SEMITRL', 'BOOSTER'];
+  const axleConfiguration: Array<AxleConfiguration> = [
+    {
+      numberOfAxles: 1,
+      axleUnitWeight: 6000,
+      numberOfTires: 2,
+      tireSize: 711.2,
+      vehicleIndex: 0,
+    },
+    {
+      numberOfAxles: 1,
+      interaxleSpacing: 300,
+      axleUnitWeight: 7000,
+      numberOfTires: 2,
+      tireSize: 711.2,
+      vehicleIndex: 0,
+    },
+    {
+      numberOfAxles: 3,
+      axleSpread: 240,
+      interaxleSpacing: 300,
+      axleUnitWeight: 17000,
+      numberOfTires: 6,
+      tireSize: 711.2,
+      vehicleIndex: 1,
+    },
+    {
+      numberOfAxles: 1,
+      interaxleSpacing: 300,
+      axleUnitWeight: 9100,
+      numberOfTires: 4,
+      tireSize: 711.2,
+      vehicleIndex: 2,
+    },
+  ];
 
-    const vehicleConfiguration = ['TRKTRAC', 'FESEMTR', 'BOOSTER'];
-
-    const axleConfiguration: Array<AxleConfiguration> = [
-      {
-        numberOfAxles: 1,
-        axleUnitWeight: 6000,
-        numberOfTires: 2,
-        tireSize: 711.2,
-        vehicleIndex: 0,
-      },
-      {
-        numberOfAxles: 1,
-        interaxleSpacing: 300,
-        axleUnitWeight: 7000,
-        numberOfTires: 2,
-        tireSize: 711.2,
-        vehicleIndex: 0,
-      },
-      {
-        numberOfAxles: 3,
-        axleSpread: 240,
-        interaxleSpacing: 300,
-        axleUnitWeight: 17000,
-        numberOfTires: 6,
-        tireSize: 711.2,
-        vehicleIndex: 1,
-      },
-      {
-        numberOfAxles: 1,
-        interaxleSpacing: 300,
-        axleUnitWeight: 9101,
-        numberOfTires: 4,
-        tireSize: 711.2,
-        vehicleIndex: 2,
-      },
-    ];
+  // Source: ASW Permittable Interaxle Spacing - Boosters.feature @orv2-6030-2
+  // TOASK why do we call out a minimum of 3.0 m here, looking at @orv2-6030-3, this should apply with no minimum?
+  it('raises interaxle spacing restriction for single axle booster with interaxle spacing between 3.0 m and 4.19 m behind semi trailer', () => {
+    axleConfiguration[3].numberOfAxles = 1;
+    axleConfiguration[3].interaxleSpacing = 301;
+    axleConfiguration[3].axleUnitWeight = 9101;
 
     const results = configuredPolicy.runAxleCalculation(
       vehicleConfiguration,
@@ -561,11 +574,83 @@ describe('ORV2-5709 permittable weight maximums', () => {
     ).results;
 
     const failedResult = results.find(
-      (result) => result.result === PolicyCheckResultType.Fail,
+      (result) =>
+        result.id === PolicyCheckId.PermittableWeight &&
+        result.result === PolicyCheckResultType.Fail,
     );
 
     expect(failedResult?.message).toBe(
       'Interaxle Spacing for Axle Unit 4 restricts Axle Weight to 9100 kg',
+    );
+  });
+
+  // Source: ASW Permittable Interaxle Spacing - Boosters.feature @orv2-6030-3
+  // TODO bridge formula should not be applied in this case, currently fails
+  it('raises interaxle spacing restriction for single axle booster with interaxle spacing below 3.0 m or below behind semi trailer', () => {
+    axleConfiguration[3].numberOfAxles = 1;
+    axleConfiguration[3].interaxleSpacing = 299;
+    axleConfiguration[3].axleUnitWeight = 9101;
+
+    const results = configuredPolicy.runAxleCalculation(
+      vehicleConfiguration,
+      axleConfiguration,
+      100000,
+    ).results;
+
+    const failedResult = results.find(
+      (result) =>
+        result.id === PolicyCheckId.PermittableWeight &&
+        result.result === PolicyCheckResultType.Fail,
+    );
+
+    expect(failedResult?.message).toBe(
+      'Interaxle Spacing for Axle Unit 4 restricts Axle Weight to 9100 kg',
+    );
+  });
+
+  // Source: ASW Permittable Interaxle Spacing - Boosters.feature @orv2-6030-4
+  it('raises interaxle spacing restriction for tandem axle booster with interaxle spacing of 4.2 m or greater behind semi trailer', () => {
+    axleConfiguration[3].numberOfAxles = 2;
+    axleConfiguration[3].interaxleSpacing = 420;
+    axleConfiguration[3].axleUnitWeight = 23001;
+
+    const results = configuredPolicy.runAxleCalculation(
+      vehicleConfiguration,
+      axleConfiguration,
+      100000,
+    ).results;
+
+    const failedResult = results.find(
+      (result) =>
+        result.id === PolicyCheckId.PermittableWeight &&
+        result.result === PolicyCheckResultType.Fail,
+    );
+
+    expect(failedResult?.message).toBe(
+      'Interaxle Spacing for Axle Unit 4 restricts Axle Weight to 23000 kg',
+    );
+  });
+
+  // Source: ASW Permittable Interaxle Spacing - Boosters.feature @orv2-6030-5
+  it('raises interaxle spacing restriction for tridem axle booster with interaxle spacing of 4.2 or greater behind semi trailer', () => {
+    axleConfiguration[3].numberOfAxles = 3;
+    axleConfiguration[3].interaxleSpacing = 420;
+    axleConfiguration[3].axleUnitWeight = 28001;
+
+    const results = configuredPolicy.runAxleCalculation(
+      vehicleConfiguration,
+      axleConfiguration,
+      100000,
+    ).results;
+
+    const failedResult = results.find(
+      (result) =>
+        result.id === PolicyCheckId.PermittableWeight &&
+        result.result === PolicyCheckResultType.Fail,
+    );
+
+    expect(failedResult?.message).toBe(
+      'Interaxle Spacing for Axle Unit 4 restricts Axle Weight to 28000 kg',
     );
   });
 });

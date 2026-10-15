@@ -323,6 +323,7 @@ function getDefaultVehicleWeightHelper(
     (w) => w.axles === axles,
   );
   if (weights && weights.length > 0) {
+    console.log(`selecting subtype weight definition for ${subType}`);
     return JSON.parse(JSON.stringify(weights));
   }
 
@@ -340,6 +341,7 @@ function getDefaultVehicleWeightHelper(
       (w) => w.axles === axles,
     );
     if (overridesForAxle && overridesForAxle.length > 0) {
+      console.log(`selecting category weight definition for ${subType}`);
       return JSON.parse(JSON.stringify(overridesForAxle));
     }
   }
@@ -352,8 +354,10 @@ function getDefaultVehicleWeightHelper(
   const vehicleDefaults = globalDefaults?.filter((w) => w.axles === axles);
   if (vehicleDefaults && vehicleDefaults.length > 0) {
     // Return a copy of the vehicle weights
+    console.log(`selecting global weight definition for ${subType}`);
     return JSON.parse(JSON.stringify(vehicleDefaults));
   } else {
+    console.log(`could not find weight definition for ${subType}`);
     return new Array<WeightDimension>();
   }
 }
@@ -403,18 +407,35 @@ export function selectCorrectWeightDimensionHelper(
   const hasVehicleIndexes = axleConfiguration.some(
     (axleUnit) => axleUnit.vehicleIndex !== undefined,
   );
+
+  if (axleIndex + 1 === 4) {
+    console.log({ hasVehicleIndexes });
+  }
+
   const axleUnitVehicleIndexes = hasVehicleIndexes
     ? getAxleUnitVehicleIndexes(policy, configuration, axleConfiguration)
     : undefined;
+
+  if (axleIndex + 1 === 4) {
+    console.log({ axleUnitVehicleIndexes });
+  }
   const powerUnitAxleUnitCount = axleUnitVehicleIndexes
     ? axleUnitVehicleIndexes.filter((vehicleIndex) => vehicleIndex === 0).length
     : 2;
+
+  if (axleIndex + 1 === 4) {
+    console.log({ powerUnitAxleUnitCount });
+  }
 
   if (!axleUnitVehicleIndexes) {
     const realVehicleConfig = configuration.filter((v) => {
       const vehicleDef = policy.getVehicleDefinition(v);
       return !vehicleDef?.ignoreForAxleCalculation;
     });
+
+    if (axleIndex + 1 === 4) {
+      console.log({ realVehicleConfig });
+    }
 
     if (realVehicleConfig.length !== axleConfiguration.length - 1) {
       throw new Error(
@@ -430,10 +451,19 @@ export function selectCorrectWeightDimensionHelper(
     axleUnitVehicleIndexes,
   );
 
+  //  weightDimensions selected for booster:  [
+  //     {
+  //       axles: 2,
+  //       modifier: { category: 'semi', position: 'before', minInteraxleSpacing: 420 },
+  //       legal: 17000,
+  //       permittable: 23000
+  //     }
+  //   ]
+
   for (const weightDimension of weightDimensions) {
     // Just renaming this for conciseness
-    const m = weightDimension.modifier;
-    if (!m) {
+    const modifier = weightDimension.modifier;
+    if (!modifier) {
       // This dimension has no modifiers, so it is the default
       if (axleIndex < powerUnitAxleUnitCount) {
         const pwd = weightDimension as PowerUnitWeightDimension;
@@ -444,6 +474,10 @@ export function selectCorrectWeightDimensionHelper(
       } else {
         const twd = weightDimension as TrailerWeightDimension;
         const { legal, permittable } = twd;
+        console.log(
+          `setting matchingDimension for axle unit ${axleIndex + 1}:`,
+          twd,
+        );
         matchingDimension = { legal, permittable };
       }
       // Temporarily disabled, doesn't seem this is required.
@@ -451,15 +485,16 @@ export function selectCorrectWeightDimensionHelper(
     } else {
       let isMatch = false;
       // We can match by vehicle type or vehicle category
-      let matcher = m.type;
+      let matcher = modifier.type;
       let isTypeMatch = true;
       if (!matcher) {
-        matcher = m.category;
+        matcher = modifier.category;
         isTypeMatch = false;
+        console.log('Matching by vehicle category');
       }
 
       if (matcher) {
-        switch (m.position) {
+        switch (modifier.position) {
           case RelativePosition.First.toString():
             isMatch =
               matcher ==
@@ -474,23 +509,36 @@ export function selectCorrectWeightDimensionHelper(
             isMatch =
               matcher ==
               (isTypeMatch ? relatives.prevType : relatives.prevCategory);
-            if (isMatch && m.axles) {
+            console.log(
+              'Matching by vehicle category: ',
+              relatives.prevCategory,
+            );
+            if (isMatch && modifier.axles) {
               isMatch =
-                m.axles == axleConfiguration[axleIndex - 1].numberOfAxles;
+                modifier.axles ==
+                axleConfiguration[axleIndex - 1].numberOfAxles;
             }
-            const spacingFromPrev =
+            const spacingFromCurrent =
               axleConfiguration[axleIndex].interaxleSpacing;
-            if (!spacingFromPrev) {
+            console.log(
+              'Interaxle spacing value on current axle unit: ',
+              spacingFromCurrent,
+            );
+            if (!spacingFromCurrent) {
               console.log(
                 `Axle configuration incorrect, missing interaxle spacing`,
               );
               isMatch = false;
               break;
-            } else if (isMatch && m.minInteraxleSpacing) {
-              isMatch = m.minInteraxleSpacing <= spacingFromPrev;
+            } else if (isMatch && modifier.minInteraxleSpacing) {
+              isMatch = modifier.minInteraxleSpacing <= spacingFromCurrent;
+              console.log(
+                "modifier minInteraxleSpacing is less than or equal to current axle's interaxle spacing: ",
+                isMatch,
+              );
             }
-            if (isMatch && m.maxInteraxleSpacing) {
-              isMatch = m.maxInteraxleSpacing >= spacingFromPrev;
+            if (isMatch && modifier.maxInteraxleSpacing) {
+              isMatch = modifier.maxInteraxleSpacing >= spacingFromCurrent;
             }
             break;
           }
@@ -501,9 +549,10 @@ export function selectCorrectWeightDimensionHelper(
             if (!isMatch) {
               break;
             }
-            if (isMatch && m.axles) {
+            if (isMatch && modifier.axles) {
               isMatch =
-                m.axles == axleConfiguration[axleIndex + 1].numberOfAxles;
+                modifier.axles ==
+                axleConfiguration[axleIndex + 1].numberOfAxles;
             }
             const spacingToNext =
               axleConfiguration[axleIndex + 1].interaxleSpacing;
@@ -513,11 +562,11 @@ export function selectCorrectWeightDimensionHelper(
               );
               isMatch = false;
               break;
-            } else if (isMatch && m.minInteraxleSpacing) {
-              isMatch = m.minInteraxleSpacing <= spacingToNext;
+            } else if (isMatch && modifier.minInteraxleSpacing) {
+              isMatch = modifier.minInteraxleSpacing <= spacingToNext;
             }
-            if (isMatch && m.maxInteraxleSpacing) {
-              isMatch = m.maxInteraxleSpacing >= spacingToNext;
+            if (isMatch && modifier.maxInteraxleSpacing) {
+              isMatch = modifier.maxInteraxleSpacing >= spacingToNext;
             }
             break;
           }
@@ -532,17 +581,24 @@ export function selectCorrectWeightDimensionHelper(
       // multiple modifiers that match, the first one will be
       // returned (so modifiers should be configured to be exclusive).
       if (isMatch) {
+        console.log(
+          `Found matching weight modifier for axle unit ${axleIndex + 1}: ${modifier}`,
+        );
         const twd = weightDimension as TrailerWeightDimension;
         const { legal, permittable } = twd;
+        console.log(`setting matchingDimension for axle unit ${axleIndex + 1}`);
         matchingDimension = { legal, permittable };
 
-        if (m.minInteraxleSpacing || m.maxInteraxleSpacing) {
+        if (modifier.minInteraxleSpacing || modifier.maxInteraxleSpacing) {
+          console.log('interaxle spacing restriction has been added');
           matchingDimension.hasInteraxleSpacingRestriction = true;
         }
         break;
       }
     }
   }
+
+  console.log({ matchingDimension });
 
   return matchingDimension;
 }
