@@ -622,12 +622,20 @@ export function CheckPermittableWeight(
       vehicleIndex !== 0
         ? policy.getTrailerDefinition(vehicleConfiguration[vehicleIndex])
         : null;
-    const usesJSONTridemWeight =
+    const usesJSONTandemWeight =
+      trailerDefinition?.category === 'semi' ||
       trailerDefinition?.category === 'pony' ||
       trailerDefinition?.id ===
         TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS;
-    const usesJSONTandemWeight =
-      trailerDefinition?.category === 'semi' || usesJSONTridemWeight;
+    const usesJSONTridemWeight =
+      trailerDefinition?.category === 'pony' ||
+      [
+        TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS,
+        TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
+        TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
+        TRAILER_CODES.JEEPS,
+        TRAILER_CODES.BOOSTER,
+      ].some((type) => type === trailerDefinition?.id);
     let permittableWeight: number | undefined;
 
     if (!isSingleSteer && !isTandemSteer) {
@@ -649,9 +657,6 @@ export function CheckPermittableWeight(
         const isTrailerAxleUnit =
           policy.getTrailerDefinition(vehicleConfiguration[vehicleIndex]) !==
           null;
-        const isJeepOrBooster =
-          trailerDefinition?.id === TRAILER_CODES.JEEPS ||
-          trailerDefinition?.id === TRAILER_CODES.BOOSTER;
         const spreadQualifies =
           axleUnit.axleSpread !== undefined &&
           axleUnit.axleSpread >= QUALIFYING_TRIDEM_SPREAD_CM.MINIMUM &&
@@ -668,8 +673,8 @@ export function CheckPermittableWeight(
         const boosterQualifies =
           !hasImmediatelyFollowingBooster || boosterAxle?.numberOfAxles === 1;
 
-        // Jeep and Booster tridem limits come from JSON.
-        if (isTrailerAxleUnit && !usesJSONTridemWeight && !isJeepOrBooster) {
+        // Apply the spread/Booster allowance only to trailers outside the JSON exceptions.
+        if (isTrailerAxleUnit && !usesJSONTridemWeight) {
           permittableWeight =
             spreadQualifies && boosterQualifies
               ? AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.QUALIFYING_TRIDEM
