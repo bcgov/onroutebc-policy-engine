@@ -39,7 +39,6 @@ export function getInteraxleSpacingRequirement(
   axleIndex: number,
   vehicleConfiguration: Array<string>,
   axleUnitVehicleIndexes: Array<number>,
-  requirementType: 'legal' | 'permittable',
 ): InteraxleSpacingRequirement | undefined {
   // the first axle unit will never have an interaxle spacing value or previous axle unit to compare against
   if (axleIndex === 0) {
@@ -101,7 +100,6 @@ export function selectCorrectInteraxleSpacingRequirementHelper(
   }
 
   const currentAxleUnit = axleConfiguration[axleIndex];
-  const previousAxleUnit = axleConfiguration[axleIndex - 1];
 
   const relatives = getVehicleRelatives(
     policy,
@@ -109,11 +107,6 @@ export function selectCorrectInteraxleSpacingRequirementHelper(
     axleIndex,
     axleUnitVehicleIndexes,
   );
-
-  const currentAxleVehicleType = axleUnitVehicleIndexes[axleIndex];
-
-  const isCurrentAxleVehicleTypeBooster =
-    vehicleConfiguration[currentAxleVehicleType] === TRAILER_CODES.BOOSTER;
 
   const appliesToCurrentAxleWeight = (
     requirement: InteraxleSpacingRequirement,

@@ -1031,6 +1031,7 @@ export class Policy {
     axleConfiguration: Array<AxleConfiguration>,
     licensedGVW: number,
   ): AxleCalcResults {
+    console.log('calling runAxleCalculation');
     const axleCalcResults: AxleCalcResults = {
       results: [],
       overload: 0,

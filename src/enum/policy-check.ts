@@ -10,7 +10,7 @@ export enum PolicyCheckId {
   BridgeFormula = 'bridge-formula',
   DriveJeepLoadEqualization = 'drive-jeep-load-equalization',
   LegalAxleSpread = 'legal-axle-spread',
-  LegalInteraxleSpacing = 'legal-interaxle-spacing',
+  InteraxleSpacing = 'interaxle-spacing',
   LegalWeight = 'legal-weight',
   MaxTireLoad = 'max-tire-load',
   MinDriveAxleWeight = 'minimum-drive-axle-weight',
@@ -19,7 +19,6 @@ export enum PolicyCheckId {
   NumberOfAxles = 'number-of-axles',
   NumberOfWheelsPerAxle = 'number-of-wheels',
   PermittableWeight = 'permittable-weight',
-  PermittableInteraxleSpacing = 'permittable-interaxle-spacing',
   PickerTruckTractorWeightRestrictions = 'picker-truck-tractor-weight-restrictions',
   WheelbaseLegalLimits = 'wheelbase-legal-limits',
 }

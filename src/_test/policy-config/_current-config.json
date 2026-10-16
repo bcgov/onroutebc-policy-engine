@@ -4983,6 +4983,18 @@
         ],
         "interaxleSpacings": [
           {
+            "axles": 11,
+            "min": 0
+          },
+          {
+            "axles": 21,
+            "min": 0
+          },
+          {
+            "axles": 31,
+            "min": 0
+          },
+          {
             "axles": 12,
             "maxAxleUnitWeight": 23000,
             "modifier": {
@@ -5110,7 +5122,21 @@
         "name": "Jeeps",
         "category": "accessory",
         "ignoreForSizeDimensions": true,
-        "displayCode": "J"
+        "displayCode": "J",
+        "interaxleSpacings": [
+          {
+            "axles": 11,
+            "min": 120
+          },
+          {
+            "axles": 21,
+            "min": 120
+          },
+          {
+            "axles": 31,
+            "min": 120
+          }
+        ]
       },
       {
         "id": "LOGNTAC",

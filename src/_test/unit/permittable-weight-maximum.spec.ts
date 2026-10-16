@@ -524,7 +524,7 @@ describe('booster exceptions', () => {
     JSON.stringify(currentPolicyConfig),
   ) as PolicyDefinition;
   const configuredPolicy = new Policy(configuredPolicyDefinition);
-  const vehicleConfiguration = ['TRKTRAC', 'SEMITRL', 'BOOSTER'];
+  const vehicleConfiguration = ['TRKTRAC', 'FESEMTR', 'BOOSTER'];
   const axleConfiguration: Array<AxleConfiguration> = [
     {
       numberOfAxles: 1,
@@ -545,15 +545,15 @@ describe('booster exceptions', () => {
       numberOfAxles: 3,
       axleSpread: 240,
       interaxleSpacing: 300,
-      axleUnitWeight: 17000,
+      axleUnitWeight: 16000,
       numberOfTires: 6,
       tireSize: 711.2,
       vehicleIndex: 1,
     },
     {
       numberOfAxles: 1,
-      interaxleSpacing: 300,
-      axleUnitWeight: 9100,
+      interaxleSpacing: 350,
+      axleUnitWeight: 9101,
       numberOfTires: 4,
       tireSize: 711.2,
       vehicleIndex: 2,
@@ -562,9 +562,9 @@ describe('booster exceptions', () => {
 
   // Source: ASW Permittable Interaxle Spacing - Boosters.feature @orv2-6030-2
   it('raises interaxle spacing restriction for single axle booster with interaxle spacing between 3.0 m and 4.19 m behind semi trailer', () => {
-    axleConfiguration[3].numberOfAxles = 1;
-    axleConfiguration[3].interaxleSpacing = 301;
-    axleConfiguration[3].axleUnitWeight = 9101;
+    // axleConfiguration[3].numberOfAxles = 1;
+    // axleConfiguration[3].interaxleSpacing = 301;
+    // axleConfiguration[3].axleUnitWeight = 9101;
 
     const results = configuredPolicy.runAxleCalculation(
       vehicleConfiguration,

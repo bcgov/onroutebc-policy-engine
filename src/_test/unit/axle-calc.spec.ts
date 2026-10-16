@@ -25,7 +25,7 @@ import {
   CheckPickerTruckTractorWeightRestrictions,
   CheckWheelbaseLegalLimits,
   CheckDriveJeepLoadEqualization,
-  CheckLegalInteraxleSpacing,
+  CheckInteraxleSpacing,
 } from '../../helper/policy-check.helper';
 
 import {
@@ -106,14 +106,14 @@ describe('Axle Calculation Functions', () => {
       expectedMessage?: string,
       configuration: Array<string> = vehicleConfiguration,
     ) => {
-      const results = CheckLegalInteraxleSpacing(
+      const results = CheckInteraxleSpacing(
         policy,
         configuration,
         axleConfiguration,
       );
 
       expect(results[axleUnit - 1]).toMatchObject({
-        id: PolicyCheckId.LegalInteraxleSpacing,
+        id: PolicyCheckId.InteraxleSpacing,
         result: expectedResult,
         message: expectedMessage ?? '',
         axleUnit,
@@ -196,14 +196,14 @@ describe('Axle Calculation Functions', () => {
         { numberOfAxles: 1, axleUnitWeight: 30000, interaxleSpacing: 410 },
       ];
 
-      const results = CheckLegalInteraxleSpacing(
+      const results = CheckInteraxleSpacing(
         policy,
         customVehicleConfiguration,
         customAxleConfiguration,
       );
 
       expect(results[3]).toMatchObject({
-        id: PolicyCheckId.LegalInteraxleSpacing,
+        id: PolicyCheckId.InteraxleSpacing,
         axleUnit: 4,
         result: PolicyCheckResultType.Pass,
         message: '',
@@ -2608,7 +2608,7 @@ describe('booster exceptions', () => {
     JSON.stringify(currentPolicyConfig),
   ) as PolicyDefinition;
   const configuredPolicy = new Policy(configuredPolicyDefinition);
-  const vehicleConfiguration = ['TRKTRAC', 'SEMITRL', 'BOOSTER'];
+  const vehicleConfiguration = ['TRKTRAC', 'FESEMTR', 'BOOSTER'];
   const axleConfiguration: Array<AxleConfiguration> = [
     {
       numberOfAxles: 1,
@@ -2630,15 +2630,16 @@ describe('booster exceptions', () => {
       axleSpread: 240,
       interaxleSpacing: 300,
       axleUnitWeight: 17000,
-      numberOfTires: 6,
+      numberOfTires: 12,
       tireSize: 711.2,
       vehicleIndex: 1,
     },
     {
-      numberOfAxles: 1,
-      interaxleSpacing: 300,
-      axleUnitWeight: 9100,
-      numberOfTires: 4,
+      numberOfAxles: 2,
+      axleSpread: 100,
+      interaxleSpacing: 419,
+      axleUnitWeight: 23000,
+      numberOfTires: 8,
       tireSize: 711.2,
       vehicleIndex: 2,
     },
@@ -2646,9 +2647,10 @@ describe('booster exceptions', () => {
 
   // Source: ASW Permittable Interaxle Spacing - Boosters.feature @orv2-6030-4
   it('raises interaxle spacing restriction for tandem axle booster with interaxle spacing of less than 4.2 m behind semi trailer', () => {
-    axleConfiguration[3].numberOfAxles = 2;
-    axleConfiguration[3].interaxleSpacing = 419;
-    axleConfiguration[3].axleUnitWeight = 23000;
+    // axleConfiguration[3].numberOfAxles = 2;
+    // axleConfiguration[3].axleSpread = 100;
+    // axleConfiguration[3].interaxleSpacing = 419;
+    // axleConfiguration[3].axleUnitWeight = 23000;
 
     const results = configuredPolicy.runAxleCalculation(
       vehicleConfiguration,
@@ -2658,7 +2660,7 @@ describe('booster exceptions', () => {
 
     const failedResult = results.find(
       (result) =>
-        result.id === PolicyCheckId.PermittableInteraxleSpacing &&
+        result.id === PolicyCheckId.InteraxleSpacing &&
         result.result === PolicyCheckResultType.Fail,
     );
 
@@ -2681,7 +2683,7 @@ describe('booster exceptions', () => {
 
     const failedResult = results.find(
       (result) =>
-        result.id === PolicyCheckId.PermittableInteraxleSpacing &&
+        result.id === PolicyCheckId.InteraxleSpacing &&
         result.result === PolicyCheckResultType.Fail,
     );
 
