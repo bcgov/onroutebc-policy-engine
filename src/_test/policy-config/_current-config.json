@@ -5152,7 +5152,107 @@
         "id": "FEPNYTR",
         "name": "Fixed Equipment - Pony Trailers",
         "category": "pony",
-        "displayCode": "B"
+        "displayCode": "B",
+        "defaultWeightDimensions": [
+          {
+            "axles": 1,
+            "legal": 9100,
+            "permittable": 11000
+          },
+          {
+            "axles": 1,
+            "modifier": {
+              "category": "powerunit",
+              "position": "before",
+              "axles": 2,
+              "minInterAxleSpacing": 300
+            },
+            "legal": 9100,
+            "permittable": 9100
+          },
+          {
+            "axles": 1,
+            "modifier": {
+              "category": "multisteer",
+              "position": "before",
+              "axles": 2,
+              "minInterAxleSpacing": 300
+            },
+            "legal": 9100,
+            "permittable": 9100
+          },
+          {
+            "axles": 1,
+            "modifier": {
+              "category": "powerunit",
+              "position": "before",
+              "axles": 3,
+              "minInterAxleSpacing": 300
+            },
+            "legal": 9100,
+            "permittable": 9100
+          },
+          {
+            "axles": 1,
+            "modifier": {
+              "category": "multisteer",
+              "position": "before",
+              "axles": 3,
+              "minInterAxleSpacing": 300
+            },
+            "legal": 9100,
+            "permittable": 9100
+          },
+          {
+            "axles": 3,
+            "legal": 21000,
+            "permittable": 21000
+          },
+          {
+            "axles": 3,
+            "modifier": {
+              "category": "powerunit",
+              "position": "before",
+              "axles": 1,
+              "minInterAxleSpacing": 300
+            },
+            "legal": 17000,
+            "permittable": 17000
+          },
+          {
+            "axles": 3,
+            "modifier": {
+              "category": "multisteer",
+              "position": "before",
+              "axles": 1,
+              "minInterAxleSpacing": 300
+            },
+            "legal": 17000,
+            "permittable": 17000
+          },
+          {
+            "axles": 3,
+            "modifier": {
+              "category": "powerunit",
+              "position": "before",
+              "axles": 2,
+              "minInterAxleSpacing": 550
+            },
+            "legal": 17000,
+            "permittable": 21000
+          },
+          {
+            "axles": 3,
+            "modifier": {
+              "category": "multisteer",
+              "position": "before",
+              "axles": 2,
+              "minInterAxleSpacing": 550
+            },
+            "legal": 17000,
+            "permittable": 21000
+          }
+        ]
       },
       {
         "id": "FEBGHSE",
@@ -5293,7 +5393,107 @@
         "id": "PONYTRL",
         "name": "Pony Trailers",
         "category": "pony",
-        "displayCode": "B"
+        "displayCode": "B",
+        "defaultWeightDimensions": [
+          {
+            "axles": 1,
+            "legal": 9100,
+            "permittable": 11000
+          },
+          {
+            "axles": 1,
+            "modifier": {
+              "category": "powerunit",
+              "position": "before",
+              "axles": 2,
+              "minInterAxleSpacing": 300
+            },
+            "legal": 9100,
+            "permittable": 9100
+          },
+          {
+            "axles": 1,
+            "modifier": {
+              "category": "multisteer",
+              "position": "before",
+              "axles": 2,
+              "minInterAxleSpacing": 300
+            },
+            "legal": 9100,
+            "permittable": 9100
+          },
+          {
+            "axles": 1,
+            "modifier": {
+              "category": "powerunit",
+              "position": "before",
+              "axles": 3,
+              "minInterAxleSpacing": 300
+            },
+            "legal": 9100,
+            "permittable": 9100
+          },
+          {
+            "axles": 1,
+            "modifier": {
+              "category": "multisteer",
+              "position": "before",
+              "axles": 3,
+              "minInterAxleSpacing": 300
+            },
+            "legal": 9100,
+            "permittable": 9100
+          },
+          {
+            "axles": 3,
+            "legal": 21000,
+            "permittable": 21000
+          },
+          {
+            "axles": 3,
+            "modifier": {
+              "category": "powerunit",
+              "position": "before",
+              "axles": 1,
+              "minInterAxleSpacing": 300
+            },
+            "legal": 17000,
+            "permittable": 17000
+          },
+          {
+            "axles": 3,
+            "modifier": {
+              "category": "multisteer",
+              "position": "before",
+              "axles": 1,
+              "minInterAxleSpacing": 300
+            },
+            "legal": 17000,
+            "permittable": 17000
+          },
+          {
+            "axles": 3,
+            "modifier": {
+              "category": "powerunit",
+              "position": "before",
+              "axles": 2,
+              "minInterAxleSpacing": 550
+            },
+            "legal": 17000,
+            "permittable": 21000
+          },
+          {
+            "axles": 3,
+            "modifier": {
+              "category": "multisteer",
+              "position": "before",
+              "axles": 2,
+              "minInterAxleSpacing": 550
+            },
+            "legal": 17000,
+            "permittable": 21000
+          }
+        ]
       },
       {
         "id": "REDIMIX",
@@ -8867,7 +9067,14 @@
                   "l": 27.5
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "weightDimensions": [
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 52000
+                }
+              ]
             },
             {
               "type": "EXPANDO",
@@ -9007,7 +9214,14 @@
                   "l": 27.5
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "weightDimensions": [
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 52000
+                }
+              ]
             },
             {
               "type": "EXPANDO",
@@ -9147,7 +9361,14 @@
                   "l": 27.5
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "weightDimensions": [
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 52000
+                }
+              ]
             },
             {
               "type": "EXPANDO",
@@ -10315,7 +10536,14 @@
                   ]
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "weightDimensions": [
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 52000
+                }
+              ]
             },
             {
               "type": "PLATWHE",
@@ -10591,7 +10819,14 @@
                   ]
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "weightDimensions": [
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 52000
+                }
+              ]
             },
             {
               "type": "PLATWHE",
@@ -10867,7 +11102,14 @@
                   ]
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "weightDimensions": [
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 52000
+                }
+              ]
             },
             {
               "type": "PLATWHE",
