@@ -1488,6 +1488,8 @@ describe('Axle Calculation Functions', () => {
     const bridgeResults = results.results.filter(
       (r) => r.id === PolicyCheckId.BridgeFormula,
     );
+
+    console.log(bridgeResults);
     expect(
       bridgeResults.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(false);
@@ -2608,7 +2610,7 @@ describe('booster exceptions', () => {
     JSON.stringify(currentPolicyConfig),
   ) as PolicyDefinition;
   const configuredPolicy = new Policy(configuredPolicyDefinition);
-  const vehicleConfiguration = ['TRKTRAC', 'FESEMTR', 'BOOSTER'];
+  const vehicleConfiguration = ['TRKTRAC', 'SEMITRL', 'BOOSTER'];
   const axleConfiguration: Array<AxleConfiguration> = [
     {
       numberOfAxles: 1,
@@ -2647,10 +2649,10 @@ describe('booster exceptions', () => {
 
   // Source: ASW Permittable Interaxle Spacing - Boosters.feature @orv2-6030-4
   it('raises interaxle spacing restriction for tandem axle booster with interaxle spacing of less than 4.2 m behind semi trailer', () => {
-    // axleConfiguration[3].numberOfAxles = 2;
-    // axleConfiguration[3].axleSpread = 100;
-    // axleConfiguration[3].interaxleSpacing = 419;
-    // axleConfiguration[3].axleUnitWeight = 23000;
+    axleConfiguration[3].numberOfAxles = 2;
+    axleConfiguration[3].axleSpread = 100;
+    axleConfiguration[3].interaxleSpacing = 419;
+    axleConfiguration[3].axleUnitWeight = 23000;
 
     const results = configuredPolicy.runAxleCalculation(
       vehicleConfiguration,

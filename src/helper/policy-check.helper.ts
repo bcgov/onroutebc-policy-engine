@@ -643,55 +643,55 @@ export function CheckPermittableWeight(
 
     let getConfiguredAxleUnitWeightThresholdResult: SingleAxleDimension | null;
 
-    // if (!isSingleSteer && !isTandemSteer) {
-    //   if (axleUnit.numberOfAxles === 1) {
-    //     getConfiguredAxleUnitWeightThresholdResult =
-    //       getConfiguredAxleUnitWeightThreshold(
-    //         policy,
-    //         vehicleConfiguration,
-    //         axleConfiguration,
-    //         axleUnitVehicleIndexes,
-    //         axleIndex,
-    //       ) || {
-    //         permittable: AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.SINGLE_NON_STEER,
-    //       };
-    //   } else if (axleUnit.numberOfAxles === 2) {
-    //     getConfiguredAxleUnitWeightThresholdResult = {
-    //       permittable: AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.TANDEM,
-    //     };
-    //   } else if (axleUnit.numberOfAxles === 3) {
-    //     const isTrailerAxleUnit =
-    //       policy.getTrailerDefinition(vehicleConfiguration[vehicleIndex]) !==
-    //       null;
-    //     const spreadQualifies =
-    //       axleUnit.axleSpread !== undefined &&
-    //       axleUnit.axleSpread >= QUALIFYING_TRIDEM_SPREAD_CM.MINIMUM &&
-    //       axleUnit.axleSpread <= QUALIFYING_TRIDEM_SPREAD_CM.MAXIMUM;
-    //     const nextVehicleIndex = vehicleIndex + 1;
-    //     const hasImmediatelyFollowingBooster =
-    //       vehicleConfiguration[nextVehicleIndex] ===
-    //       AccessoryVehicleType.Booster;
-    //     const boosterAxle = axleConfiguration.find(
-    //       (_, candidateIndex) =>
-    //         candidateIndex > axleIndex &&
-    //         axleUnitVehicleIndexes[candidateIndex] === nextVehicleIndex,
-    //     );
-    //     const boosterQualifies =
-    //       !hasImmediatelyFollowingBooster || boosterAxle?.numberOfAxles === 1;
+    if (!isSingleSteer && !isTandemSteer) {
+      if (axleUnit.numberOfAxles === 1) {
+        getConfiguredAxleUnitWeightThresholdResult =
+          getConfiguredAxleUnitWeightThreshold(
+            policy,
+            vehicleConfiguration,
+            axleConfiguration,
+            axleUnitVehicleIndexes,
+            axleIndex,
+          ) || {
+            permittable: AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.SINGLE_NON_STEER,
+          };
+      } else if (axleUnit.numberOfAxles === 2) {
+        getConfiguredAxleUnitWeightThresholdResult = {
+          permittable: AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.TANDEM,
+        };
+      } else if (axleUnit.numberOfAxles === 3) {
+        const isTrailerAxleUnit =
+          policy.getTrailerDefinition(vehicleConfiguration[vehicleIndex]) !==
+          null;
+        const spreadQualifies =
+          axleUnit.axleSpread !== undefined &&
+          axleUnit.axleSpread >= QUALIFYING_TRIDEM_SPREAD_CM.MINIMUM &&
+          axleUnit.axleSpread <= QUALIFYING_TRIDEM_SPREAD_CM.MAXIMUM;
+        const nextVehicleIndex = vehicleIndex + 1;
+        const hasImmediatelyFollowingBooster =
+          vehicleConfiguration[nextVehicleIndex] ===
+          AccessoryVehicleType.Booster;
+        const boosterAxle = axleConfiguration.find(
+          (_, candidateIndex) =>
+            candidateIndex > axleIndex &&
+            axleUnitVehicleIndexes[candidateIndex] === nextVehicleIndex,
+        );
+        const boosterQualifies =
+          !hasImmediatelyFollowingBooster || boosterAxle?.numberOfAxles === 1;
 
-    //     if (isTrailerAxleUnit) {
-    //       getConfiguredAxleUnitWeightThresholdResult =
-    //         spreadQualifies && boosterQualifies
-    //           ? {
-    //               permittable:
-    //                 AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.QUALIFYING_TRIDEM,
-    //             }
-    //           : {
-    //               permittable: AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.STANDARD_TRIDEM,
-    //             };
-    //     }
-    //   }
-    // }
+        if (isTrailerAxleUnit) {
+          getConfiguredAxleUnitWeightThresholdResult =
+            spreadQualifies && boosterQualifies
+              ? {
+                  permittable:
+                    AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.QUALIFYING_TRIDEM,
+                }
+              : {
+                  permittable: AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.STANDARD_TRIDEM,
+                };
+        }
+      }
+    }
 
     getConfiguredAxleUnitWeightThresholdResult ??=
       getConfiguredAxleUnitWeightThreshold(
@@ -709,6 +709,8 @@ export function CheckPermittableWeight(
     const axleUnitNumber = axleIndex + 1;
 
     let message;
+
+    console.log({ getConfiguredAxleUnitWeightThresholdResult });
 
     if (
       getConfiguredAxleUnitWeightThresholdResult?.hasInteraxleSpacingRestriction
@@ -1674,7 +1676,9 @@ export function CheckDriveJeepLoadEqualization(
 
 /**
  * Validates each axle unit against the minimum interaxle spacing for its
- * current axle unit and the next axle unit, per Table II.
+ * current axle unit and the next axle unit.
+ * This function effectively handles both 'legal' and 'permittable' interaxle spacings.
+ * See Table II for 'legal' interaxle spacings and exception stories for 'permittable' interaxle spacings
  */
 export function CheckInteraxleSpacing(
   policy: Policy,

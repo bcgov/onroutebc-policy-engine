@@ -4958,7 +4958,7 @@
           {
             "axles": 1,
             "legal": 9100,
-            "permittable": 11000
+            "permittable": 9100
           },
           {
             "axles": 2,
@@ -4979,6 +4979,16 @@
             },
             "legal": 9100,
             "permittable": 9100
+          },
+          {
+            "axles": 1,
+            "modifier": {
+              "category": "semi",
+              "position": "before",
+              "minInteraxleSpacing": 420
+            },
+            "legal": 9100,
+            "permittable": 11000
           }
         ],
         "interaxleSpacings": [

@@ -450,6 +450,7 @@ export function selectCorrectWeightDimensionHelper(
       // Temporarily disabled, doesn't seem this is required.
       // console.log('Using default weight dimension, no modifiers specified');
     } else {
+      console.log({ modifier });
       let isMatch = false;
       // We can match by vehicle type or vehicle category
       let matcher = modifier.type;
@@ -460,6 +461,7 @@ export function selectCorrectWeightDimensionHelper(
       }
 
       if (matcher) {
+        console.log({ matcher });
         switch (modifier.position) {
           case RelativePosition.First.toString():
             isMatch =
@@ -490,6 +492,10 @@ export function selectCorrectWeightDimensionHelper(
               break;
             } else if (isMatch && modifier.minInteraxleSpacing) {
               isMatch = modifier.minInteraxleSpacing <= spacingFromCurrent;
+              console.log(
+                'modifier minInteraxleSpacing <= axle unit interaxleSpacing: ',
+                isMatch,
+              );
             }
             if (isMatch && modifier.maxInteraxleSpacing) {
               isMatch = modifier.maxInteraxleSpacing >= spacingFromCurrent;

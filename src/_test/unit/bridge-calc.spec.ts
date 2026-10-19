@@ -461,8 +461,7 @@ describe('ASW Tandem Drive Single Axle Jeep Exception', () => {
 describe('Single Axle Booster Exception', () => {
   const policy: Policy = new Policy(minimalPolicyDef);
 
-  // TOASK do we skip bridge formula for the entire axle configuration or only when the booster is actively being checked against?
-  it('should pass bridge formula successfully for a booster behind a semi trailer', async () => {
+  it('when a booster is behind a semi trailer, all booster and semi trailer axle units should pass bridge formula successfully', async () => {
     const vehicleConfiguration = ['TRKTRAC', 'SEMITRL', 'BOOSTER'];
 
     const axleConfiguration: Array<AxleConfiguration> = [
@@ -492,7 +491,7 @@ describe('Single Axle Booster Exception', () => {
       },
       {
         numberOfAxles: 1,
-        interaxleSpacing: 300,
+        interaxleSpacing: 299,
         axleUnitWeight: 99999,
         numberOfTires: 4,
         tireSize: 711.2,
@@ -505,6 +504,14 @@ describe('Single Axle Booster Exception', () => {
       vehicleConfiguration,
       axleConfiguration,
     );
+
+    const bridgeCalcResults = policy.calculateBridge(
+      axleConfiguration,
+      vehicleConfiguration,
+      axleUnitVehicleIndexes,
+    );
+
+    console.log(bridgeCalcResults);
 
     expect(() =>
       policy.calculateBridge(
