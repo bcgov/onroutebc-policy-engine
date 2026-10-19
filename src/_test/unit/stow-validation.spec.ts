@@ -302,6 +302,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
         vehicleConfiguration,
         axleConfiguration,
         permit.permitData.vehicleDetails.licensedGVW,
+        COMMODITY_CODES.NONE,
       ).overloadDetails,
     ).toEqual(validationResult.axleCalculationResults?.overloadDetails);
     expect(
@@ -868,6 +869,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
         vehicleConfiguration,
         axleConfiguration,
         permit.permitData.vehicleDetails.licensedGVW,
+        COMMODITY_CODES.NONE,
       ),
     ).not.toThrow();
   });
@@ -889,6 +891,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
         vehicleConfiguration,
         axleConfiguration,
         permit.permitData.vehicleDetails.licensedGVW,
+        COMMODITY_CODES.NONE,
       ),
     ).not.toThrow();
   });

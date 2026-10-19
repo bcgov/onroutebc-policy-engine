@@ -10,7 +10,7 @@ dayjs.extend(duration);
 dayjs.extend(quarterOfYear);
 
 export const TIMEZONE_IDS = {
-  PACIFIC: 'Canada/Pacific',
+  PACIFIC: 'America/Vancouver',
 };
 
 export const DATE_FORMATS = {
@@ -22,7 +22,7 @@ export const DATE_FORMATS = {
  * Convert a datetime to a specified timezone.
  * 
  * @param datetime Datetime to be converted
- * @param timezoneId Timezone identifier (eg. 'Canada/Pacific')
+ * @param timezoneId Timezone identifier (eg. 'America/Vancouver')
  * @returns Dayjs object in the specified timezone
  */
 export const convertToTimezone = (

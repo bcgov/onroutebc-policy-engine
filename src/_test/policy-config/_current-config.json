@@ -4615,6 +4615,36 @@
         "id": "OGBEDTK",
         "name": "Oil and Gas - Bed Trucks",
         "category": "powerunit",
+        "defaultWeightDimensions": [
+          {
+            "axles": 11,
+            "saLegal": 9100,
+            "saPermittable": 9100,
+            "daLegal": 9100,
+            "daPermittable": 11000
+          },
+          {
+            "axles": 12,
+            "saLegal": 9100,
+            "saPermittable": 9100,
+            "daLegal": 17000,
+            "daPermittable": 23000
+          },
+          {
+            "axles": 13,
+            "saLegal": 9100,
+            "saPermittable": 9100,
+            "daLegal": 24000,
+            "daPermittable": 28000
+          },
+          {
+            "axles": 23,
+            "saLegal": 13600,
+            "saPermittable": 17000,
+            "daLegal": 24000,
+            "daPermittable": 28000
+          }
+        ],
         "displayCodePrefix": "TT",
         "displayCodeSteerAxle": "S",
         "displayCodeDriveAxle": "D"
@@ -4623,6 +4653,29 @@
         "id": "OGOILSW",
         "name": "Oil and Gas - Oilfield Sows",
         "category": "powerunit",
+        "defaultWeightDimensions": [
+          {
+            "axles": 11,
+            "saLegal": 9100,
+            "saPermittable": 9100,
+            "daLegal": 9100,
+            "daPermittable": 11000
+          },
+          {
+            "axles": 12,
+            "saLegal": 9100,
+            "saPermittable": 9100,
+            "daLegal": 17000,
+            "daPermittable": 23000
+          },
+          {
+            "axles": 13,
+            "saLegal": 9100,
+            "saPermittable": 9100,
+            "daLegal": 24000,
+            "daPermittable": 28000
+          }
+        ],
         "displayCodePrefix": "TT",
         "displayCodeSteerAxle": "S",
         "displayCodeDriveAxle": "D"
@@ -4631,6 +4684,29 @@
         "id": "OGSERVC",
         "name": "Oil and Gas - Service Rigs",
         "category": "powerunit",
+        "defaultWeightDimensions": [
+          {
+            "axles": 11,
+            "saLegal": 9100,
+            "saPermittable": 12000,
+            "daLegal": 9100,
+            "daPermittable": 11000
+          },
+          {
+            "axles": 12,
+            "saLegal": 9100,
+            "saPermittable": 12000,
+            "daLegal": 17000,
+            "daPermittable": 23000
+          },
+          {
+            "axles": 13,
+            "saLegal": 9100,
+            "saPermittable": 12000,
+            "daLegal": 24000,
+            "daPermittable": 28000
+          }
+        ],
         "displayCodePrefix": "TT",
         "displayCodeSteerAxle": "S",
         "displayCodeDriveAxle": "D"
@@ -4639,6 +4715,22 @@
         "id": "OGSRRAH",
         "name": "Oil and Gas - Service Rigs and Rathole Augers Only Equipped with Heavy Front Projected Crane (must exceed 14,000 kg tare weight)",
         "category": "multisteer",
+        "defaultWeightDimensions": [
+          {
+            "axles": 22,
+            "saLegal": 17000,
+            "saPermittable": 20000,
+            "daLegal": 17000,
+            "daPermittable": 23000
+          },
+          {
+            "axles": 23,
+            "saLegal": 17000,
+            "saPermittable": 20000,
+            "daLegal": 24000,
+            "daPermittable": 28000
+          }
+        ],
         "displayCodePrefix": "MC",
         "displayCodeSteerAxle": "S",
         "displayCodeDriveAxle": "A"
@@ -4667,12 +4759,12 @@
             "saLegal": 9100,
             "saPermittable": 9100,
             "daLegal": 24000,
-            "daPermittable": 28000
+            "daPermittable": 24000
           },
           {
             "axles": 23,
             "saLegal": 15200,
-            "saPermittable": 15200,
+            "saPermittable": 17000,
             "daLegal": 24000,
             "daPermittable": 28000
           }
@@ -4705,7 +4797,7 @@
             "saLegal": 9100,
             "saPermittable": 9100,
             "daLegal": 24000,
-            "daPermittable": 28000
+            "daPermittable": 24000
           },
           {
             "axles": 23,
@@ -4743,7 +4835,7 @@
             "saLegal": 9100,
             "saPermittable": 9100,
             "daLegal": 24000,
-            "daPermittable": 28000
+            "daPermittable": 24000
           },
           {
             "axles": 23,
@@ -4881,6 +4973,36 @@
         "id": "TOWVEHC",
         "name": "Tow Vehicles",
         "category": "powerunit",
+        "defaultWeightDimensions": [
+          {
+            "axles": 11,
+            "saLegal": 9100,
+            "saPermittable": 9100,
+            "daLegal": 9100,
+            "daPermittable": 11000
+          },
+          {
+            "axles": 12,
+            "saLegal": 9100,
+            "saPermittable": 9100,
+            "daLegal": 17000,
+            "daPermittable": 23000
+          },
+          {
+            "axles": 13,
+            "saLegal": 9100,
+            "saPermittable": 9100,
+            "daLegal": 24000,
+            "daPermittable": 28000
+          },
+          {
+            "axles": 23,
+            "saLegal": 15200,
+            "saPermittable": 15200,
+            "daLegal": 24000,
+            "daPermittable": 28000
+          }
+        ],
         "displayCodePrefix": "TT",
         "displayCodeSteerAxle": "S",
         "displayCodeDriveAxle": "D"
@@ -5089,7 +5211,107 @@
         "id": "FEPNYTR",
         "name": "Fixed Equipment - Pony Trailers",
         "category": "pony",
-        "displayCode": "B"
+        "displayCode": "B",
+        "defaultWeightDimensions": [
+          {
+            "axles": 1,
+            "legal": 9100,
+            "permittable": 11000
+          },
+          {
+            "axles": 1,
+            "modifier": {
+              "category": "powerunit",
+              "position": "before",
+              "axles": 2,
+              "minInteraxleSpacing": 300
+            },
+            "legal": 9100,
+            "permittable": 9100
+          },
+          {
+            "axles": 1,
+            "modifier": {
+              "category": "multisteer",
+              "position": "before",
+              "axles": 2,
+              "minInteraxleSpacing": 300
+            },
+            "legal": 9100,
+            "permittable": 9100
+          },
+          {
+            "axles": 1,
+            "modifier": {
+              "category": "powerunit",
+              "position": "before",
+              "axles": 3,
+              "minInteraxleSpacing": 300
+            },
+            "legal": 9100,
+            "permittable": 9100
+          },
+          {
+            "axles": 1,
+            "modifier": {
+              "category": "multisteer",
+              "position": "before",
+              "axles": 3,
+              "minInteraxleSpacing": 300
+            },
+            "legal": 9100,
+            "permittable": 9100
+          },
+          {
+            "axles": 3,
+            "legal": 21000,
+            "permittable": 21000
+          },
+          {
+            "axles": 3,
+            "modifier": {
+              "category": "powerunit",
+              "position": "before",
+              "axles": 1,
+              "minInteraxleSpacing": 300
+            },
+            "legal": 17000,
+            "permittable": 17000
+          },
+          {
+            "axles": 3,
+            "modifier": {
+              "category": "multisteer",
+              "position": "before",
+              "axles": 1,
+              "minInteraxleSpacing": 300
+            },
+            "legal": 17000,
+            "permittable": 17000
+          },
+          {
+            "axles": 3,
+            "modifier": {
+              "category": "powerunit",
+              "position": "before",
+              "axles": 2,
+              "minInteraxleSpacing": 550
+            },
+            "legal": 17000,
+            "permittable": 21000
+          },
+          {
+            "axles": 3,
+            "modifier": {
+              "category": "multisteer",
+              "position": "before",
+              "axles": 2,
+              "minInteraxleSpacing": 550
+            },
+            "legal": 17000,
+            "permittable": 21000
+          }
+        ]
       },
       {
         "id": "FEBGHSE",
@@ -5244,7 +5466,107 @@
         "id": "PONYTRL",
         "name": "Pony Trailers",
         "category": "pony",
-        "displayCode": "B"
+        "displayCode": "B",
+        "defaultWeightDimensions": [
+          {
+            "axles": 1,
+            "legal": 9100,
+            "permittable": 11000
+          },
+          {
+            "axles": 1,
+            "modifier": {
+              "category": "powerunit",
+              "position": "before",
+              "axles": 2,
+              "minInteraxleSpacing": 300
+            },
+            "legal": 9100,
+            "permittable": 9100
+          },
+          {
+            "axles": 1,
+            "modifier": {
+              "category": "multisteer",
+              "position": "before",
+              "axles": 2,
+              "minInteraxleSpacing": 300
+            },
+            "legal": 9100,
+            "permittable": 9100
+          },
+          {
+            "axles": 1,
+            "modifier": {
+              "category": "powerunit",
+              "position": "before",
+              "axles": 3,
+              "minInteraxleSpacing": 300
+            },
+            "legal": 9100,
+            "permittable": 9100
+          },
+          {
+            "axles": 1,
+            "modifier": {
+              "category": "multisteer",
+              "position": "before",
+              "axles": 3,
+              "minInteraxleSpacing": 300
+            },
+            "legal": 9100,
+            "permittable": 9100
+          },
+          {
+            "axles": 3,
+            "legal": 21000,
+            "permittable": 21000
+          },
+          {
+            "axles": 3,
+            "modifier": {
+              "category": "powerunit",
+              "position": "before",
+              "axles": 1,
+              "minInteraxleSpacing": 300
+            },
+            "legal": 17000,
+            "permittable": 17000
+          },
+          {
+            "axles": 3,
+            "modifier": {
+              "category": "multisteer",
+              "position": "before",
+              "axles": 1,
+              "minInteraxleSpacing": 300
+            },
+            "legal": 17000,
+            "permittable": 17000
+          },
+          {
+            "axles": 3,
+            "modifier": {
+              "category": "powerunit",
+              "position": "before",
+              "axles": 2,
+              "minInteraxleSpacing": 550
+            },
+            "legal": 17000,
+            "permittable": 21000
+          },
+          {
+            "axles": 3,
+            "modifier": {
+              "category": "multisteer",
+              "position": "before",
+              "axles": 2,
+              "minInteraxleSpacing": 550
+            },
+            "legal": 17000,
+            "permittable": 21000
+          }
+        ]
       },
       {
         "id": "REDIMIX",
@@ -5316,7 +5638,14 @@
         "id": "STWDTAN",
         "name": "Semi-Trailers - Spread Tandems",
         "category": "semi",
-        "displayCode": "T"
+        "displayCode": "T",
+        "defaultWeightDimensions": [
+          {
+            "axles": 2,
+            "legal": 9100,
+            "permittable": 18200
+          }
+        ]
       },
       {
         "id": "STSTEER",
@@ -7200,7 +7529,14 @@
               "type": "STWHELR",
               "jeep": false,
               "booster": false,
-              "weightPermittable": true
+              "weightPermittable": true,
+              "weightDimensions": [
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 28000
+                }
+              ]
             }
           ]
         }
@@ -8635,7 +8971,14 @@
                   ]
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "weightDimensions": [
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 40000
+                }
+              ]
             },
             {
               "type": "STWIDWH",
@@ -8662,7 +9005,14 @@
                   ]
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "weightDimensions": [
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 52000
+                }
+              ]
             },
             {
               "type": "EXPANDO",
@@ -8790,7 +9140,14 @@
                   "l": 27.5
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "weightDimensions": [
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 52000
+                }
+              ]
             },
             {
               "type": "EXPANDO",
@@ -8930,7 +9287,14 @@
                   "l": 27.5
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "weightDimensions": [
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 52000
+                }
+              ]
             },
             {
               "type": "EXPANDO",
@@ -9070,7 +9434,14 @@
                   "l": 27.5
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "weightDimensions": [
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 52000
+                }
+              ]
             },
             {
               "type": "EXPANDO",
@@ -9976,6 +10347,22 @@
         },
         {
           "type": "PICKRTT",
+          "weightDimensions": [
+            {
+              "axles": 11,
+              "saLegal": 9100,
+              "saPermittable": 9100,
+              "daLegal": 9100,
+              "daPermittable": 11000
+            },
+            {
+              "axles": 13,
+              "saLegal": 9100,
+              "saPermittable": 9100,
+              "daLegal": 24000,
+              "daPermittable": 28000
+            }
+          ],
           "trailers": [
             {
               "type": "OGOSFDT",
@@ -10222,7 +10609,14 @@
                   ]
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "weightDimensions": [
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 52000
+                }
+              ]
             },
             {
               "type": "PLATWHE",
@@ -10236,6 +10630,22 @@
         },
         {
           "type": "TRCKPME",
+          "weightDimensions": [
+            {
+              "axles": 11,
+              "saLegal": 9100,
+              "saPermittable": 9100,
+              "daLegal": 9100,
+              "daPermittable": 11000
+            },
+            {
+              "axles": 13,
+              "saLegal": 9100,
+              "saPermittable": 9100,
+              "daLegal": 24000,
+              "daPermittable": 28000
+            }
+          ],
           "trailers": [
             {
               "type": "OGOSFDT",
@@ -10482,7 +10892,14 @@
                   ]
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "weightDimensions": [
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 52000
+                }
+              ]
             },
             {
               "type": "PLATWHE",
@@ -10496,6 +10913,22 @@
         },
         {
           "type": "TRACPME",
+          "weightDimensions": [
+            {
+              "axles": 11,
+              "saLegal": 9100,
+              "saPermittable": 9100,
+              "daLegal": 9100,
+              "daPermittable": 11000
+            },
+            {
+              "axles": 13,
+              "saLegal": 9100,
+              "saPermittable": 9100,
+              "daLegal": 24000,
+              "daPermittable": 28000
+            }
+          ],
           "trailers": [
             {
               "type": "OGOSFDT",
@@ -10742,7 +11175,14 @@
                   ]
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "weightDimensions": [
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 52000
+                }
+              ]
             },
             {
               "type": "PLATWHE",
@@ -10826,7 +11266,19 @@
                   ]
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "weightDimensions": [
+                {
+                  "axles": 1,
+                  "legal": 17000,
+                  "permittable": 21000
+                },
+                {
+                  "axles": 2,
+                  "legal": 21000,
+                  "permittable": 21000
+                }
+              ]
             },
             {
               "type": "STACTRN",
@@ -11000,7 +11452,14 @@
                   ]
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "weightDimensions": [
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 40000
+                }
+              ]
             },
             {
               "type": "STCRANE",
@@ -11092,7 +11551,14 @@
                   ]
                 }
               ],
-              "weightPermittable": true
+              "weightPermittable": true,
+              "weightDimensions": [
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 52000
+                }
+              ]
             },
             {
               "type": "STWDTAN",
@@ -11153,6 +11619,22 @@
         },
         {
           "type": "PICKRTR",
+          "weightDimensions": [
+            {
+              "axles": 11,
+              "saLegal": 9100,
+              "saPermittable": 9100,
+              "daLegal": 9100,
+              "daPermittable": 11000
+            },
+            {
+              "axles": 13,
+              "saLegal": 9100,
+              "saPermittable": 9100,
+              "daLegal": 24000,
+              "daPermittable": 28000
+            }
+          ],
           "trailers": [
             {
               "type": "XXXXXXX",
