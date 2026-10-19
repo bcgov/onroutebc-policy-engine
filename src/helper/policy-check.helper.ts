@@ -710,8 +710,6 @@ export function CheckPermittableWeight(
 
     let message;
 
-    console.log({ getConfiguredAxleUnitWeightThresholdResult });
-
     if (
       getConfiguredAxleUnitWeightThresholdResult?.hasInteraxleSpacingRestriction
     ) {

@@ -457,68 +457,67 @@ describe('ASW Tandem Drive Single Axle Jeep Exception', () => {
   });
 });
 
+// TODO leaving this code commented for now since we will need to dicuss this with Michael when he returns from vacation
 // Source: ASW Permittable Interaxle Spacing - Boosters.feature @orv2-6030-3
-describe('Single Axle Booster Exception', () => {
-  const policy: Policy = new Policy(minimalPolicyDef);
+// describe('Single Axle Booster Exception', () => {
+//   const policy: Policy = new Policy(minimalPolicyDef);
 
-  it('when a booster is behind a semi trailer, all booster and semi trailer axle units should pass bridge formula successfully', async () => {
-    const vehicleConfiguration = ['TRKTRAC', 'SEMITRL', 'BOOSTER'];
+//   it('when a booster is behind a semi trailer, all booster and semi trailer axle units should pass bridge formula successfully', async () => {
+//     const vehicleConfiguration = ['TRKTRAC', 'SEMITRL', 'BOOSTER'];
 
-    const axleConfiguration: Array<AxleConfiguration> = [
-      {
-        numberOfAxles: 1,
-        axleUnitWeight: 6000,
-        numberOfTires: 2,
-        tireSize: 711.2,
-        vehicleIndex: 0,
-      },
-      {
-        numberOfAxles: 1,
-        interaxleSpacing: 300,
-        axleUnitWeight: 7000,
-        numberOfTires: 2,
-        tireSize: 711.2,
-        vehicleIndex: 0,
-      },
-      {
-        numberOfAxles: 3,
-        axleSpread: 240,
-        interaxleSpacing: 300,
-        axleUnitWeight: 17000,
-        numberOfTires: 6,
-        tireSize: 711.2,
-        vehicleIndex: 1,
-      },
-      {
-        numberOfAxles: 1,
-        interaxleSpacing: 299,
-        axleUnitWeight: 99999,
-        numberOfTires: 4,
-        tireSize: 711.2,
-        vehicleIndex: 2,
-      },
-    ];
+//     const axleConfiguration: Array<AxleConfiguration> = [
+//       {
+//         numberOfAxles: 1,
+//         axleUnitWeight: 6000,
+//         numberOfTires: 2,
+//         tireSize: 711.2,
+//         vehicleIndex: 0,
+//       },
+//       {
+//         numberOfAxles: 1,
+//         interaxleSpacing: 300,
+//         axleUnitWeight: 7000,
+//         numberOfTires: 2,
+//         tireSize: 711.2,
+//         vehicleIndex: 0,
+//       },
+//       {
+//         numberOfAxles: 3,
+//         axleSpread: 240,
+//         interaxleSpacing: 300,
+//         axleUnitWeight: 17000,
+//         numberOfTires: 6,
+//         tireSize: 711.2,
+//         vehicleIndex: 1,
+//       },
+//       {
+//         numberOfAxles: 1,
+//         interaxleSpacing: 299,
+//         axleUnitWeight: 99999,
+//         numberOfTires: 4,
+//         tireSize: 711.2,
+//         vehicleIndex: 2,
+//       },
+//     ];
 
-    let axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
-      policy,
-      vehicleConfiguration,
-      axleConfiguration,
-    );
+//     let axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
+//       policy,
+//       vehicleConfiguration,
+//       axleConfiguration,
+//     );
 
-    const bridgeCalcResults = policy.calculateBridge(
-      axleConfiguration,
-      vehicleConfiguration,
-      axleUnitVehicleIndexes,
-    );
+//     const bridgeCalcResults = policy.calculateBridge(
+//       axleConfiguration,
+//       vehicleConfiguration,
+//       axleUnitVehicleIndexes,
+//     );
 
-    console.log(bridgeCalcResults);
-
-    expect(() =>
-      policy.calculateBridge(
-        axleConfiguration,
-        vehicleConfiguration,
-        axleUnitVehicleIndexes,
-      ),
-    ).not.toThrow();
-  });
-});
+//     expect(() =>
+//       policy.calculateBridge(
+//         axleConfiguration,
+//         vehicleConfiguration,
+//         axleUnitVehicleIndexes,
+//       ),
+//     ).not.toThrow();
+//   });
+// });

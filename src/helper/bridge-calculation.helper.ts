@@ -146,28 +146,29 @@ export function runBridgeFormula(
           maxBridge = Math.max(formulaMaxBridge, 29000);
         }
 
+        // TODO leaving this code commented for now since we will need to dicuss this with Michael when he returns from vacation
         /* Source: ASW Permittable Interaxle Spacing - Boosters.feature
          * @orv2-6030-3 bridge formula result is not applicable
          */
+        // const startAxleVehicleIndex =
+        //   axleUnitVehicleIndexes[startAxleIndex - 1];
+        // const endAxleVehicleIndex = axleUnitVehicleIndexes[endAxleIndex - 1];
 
-        const startAxleVehicleIndex =
-          axleUnitVehicleIndexes[startAxleIndex - 1];
-        const endAxleVehicleIndex = axleUnitVehicleIndexes[endAxleIndex - 1];
+        // const startAxleVehicleType =
+        //   vehicleConfiguration[startAxleVehicleIndex];
 
-        const startAxleVehicleType =
-          vehicleConfiguration[startAxleVehicleIndex];
+        // const endAxleVehicleType = vehicleConfiguration[endAxleVehicleIndex];
 
-        const endAxleVehicleType = vehicleConfiguration[endAxleVehicleIndex];
+        // const isStartAxleVehicleTypeSemiTrailer =
+        //   isSemiTrailerType(startAxleVehicleType);
 
-        const isStartAxleVehicleTypeSemiTrailer =
-          isSemiTrailerType(startAxleVehicleType);
+        // const isEndAxleVehicleTypeBooster =
+        //   endAxleVehicleType === TRAILER_CODES.BOOSTER;
 
-        const isEndAxleVehicleTypeBooster =
-          endAxleVehicleType === TRAILER_CODES.BOOSTER;
+        // const exception =
+        //   isStartAxleVehicleTypeSemiTrailer && isEndAxleVehicleTypeBooster;
 
-        // TODO are we automatically passing bridge formula for all axle combinations which include the semi trailer or the booster, or just the semi trailer to booster combination? What if the semi trailer has multiple axles? (this is possible for wheelers)
-        const exception =
-          isStartAxleVehicleTypeSemiTrailer && isEndAxleVehicleTypeBooster;
+        // const exception = false;
 
         // Push the axle group result to the results array, including
         // a convenience success indicator.
@@ -176,7 +177,7 @@ export function runBridgeFormula(
           endAxleUnit: endAxleIndex,
           maxBridge: maxBridge,
           actualWeight: totalWeight,
-          success: exception ? true : totalWeight <= maxBridge,
+          success: totalWeight <= maxBridge,
         });
 
         endAxleIndex++;
