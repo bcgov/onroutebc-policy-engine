@@ -113,8 +113,6 @@ describe('Axle Calculation Functions', () => {
         axleConfiguration,
       );
 
-      console.log({ results });
-
       expect(results[axleUnit - 1]).toMatchObject({
         id: PolicyCheckId.InteraxleSpacing,
         result: expectedResult,

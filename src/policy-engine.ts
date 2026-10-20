@@ -1239,13 +1239,8 @@ export class Policy {
   getDefaultPowerUnitInteraxleSpacing(
     subType: string,
     axles: number,
-  ): InteraxleSpacingRequirement {
-    return getDefaultInteraxleSpacingHelper(
-      this,
-      subType,
-      axles,
-      true,
-    ) as InteraxleSpacingRequirement;
+  ): Array<InteraxleSpacingRequirement> {
+    return getDefaultInteraxleSpacingHelper(this, subType, axles, true);
   }
 
   /**
@@ -1264,13 +1259,8 @@ export class Policy {
   getDefaultTrailerInteraxleSpacing(
     subType: string,
     axles: number,
-  ): InteraxleSpacingRequirement {
-    return getDefaultInteraxleSpacingHelper(
-      this,
-      subType,
-      axles,
-      false,
-    ) as InteraxleSpacingRequirement;
+  ): Array<InteraxleSpacingRequirement> {
+    return getDefaultInteraxleSpacingHelper(this, subType, axles, false);
   }
 
   /** Get legal and permitable weights from JSON,

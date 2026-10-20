@@ -6,8 +6,12 @@ import { InteraxleSpacingModifier } from './interaxle-spacing-modifier';
  * Extends SelfIssuable to include self-issuance capability
  */
 export type InteraxleSpacingRequirement = SelfIssuable & {
-  /** Number of axles applicable to this requirement */
-  axles?: number;
+  /**
+   * Array of 2-digit numbers representing the axle unit pairs this requirement
+   * applies to. The most significant digit is the previous axle unit and the
+   * least significant digit is the current axle unit.
+   */
+  axles?: Array<number>;
   /** The minimum permittable interaxle spacing value in centimetres (optional) */
   min?: number;
   /** The maximum permittable interaxle spacing value in centimetres (optional) */

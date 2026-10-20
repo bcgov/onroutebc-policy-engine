@@ -4287,39 +4287,23 @@ export const data: PolicyDefinition = {
   },
   globalInteraxleSpacingDefaults: [
     {
-      axles: 11,
+      axles: [11, 12, 13, 21, 31],
       min: 300,
     },
     {
-      axles: 12,
-      min: 300,
-    },
-    {
-      axles: 13,
-      min: 300,
-    },
-    {
-      axles: 21,
-      min: 300,
-    },
-    {
-      axles: 22,
+      axles: [22],
       min: 500,
     },
     {
-      axles: 23,
+      axles: [23],
       min: 550,
     },
     {
-      axles: 31,
-      min: 300,
-    },
-    {
-      axles: 32,
+      axles: [32],
       min: 550,
     },
     {
-      axles: 33,
+      axles: [33],
       min: 600,
     },
   ],
@@ -4908,7 +4892,20 @@ export const data: PolicyDefinition = {
         displayCode: 'B',
         interaxleSpacings: [
           {
-            axles: 3,
+            axles: [11, 21, 31],
+            min: 0,
+          },
+          {
+            axles: [12, 22, 32],
+            maxAxleUnitWeight: 23000,
+            modifier: {
+              category: 'semi',
+              position: 'before',
+            },
+            min: 420,
+          },
+          {
+            axles: [13, 23, 33],
             maxAxleUnitWeight: 28000,
             modifier: {
               category: 'semi',
@@ -4992,19 +4989,11 @@ export const data: PolicyDefinition = {
         displayCode: 'J',
         interaxleSpacings: [
           {
-            axles: 2,
-            modifier: {
-              category: 'trailer',
-              position: 'before',
-            },
-            min: 420,
+            axles: [11, 21, 31],
+            min: 120,
           },
           {
-            axles: 3,
-            modifier: {
-              category: 'trailer',
-              position: 'before',
-            },
+            axles: [22, 32, 23, 33],
             min: 420,
           },
         ],
