@@ -1579,7 +1579,6 @@ describe('Axle Calculation Functions', () => {
       (r) => r.id === PolicyCheckId.BridgeFormula,
     );
 
-    console.log(bridgeResults);
     expect(
       bridgeResults.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(false);

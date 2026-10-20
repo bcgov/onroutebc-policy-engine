@@ -750,7 +750,7 @@ export function CheckPermittableWeight(
       result: result ? PolicyCheckResultType.Pass : PolicyCheckResultType.Fail,
       axleUnit: axleUnitNumber,
       actualWeight: axleUnit.axleUnitWeight,
-      thresholdWeight: getConfiguredAxleUnitWeightThresholdResult?.permittable,
+      thresholdWeight: permittableWeight,
     } as AxleUnitPolicyCheckResult;
   });
 }

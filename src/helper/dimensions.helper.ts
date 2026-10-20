@@ -490,10 +490,6 @@ export function selectCorrectWeightDimensionHelper(
               break;
             } else if (isMatch && modifier.minInteraxleSpacing) {
               isMatch = modifier.minInteraxleSpacing <= spacingFromCurrent;
-              console.log(
-                'modifier minInteraxleSpacing <= axle unit interaxleSpacing: ',
-                isMatch,
-              );
             }
             if (isMatch && modifier.maxInteraxleSpacing) {
               isMatch = modifier.maxInteraxleSpacing >= spacingFromCurrent;
@@ -515,9 +511,6 @@ export function selectCorrectWeightDimensionHelper(
             const spacingToNext =
               axleConfiguration[axleIndex + 1].interaxleSpacing;
             if (!spacingToNext) {
-              console.log(
-                `Axle configuration incorrect, missing interaxle spacing`,
-              );
               isMatch = false;
               break;
             } else if (isMatch && modifier.minInteraxleSpacing) {
