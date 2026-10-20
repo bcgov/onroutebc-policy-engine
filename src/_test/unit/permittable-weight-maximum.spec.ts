@@ -501,21 +501,21 @@ describe('ORV2-5709 permittable weight maximums', () => {
         );
         changed.globalWeightDefaults.trailers.find(
           ({ axles }) => axles === 3,
-        )!.permittable = 27500;
+        )!.permittable = 28000;
 
         expect(
           getPermittableResult(
             {
               axleUnit: 3,
               axleCount: 3,
-              actualWeight: 27501,
+              actualWeight: 28001,
               spread: 240,
               trailerType,
             },
             new Policy(changed),
           ),
         ).toMatchObject({
-          thresholdWeight: 27500,
+          thresholdWeight: 28000,
           result: PolicyCheckResultType.Fail,
         });
       },

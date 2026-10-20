@@ -239,7 +239,6 @@ export function getDefaultInteraxleSpacingHelper(
     (specification) => specification.axles === axles,
   );
   if (vehicleDefaults && vehicleDefaults.length > 0) {
-    console.log('returning global interaxle spacing default');
     return JSON.parse(JSON.stringify(vehicleDefaults[0]));
   }
   return {} as InteraxleSpacingRequirement;
