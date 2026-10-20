@@ -2567,42 +2567,6 @@ export const data: PolicyDefinition = {
           conditions: {
             not: {
               fact: 'permitData',
-              path: 'vehicleConfiguration.frontProjection',
-              operator: 'greaterThan',
-              value: 0,
-            },
-          },
-          event: {
-            type: 'violation',
-            params: {
-              message: 'Must be greater than 0m.',
-              code: 'field-validation-error',
-              fieldReference: 'permitData.vehicleConfiguration.frontProjection',
-            },
-          },
-        },
-        {
-          conditions: {
-            not: {
-              fact: 'permitData',
-              path: 'vehicleConfiguration.rearProjection',
-              operator: 'greaterThan',
-              value: 0,
-            },
-          },
-          event: {
-            type: 'violation',
-            params: {
-              message: 'Must be greater than 0m.',
-              code: 'field-validation-error',
-              fieldReference: 'permitData.vehicleConfiguration.rearProjection',
-            },
-          },
-        },
-        {
-          conditions: {
-            not: {
-              fact: 'permitData',
               path: 'vehicleConfiguration.overloadWeight',
               operator: 'greaterThan',
               value: 0,
@@ -5851,7 +5815,7 @@ export const data: PolicyDefinition = {
             {
               type: 'XXXXXXX',
               jeep: false,
-              booster: true,
+              booster: false,
               selfIssue: true,
               sizePermittable: true,
               sizeDimensions: [
@@ -5872,7 +5836,7 @@ export const data: PolicyDefinition = {
             {
               type: 'XXXXXXX',
               jeep: false,
-              booster: true,
+              booster: false,
               selfIssue: true,
               sizePermittable: true,
               sizeDimensions: [
