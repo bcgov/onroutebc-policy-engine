@@ -1,4 +1,5 @@
 import { PolicyDefinition } from 'onroute-policy-engine/types';
+import { VEHICLE_CATEGORIES } from '../../constants/vehicle-categories';
 
 export const data: PolicyDefinition = {
   minPEVersion: '2.0.0',
@@ -1628,27 +1629,6 @@ export const data: PolicyDefinition = {
         },
         {
           conditions: {
-            not: {
-              fact: 'permitData',
-              path: 'expiryDate',
-              operator: 'equal',
-              value: {
-                fact: 'endOfPermitYear',
-              },
-            },
-          },
-          event: {
-            type: 'violation',
-            params: {
-              message:
-                'Permit end date must be the end of the year in which the permit starts',
-              code: 'field-validation-error',
-              fieldReference: 'permitData.expiryDate',
-            },
-          },
-        },
-        {
-          conditions: {
             all: [
               {
                 not: {
@@ -1670,7 +1650,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message:
-                "Vehicle description should not exist unless the permit vehicle type is 'Other'.",
+                'Vehicle description should not exist unless the permit vehicle type is Other.',
               code: 'field-validation-error',
               fieldReference: 'permitData.vehicleDetails.vehicleDescription',
             },
@@ -1699,7 +1679,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message:
-                "Vehicle description must be present if the permit vehicle type is 'Other'.",
+                'Vehicle description must be present if the permit vehicle type is Other.',
               code: 'field-validation-error',
               fieldReference: 'permitData.vehicleDetails.vehicleDescription',
             },
@@ -1851,9 +1831,30 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message:
-                "Vehicle subtype not permittable for Vehicle Type 'Other'.",
+                'Vehicle subtype not permittable for Vehicle Type Other.',
               code: 'field-validation-error',
               fieldReference: 'permitData.vehicleDetails.vehicleSubType',
+            },
+          },
+        },
+        {
+          conditions: {
+            not: {
+              fact: 'permitData',
+              path: 'expiryDate',
+              operator: 'equal',
+              value: {
+                fact: 'endOfPermitYear',
+              },
+            },
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message:
+                'Permit end date must be the end of the year in which the permit starts',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.expiryDate',
             },
           },
         },
@@ -2385,7 +2386,16 @@ export const data: PolicyDefinition = {
           params: {},
         },
       ],
-      conditions: [],
+      conditions: [
+        {
+          condition: 'CVSE-1070',
+          mandatory: false,
+        },
+        {
+          condition: 'CVSE-1011',
+          mandatory: false,
+        },
+      ],
     },
     {
       id: 'STWSE',
@@ -4333,8 +4343,8 @@ export const data: PolicyDefinition = {
         ],
       },
       {
-        id: 'wheeler',
-        name: 'Wheeler',
+        id: VEHICLE_CATEGORIES.WHEELER,
+        name: VEHICLE_CATEGORIES.WHEELER,
         defaultWeightDimensions: [
           {
             axles: 1,
@@ -4380,11 +4390,11 @@ export const data: PolicyDefinition = {
     ],
     powerUnitCategories: [
       {
-        id: 'powerunit',
+        id: VEHICLE_CATEGORIES.POWER_UNIT,
         name: 'Default power unit category',
       },
       {
-        id: 'multisteer',
+        id: VEHICLE_CATEGORIES.MULTI_STEER,
         name: 'Power units supporting greater than tandem steer axle units',
         defaultWeightDimensions: [
           {
@@ -4431,12 +4441,12 @@ export const data: PolicyDefinition = {
       {
         id: 'BUSCRUM',
         name: 'Buses',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
       },
       {
         id: 'CONCRET',
         name: 'Concrete Pumper Trucks',
-        category: 'multisteer',
+        category: VEHICLE_CATEGORIES.MULTI_STEER,
         displayCodePrefix: 'MC',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'A',
@@ -4444,7 +4454,7 @@ export const data: PolicyDefinition = {
       {
         id: 'CRANEAT',
         name: 'Cranes - All Terrain',
-        category: 'multisteer',
+        category: VEHICLE_CATEGORIES.MULTI_STEER,
         additionalAxleSubType: 'ATCAXLE',
         displayCodePrefix: 'MC',
         displayCodeSteerAxle: 'S',
@@ -4453,7 +4463,7 @@ export const data: PolicyDefinition = {
       {
         id: 'CRANEMB',
         name: 'Cranes - Mobile',
-        category: 'multisteer',
+        category: VEHICLE_CATEGORIES.MULTI_STEER,
         displayCodePrefix: 'MC',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'A',
@@ -4461,7 +4471,7 @@ export const data: PolicyDefinition = {
       {
         id: 'CRAFTAT',
         name: 'Cranes, Rubber-Tired Loaders, Firetrucks - All Terrain',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'MC',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'A',
@@ -4469,7 +4479,7 @@ export const data: PolicyDefinition = {
       {
         id: 'CRAFTMB',
         name: 'Cranes, Rubber-Tired Loaders, Firetrucks - Mobile',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'MC',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'A',
@@ -4477,12 +4487,12 @@ export const data: PolicyDefinition = {
       {
         id: 'DDCKBUS',
         name: 'Double Decker Buses',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
       },
       {
         id: 'FARMTRC',
         name: 'Farm Tractors',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
@@ -4490,7 +4500,7 @@ export const data: PolicyDefinition = {
       {
         id: 'FARMVEH',
         name: 'Farm Vehicles',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
@@ -4498,7 +4508,37 @@ export const data: PolicyDefinition = {
       {
         id: 'GRADERS',
         name: 'Fixed Equipment - Trucks/Graders etc.',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
+        defaultWeightDimensions: [
+          {
+            axles: 11,
+            saLegal: 9100,
+            saPermittable: 9100,
+            daLegal: 9100,
+            daPermittable: 11000,
+          },
+          {
+            axles: 12,
+            saLegal: 9100,
+            saPermittable: 9100,
+            daLegal: 17000,
+            daPermittable: 23000,
+          },
+          {
+            axles: 13,
+            saLegal: 9100,
+            saPermittable: 9100,
+            daLegal: 24000,
+            daPermittable: 28000,
+          },
+          {
+            axles: 23,
+            saLegal: 15200,
+            saPermittable: 15200,
+            daLegal: 24000,
+            daPermittable: 28000,
+          },
+        ],
         displayCodePrefix: 'MC',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'A',
@@ -4506,12 +4546,12 @@ export const data: PolicyDefinition = {
       {
         id: 'BUSTRLR',
         name: 'Intercity Buses (Pulling Pony Trailers)',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
       },
       {
         id: 'LOGGING',
         name: 'Logging Trucks',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
@@ -4519,7 +4559,7 @@ export const data: PolicyDefinition = {
       {
         id: 'LOGOFFH',
         name: 'Logging Trucks - Off-Highway',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
@@ -4527,8 +4567,24 @@ export const data: PolicyDefinition = {
       {
         id: 'LCVRMDB',
         name: 'Long Combination Vehicles (LCV) - Rocky Mountain Doubles',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
         isLcv: true,
+        defaultWeightDimensions: [
+          {
+            axles: 12,
+            saLegal: 6000,
+            saPermittable: 6000,
+            daLegal: 17000,
+            daPermittable: 17000,
+          },
+          {
+            axles: 13,
+            saLegal: 7300,
+            saPermittable: 7300,
+            daLegal: 24000,
+            daPermittable: 24000,
+          },
+        ],
         conditions: [
           {
             condition: 'CVSE-1014',
@@ -4542,8 +4598,24 @@ export const data: PolicyDefinition = {
       {
         id: 'LCVTPDB',
         name: 'Long Combination Vehicles (LCV) - Turnpike Doubles',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
         isLcv: true,
+        defaultWeightDimensions: [
+          {
+            axles: 12,
+            saLegal: 6000,
+            saPermittable: 6000,
+            daLegal: 17000,
+            daPermittable: 17000,
+          },
+          {
+            axles: 13,
+            saLegal: 7300,
+            saPermittable: 7300,
+            daLegal: 24000,
+            daPermittable: 24000,
+          },
+        ],
         conditions: [
           {
             condition: 'CVSE-1014',
@@ -4557,12 +4629,12 @@ export const data: PolicyDefinition = {
       {
         id: 'LWBTRCT',
         name: 'Long Wheelbase Truck Tractors Exceeding 6.2 m up to 7.25 m',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
       },
       {
         id: 'MUNFITR',
         name: 'Municipal Fire Trucks',
-        category: 'multisteer',
+        category: VEHICLE_CATEGORIES.MULTI_STEER,
         displayCodePrefix: 'MC',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'A',
@@ -4570,7 +4642,7 @@ export const data: PolicyDefinition = {
       {
         id: 'OGBEDTK',
         name: 'Oil and Gas - Bed Trucks',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
@@ -4578,7 +4650,7 @@ export const data: PolicyDefinition = {
       {
         id: 'OGOILSW',
         name: 'Oil and Gas - Oilfield Sows',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
@@ -4586,7 +4658,7 @@ export const data: PolicyDefinition = {
       {
         id: 'OGSERVC',
         name: 'Oil and Gas - Service Rigs',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
@@ -4594,7 +4666,7 @@ export const data: PolicyDefinition = {
       {
         id: 'OGSRRAH',
         name: 'Oil and Gas - Service Rigs and Rathole Augers Only Equipped with Heavy Front Projected Crane (must exceed 14,000 kg tare weight)',
-        category: 'multisteer',
+        category: VEHICLE_CATEGORIES.MULTI_STEER,
         displayCodePrefix: 'MC',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'A',
@@ -4602,14 +4674,14 @@ export const data: PolicyDefinition = {
       {
         id: 'PICKRTT',
         name: 'Picker Truck Tractors',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
         defaultWeightDimensions: [
           {
             axles: 11,
             saLegal: 9100,
             saPermittable: 9100,
             daLegal: 9100,
-            daPermittable: 11000,
+            daPermittable: 9100,
           },
           {
             axles: 12,
@@ -4640,14 +4712,14 @@ export const data: PolicyDefinition = {
       {
         id: 'TRCKPME',
         name: 'Truck with PME',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
         defaultWeightDimensions: [
           {
             axles: 11,
             saLegal: 9100,
             saPermittable: 9100,
             daLegal: 9100,
-            daPermittable: 11000,
+            daPermittable: 9100,
           },
           {
             axles: 12,
@@ -4678,14 +4750,14 @@ export const data: PolicyDefinition = {
       {
         id: 'TRACPME',
         name: 'Truck Tractor with PME',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
         defaultWeightDimensions: [
           {
             axles: 11,
             saLegal: 9100,
             saPermittable: 9100,
             daLegal: 9100,
-            daPermittable: 11000,
+            daPermittable: 9100,
           },
           {
             axles: 12,
@@ -4716,7 +4788,37 @@ export const data: PolicyDefinition = {
       {
         id: 'PICKRTR',
         name: 'Picker Trucks',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
+        defaultWeightDimensions: [
+          {
+            axles: 11,
+            saLegal: 9100,
+            saPermittable: 9100,
+            daLegal: 9100,
+            daPermittable: 9100,
+          },
+          {
+            axles: 12,
+            saLegal: 9100,
+            saPermittable: 9100,
+            daLegal: 17000,
+            daPermittable: 23000,
+          },
+          {
+            axles: 13,
+            saLegal: 9100,
+            saPermittable: 9100,
+            daLegal: 24000,
+            daPermittable: 24000,
+          },
+          {
+            axles: 23,
+            saLegal: 15200,
+            saPermittable: 15200,
+            daLegal: 24000,
+            daPermittable: 28000,
+          },
+        ],
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
@@ -4724,7 +4826,16 @@ export const data: PolicyDefinition = {
       {
         id: 'RBTRLDR',
         name: 'Rubber Tired Loaders',
-        category: 'multisteer',
+        category: VEHICLE_CATEGORIES.MULTI_STEER,
+        defaultWeightDimensions: [
+          {
+            axles: 11,
+            saLegal: 9100,
+            saPermittable: 9100,
+            daLegal: 9100,
+            daPermittable: 12000,
+          },
+        ],
         displayCodePrefix: 'MC',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'A',
@@ -4732,7 +4843,16 @@ export const data: PolicyDefinition = {
       {
         id: 'SCRAPER',
         name: 'Scrapers',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
+        defaultWeightDimensions: [
+          {
+            axles: 11,
+            saLegal: 9100,
+            saPermittable: 23000,
+            daLegal: 9100,
+            daPermittable: 23000,
+          },
+        ],
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
@@ -4740,17 +4860,47 @@ export const data: PolicyDefinition = {
       {
         id: 'SPAUTHV',
         name: 'Specially Authorized Vehicles',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
       },
       {
         id: 'PUTAXIS',
         name: 'Taxis',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
       },
       {
         id: 'TLSCONV',
         name: 'Telescopic Conveyor Trucks',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
+        defaultWeightDimensions: [
+          {
+            axles: 12,
+            saLegal: 9100,
+            saPermittable: 12000,
+            daLegal: 17000,
+            daPermittable: 23000,
+          },
+          {
+            axles: 13,
+            saLegal: 9100,
+            saPermittable: 12000,
+            daLegal: 24000,
+            daPermittable: 28000,
+          },
+          {
+            axles: 23,
+            saLegal: 15200,
+            saPermittable: 17000,
+            daLegal: 24000,
+            daPermittable: 28000,
+          },
+          {
+            axles: 33,
+            saLegal: 24000,
+            saPermittable: 24000,
+            daLegal: 24000,
+            daPermittable: 28000,
+          },
+        ],
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
@@ -4758,7 +4908,7 @@ export const data: PolicyDefinition = {
       {
         id: 'TOWVEHC',
         name: 'Tow Vehicles',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
@@ -4766,7 +4916,7 @@ export const data: PolicyDefinition = {
       {
         id: 'TRKTRAC',
         name: 'Truck Tractors',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
@@ -4774,7 +4924,7 @@ export const data: PolicyDefinition = {
       {
         id: 'STINGER',
         name: 'Truck Tractors - Stinger Steered',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
@@ -4782,7 +4932,7 @@ export const data: PolicyDefinition = {
       {
         id: 'REGTRCK',
         name: 'Trucks',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
         defaultWeightDimensions: [
           {
             axles: 11,
@@ -4806,7 +4956,7 @@ export const data: PolicyDefinition = {
       {
         id: 'PLOWBLD',
         name: 'Trucks Equipped with Front or Underbody Plow Blades',
-        category: 'powerunit',
+        category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
@@ -4898,7 +5048,7 @@ export const data: PolicyDefinition = {
       {
         id: 'FEWHELR',
         name: 'Fixed Equipment - Wheeler Semi-Trailers',
-        category: 'wheeler',
+        category: VEHICLE_CATEGORIES.WHEELER,
         displayCode: 'T',
       },
       {
@@ -5006,6 +5156,13 @@ export const data: PolicyDefinition = {
         displayCode: 'B',
       },
       {
+        id: 'PLATWHE',
+        name: 'Platform Trailers - Wheelers',
+        category: VEHICLE_CATEGORIES.WHEELER,
+        additionalAxleSubType: 'PFMAXLE',
+        displayCode: 'B',
+      },
+      {
         id: 'POLETRL',
         name: 'Pole Trailers',
         category: 'semi',
@@ -5086,12 +5243,12 @@ export const data: PolicyDefinition = {
       {
         id: 'STWDTAN',
         name: 'Semi-Trailers - Spread Tandems',
-        category: 'semi',
+        category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
         id: 'STSTEER',
-        name: 'Semi-Trailers - Steering Trailers',
+        name: VEHICLE_CATEGORIES.STEERING_TRAILER,
         category: 'semi',
         displayCode: 'T',
       },
@@ -5110,13 +5267,13 @@ export const data: PolicyDefinition = {
       {
         id: 'STWHELR',
         name: 'Semi-Trailers - Wheelers',
-        category: 'wheeler',
+        category: VEHICLE_CATEGORIES.WHEELER,
         displayCode: 'T',
       },
       {
         id: 'STWIDWH',
         name: 'Semi-Trailers - Wide Wheelers',
-        category: 'wheeler',
+        category: VEHICLE_CATEGORIES.WHEELER,
         displayCode: 'T',
       },
       {
@@ -5366,6 +5523,7 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              canAddAxleUnits: true,
             },
             {
               type: 'STRSELF',
@@ -5383,6 +5541,7 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              canAddAxleUnits: true,
             },
             {
               type: 'FEWHELR',
@@ -5406,6 +5565,19 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+            },
+            {
+              type: 'SEMITRL',
+              jeep: false,
+              booster: false,
+              weightPermittable: true,
+            },
+            {
+              type: 'PLATWHE',
+              jeep: true,
+              booster: true,
+              weightPermittable: true,
+              canAddAxleUnits: true,
             },
           ],
         },
@@ -5485,6 +5657,7 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              canAddAxleUnits: true,
             },
             {
               type: 'XXXXXXX',
@@ -5510,6 +5683,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
           ],
+          canAddAxleUnits: true,
         },
         {
           type: 'MUNFITR',
@@ -5529,6 +5703,7 @@ export const data: PolicyDefinition = {
                   l: 25,
                 },
               ],
+              weightPermittable: true,
             },
           ],
         },
@@ -5550,6 +5725,7 @@ export const data: PolicyDefinition = {
                   l: 25,
                 },
               ],
+              weightPermittable: true,
             },
           ],
         },
@@ -5572,6 +5748,7 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              canAddAxleUnits: true,
             },
             {
               type: 'XXXXXXX',
@@ -5771,6 +5948,12 @@ export const data: PolicyDefinition = {
                 },
               ],
             },
+            {
+              type: 'FECVYRX',
+              jeep: false,
+              booster: false,
+              weightPermittable: true,
+            },
           ],
         },
         {
@@ -5815,6 +5998,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
           ],
+          canAddAxleUnits: true,
         },
         {
           type: 'DDCKBUS',
@@ -5913,6 +6097,7 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              canAddAxleUnits: true,
             },
             {
               type: 'STRSELF',
@@ -5936,6 +6121,14 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              canAddAxleUnits: true,
+            },
+            {
+              type: 'PLATWHE',
+              jeep: true,
+              booster: true,
+              weightPermittable: true,
+              canAddAxleUnits: true,
             },
           ],
         },
@@ -5997,6 +6190,7 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              canAddAxleUnits: true,
             },
             {
               type: 'STRSELF',
@@ -6020,6 +6214,14 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              canAddAxleUnits: true,
+            },
+            {
+              type: 'PLATWHE',
+              jeep: true,
+              booster: true,
+              weightPermittable: true,
+              canAddAxleUnits: true,
             },
           ],
         },
@@ -6081,6 +6283,7 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              canAddAxleUnits: true,
             },
             {
               type: 'STRSELF',
@@ -6104,6 +6307,14 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              canAddAxleUnits: true,
+            },
+            {
+              type: 'PLATWHE',
+              jeep: true,
+              booster: true,
+              weightPermittable: true,
+              canAddAxleUnits: true,
             },
           ],
         },
@@ -6195,6 +6406,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
           ],
         },
@@ -6216,6 +6428,7 @@ export const data: PolicyDefinition = {
                   l: 41,
                 },
               ],
+              weightPermittable: true,
             },
           ],
         },
@@ -6237,6 +6450,17 @@ export const data: PolicyDefinition = {
                   l: 23,
                 },
               ],
+            },
+          ],
+        },
+        {
+          type: 'PICKRTR',
+          trailers: [
+            {
+              type: 'XXXXXXX',
+              jeep: false,
+              booster: false,
+              weightPermittable: true,
             },
           ],
         },
@@ -6425,6 +6649,7 @@ export const data: PolicyDefinition = {
                   l: 23,
                 },
               ],
+              weightPermittable: true,
             },
           ],
         },
@@ -6890,6 +7115,20 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
+            },
+            {
+              type: 'DOLLIES',
+              jeep: false,
+              booster: false,
+              weightPermittable: true,
+              canAddAxleUnits: true,
+            },
+            {
+              type: 'STWHELR',
+              jeep: false,
+              booster: false,
+              weightPermittable: true,
             },
           ],
         },
@@ -7141,6 +7380,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STACTRN',
@@ -7207,6 +7447,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'HIBOFLT',
@@ -7229,6 +7470,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STLOGNG',
@@ -7267,6 +7509,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STSTEER',
@@ -7311,6 +7554,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STROPRT',
@@ -7426,6 +7670,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'PONYTRL',
@@ -7448,6 +7693,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
           ],
         },
@@ -7809,6 +8055,8 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
+              canAddAxleUnits: true,
             },
           ],
         },
@@ -8080,6 +8328,7 @@ export const data: PolicyDefinition = {
                   l: 27.5,
                 },
               ],
+              weightPermittable: true,
             },
           ],
         },
@@ -8198,6 +8447,15 @@ export const data: PolicyDefinition = {
                   l: 27.5,
                 },
               ],
+              weightPermittable: true,
+              canAddAxleUnits: true,
+            },
+            {
+              type: 'PLATWHE',
+              jeep: true,
+              booster: true,
+              weightPermittable: true,
+              canAddAxleUnits: true,
             },
             {
               type: 'HIBOEXP',
@@ -8224,6 +8482,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'HIBOFLT',
@@ -8250,6 +8509,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STSDBDK',
@@ -8276,6 +8536,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STWHELR',
@@ -8302,6 +8563,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STWIDWH',
@@ -8328,6 +8590,31 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
+            },
+            {
+              type: 'EXPANDO',
+              jeep: false,
+              booster: true,
+              weightPermittable: true,
+            },
+            {
+              type: 'OGOSFDT',
+              jeep: false,
+              booster: true,
+              weightPermittable: true,
+            },
+            {
+              type: 'SEMITRL',
+              jeep: false,
+              booster: true,
+              weightPermittable: true,
+            },
+            {
+              type: 'STCRANE',
+              jeep: false,
+              booster: true,
+              weightPermittable: true,
             },
           ],
         },
@@ -8349,6 +8636,7 @@ export const data: PolicyDefinition = {
                   l: 23,
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'PLATFRM',
@@ -8366,6 +8654,14 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              canAddAxleUnits: true,
+            },
+            {
+              type: 'PLATWHE',
+              jeep: true,
+              booster: true,
+              weightPermittable: true,
+              canAddAxleUnits: true,
             },
             {
               type: 'HIBOEXP',
@@ -8388,6 +8684,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STWHELR',
@@ -8404,6 +8701,7 @@ export const data: PolicyDefinition = {
                   l: 27.5,
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STWIDWH',
@@ -8420,6 +8718,43 @@ export const data: PolicyDefinition = {
                   l: 27.5,
                 },
               ],
+              weightPermittable: true,
+            },
+            {
+              type: 'EXPANDO',
+              jeep: false,
+              booster: true,
+              weightPermittable: true,
+            },
+            {
+              type: 'SEMITRL',
+              jeep: false,
+              booster: true,
+              weightPermittable: true,
+            },
+            {
+              type: 'HIBOFLT',
+              jeep: false,
+              booster: true,
+              weightPermittable: true,
+            },
+            {
+              type: 'STSDBDK',
+              jeep: false,
+              booster: true,
+              weightPermittable: true,
+            },
+            {
+              type: 'STSTEER',
+              jeep: false,
+              booster: true,
+              weightPermittable: true,
+            },
+            {
+              type: 'STCRANE',
+              jeep: false,
+              booster: true,
+              weightPermittable: true,
             },
           ],
         },
@@ -8441,6 +8776,7 @@ export const data: PolicyDefinition = {
                   l: 23,
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'PLATFRM',
@@ -8458,6 +8794,14 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              canAddAxleUnits: true,
+            },
+            {
+              type: 'PLATWHE',
+              jeep: true,
+              booster: true,
+              weightPermittable: true,
+              canAddAxleUnits: true,
             },
             {
               type: 'HIBOEXP',
@@ -8480,6 +8824,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STWHELR',
@@ -8496,6 +8841,7 @@ export const data: PolicyDefinition = {
                   l: 27.5,
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STWIDWH',
@@ -8512,6 +8858,43 @@ export const data: PolicyDefinition = {
                   l: 27.5,
                 },
               ],
+              weightPermittable: true,
+            },
+            {
+              type: 'EXPANDO',
+              jeep: false,
+              booster: true,
+              weightPermittable: true,
+            },
+            {
+              type: 'SEMITRL',
+              jeep: false,
+              booster: true,
+              weightPermittable: true,
+            },
+            {
+              type: 'HIBOFLT',
+              jeep: false,
+              booster: true,
+              weightPermittable: true,
+            },
+            {
+              type: 'STSDBDK',
+              jeep: false,
+              booster: true,
+              weightPermittable: true,
+            },
+            {
+              type: 'STSTEER',
+              jeep: false,
+              booster: true,
+              weightPermittable: true,
+            },
+            {
+              type: 'STCRANE',
+              jeep: false,
+              booster: true,
+              weightPermittable: true,
             },
           ],
         },
@@ -8533,6 +8916,7 @@ export const data: PolicyDefinition = {
                   l: 23,
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'PLATFRM',
@@ -8550,6 +8934,14 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              canAddAxleUnits: true,
+            },
+            {
+              type: 'PLATWHE',
+              jeep: true,
+              booster: true,
+              weightPermittable: true,
+              canAddAxleUnits: true,
             },
             {
               type: 'HIBOEXP',
@@ -8572,6 +8964,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STWHELR',
@@ -8588,6 +8981,7 @@ export const data: PolicyDefinition = {
                   l: 27.5,
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STWIDWH',
@@ -8604,6 +8998,43 @@ export const data: PolicyDefinition = {
                   l: 27.5,
                 },
               ],
+              weightPermittable: true,
+            },
+            {
+              type: 'EXPANDO',
+              jeep: false,
+              booster: true,
+              weightPermittable: true,
+            },
+            {
+              type: 'SEMITRL',
+              jeep: false,
+              booster: true,
+              weightPermittable: true,
+            },
+            {
+              type: 'HIBOFLT',
+              jeep: false,
+              booster: true,
+              weightPermittable: true,
+            },
+            {
+              type: 'STSDBDK',
+              jeep: false,
+              booster: true,
+              weightPermittable: true,
+            },
+            {
+              type: 'STSTEER',
+              jeep: false,
+              booster: true,
+              weightPermittable: true,
+            },
+            {
+              type: 'STCRANE',
+              jeep: false,
+              booster: true,
+              weightPermittable: true,
             },
           ],
         },
@@ -8625,6 +9056,23 @@ export const data: PolicyDefinition = {
                   l: 23,
                 },
               ],
+            },
+            {
+              type: 'XXXXXXX',
+              jeep: false,
+              booster: false,
+              weightPermittable: true,
+            },
+          ],
+        },
+        {
+          type: 'REGTRCK',
+          trailers: [
+            {
+              type: 'XXXXXXX',
+              jeep: false,
+              booster: false,
+              weightPermittable: true,
             },
           ],
         },
@@ -9300,7 +9748,7 @@ export const data: PolicyDefinition = {
             {
               type: 'POLETRL',
               jeep: true,
-              booster: false,
+              booster: true,
               selfIssue: true,
               sizePermittable: true,
               sizeDimensions: [
@@ -9427,6 +9875,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'PONYTRL',
@@ -9517,6 +9966,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'HIBOFLT',
@@ -9539,6 +9989,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STSDBDK',
@@ -9561,6 +10012,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STSTEER',
@@ -9583,6 +10035,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STWHELR',
@@ -9605,6 +10058,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STCRANE',
@@ -9627,6 +10081,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STROPRT',
@@ -9649,6 +10104,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              canAddAxleUnits: true,
             },
             {
               type: 'STRSELF',
@@ -9671,6 +10127,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              canAddAxleUnits: true,
             },
             {
               type: 'STWIDWH',
@@ -9693,6 +10150,15 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
+            },
+            {
+              type: 'PLATWHE',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              weightPermittable: true,
+              canAddAxleUnits: true,
             },
           ],
         },
@@ -9760,6 +10226,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'HIBOFLT',
@@ -9782,6 +10249,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STSDBDK',
@@ -9804,6 +10272,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STSTEER',
@@ -9826,6 +10295,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STWHELR',
@@ -9848,6 +10318,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STCRANE',
@@ -9870,6 +10341,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STROPRT',
@@ -9892,6 +10364,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              canAddAxleUnits: true,
             },
             {
               type: 'STRSELF',
@@ -9914,6 +10387,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              canAddAxleUnits: true,
             },
             {
               type: 'STWIDWH',
@@ -9936,6 +10410,15 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
+            },
+            {
+              type: 'PLATWHE',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              weightPermittable: true,
+              canAddAxleUnits: true,
             },
           ],
         },
@@ -10003,6 +10486,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'HIBOFLT',
@@ -10025,6 +10509,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STSDBDK',
@@ -10047,6 +10532,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STSTEER',
@@ -10069,6 +10555,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STWHELR',
@@ -10091,6 +10578,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STCRANE',
@@ -10113,6 +10601,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STROPRT',
@@ -10135,6 +10624,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              canAddAxleUnits: true,
             },
             {
               type: 'STRSELF',
@@ -10157,6 +10647,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              canAddAxleUnits: true,
             },
             {
               type: 'STWIDWH',
@@ -10179,6 +10670,15 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
+            },
+            {
+              type: 'PLATWHE',
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              weightPermittable: true,
+              canAddAxleUnits: true,
             },
           ],
         },
@@ -10187,6 +10687,30 @@ export const data: PolicyDefinition = {
           trailers: [
             {
               type: 'PLATFRM',
+              jeep: true,
+              booster: false,
+              selfIssue: false,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.88,
+                  l: 27.5,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+              weightPermittable: true,
+              canAddAxleUnits: true,
+            },
+            {
+              type: 'PLATWHE',
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -10207,6 +10731,7 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              canAddAxleUnits: true,
             },
             {
               type: 'SEMITRL',
@@ -10229,6 +10754,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STACTRN',
@@ -10295,6 +10821,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'HIBOFLT',
@@ -10317,6 +10844,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STLOGNG',
@@ -10355,6 +10883,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STSTEER',
@@ -10399,6 +10928,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STCRANE',
@@ -10421,6 +10951,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'STROPRT',
@@ -10443,6 +10974,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              canAddAxleUnits: true,
             },
             {
               type: 'STRSELF',
@@ -10465,6 +10997,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              canAddAxleUnits: true,
             },
             {
               type: 'STWIDWH',
@@ -10487,6 +11020,13 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
+            },
+            {
+              type: 'STWDTAN',
+              jeep: false,
+              booster: false,
+              weightPermittable: true,
             },
           ],
         },
@@ -10536,6 +11076,17 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+            },
+          ],
+        },
+        {
+          type: 'PICKRTR',
+          trailers: [
+            {
+              type: 'XXXXXXX',
+              jeep: false,
+              booster: false,
+              weightPermittable: true,
             },
           ],
         },
@@ -10749,6 +11300,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'FEDRMMX',
@@ -10770,6 +11322,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'FEBGHSE',
@@ -10791,6 +11344,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'FESEMTR',
@@ -10812,6 +11366,7 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'FEWHELR',
@@ -10833,6 +11388,13 @@ export const data: PolicyDefinition = {
                   ],
                 },
               ],
+              weightPermittable: true,
+            },
+            {
+              type: 'STWDTAN',
+              jeep: false,
+              booster: false,
+              weightPermittable: true,
             },
           ],
         },
@@ -10853,6 +11415,7 @@ export const data: PolicyDefinition = {
                   h: 4.3,
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'FEDRMMX',
@@ -10889,6 +11452,7 @@ export const data: PolicyDefinition = {
                   h: 4.3,
                 },
               ],
+              weightPermittable: true,
             },
             {
               type: 'FEBGHSE',
@@ -10904,6 +11468,12 @@ export const data: PolicyDefinition = {
                   h: 4.72,
                 },
               ],
+            },
+            {
+              type: 'PONYTRL',
+              jeep: false,
+              booster: false,
+              weightPermittable: true,
             },
           ],
         },
