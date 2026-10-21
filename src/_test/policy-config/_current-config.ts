@@ -1,5 +1,6 @@
 import { PolicyDefinition } from 'onroute-policy-engine/types';
 import { VEHICLE_CATEGORIES } from '../../constants/vehicle-categories';
+import { COMMODITY_CODES } from '../../constants/commodity-codes';
 
 export const data: PolicyDefinition = {
   minPEVersion: '2.0.0',
@@ -5345,7 +5346,7 @@ export const data: PolicyDefinition = {
   },
   commodities: [
     {
-      id: 'XXXXXXX',
+      id: COMMODITY_CODES.NONE,
       name: 'None',
       powerUnits: [
         {
@@ -6490,7 +6491,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'DOGLOGG',
+      id: COMMODITY_CODES.DOGLOGGER_SJOSTRUM_TRAILERS_DECKED,
       name: 'Doglogger/Sjostrum Trailers (decked)',
       powerUnits: [
         {
@@ -6517,7 +6518,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'GRTBBUK',
+      id: COMMODITY_CODES.GRADER_TRACTOR_BLADES_BUCKETS,
       name: 'Grader, Tractor Blades, Buckets',
       powerUnits: [
         {
@@ -6544,7 +6545,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'HAYRACK',
+      id: COMMODITY_CODES.HAYRACK_SEMI_TRAILER_WITH_A_FOLDED_CHASSIS_EMPTY_PIGGYBACK,
       name: 'Hayrack Semi-Trailer with a Folded Chassis/Empty Piggyback',
       powerUnits: [
         {
@@ -6571,7 +6572,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'IMCONTN',
+      id: COMMODITY_CODES.INTERMODAL_CONTAINERS,
       name: 'Intermodal Containers',
       powerUnits: [
         {
@@ -6651,7 +6652,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'IMCONWS',
+      id: COMMODITY_CODES.INTERMODAL_CONTAINERS_WITHOUT_SIDES,
       name: 'Intermodal Containers without Sides',
       powerUnits: [
         {
@@ -6679,7 +6680,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'LPBOOMS',
+      id: COMMODITY_CODES.LOGS_POLES_AND_BOOMSTICKS_UP_TO_20_1,
       name: 'Logs, Poles And Boomsticks (Up To 20.1)',
       powerUnits: [
         {
@@ -6802,7 +6803,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'LPBOOML',
+      id: COMMODITY_CODES.LOGS_POLES_AND_BOOMSTICKS_OVER_20_1,
       name: 'Logs, Poles And Boomsticks (Over 20.1)',
       powerUnits: [
         {
@@ -6877,7 +6878,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'MFHOMES',
+      id: COMMODITY_CODES.MANUFACTURED_HOMES_MODULAR_BUILDINGS_STRUCTURES_AND_HOUSEBOATS_LESS_THAN_5M_OAW,
       name: 'Manufactured Homes, Modular Buildings, Structures and Houseboats (<= 5.0 m OAW)',
       powerUnits: [
         {
@@ -7008,7 +7009,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'MFHOMEL',
+      id: COMMODITY_CODES.MANUFACTURED_HOMES_MODULAR_BUILDINGS_STRUCTURES_AND_HOUSEBOATS_GREATER_THAN_5M_OAW,
       name: 'Manufactured Homes, Modular Buildings, Structures and Houseboats (> 5.0 m OAW)',
       powerUnits: [
         {
@@ -7158,7 +7159,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'PARKMHS',
+      id: COMMODITY_CODES.PARK_MODEL_HOMES,
       name: 'Park Model Homes',
       powerUnits: [
         {
@@ -7235,7 +7236,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'PIPESTL',
+      id: COMMODITY_CODES.PIPE_AND_STEEL_PRODUCTS_REBAR_PILINGS_REINFORCING_STEEL_ETC,
       name: 'Pipe And Steel Products (Rebar, Pilings, Reinforcing Steel, Etc.)',
       powerUnits: [
         {
@@ -7310,7 +7311,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'REDUCBL',
+      id: COMMODITY_CODES.REDUCIBLE_LOADS,
       name: 'Reducible Loads',
       powerUnits: [
         {
@@ -8051,7 +8052,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'SCRAPER',
+      id: COMMODITY_CODES.SCRAPER_ON_DOLLIES,
       name: 'Scraper on Dollies',
       powerUnits: [
         {
@@ -8086,7 +8087,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'OILFILD',
+      id: COMMODITY_CODES.OIL_FIELD_EQUIPMENT,
       name: 'Oil Field Equipment',
       powerUnits: [
         {
@@ -8282,7 +8283,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'JPTRLOG',
+      id: COMMODITY_CODES.TANDEM_JEEP_POLE_TRAILER_LOADED_ON_LOGGING_TRUCK,
       name: 'Tandem Jeep/Pole Trailer Loaded on Logging Truck',
       powerUnits: [
         {
@@ -8330,7 +8331,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'TOWDISB',
+      id: COMMODITY_CODES.TOW_TRUCKS_AND_DISABLED_VEHICLES,
       name: 'Tow Trucks And Disabled Vehicles',
       powerUnits: [
         {
@@ -8358,7 +8359,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'TRQDLOG',
+      id: COMMODITY_CODES.TRI_AXLE_OR_QUAD_AXLE_FULL_TRAILER_LOADED_ON_LOGGING_TRUCK,
       name: 'Tri-Axle or Quad Axle Full Trailer Loaded on Logging Truck',
       powerUnits: [
         {
@@ -8406,7 +8407,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'WOODCHP',
+      id: COMMODITY_CODES.WOODCHIPS_RESIDUALS,
       name: 'Wood Chips, Residuals',
       powerUnits: [
         {
@@ -8433,7 +8434,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'EMPTYXX',
+      id: COMMODITY_CODES.EMPTY,
       name: 'Empty',
       powerUnits: [
         {
@@ -9102,7 +9103,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'GRBBINS',
+      id: COMMODITY_CODES.GARBAGE_BINS,
       name: 'Garbage Bins',
       powerUnits: [
         {
@@ -9161,7 +9162,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'LAMBEAM',
+      id: COMMODITY_CODES.LAMINATED_BEAMS,
       name: 'Laminated Beams',
       powerUnits: [
         {
@@ -9205,7 +9206,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'HAYLREC',
+      id: COMMODITY_CODES.HAY_BALES_LARGE_RECTANGULAR,
       name: 'Hay Bales Large Rectangular',
       powerUnits: [
         {
@@ -9387,7 +9388,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'HAYROND',
+      id: COMMODITY_CODES.HAY_BALES_ROUND,
       name: 'Hay Bales Round',
       powerUnits: [
         {
@@ -9592,7 +9593,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'HAYSREC',
+      id: COMMODITY_CODES.HAY_BALES_SMALL_RECTANGULAR,
       name: 'Hay Bales Small Rectangular',
       powerUnits: [
         {
@@ -9762,7 +9763,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'BRGBEAM',
+      id: COMMODITY_CODES.BRIDGE_BEAMS,
       name: 'Bridge Beams',
       powerUnits: [
         {
@@ -9827,7 +9828,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'NONREDU',
+      id: COMMODITY_CODES.NON_REDUCIBLE_LOADS,
       name: 'Non-Reducible Loads',
       powerUnits: [
         {
@@ -11116,7 +11117,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'AUTOCRR',
+      id: COMMODITY_CODES.AUTO_CARRIER_CAMPERS_AND_BOATS_STINGER_STEERED_TRANSPORTERS_ONLY,
       name: 'Auto Carrier, Campers And Boats (Stinger Steered Transporters Only)',
       powerUnits: [
         {
@@ -11161,12 +11162,12 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'HAYRNPR',
+      id: COMMODITY_CODES.HAY_BALES_ROUND_PEACE_RIVER_ONLY,
       name: 'Hay Bales (Round) Peace River Only',
       powerUnits: [],
     },
     {
-      id: 'BRSHCUT',
+      id: COMMODITY_CODES.BRUSHCUTTERS,
       name: 'Brushcutters (Peace Only)',
       powerUnits: [
         {
@@ -11274,7 +11275,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'FIXEDEQ',
+      id: COMMODITY_CODES.FIXED_EQUIPMENT,
       name: 'Fixed Equipment',
       powerUnits: [
         {
