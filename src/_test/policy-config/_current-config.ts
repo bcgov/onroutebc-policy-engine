@@ -2,6 +2,7 @@ import { PolicyDefinition } from 'onroute-policy-engine/types';
 import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
 import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { COMMODITY_CODES } from '../../constants/commodity-codes';
+import { VEHICLE_CATEGORIES } from '../../constants/vehicle-categories';
 
 export const data: PolicyDefinition = {
   minPEVersion: '2.0.0',
