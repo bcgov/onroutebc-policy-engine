@@ -4331,7 +4331,7 @@ export const data: PolicyDefinition = {
           {
             axles: 3,
             modifier: {
-              type: TRAILER_CODES.BOOSTER,
+              type: 'BOOSTER',
               position: 'after',
               axles: 2,
             },
@@ -4341,7 +4341,7 @@ export const data: PolicyDefinition = {
           {
             axles: 3,
             modifier: {
-              type: TRAILER_CODES.BOOSTER,
+              type: 'BOOSTER',
               position: 'after',
               axles: 3,
             },
@@ -4462,7 +4462,7 @@ export const data: PolicyDefinition = {
       {
         id: POWER_UNIT_CODES.CRANES_ALL_TERRAIN,
         name: 'Cranes - All Terrain',
-        category: 'multisteer',
+        category: VEHICLE_CATEGORIES.MULTI_STEER,
         additionalAxleSubType:
           TRAILER_CODES.ADDITIONAL_AXLE_UNIT_ALL_TERRAIN_CRANE,
         displayCodePrefix: 'MC',
@@ -5015,7 +5015,7 @@ export const data: PolicyDefinition = {
       {
         id: TRAILER_CODES.DOLLIES,
         name: TRAILER_CODES.DOLLIES,
-        category: 'dolly',
+        category: VEHICLE_CATEGORIES.DOLLY,
         displayCode: 'B',
       },
       {
@@ -5172,7 +5172,7 @@ export const data: PolicyDefinition = {
       {
         id: TRAILER_CODES.PLATFORM_TRAILERS,
         name: 'Platform Trailers',
-        category: 'semi',
+        category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         additionalAxleSubType:
           TRAILER_CODES.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER,
         displayCode: 'B',
@@ -5180,7 +5180,7 @@ export const data: PolicyDefinition = {
       {
         id: TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
         name: 'Platform Trailers - Wheelers',
-        category: 'wheeler',
+        category: VEHICLE_CATEGORIES.WHEELER,
         additionalAxleSubType:
           TRAILER_CODES.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER,
         displayCode: 'B',
