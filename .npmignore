@@ -14,3 +14,4 @@ tsconfig.tsbuildinfo
 .prettierrc.json
 package-lock.json
 tsconfig.json
+xls-tests/
