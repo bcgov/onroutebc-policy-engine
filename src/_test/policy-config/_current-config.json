@@ -1567,6 +1567,7 @@
         "ODTRLEX",
         "PMHWAAX",
         "PLATFRM",
+        "PLATWHE",
         "POLETRL",
         "PONYTRL",
         "REDIMIX",
@@ -1589,8 +1590,7 @@
         "STROPRT",
         "STRSELF",
         "STINGAT",
-        "DBTRBTR",
-        "PLATWHE"
+        "DBTRBTR"
       ],
       "rules": [
         {

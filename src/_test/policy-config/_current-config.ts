@@ -1576,6 +1576,7 @@ export const data: PolicyDefinition = {
         TRAILER_CODES.OVERDIMENSIONAL_TRAILERS_FOR_EXPORT,
         TRAILER_CODES.PARK_MODEL_HOMES,
         TRAILER_CODES.PLATFORM_TRAILERS,
+        TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
         TRAILER_CODES.POLE_TRAILERS,
         TRAILER_CODES.PONY_TRAILERS,
         TRAILER_CODES.READY_MIX_CONCRETE_PUMP_SEMI_TRAILERS,
@@ -1599,7 +1600,6 @@ export const data: PolicyDefinition = {
         TRAILER_CODES.STEERING_TRAILERS_SELF_REMOTE,
         TRAILER_CODES.STINGER_STEERED_AUTOMOBILE_TRANSPORTERS,
         TRAILER_CODES.TANDEM_TRIDEM_DRIVE_B_TRAIN,
-        TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
       ],
       rules: [
         {
@@ -5601,13 +5601,13 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'SEMITRL',
+              type: TRAILER_CODES.SEMI_TRAILERS,
               jeep: false,
               booster: false,
               weightPermittable: true,
             },
             {
-              type: 'PLATWHE',
+              type: TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
               jeep: true,
               booster: true,
               weightPermittable: true,
@@ -6158,7 +6158,7 @@ export const data: PolicyDefinition = {
               canAddAxleUnits: true,
             },
             {
-              type: 'PLATWHE',
+              type: TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
               jeep: true,
               booster: true,
               weightPermittable: true,
@@ -6251,7 +6251,7 @@ export const data: PolicyDefinition = {
               canAddAxleUnits: true,
             },
             {
-              type: 'PLATWHE',
+              type: TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
               jeep: true,
               booster: true,
               weightPermittable: true,
@@ -6344,7 +6344,7 @@ export const data: PolicyDefinition = {
               canAddAxleUnits: true,
             },
             {
-              type: 'PLATWHE',
+              type: TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
               jeep: true,
               booster: true,
               weightPermittable: true,
@@ -10154,7 +10154,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'PLATWHE',
+              type: TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10414,7 +10414,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'PLATWHE',
+              type: TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10674,7 +10674,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'PLATWHE',
+              type: TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
               jeep: true,
               booster: true,
               selfIssue: true,
