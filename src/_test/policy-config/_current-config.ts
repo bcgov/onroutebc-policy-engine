@@ -5178,6 +5178,14 @@ export const data: PolicyDefinition = {
         displayCode: 'B',
       },
       {
+        id: TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
+        name: 'Platform Trailers - Wheelers',
+        category: 'wheeler',
+        additionalAxleSubType:
+          TRAILER_CODES.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER,
+        displayCode: 'B',
+      },
+      {
         id: TRAILER_CODES.POLE_TRAILERS,
         name: 'Pole Trailers',
         category: VEHICLE_CATEGORIES.SEMI_TRAILER,
