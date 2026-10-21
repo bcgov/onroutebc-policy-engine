@@ -417,9 +417,9 @@ describe('ORV2-5709 permittable weight maximums', () => {
       },
     );
 
-    // Other wheeler, accessory and additional power-unit tandems remain separately scoped.
+    // Platform Wheeler, accessory and additional power-unit tandems remain separately scoped.
     it.each([
-      TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
+      TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
       TRAILER_CODES.JEEPS,
       TRAILER_CODES.BOOSTER,
     ])('preserves the existing tandem limit for %s', (trailerType) => {

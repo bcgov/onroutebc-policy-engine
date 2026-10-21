@@ -648,8 +648,11 @@ export function CheckPermittableWeight(
     const usesJSONTandemWeight =
       trailerDefinition?.category === 'semi' ||
       trailerDefinition?.category === 'pony' ||
-      trailerDefinition?.id ===
-        TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS;
+      [
+        TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS,
+        TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
+        TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
+      ].some((type) => type === trailerDefinition?.id);
     const usesJSONTridemWeight =
       trailerDefinition?.category === 'pony' ||
       [

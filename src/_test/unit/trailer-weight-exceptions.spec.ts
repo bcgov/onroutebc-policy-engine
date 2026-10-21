@@ -124,6 +124,19 @@ it.each([
     POWER_UNIT_CODES.TRUCK_WITH_PME,
     52000,
   ],
+  // XLS K335/K336: new Wide Wheeler commodity weights.
+  [
+    TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
+    'MFHOMEL',
+    POWER_UNIT_CODES.TRUCK_TRACTORS,
+    28000,
+  ],
+  [
+    TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
+    COMMODITY_CODES.NONE,
+    POWER_UNIT_CODES.TRUCK_TRACTORS,
+    52000,
+  ],
   // Other subtypes retain their prior limits.
   [
     TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
@@ -161,5 +174,19 @@ it.each([
         ]),
       );
     }
+  },
+);
+
+// These weight entries preserve selection until eligibility is confirmed by the BSA.
+it.each(['MFHOMEL', COMMODITY_CODES.NONE])(
+  'preserves STOW vehicle selection for %s with the new Wide Wheeler weights',
+  (commodity) => {
+    expect(
+      policy
+        .getNextPermittableVehicles('STOW', commodity, [
+          POWER_UNIT_CODES.TRUCK_TRACTORS,
+        ])
+        .has(TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS),
+    ).toBe(false);
   },
 );
