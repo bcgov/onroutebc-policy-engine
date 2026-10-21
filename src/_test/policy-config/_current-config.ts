@@ -4300,7 +4300,7 @@ export const data: PolicyDefinition = {
   vehicleCategories: {
     trailerCategories: [
       {
-        id: 'trailer',
+        id: VEHICLE_CATEGORIES.TRAILER,
         name: 'Default trailer category',
       },
       {
@@ -4966,21 +4966,21 @@ export const data: PolicyDefinition = {
       {
         id: 'PFMAXLE',
         name: 'Additional Axle Unit for Platform Trailer',
-        category: 'pseudo',
+        category: VEHICLE_CATEGORIES.PSEUDO,
         ignoreForSizeDimensions: true,
         displayCode: 'A',
       },
       {
         id: 'ATCAXLE',
         name: 'Additional Axle Unit for All-Terrain Crane',
-        category: 'pseudo',
+        category: VEHICLE_CATEGORIES.PSEUDO,
         ignoreForSizeDimensions: true,
         displayCode: 'A',
       },
       {
         id: 'BOOSTER',
         name: 'Boosters',
-        category: 'accessory',
+        category: VEHICLE_CATEGORIES.PSEUDO,
         ignoreForSizeDimensions: true,
         defaultWeightDimensions: [
           {
@@ -4991,7 +4991,7 @@ export const data: PolicyDefinition = {
           {
             axles: 1,
             modifier: {
-              category: 'semi',
+              category: VEHICLE_CATEGORIES.SEMI_TRAILER,
               position: 'before',
               axles: 3,
               minInterAxleSpacing: 0,
@@ -5006,43 +5006,43 @@ export const data: PolicyDefinition = {
       {
         id: 'DOLLIES',
         name: 'Dollies',
-        category: 'dolly',
+        category: VEHICLE_CATEGORIES.DOLLY,
         displayCode: 'B',
       },
       {
         id: 'EXPANDO',
         name: 'Expando Semi-Trailers',
-        category: 'semi',
+        category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
         id: 'FECVYRX',
         name: 'Fixed Equipment - Conveyors',
-        category: 'semi',
+        category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
         id: 'FEDRMMX',
         name: 'Fixed Equipment - Counter Flow Asphalt Drum Mixers',
-        category: 'semi',
+        category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
         id: 'FEPNYTR',
         name: 'Fixed Equipment - Pony Trailers',
-        category: 'pony',
+        category: VEHICLE_CATEGORIES.PONY_TRAILER,
         displayCode: 'B',
       },
       {
         id: 'FEBGHSE',
         name: 'Fixed Equipment - Portable Asphalt Baghouses',
-        category: 'semi',
+        category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
         id: 'FESEMTR',
         name: 'Fixed Equipment - Semi-Trailers',
-        category: 'semi',
+        category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
@@ -5054,104 +5054,116 @@ export const data: PolicyDefinition = {
       {
         id: 'FEWHLPR',
         name: 'Fixed Equipment - Semi Trailer (16 and 24 Wheeler) Peace River Only',
-        category: 'trailer',
+        // TODO check category with Michael
+        category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: 'FLOATTR',
         name: 'Float Trailers',
-        category: 'trailer',
+        // TODO check category with Michael
+        category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: 'FULLLTL',
         name: 'Full Trailers',
-        category: 'trailer',
+        // TODO check category with Michael
+        category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: 'JEEPSRG',
         name: 'Jeeps',
-        category: 'accessory',
+        category: VEHICLE_CATEGORIES.JEEP,
         ignoreForSizeDimensions: true,
         displayCode: 'J',
       },
       {
         id: 'LOGNTAC',
         name: 'Legacy Logging Trailer Combinations - Non-TAC B-Trains',
-        category: 'trailer',
+        // TODO check category with Michael
+        category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: 'LOGTNDM',
         name: 'Legacy Logging Trailer Combinations - Single Axle Jeeps, Tandem Axle Pole Trailers, Dogloggers',
-        category: 'trailer',
+        // TODO check category with Michael
+        category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: 'LOGTRIX',
         name: 'Legacy Logging Trailer Combinations - Single Axle Jeeps, Tri Axle Trailers',
-        category: 'trailer',
+        // TODO check category with Michael
+        category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: 'LOGDGLG',
         name: 'Legacy Logging Trailer Combinations - Tandem Pole Trailers, Dogloggers',
-        category: 'trailer',
+        // TODO check category with Michael
+        category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: 'LOGSMEM',
         name: 'Logging Semi-Trailer - Empty, 3.2 m Bunks',
-        category: 'trailer',
+        // TODO check category with Michael
+        category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: 'LOGFULL',
         name: 'Logging Trailer - Full Trailers, Tri Axle, Quad Axle',
-        category: 'trailer',
+        // TODO check category with Michael
+        category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: 'LOGOWBK',
         name: 'Logging Trailers - Overwidth Bunks',
-        category: 'trailer',
+        // TODO check category with Michael
+        category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: 'MHMBSHG',
         name: 'Manufactured Homes, Modular Buildings, Structures and Houseboats (> 5.0 m OAW) with Attached Axles',
-        category: 'pony',
+        category: VEHICLE_CATEGORIES.PONY_TRAILER,
         displayCode: 'T',
       },
       {
         id: 'MHMBSHL',
         name: 'Manufactured Homes, Modular Buildings, Structures and Houseboats (<= 5.0 m OAW) with Attached Axles',
-        category: 'trailer',
+        category: VEHICLE_CATEGORIES.PONY_TRAILER,
         displayCode: 'T',
       },
       {
         id: 'OGOSFDT',
         name: 'Oil and Gas - Oversize Oilfield Flat Deck Semi-Trailers',
-        category: 'semi',
+        category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
         id: 'ODTRLEX',
         name: 'Overdimensional Trailers and Semi-Trailers (For Export)',
-        category: 'trailer',
+        // TODO check category with Michael
+        category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: 'PMHWAAX',
         name: 'Park Model Homes with Attached Axles',
-        category: 'trailer',
+        // TODO check category with Michael
+        category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: 'PLATFRM',
         name: 'Platform Trailers',
-        category: 'semi',
+        category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         additionalAxleSubType: 'PFMAXLE',
         displayCode: 'B',
       },
@@ -5165,79 +5177,85 @@ export const data: PolicyDefinition = {
       {
         id: 'POLETRL',
         name: 'Pole Trailers',
-        category: 'semi',
+        category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
         id: 'PONYTRL',
         name: 'Pony Trailers',
-        category: 'pony',
+        category: VEHICLE_CATEGORIES.PONY_TRAILER,
         displayCode: 'B',
       },
       {
         id: 'REDIMIX',
         name: 'Ready Mix Concrete Pump Semi-Trailers',
-        category: 'semi',
+        category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
         id: 'SEMITRL',
         name: 'Semi-Trailers',
-        category: 'semi',
+        category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
         id: 'STACTRN',
         name: 'Semi-Trailers - A-Trains and C-Trains',
-        category: 'trailer',
+        // TODO check category with Michael
+        category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: 'STBTRAN',
         name: 'Semi-Trailers - B-Trains',
-        category: 'trailer',
+        // TODO check category with Michael
+        category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: 'HIBOEXP',
         name: 'Semi-Trailers - Hiboys/Expandos',
-        category: 'semi',
+        category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
         id: 'HIBOFLT',
         name: 'Semi-Trailers - Hiboys/Flat Decks',
-        category: 'semi',
+        category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
         id: 'STRDLY',
         name: 'Steering Dollies',
-        category: 'trailer',
+        // TODO check category with Michael
+        category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'B',
       },
       {
         id: 'STREEFR',
         name: 'Semi-Trailers - Insulated Vans with Reefer/Refrigeration Units',
-        category: 'trailer',
+        // TODO check category with Michael
+        category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: 'STLOGNG',
         name: 'Semi-Trailers - Logging',
-        category: 'trailer',
+        // TODO check category with Michael
+        category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: 'STNTSHC',
         name: 'Semi-Trailers - Non-Tac Short Chassis',
-        category: 'trailer',
+        // TODO check category with Michael
+        category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: 'STSDBDK',
         name: 'Semi-Trailers - Single Drop, Double Drop, Step Decks, Lowbed, Expandos, etc.',
-        category: 'semi',
+        category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
@@ -5248,20 +5266,22 @@ export const data: PolicyDefinition = {
       },
       {
         id: 'STSTEER',
-        name: VEHICLE_CATEGORIES.STEERING_TRAILER,
-        category: 'semi',
+        name: 'Semi-Trailers - Steering Trailers',
+        category: VEHICLE_CATEGORIES.STEERING_TRAILER,
         displayCode: 'T',
       },
       {
         id: 'STSTNGR',
         name: 'Semi-Trailers - Stinger Steered Automobile Transporters',
-        category: 'trailer',
+        // TODO check category with Michael
+        category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: 'STCHIPS',
         name: 'Semi-Trailers - Walled B-Trains (Chip Trucks)',
-        category: 'trailer',
+        // TODO check category with Michael
+        category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
@@ -5273,49 +5293,52 @@ export const data: PolicyDefinition = {
       {
         id: 'STWIDWH',
         name: 'Semi-Trailers - Wide Wheelers',
-        category: VEHICLE_CATEGORIES.WHEELER,
+        category: VEHICLE_CATEGORIES.WIDE_WHEELERS,
         displayCode: 'T',
       },
       {
         id: 'STCRANE',
         name: 'Semi-Trailers with Crane',
-        category: 'semi',
+        category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
         id: 'STROPRT',
         name: 'Steering Trailers - Manned',
-        category: 'steering',
+        category: VEHICLE_CATEGORIES.STEERING_TRAILER,
         displayCode: 'T',
       },
       {
         id: 'STRSELF',
         name: 'Steering Trailers - Self/Remote',
-        category: 'steering',
+        category: VEHICLE_CATEGORIES.STEERING_TRAILER,
         displayCode: 'T',
       },
       {
         id: 'STINGAT',
         name: 'Stinger Steered Automobile Transporters',
-        category: 'trailer',
+        // TODO check category with Michael
+        category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: 'DBTRBTR',
         name: 'Tandem/Tridem Drive B-Train (Super B-Train)',
-        category: 'trailer',
+        // TODO check category with Michael
+        category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: 'LOGLGCY',
         name: 'Legacy Logging Trailer Combinations',
-        category: 'trailer',
+        // TODO check category with Michael
+        category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: 'XXXXXXX',
         name: 'None',
-        category: 'pseudo',
+        category: VEHICLE_CATEGORIES.PSEUDO,
         ignoreForAxleCalculation: true,
       },
     ],
