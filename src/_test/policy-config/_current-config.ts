@@ -1,4 +1,5 @@
 import { PolicyDefinition } from 'onroute-policy-engine/types';
+import { PERMIT_CODES } from '../../constants/permit-codes';
 import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
 import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { COMMODITY_CODES } from '../../constants/commodity-codes';
@@ -1389,7 +1390,7 @@ export const data: PolicyDefinition = {
               fact: 'permitType',
               path: '$permitType',
               operator: 'equal',
-              value: 'HC',
+              value: PERMIT_CODES.HIGHWAY_CROSSING,
             },
           },
           {
@@ -1512,7 +1513,7 @@ export const data: PolicyDefinition = {
   ],
   permitTypes: [
     {
-      id: 'HC',
+      id: PERMIT_CODES.HIGHWAY_CROSSING,
       name: 'Highway Crossing Permit',
       routingRequired: false,
       weightDimensionRequired: false,
@@ -1878,7 +1879,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'TROS',
+      id: PERMIT_CODES.TERM_OVERSIZE,
       name: 'Term Oversize',
       routingRequired: false,
       weightDimensionRequired: false,
@@ -2037,7 +2038,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'TROW',
+      id: PERMIT_CODES.TERM_OVERWEIGHT,
       name: 'Term Overweight',
       routingRequired: false,
       weightDimensionRequired: false,
@@ -2147,7 +2148,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'STOS',
+      id: PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
       name: 'Single Trip Oversize',
       routingRequired: true,
       weightDimensionRequired: false,
@@ -2261,7 +2262,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'STOW',
+      id: PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       name: 'Single Trip Overweight',
       routingRequired: true,
       weightDimensionRequired: true,
@@ -2401,7 +2402,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'STWSE',
+      id: PERMIT_CODES.EMPTY_SINGLE_TRIP_OVER_LENGTH_27_5,
       name: 'Overweight Oversize Empty - Length over 27.5 m',
       routingRequired: true,
       weightDimensionRequired: true,
@@ -2697,7 +2698,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'STGVWI',
+      id: PERMIT_CODES.SINGLE_TRIP_GVW_INCREASE,
       name: 'Single Trip GVW Increase',
       routingRequired: true,
       weightDimensionRequired: true,
@@ -2930,7 +2931,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'STFR',
+      id: PERMIT_CODES.SINGLE_TRIP_ICBC_BASIC_INSURANCE_FR,
       name: 'Single Trip ICBC Basic Insurance (FR)',
       routingRequired: false,
       weightDimensionRequired: false,
@@ -3116,7 +3117,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'QRFR',
+      id: PERMIT_CODES.QUARTERLY_ICBC_BASIC_INSURANCE_FR,
       name: 'Quarterly ICBC Basic Insurance (FR)',
       routingRequired: false,
       weightDimensionRequired: false,
@@ -3293,7 +3294,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'MFP',
+      id: PERMIT_CODES.MOTIVE_FUEL_USER_PERMIT,
       name: 'Motive Fuel User Permit',
       routingRequired: true,
       weightDimensionRequired: false,
@@ -3482,7 +3483,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'NRSCV',
+      id: PERMIT_CODES.SINGLE_TRIP_NON_RESIDENT,
       name: 'Non-Resident Single Trip',
       routingRequired: false,
       weightDimensionRequired: false,
@@ -3791,7 +3792,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'NRQCV',
+      id: PERMIT_CODES.QUARTERLY_NON_RESIDENT,
       name: 'Non-Resident Quarterly',
       routingRequired: false,
       weightDimensionRequired: false,
@@ -4091,7 +4092,7 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: 'EPTOP',
+      id: PERMIT_CODES.EXTRA_PROVINCIAL_TEMP_OPERATING_PERMIT,
       name: 'Extra-Provincial Temporary Operating Permit',
       routingRequired: true,
       weightDimensionRequired: false,

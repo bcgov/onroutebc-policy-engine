@@ -556,9 +556,11 @@ describe('Policy Engine Configuration Validation', () => {
 
   it('should throw an error for a permit type not requiring commodity', async () => {
     expect(() => {
-      policy.isConfigurationValid('TROS', COMMODITY_CODES.LAMINATED_BEAMS, [
-        POWER_UNIT_CODES.TRUCK_TRACTORS,
-      ]);
+      policy.isConfigurationValid(
+        PERMIT_CODES.TERM_OVERSIZE,
+        COMMODITY_CODES.LAMINATED_BEAMS,
+        [POWER_UNIT_CODES.TRUCK_TRACTORS],
+      );
     }).toThrow();
   });
 
