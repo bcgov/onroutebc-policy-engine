@@ -17,6 +17,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
     boosterAxleCount?: number;
     powerUnitType?: string;
     trailerType?: string;
+    commodityId?: string;
   };
 
   const getPermittableResult = (
@@ -28,6 +29,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
       boosterAxleCount,
       powerUnitType = POWER_UNIT_CODES.TRUCK_TRACTORS,
       trailerType = TRAILER_CODES.SEMI_TRAILERS,
+      commodityId = COMMODITY_CODES.NONE,
     }: Scenario,
     // Allow isolated tests to prove that modified JSON controls the limit.
     configuredPolicy = policy,
@@ -89,7 +91,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
         vehicleConfiguration,
         axleConfiguration,
         100000,
-        COMMODITY_CODES.NONE,
+        commodityId,
       )
       .results.find(
         (result) =>
@@ -613,12 +615,161 @@ describe('ORV2-5709 permittable weight maximums', () => {
       );
     });
 
-    // XLS: Jeeps/Boosters, Tridem, K=28,000; BSA confirmed E2/E5 on 8 October 2026.
+    // Nicole's S2/S4 bands. Non-Reducible Oilfield trailers retain 29,000 from 2.4 m.
+    it.each<[string, string, number]>([
+      [
+        TRAILER_CODES.READY_MIX_CONCRETE_PUMP_SEMI_TRAILERS,
+        COMMODITY_CODES.NONE,
+        28000,
+      ],
+      [
+        TRAILER_CODES.FIXED_EQUIPMENT_SEMI_TRAILERS,
+        COMMODITY_CODES.NONE,
+        28000,
+      ],
+      [TRAILER_CODES.FIXED_EQUIPMENT_CONVEYORS, COMMODITY_CODES.NONE, 28000],
+      [
+        TRAILER_CODES.FIXED_EQUIPMENT_COUNTER_FLOW_ASPHALT_DRUM_MIXERS,
+        COMMODITY_CODES.NONE,
+        28000,
+      ],
+      [
+        TRAILER_CODES.FIXED_EQUIPMENT_PORTABLE_ASPHALT_BAGHOUSES,
+        COMMODITY_CODES.NONE,
+        28000,
+      ],
+      [
+        TRAILER_CODES.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK,
+        COMMODITY_CODES.OIL_FIELD_EQUIPMENT,
+        28000,
+      ],
+      [
+        TRAILER_CODES.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK,
+        COMMODITY_CODES.NON_REDUCIBLE_LOADS,
+        29000,
+      ],
+    ])(
+      'applies the confirmed spread bands for %s / %s',
+      (trailerType, commodityId, lowerLimit) => {
+        for (const [spread, limit] of [
+          [239, 28000],
+          [240, lowerLimit],
+          [300, lowerLimit],
+          [300.5, 29000],
+          [301, 29000],
+          [370, 29000],
+          [371, 28000],
+        ]) {
+          for (const actualWeight of [limit, limit + 1]) {
+            expectPermittableResult(
+              {
+                axleUnit: 3,
+                axleCount: 3,
+                trailerType,
+                commodityId,
+                spread,
+                actualWeight,
+              },
+              limit,
+              actualWeight === limit
+                ? PolicyCheckResultType.Pass
+                : PolicyCheckResultType.Fail,
+            );
+          }
+        }
+        // Single Boosters use the same bands; Tandem/Tridem Boosters remain restricted.
+        for (const [boosterAxleCount, spread, limit] of [
+          [1, 240, lowerLimit],
+          [1, 300, lowerLimit],
+          [1, 300.5, 29000],
+          [1, 301, 29000],
+          [1, 370, 29000],
+          [2, 301, 28000],
+          [3, 301, 28000],
+        ]) {
+          expectPermittableResult(
+            {
+              axleUnit: 3,
+              axleCount: 3,
+              trailerType,
+              commodityId,
+              spread,
+              boosterAxleCount,
+              actualWeight: limit + 1,
+            },
+            limit,
+            PolicyCheckResultType.Fail,
+          );
+        }
+      },
+    );
+
+    it.each([
+      [
+        TRAILER_CODES.READY_MIX_CONCRETE_PUMP_SEMI_TRAILERS,
+        COMMODITY_CODES.NONE,
+      ],
+      [
+        TRAILER_CODES.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK,
+        COMMODITY_CODES.OIL_FIELD_EQUIPMENT,
+      ],
+    ])(
+      'reads both spread-band weights from JSON for %s / %s',
+      (trailerType, commodityId) => {
+        const changed: PolicyDefinition = JSON.parse(
+          JSON.stringify(currentPolicyConfig),
+        );
+        changed.globalWeightDefaults.trailers.find(
+          ({ axles }) => axles === 3,
+        )!.permittable = 27500;
+        const trailer = changed.commodities
+          .find(({ id }) => id === commodityId)!
+          .powerUnits.find(
+            ({ type }) => type === POWER_UNIT_CODES.TRUCK_TRACTORS,
+          )!
+          .trailers.find(({ type }) => type === trailerType)!;
+        trailer.weightDimensions!.find(
+          ({ axles }) => axles === 3,
+        )!.permittable = 28500;
+        const configuredPolicy = new Policy(changed);
+
+        for (const [spread, boosterAxleCount, limit] of [
+          [undefined, undefined, 27500],
+          [300, undefined, 27500],
+          [300.5, undefined, 28500],
+          [300.5, 1, 28500],
+          [300.5, 2, 27500],
+          [371, undefined, 27500],
+        ] as const) {
+          expect(
+            getPermittableResult(
+              {
+                axleUnit: 3,
+                axleCount: 3,
+                trailerType,
+                commodityId,
+                spread,
+                boosterAxleCount,
+                actualWeight: limit + 1,
+              },
+              configuredPolicy,
+            ),
+          ).toMatchObject({
+            thresholdWeight: limit,
+            result: PolicyCheckResultType.Fail,
+          });
+        }
+      },
+    );
+
+    // XLS: Jeep/Booster limits and S3's confirmed 2.4–3.7 m Dolly spread.
     it.each([
       [TRAILER_CODES.JEEPS, 240],
       [TRAILER_CODES.JEEPS, 370],
       [TRAILER_CODES.BOOSTER, 240],
       [TRAILER_CODES.BOOSTER, 310],
+      [TRAILER_CODES.DOLLIES, 240],
+      [TRAILER_CODES.DOLLIES, 370],
     ] as const)(
       'keeps %s tridem at 28,000 kg with %i cm spread',
       (trailerType, spread) => {
@@ -634,33 +785,34 @@ describe('ORV2-5709 permittable weight maximums', () => {
       },
     );
 
-    it.each([TRAILER_CODES.JEEPS, TRAILER_CODES.BOOSTER])(
-      'reads the %s tridem limit from JSON',
-      (trailerType) => {
-        const changed: PolicyDefinition = JSON.parse(
-          JSON.stringify(currentPolicyConfig),
-        );
-        changed.globalWeightDefaults.trailers.find(
-          ({ axles }) => axles === 3,
-        )!.permittable = 28000;
+    it.each([
+      TRAILER_CODES.JEEPS,
+      TRAILER_CODES.BOOSTER,
+      TRAILER_CODES.DOLLIES,
+    ])('reads the %s tridem limit from JSON', (trailerType) => {
+      const changed: PolicyDefinition = JSON.parse(
+        JSON.stringify(currentPolicyConfig),
+      );
+      changed.globalWeightDefaults.trailers.find(
+        ({ axles }) => axles === 3,
+      )!.permittable = 28000;
 
-        expect(
-          getPermittableResult(
-            {
-              axleUnit: 3,
-              axleCount: 3,
-              actualWeight: 28001,
-              spread: 240,
-              trailerType,
-            },
-            new Policy(changed),
-          ),
-        ).toMatchObject({
-          thresholdWeight: 28000,
-          result: PolicyCheckResultType.Fail,
-        });
-      },
-    );
+      expect(
+        getPermittableResult(
+          {
+            axleUnit: 3,
+            axleCount: 3,
+            actualWeight: 28001,
+            spread: 240,
+            trailerType,
+          },
+          new Policy(changed),
+        ),
+      ).toMatchObject({
+        thresholdWeight: 28000,
+        result: PolicyCheckResultType.Fail,
+      });
+    });
 
     it.each([
       [240, undefined, 29000, 29000, PolicyCheckResultType.Pass],

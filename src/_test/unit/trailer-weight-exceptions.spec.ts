@@ -137,6 +137,8 @@ it.each([
     POWER_UNIT_CODES.TRUCK_TRACTORS,
     52000,
   ],
+  // S3: manufactured-home Tridem Dolly, confirmed spread starts at 2.4 m.
+  [TRAILER_CODES.DOLLIES, 'MFHOMEL', POWER_UNIT_CODES.TRUCK_TRACTORS, 28000],
   // Other subtypes retain their prior limits.
   [
     TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,

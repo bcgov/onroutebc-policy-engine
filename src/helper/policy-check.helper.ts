@@ -27,6 +27,7 @@ import {
 import { formatMeters } from './format-meters.helper';
 import { POWER_UNIT_CODES } from '../constants/power-unit-codes';
 import { TRAILER_CODES } from '../constants/trailer-codes';
+import { COMMODITY_CODES } from '../constants/commodity-codes';
 import { POWER_UNIT_AXLE_CODE_MULTIPLIER } from '../constants/power-unit-axle-code-multiplier';
 
 /**
@@ -665,6 +666,7 @@ export function CheckPermittableWeight(
         TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
         TRAILER_CODES.JEEPS,
         TRAILER_CODES.BOOSTER,
+        TRAILER_CODES.DOLLIES,
       ].some((type) => type === trailerDefinition?.id);
 
     let getConfiguredAxleUnitWeightThresholdResult: SingleAxleDimension | null;
@@ -691,10 +693,35 @@ export function CheckPermittableWeight(
         const isTrailerAxleUnit =
           policy.getTrailerDefinition(vehicleConfiguration[vehicleIndex]) !==
           null;
-        const spreadQualifies =
+        let spreadQualifies =
           axleUnit.axleSpread !== undefined &&
           axleUnit.axleSpread >= QUALIFYING_TRIDEM_SPREAD_CM.MINIMUM &&
           axleUnit.axleSpread <= QUALIFYING_TRIDEM_SPREAD_CM.MAXIMUM;
+
+        const isFixedEquipmentOrConcretePump = [
+          TRAILER_CODES.READY_MIX_CONCRETE_PUMP_SEMI_TRAILERS,
+          TRAILER_CODES.FIXED_EQUIPMENT_SEMI_TRAILERS,
+          TRAILER_CODES.FIXED_EQUIPMENT_CONVEYORS,
+          TRAILER_CODES.FIXED_EQUIPMENT_COUNTER_FLOW_ASPHALT_DRUM_MIXERS,
+          TRAILER_CODES.FIXED_EQUIPMENT_PORTABLE_ASPHALT_BAGHOUSES,
+        ].some((type) => type === trailerDefinition?.id);
+        const usesNoneCommoditySpreadBand =
+          commodityId === COMMODITY_CODES.NONE && isFixedEquipmentOrConcretePump;
+        const usesOilFieldCommoditySpreadBand =
+          commodityId === COMMODITY_CODES.OIL_FIELD_EQUIPMENT &&
+          trailerDefinition?.id ===
+            TRAILER_CODES.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK;
+
+        const usesCommoditySpreadBand =
+          usesNoneCommoditySpreadBand || usesOilFieldCommoditySpreadBand;
+
+        // Confirmed S2/S4 bands: the commodity maximum requires more than 3 m.
+        if (usesCommoditySpreadBand) {
+          const spreadExceedsThreeMetres =
+            axleUnit.axleSpread !== undefined && axleUnit.axleSpread > 300;
+          spreadQualifies = spreadQualifies && spreadExceedsThreeMetres;
+        }
+
         const nextVehicleIndex = vehicleIndex + 1;
         const hasImmediatelyFollowingBooster =
           vehicleConfiguration[nextVehicleIndex] ===
@@ -707,8 +734,21 @@ export function CheckPermittableWeight(
         const boosterQualifies =
           !hasImmediatelyFollowingBooster || boosterAxle?.numberOfAxles === 1;
 
-        // Apply the spread/Booster allowance only to trailers outside the JSON exceptions.
-        if (isTrailerAxleUnit && !usesJSONTridemWeight) {
+        if (usesCommoditySpreadBand) {
+          // Use the commodity maximum when qualified; otherwise use the JSON default.
+          const weightCommodity =
+            spreadQualifies && boosterQualifies ? commodityId : undefined;
+          getConfiguredAxleUnitWeightThresholdResult =
+            getConfiguredAxleUnitWeightThreshold(
+              policy,
+              vehicleConfiguration,
+              axleConfiguration,
+              axleUnitVehicleIndexes,
+              axleIndex,
+              weightCommodity,
+            );
+        } else if (isTrailerAxleUnit && !usesJSONTridemWeight) {
+          // Other trailers retain the standard spread/Booster allowance.
           getConfiguredAxleUnitWeightThresholdResult =
             spreadQualifies && boosterQualifies
               ? {
