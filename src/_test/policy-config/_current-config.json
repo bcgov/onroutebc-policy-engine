@@ -5879,6 +5879,18 @@
               "booster": true,
               "weightPermittable": true,
               "canAddAxleUnits": true
+            },
+            {
+              "type": "STWIDWH",
+              "jeep": false,
+              "booster": false,
+              "weightDimensions": [
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 52000
+                }
+              ]
             }
           ]
         },
@@ -7430,6 +7442,18 @@
               "jeep": false,
               "booster": false,
               "weightPermittable": true,
+              "weightDimensions": [
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 28000
+                }
+              ]
+            },
+            {
+              "type": "STWIDWH",
+              "jeep": false,
+              "booster": false,
               "weightDimensions": [
                 {
                   "axles": 3,

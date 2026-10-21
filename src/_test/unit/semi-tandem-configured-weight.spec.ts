@@ -78,8 +78,7 @@ describe('configured semi-trailer tandem weights', () => {
   });
 
   it.each([
-    TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
-    TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
+    TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
     TRAILER_CODES.DOLLIES,
     TRAILER_CODES.BOOSTER,
   ])('preserves the existing tandem maximum for %s', (trailerType) => {
@@ -97,12 +96,15 @@ describe('configured semi-trailer tandem weights', () => {
 });
 
 // XLS K119–121/128–130/137–139/144/149–151: pony 21,000; K297: fixed wheeler 31,000.
-describe('configured pony and fixed wheeler tandem weights', () => {
+describe('configured pony and wheeler tandem weights', () => {
   it.each<[string, number]>([
     [TRAILER_CODES.PONY_TRAILERS, 21000],
     [TRAILER_CODES.FIXED_EQUIPMENT_PONY_TRAILERS, 21000],
     [TRAILER_CODES.MANUFACTURED_HOMES_OVER_5M, 21000],
     [TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS, 31000],
+    // XLS: regular/Wide Wheeler Tandems, K320/323/327/329/330/331/333/337.
+    [TRAILER_CODES.SEMI_TRAILERS_WHEELERS, 31000],
+    [TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS, 31000],
   ])('uses the configured %s maximum of %i kg', (trailerType, limit) => {
     for (const weight of [limit, limit + 1]) {
       const calculated = new Policy(config).runAxleCalculation(
