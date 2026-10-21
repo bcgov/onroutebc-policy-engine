@@ -43,7 +43,7 @@ const permitApplication = {
   permitType: 'TROS',
   permitData: {
     // Your permit data here
-  }
+  },
 };
 
 const results = await policy.validate(permitApplication);
@@ -55,6 +55,7 @@ console.log(results);
 ### Policy Definition
 
 The policy engine uses a JSON-based policy definition that describes:
+
 - **Permit Types**: Different types of permits (TROS, STOS, MFP, etc.)
 - **Vehicle Types**: Power units and trailers with their characteristics
 - **Validation Rules**: Complex rules for weight, dimension, and configuration validation
@@ -63,6 +64,7 @@ The policy engine uses a JSON-based policy definition that describes:
 ### Vehicle Configuration
 
 A vehicle configuration consists of:
+
 - **Power Units**: The primary vehicle (truck, tractor, etc.)
 - **Trailers**: Additional units being towed
 - **Axle Configurations**: Detailed axle arrangements with weights and dimensions
@@ -70,6 +72,7 @@ A vehicle configuration consists of:
 ### Validation Results
 
 The engine returns comprehensive validation results including:
+
 - **Policy Violations**: Specific rule violations with detailed messages
 - **Informational Messages**: Guidance and recommendations
 - **Axle Calculations**: Bridge formula and weight distribution results
@@ -80,35 +83,43 @@ The engine returns comprehensive validation results including:
 
 ```typescript
 class Policy {
-  constructor(policyDefinition: PolicyDefinition)
-  
+  constructor(policyDefinition: PolicyDefinition);
+
   // Core validation
-  validate(permitApplication: PermitApplication): Promise<ValidationResults>
-  
+  validate(permitApplication: PermitApplication): Promise<ValidationResults>;
+
   // Vehicle configuration validation
   runAxleCalculation(
     vehicleConfiguration: string[],
     axleConfiguration: AxleConfiguration[],
-    licensedGVW: number
-  ): AxleCalcResults
-  
+    licensedGVW: number,
+  ): AxleCalcResults;
+
   // Policy information
-  getPermitTypes(): Map<string, string>
-  getCommodities(permitTypeId?: string): Map<string, string>
-  getPowerUnitTypes(): Map<string, string>
-  getTrailerTypes(): Map<string, string>
-  
+  getPermitTypes(): Map<string, string>;
+  getCommodities(permitTypeId?: string): Map<string, string>;
+  getPowerUnitTypes(): Map<string, string>;
+  getTrailerTypes(): Map<string, string>;
+
   // Vehicle configuration helpers
   getNextPermittableVehicles(
     permitTypeId: string,
     commodityId: string,
-    currentConfiguration: string[]
-  ): Map<string, string>
-  
+    currentConfiguration: string[],
+  ): Map<string, string>;
+
   // Weight and dimension calculations
-  getDefaultPowerUnitWeight(vehicleType: string, axleCode: number): WeightDimension[]
-  getDefaultTrailerWeight(vehicleType: string, axles: number): TrailerWeightDimension[]
-  calculateBridge(axleConfiguration: AxleConfiguration[]): BridgeCalculationResult[]
+  getDefaultPowerUnitWeight(
+    vehicleType: string,
+    axleCode: number,
+  ): WeightDimension[];
+  getDefaultTrailerWeight(
+    vehicleType: string,
+    axles: number,
+  ): TrailerWeightDimension[];
+  calculateBridge(
+    axleConfiguration: AxleConfiguration[],
+  ): BridgeCalculationResult[];
 }
 ```
 
@@ -150,18 +161,38 @@ const policy = new Policy(policyDefinition);
 const permitApp = {
   permitType: 'TROS',
   permitData: {
-    vehicleConfiguration: ['TRKTRAC', 'SEMITRL'],
-    axleConfiguration: [
-      { numberOfAxles: 2, axleUnitWeight: 12000, numberOfTires: 4, tireSize: 445 },
-      { numberOfAxles: 3, axleUnitWeight: 34000, numberOfTires: 12, tireSize: 445 },
-      { numberOfAxles: 3, axleUnitWeight: 34000, numberOfTires: 12, tireSize: 445 }
+    vehicleConfiguration: [
+      POWER_UNIT_CODES.TRUCK_TRACTORS,
+      TRAILER_CODES.SEMI_TRAILERS,
     ],
-    licensedGVW: 63500
-  }
+    axleConfiguration: [
+      {
+        numberOfAxles: 2,
+        axleUnitWeight: 12000,
+        numberOfTires: 4,
+        tireSize: 445,
+      },
+      {
+        numberOfAxles: 3,
+        axleUnitWeight: 34000,
+        numberOfTires: 12,
+        tireSize: 445,
+      },
+      {
+        numberOfAxles: 3,
+        axleUnitWeight: 34000,
+        numberOfTires: 12,
+        tireSize: 445,
+      },
+    ],
+    licensedGVW: 63500,
+  },
 };
 
 const results = await policy.validate(permitApp);
-console.log(`Validation completed with ${results.violations.length} violations`);
+console.log(
+  `Validation completed with ${results.violations.length} violations`,
+);
 ```
 
 ### Axle Calculation Validation
@@ -169,13 +200,28 @@ console.log(`Validation completed with ${results.violations.length} violations`)
 ```typescript
 // Validate axle configuration against policy rules
 const axleResults = policy.runAxleCalculation(
-  ['TRKTRAC', 'SEMITRL'],
+  [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS],
   [
-    { numberOfAxles: 2, axleUnitWeight: 12000, numberOfTires: 4, tireSize: 445 },
-    { numberOfAxles: 3, axleUnitWeight: 34000, numberOfTires: 12, tireSize: 445 },
-    { numberOfAxles: 3, axleUnitWeight: 34000, numberOfTires: 12, tireSize: 445 }
+    {
+      numberOfAxles: 2,
+      axleUnitWeight: 12000,
+      numberOfTires: 4,
+      tireSize: 445,
+    },
+    {
+      numberOfAxles: 3,
+      axleUnitWeight: 34000,
+      numberOfTires: 12,
+      tireSize: 445,
+    },
+    {
+      numberOfAxles: 3,
+      axleUnitWeight: 34000,
+      numberOfTires: 12,
+      tireSize: 445,
+    },
   ],
-  63500
+  63500,
 );
 
 console.log('Axle validation results:', axleResults.results);
@@ -193,11 +239,9 @@ const commodities = policy.getCommodities('TROS');
 console.log('TROS commodities:', Array.from(commodities.entries()));
 
 // Get valid next vehicles for a configuration
-const nextVehicles = policy.getNextPermittableVehicles(
-  'STOS',
-  'IMCONTN',
-  ['TRKTRAC']
-);
+const nextVehicles = policy.getNextPermittableVehicles('STOS', 'IMCONTN', [
+  POWER_UNIT_CODES.TRUCK_TRACTORS,
+]);
 console.log('Valid next vehicles:', Array.from(nextVehicles.entries()));
 ```
 
@@ -301,7 +345,6 @@ npm test -- --coverage
 npm test -- validate-tros.spec.ts
 ```
 
-
 ## Using npm link for local policy engine changes
 
 Use this when you want this frontend example, including the permit form application flow, to pick up local `onroute-policy-engine` changes without publishing a package.
@@ -351,7 +394,7 @@ For questions, issues, or contributions:
 
 - **Issues**: [GitHub Issues](https://github.com/bcgov/onroutebc-policy-engine/issues)
 - **Documentation**: Check the [docs](./docs/) directory
-- **Examples**: See [src/_examples](./src/_examples/) for usage examples
+- **Examples**: See [src/\_examples](./src/_examples/) for usage examples
 
 ## Related Projects
 

@@ -71,7 +71,7 @@ describe('Policy Engine Oversize Configuration Functions', () => {
     expect(puTypes.keys()).not.toContain(
       POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES,
     );
-    expect(puTypes.keys()).not.toContain('LCVTPDB');
+    expect(puTypes.keys()).not.toContain(POWER_UNIT_CODES.LCV_TURNPIKE_DOUBLES);
 
     const lcvPuTypes = lcvPolicy.getPermittablePowerUnitTypes(
       PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
@@ -82,7 +82,7 @@ describe('Policy Engine Oversize Configuration Functions', () => {
     expect(lcvPuTypes.keys()).toContain(
       POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES,
     );
-    expect(lcvPuTypes.keys()).toContain('LCVTPDB');
+    expect(lcvPuTypes.keys()).toContain(POWER_UNIT_CODES.LCV_TURNPIKE_DOUBLES);
   });
 });
 
@@ -185,7 +185,9 @@ describe('Policy Engine Get Next Permittable Vehicles', () => {
     expect(vehicles.keys()).not.toContain(
       POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES,
     );
-    expect(vehicles.keys()).not.toContain('LCVTPDB');
+    expect(vehicles.keys()).not.toContain(
+      POWER_UNIT_CODES.LCV_TURNPIKE_DOUBLES,
+    );
   });
 
   it('should return lcv permittable power units with empty current configuration and lcv auth', async () => {
@@ -197,7 +199,7 @@ describe('Policy Engine Get Next Permittable Vehicles', () => {
     expect(vehicles.keys()).toContain(
       POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES,
     );
-    expect(vehicles.keys()).toContain('LCVTPDB');
+    expect(vehicles.keys()).toContain(POWER_UNIT_CODES.LCV_TURNPIKE_DOUBLES);
   });
 
   it('should return no next vehicles with lcv pu and no lcv auth', async () => {
