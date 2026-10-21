@@ -69,27 +69,27 @@ function start() {
     '***PERMITTABLE NEXT VEHICLES WITH TRUCK TRACTOR AND JEEP, STOS AND EMPTY***',
   );
   const vehicleTypes2 = policy.getNextPermittableVehicles('STOS', 'EMPTYXX', [
-    'TRKTRAC',
-    'JEEPSRG',
+    POWER_UNIT_CODES.TRUCK_TRACTORS,
+    TRAILER_CODES.JEEPS,
   ]);
   console.log(JSON.stringify(Array.from(vehicleTypes2.entries()), null, '   '));
 
   console.log(
     '***MAX SIZE FOR TRUCK TRACTOR, JEEP, HIBOEXP, STOS AND EMPTYXX***',
   );
-  const sizeDimension = policy.getSizeDimension('STOS', 'EMPTYXX', ['TRKTRAC', 'JEEPSRG', 'HIBOEXP']);
+  const sizeDimension = policy.getSizeDimension('STOS', 'EMPTYXX', [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.JEEPS, TRAILER_CODES.HIBOYS_EXPANDOS]);
   console.log(JSON.stringify(sizeDimension, null, '   '));
 
   console.log(
     '***MAX SIZE FOR TRUCK TRACTOR, JEEP, HIBOEXP, STOS AND EMPTYXX IN PEACE***',
   );
-  const sizeDimensionPeace = policy.getSizeDimension('STOS', 'EMPTYXX', ['TRKTRAC', 'JEEPSRG', 'HIBOEXP'], ['PCE']);
+  const sizeDimensionPeace = policy.getSizeDimension('STOS', 'EMPTYXX', [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.JEEPS, TRAILER_CODES.HIBOYS_EXPANDOS], ['PCE']);
   console.log(JSON.stringify(sizeDimensionPeace, null, '   '));
 
   console.log(
     '***MAX SIZE FOR TRUCK TRACTOR, JEEP, HIBOEXP, STOS AND EMPTYXX IN PEACE,BC DEFAULT***',
   );
-  const sizeDimensionPeaceBC = policy.getSizeDimension('STOS', 'EMPTYXX', ['TRKTRAC', 'JEEPSRG', 'HIBOEXP'], ['PCE','BCD']);
+  const sizeDimensionPeaceBC = policy.getSizeDimension('STOS', 'EMPTYXX', [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.JEEPS, TRAILER_CODES.HIBOYS_EXPANDOS], ['PCE','BCD']);
   console.log(JSON.stringify(sizeDimensionPeaceBC, null, '   '));
   */
 }

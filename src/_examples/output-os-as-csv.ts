@@ -1,4 +1,5 @@
 import completePolicyConfig from '../_test/policy-config/_current-config.json';
+import { TRAILER_CODES } from '../constants/trailer-codes';
 import { Policy } from '../policy-engine';
 import { TrailerDimensions } from '../types';
 import { toCsv } from '@iwsio/json-csv-core';
@@ -20,7 +21,7 @@ const options = {
       transform: (v: any) => (v ? 'X' : ''),
     },
     {
-      name: 'booster',
+      name: TRAILER_CODES.BOOSTER,
       label: 'Allow Booster',
       transform: (v: any) => (v ? 'X' : ''),
     },

@@ -1,5 +1,6 @@
 import { PolicyDefinition } from 'onroute-policy-engine/types';
-import { VEHICLE_CATEGORIES } from '../../constants/vehicle-categories';
+import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
+import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { COMMODITY_CODES } from '../../constants/commodity-codes';
 
 export const data: PolicyDefinition = {
@@ -1517,86 +1518,86 @@ export const data: PolicyDefinition = {
       sizeDimensionRequired: false,
       commodityRequired: false,
       allowedVehicles: [
-        'BUSCRUM',
-        'CONCRET',
-        'CRANEAT',
-        'CRANEMB',
-        'DDCKBUS',
-        'FARMTRC',
-        'GRADERS',
-        'LOGGING',
-        'LOGOFFH',
-        'LCVRMDB',
-        'LCVTPDB',
-        'LWBTRCT',
-        'MUNFITR',
-        'OGBEDTK',
-        'OGOILSW',
-        'OGSERVC',
-        'OGSRRAH',
-        'PICKRTR',
-        'PICKRTT',
-        'TRCKPME',
-        'TRACPME',
-        'RBTRLDR',
-        'SCRAPER',
-        'PUTAXIS',
-        'TLSCONV',
-        'TOWVEHC',
-        'TRKTRAC',
-        'STINGER',
-        'REGTRCK',
-        'PLOWBLD',
-        'BOOSTER',
-        'DOLLIES',
-        'EXPANDO',
-        'FECVYRX',
-        'FEDRMMX',
-        'FEPNYTR',
-        'FEBGHSE',
-        'FESEMTR',
-        'FEWHELR',
-        'FEWHLPR',
-        'FLOATTR',
-        'FULLLTL',
-        'JEEPSRG',
-        'LOGNTAC',
-        'LOGTNDM',
-        'LOGTRIX',
-        'LOGDGLG',
-        'LOGOWBK',
-        'LOGSMEM',
-        'LOGFULL',
-        'MHMBSHG',
-        'MHMBSHL',
-        'OGOSFDT',
-        'ODTRLEX',
-        'PMHWAAX',
-        'PLATFRM',
-        'POLETRL',
-        'PONYTRL',
-        'REDIMIX',
-        'SEMITRL',
-        'STACTRN',
-        'STBTRAN',
-        'HIBOEXP',
-        'HIBOFLT',
-        'STREEFR',
-        'STLOGNG',
-        'STNTSHC',
-        'STSDBDK',
-        'STWDTAN',
-        'STSTEER',
-        'STSTNGR',
-        'STCHIPS',
-        'STWHELR',
-        'STWIDWH',
-        'STCRANE',
-        'STROPRT',
-        'STRSELF',
-        'STINGAT',
-        'DBTRBTR',
-        'PLATWHE',
+        POWER_UNIT_CODES.BUSES,
+        POWER_UNIT_CODES.CONCRETE_PUMPER_TRUCKS,
+        POWER_UNIT_CODES.CRANES_ALL_TERRAIN,
+        POWER_UNIT_CODES.CRANES_MOBILE,
+        POWER_UNIT_CODES.DOUBLE_DECKER_BUSES,
+        POWER_UNIT_CODES.FARM_TRACTORS,
+        POWER_UNIT_CODES.FIXED_EQUIPMENT_TRUCKS_GRADERS,
+        POWER_UNIT_CODES.LOGGING_TRUCKS,
+        POWER_UNIT_CODES.LOGGING_TRUCKS_OFF_HIGHWAY,
+        POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES,
+        POWER_UNIT_CODES.LCV_TURNPIKE_DOUBLES,
+        POWER_UNIT_CODES.LONG_WHEELBASE_TRUCK_TRACTORS,
+        POWER_UNIT_CODES.MUNICIPAL_FIRE_TRUCKS,
+        POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS,
+        POWER_UNIT_CODES.OIL_AND_GAS_OILFIELD_SOWS,
+        POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS,
+        POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+        POWER_UNIT_CODES.PICKER_TRUCKS,
+        POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+        POWER_UNIT_CODES.TRUCK_WITH_PME,
+        POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
+        POWER_UNIT_CODES.RUBBER_TIRED_LOADERS,
+        POWER_UNIT_CODES.SCRAPERS,
+        POWER_UNIT_CODES.TAXIS,
+        POWER_UNIT_CODES.TELESCOPIC_CONVEYOR_TRUCKS,
+        POWER_UNIT_CODES.TOW_VEHICLES,
+        POWER_UNIT_CODES.TRUCK_TRACTORS,
+        POWER_UNIT_CODES.TRUCK_TRACTORS_STINGER_STEERED,
+        POWER_UNIT_CODES.TRUCKS,
+        POWER_UNIT_CODES.TRUCKS_FRONT_OR_UNDERBODY_PLOW_BLADES,
+        TRAILER_CODES.BOOSTER,
+        TRAILER_CODES.DOLLIES,
+        TRAILER_CODES.EXPANDO_SEMI_TRAILERS,
+        TRAILER_CODES.FIXED_EQUIPMENT_CONVEYORS,
+        TRAILER_CODES.FIXED_EQUIPMENT_COUNTER_FLOW_ASPHALT_DRUM_MIXERS,
+        TRAILER_CODES.FIXED_EQUIPMENT_PONY_TRAILERS,
+        TRAILER_CODES.FIXED_EQUIPMENT_PORTABLE_ASPHALT_BAGHOUSES,
+        TRAILER_CODES.FIXED_EQUIPMENT_SEMI_TRAILERS,
+        TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS,
+        TRAILER_CODES.FIXED_EQUIPMENT_SEMI_TRAILER_PEACE_RIVER,
+        TRAILER_CODES.FLOAT_TRAILERS,
+        TRAILER_CODES.FULL_TRAILERS,
+        TRAILER_CODES.JEEPS,
+        TRAILER_CODES.LOGGING_NON_TAC_B_TRAINS,
+        TRAILER_CODES.LOGGING_SINGLE_AXLE_JEEPS,
+        TRAILER_CODES.LOGGING_TRI_AXLE_TRAILERS,
+        TRAILER_CODES.LOGGING_TANDEM_POLE_TRAILERS_DOGLOGGERS,
+        TRAILER_CODES.LOGGING_OVERWIDTH_BUNKS,
+        TRAILER_CODES.LOGGING_SEMI_TRAILER_EMPTY,
+        TRAILER_CODES.LOGGING_FULL_TRAILERS,
+        TRAILER_CODES.MANUFACTURED_HOMES_OVER_5M,
+        TRAILER_CODES.MANUFACTURED_HOMES_UNDER_5M,
+        TRAILER_CODES.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK,
+        TRAILER_CODES.OVERDIMENSIONAL_TRAILERS_FOR_EXPORT,
+        TRAILER_CODES.PARK_MODEL_HOMES,
+        TRAILER_CODES.PLATFORM_TRAILERS,
+        TRAILER_CODES.POLE_TRAILERS,
+        TRAILER_CODES.PONY_TRAILERS,
+        TRAILER_CODES.READY_MIX_CONCRETE_PUMP_SEMI_TRAILERS,
+        TRAILER_CODES.SEMI_TRAILERS,
+        TRAILER_CODES.SEMI_TRAILERS_A_TRAINS_C_TRAINS,
+        TRAILER_CODES.SEMI_TRAILERS_B_TRAINS,
+        TRAILER_CODES.HIBOYS_EXPANDOS,
+        TRAILER_CODES.HIBOYS_FLAT_DECKS,
+        TRAILER_CODES.SEMI_TRAILERS_INSULATED_VANS_REEFER,
+        TRAILER_CODES.SEMI_TRAILERS_LOGGING,
+        TRAILER_CODES.SEMI_TRAILERS_NON_TAC_SHORT_CHASSIS,
+        TRAILER_CODES.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED,
+        TRAILER_CODES.SEMI_TRAILERS_SPREAD_TANDEMS,
+        TRAILER_CODES.SEMI_TRAILERS_STEERING_TRAILERS,
+        TRAILER_CODES.SEMI_TRAILERS_STINGER_STEEERED_AUTOMOBILE_TRANSPORTERS,
+        TRAILER_CODES.SEMI_TRAILERS_WALLED_B_TRAINS,
+        TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
+        TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
+        TRAILER_CODES.SEMI_TRAILERS_WITH_CRANE,
+        TRAILER_CODES.STEERING_TRAILERS_MANNED,
+        TRAILER_CODES.STEERING_TRAILERS_SELF_REMOTE,
+        TRAILER_CODES.STINGER_STEERED_AUTOMOBILE_TRANSPORTERS,
+        TRAILER_CODES.TANDEM_TRIDEM_DRIVE_B_TRAIN,
+        TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
       ],
       rules: [
         {
@@ -1883,67 +1884,67 @@ export const data: PolicyDefinition = {
       sizeDimensionRequired: false,
       commodityRequired: false,
       allowedVehicles: [
-        'CONCRET',
-        'CRANEAT',
-        'CRANEMB',
-        'DDCKBUS',
-        'GRADERS',
-        'BUSTRLR',
-        'LOGGING',
-        'LOGOFFH',
-        'LCVTPDB',
-        'LCVRMDB',
-        'MUNFITR',
-        'OGBEDTK',
-        'OGOILSW',
-        'OGSERVC',
-        'PICKRTT',
-        'TRCKPME',
-        'TRACPME',
-        'PICKRTR',
-        'RBTRLDR',
-        'TLSCONV',
-        'TOWVEHC',
-        'TRKTRAC',
-        'STINGER',
-        'REGTRCK',
-        'PLOWBLD',
-        'DOLLIES',
-        'EXPANDO',
-        'FECVYRX',
-        'FEDRMMX',
-        'FEPNYTR',
-        'FEBGHSE',
-        'FESEMTR',
-        'FEWHELR',
-        'FEWHLPR',
-        'FLOATTR',
-        'FULLLTL',
-        'LOGNTAC',
-        'LOGTNDM',
-        'LOGTRIX',
-        'LOGDGLG',
-        'LOGSMEM',
-        'LOGFULL',
-        'LOGOWBK',
-        'OGOSFDT',
-        'ODTRLEX',
-        'PLATFRM',
-        'POLETRL',
-        'PONYTRL',
-        'REDIMIX',
-        'SEMITRL',
-        'HIBOEXP',
-        'HIBOFLT',
-        'STREEFR',
-        'STLOGNG',
-        'STNTSHC',
-        'STSDBDK',
-        'STSTNGR',
-        'STWHELR',
-        'STWIDWH',
-        'STCRANE',
-        'STINGAT',
+        POWER_UNIT_CODES.CONCRETE_PUMPER_TRUCKS,
+        POWER_UNIT_CODES.CRANES_ALL_TERRAIN,
+        POWER_UNIT_CODES.CRANES_MOBILE,
+        POWER_UNIT_CODES.DOUBLE_DECKER_BUSES,
+        POWER_UNIT_CODES.FIXED_EQUIPMENT_TRUCKS_GRADERS,
+        POWER_UNIT_CODES.INTERCITY_BUSES_PULLING_PONY_TRAILERS,
+        POWER_UNIT_CODES.LOGGING_TRUCKS,
+        POWER_UNIT_CODES.LOGGING_TRUCKS_OFF_HIGHWAY,
+        POWER_UNIT_CODES.LCV_TURNPIKE_DOUBLES,
+        POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES,
+        POWER_UNIT_CODES.MUNICIPAL_FIRE_TRUCKS,
+        POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS,
+        POWER_UNIT_CODES.OIL_AND_GAS_OILFIELD_SOWS,
+        POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS,
+        POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+        POWER_UNIT_CODES.TRUCK_WITH_PME,
+        POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
+        POWER_UNIT_CODES.PICKER_TRUCKS,
+        POWER_UNIT_CODES.RUBBER_TIRED_LOADERS,
+        POWER_UNIT_CODES.TELESCOPIC_CONVEYOR_TRUCKS,
+        POWER_UNIT_CODES.TOW_VEHICLES,
+        POWER_UNIT_CODES.TRUCK_TRACTORS,
+        POWER_UNIT_CODES.TRUCK_TRACTORS_STINGER_STEERED,
+        POWER_UNIT_CODES.TRUCKS,
+        POWER_UNIT_CODES.TRUCKS_FRONT_OR_UNDERBODY_PLOW_BLADES,
+        TRAILER_CODES.DOLLIES,
+        TRAILER_CODES.EXPANDO_SEMI_TRAILERS,
+        TRAILER_CODES.FIXED_EQUIPMENT_CONVEYORS,
+        TRAILER_CODES.FIXED_EQUIPMENT_COUNTER_FLOW_ASPHALT_DRUM_MIXERS,
+        TRAILER_CODES.FIXED_EQUIPMENT_PONY_TRAILERS,
+        TRAILER_CODES.FIXED_EQUIPMENT_PORTABLE_ASPHALT_BAGHOUSES,
+        TRAILER_CODES.FIXED_EQUIPMENT_SEMI_TRAILERS,
+        TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS,
+        TRAILER_CODES.FIXED_EQUIPMENT_SEMI_TRAILER_PEACE_RIVER,
+        TRAILER_CODES.FLOAT_TRAILERS,
+        TRAILER_CODES.FULL_TRAILERS,
+        TRAILER_CODES.LOGGING_NON_TAC_B_TRAINS,
+        TRAILER_CODES.LOGGING_SINGLE_AXLE_JEEPS,
+        TRAILER_CODES.LOGGING_TRI_AXLE_TRAILERS,
+        TRAILER_CODES.LOGGING_TANDEM_POLE_TRAILERS_DOGLOGGERS,
+        TRAILER_CODES.LOGGING_SEMI_TRAILER_EMPTY,
+        TRAILER_CODES.LOGGING_FULL_TRAILERS,
+        TRAILER_CODES.LOGGING_OVERWIDTH_BUNKS,
+        TRAILER_CODES.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK,
+        TRAILER_CODES.OVERDIMENSIONAL_TRAILERS_FOR_EXPORT,
+        TRAILER_CODES.PLATFORM_TRAILERS,
+        TRAILER_CODES.POLE_TRAILERS,
+        TRAILER_CODES.PONY_TRAILERS,
+        TRAILER_CODES.READY_MIX_CONCRETE_PUMP_SEMI_TRAILERS,
+        TRAILER_CODES.SEMI_TRAILERS,
+        TRAILER_CODES.HIBOYS_EXPANDOS,
+        TRAILER_CODES.HIBOYS_FLAT_DECKS,
+        TRAILER_CODES.SEMI_TRAILERS_INSULATED_VANS_REEFER,
+        TRAILER_CODES.SEMI_TRAILERS_LOGGING,
+        TRAILER_CODES.SEMI_TRAILERS_NON_TAC_SHORT_CHASSIS,
+        TRAILER_CODES.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED,
+        TRAILER_CODES.SEMI_TRAILERS_STINGER_STEEERED_AUTOMOBILE_TRANSPORTERS,
+        TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
+        TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
+        TRAILER_CODES.SEMI_TRAILERS_WITH_CRANE,
+        TRAILER_CODES.STINGER_STEERED_AUTOMOBILE_TRANSPORTERS,
       ],
       rules: [
         {
@@ -2042,30 +2043,30 @@ export const data: PolicyDefinition = {
       sizeDimensionRequired: false,
       commodityRequired: false,
       allowedVehicles: [
-        'CONCRET',
-        'CRANEAT',
-        'CRANEMB',
-        'GRADERS',
-        'MUNFITR',
-        'LCVTPDB',
-        'LCVRMDB',
-        'OGOILSW',
-        'OGSERVC',
-        'PICKRTT',
-        'TRCKPME',
-        'TRACPME',
-        'PICKRTR',
-        'RBTRLDR',
-        'TLSCONV',
-        'TOWVEHC',
-        'TRKTRAC',
-        'FECVYRX',
-        'FEDRMMX',
-        'FEBGHSE',
-        'FESEMTR',
-        'FEWHELR',
-        'FEWHLPR',
-        'REDIMIX',
+        POWER_UNIT_CODES.CONCRETE_PUMPER_TRUCKS,
+        POWER_UNIT_CODES.CRANES_ALL_TERRAIN,
+        POWER_UNIT_CODES.CRANES_MOBILE,
+        POWER_UNIT_CODES.FIXED_EQUIPMENT_TRUCKS_GRADERS,
+        POWER_UNIT_CODES.MUNICIPAL_FIRE_TRUCKS,
+        POWER_UNIT_CODES.LCV_TURNPIKE_DOUBLES,
+        POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES,
+        POWER_UNIT_CODES.OIL_AND_GAS_OILFIELD_SOWS,
+        POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS,
+        POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+        POWER_UNIT_CODES.TRUCK_WITH_PME,
+        POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
+        POWER_UNIT_CODES.PICKER_TRUCKS,
+        POWER_UNIT_CODES.RUBBER_TIRED_LOADERS,
+        POWER_UNIT_CODES.TELESCOPIC_CONVEYOR_TRUCKS,
+        POWER_UNIT_CODES.TOW_VEHICLES,
+        POWER_UNIT_CODES.TRUCK_TRACTORS,
+        TRAILER_CODES.FIXED_EQUIPMENT_CONVEYORS,
+        TRAILER_CODES.FIXED_EQUIPMENT_COUNTER_FLOW_ASPHALT_DRUM_MIXERS,
+        TRAILER_CODES.FIXED_EQUIPMENT_PORTABLE_ASPHALT_BAGHOUSES,
+        TRAILER_CODES.FIXED_EQUIPMENT_SEMI_TRAILERS,
+        TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS,
+        TRAILER_CODES.FIXED_EQUIPMENT_SEMI_TRAILER_PEACE_RIVER,
+        TRAILER_CODES.READY_MIX_CONCRETE_PUMP_SEMI_TRAILERS,
       ],
       rules: [
         {
@@ -2406,25 +2407,25 @@ export const data: PolicyDefinition = {
       sizeDimensionRequired: true,
       commodityRequired: false,
       allowedVehicles: [
-        'CONCRET',
-        'CRANEAT',
-        'CRANEMB',
-        'GRADERS',
-        'LWBTRCT',
-        'MUNFITR',
-        'OGBEDTK',
-        'OGOILSW',
-        'OGSERVC',
-        'OGSRRAH',
-        'PICKRTT',
-        'PICKRTR',
-        'RBTRLDR',
-        'TLSCONV',
-        'TOWVEHC',
-        'TRKTRAC',
-        'REGTRCK',
-        'TRCKPME',
-        'TRACPME',
+        POWER_UNIT_CODES.CONCRETE_PUMPER_TRUCKS,
+        POWER_UNIT_CODES.CRANES_ALL_TERRAIN,
+        POWER_UNIT_CODES.CRANES_MOBILE,
+        POWER_UNIT_CODES.FIXED_EQUIPMENT_TRUCKS_GRADERS,
+        POWER_UNIT_CODES.LONG_WHEELBASE_TRUCK_TRACTORS,
+        POWER_UNIT_CODES.MUNICIPAL_FIRE_TRUCKS,
+        POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS,
+        POWER_UNIT_CODES.OIL_AND_GAS_OILFIELD_SOWS,
+        POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS,
+        POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+        POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+        POWER_UNIT_CODES.PICKER_TRUCKS,
+        POWER_UNIT_CODES.RUBBER_TIRED_LOADERS,
+        POWER_UNIT_CODES.TELESCOPIC_CONVEYOR_TRUCKS,
+        POWER_UNIT_CODES.TOW_VEHICLES,
+        POWER_UNIT_CODES.TRUCK_TRACTORS,
+        POWER_UNIT_CODES.TRUCKS,
+        POWER_UNIT_CODES.TRUCK_WITH_PME,
+        POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
       ],
       rules: [
         {
@@ -2702,32 +2703,32 @@ export const data: PolicyDefinition = {
       sizeDimensionRequired: false,
       commodityRequired: false,
       allowedVehicles: [
-        'BUSCRUM',
-        'BUSTRLR',
-        'CONCRET',
-        'CRANEAT',
-        'CRANEMB',
-        'DDCKBUS',
-        'GRADERS',
-        'LCVRMDB',
-        'LCVTPDB',
-        'LOGGING',
-        'LOGOFFH',
-        'MUNFITR',
-        'OGBEDTK',
-        'OGOILSW',
-        'OGSERVC',
-        'OGSRRAH',
-        'PICKRTT',
-        'TRCKPME',
-        'TRACPME',
-        'PLOWBLD',
-        'PUTAXIS',
-        'REGTRCK',
-        'SCRAPER',
-        'STINGER',
-        'TOWVEHC',
-        'TRKTRAC',
+        POWER_UNIT_CODES.BUSES,
+        POWER_UNIT_CODES.INTERCITY_BUSES_PULLING_PONY_TRAILERS,
+        POWER_UNIT_CODES.CONCRETE_PUMPER_TRUCKS,
+        POWER_UNIT_CODES.CRANES_ALL_TERRAIN,
+        POWER_UNIT_CODES.CRANES_MOBILE,
+        POWER_UNIT_CODES.DOUBLE_DECKER_BUSES,
+        POWER_UNIT_CODES.FIXED_EQUIPMENT_TRUCKS_GRADERS,
+        POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES,
+        POWER_UNIT_CODES.LCV_TURNPIKE_DOUBLES,
+        POWER_UNIT_CODES.LOGGING_TRUCKS,
+        POWER_UNIT_CODES.LOGGING_TRUCKS_OFF_HIGHWAY,
+        POWER_UNIT_CODES.MUNICIPAL_FIRE_TRUCKS,
+        POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS,
+        POWER_UNIT_CODES.OIL_AND_GAS_OILFIELD_SOWS,
+        POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS,
+        POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+        POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+        POWER_UNIT_CODES.TRUCK_WITH_PME,
+        POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
+        POWER_UNIT_CODES.TRUCKS_FRONT_OR_UNDERBODY_PLOW_BLADES,
+        POWER_UNIT_CODES.TAXIS,
+        POWER_UNIT_CODES.TRUCKS,
+        POWER_UNIT_CODES.SCRAPERS,
+        POWER_UNIT_CODES.TRUCK_TRACTORS_STINGER_STEERED,
+        POWER_UNIT_CODES.TOW_VEHICLES,
+        POWER_UNIT_CODES.TRUCK_TRACTORS,
       ],
       rules: [
         {
@@ -2935,32 +2936,32 @@ export const data: PolicyDefinition = {
       sizeDimensionRequired: false,
       commodityRequired: false,
       allowedVehicles: [
-        'BUSCRUM',
-        'BUSTRLR',
-        'CONCRET',
-        'CRANEAT',
-        'CRANEMB',
-        'DDCKBUS',
-        'GRADERS',
-        'LCVRMDB',
-        'LCVTPDB',
-        'LOGGING',
-        'LOGOFFH',
-        'MUNFITR',
-        'OGBEDTK',
-        'OGOILSW',
-        'OGSERVC',
-        'OGSRRAH',
-        'PICKRTT',
-        'TRCKPME',
-        'TRACPME',
-        'PLOWBLD',
-        'PUTAXIS',
-        'REGTRCK',
-        'SCRAPER',
-        'STINGER',
-        'TOWVEHC',
-        'TRKTRAC',
+        POWER_UNIT_CODES.BUSES,
+        POWER_UNIT_CODES.INTERCITY_BUSES_PULLING_PONY_TRAILERS,
+        POWER_UNIT_CODES.CONCRETE_PUMPER_TRUCKS,
+        POWER_UNIT_CODES.CRANES_ALL_TERRAIN,
+        POWER_UNIT_CODES.CRANES_MOBILE,
+        POWER_UNIT_CODES.DOUBLE_DECKER_BUSES,
+        POWER_UNIT_CODES.FIXED_EQUIPMENT_TRUCKS_GRADERS,
+        POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES,
+        POWER_UNIT_CODES.LCV_TURNPIKE_DOUBLES,
+        POWER_UNIT_CODES.LOGGING_TRUCKS,
+        POWER_UNIT_CODES.LOGGING_TRUCKS_OFF_HIGHWAY,
+        POWER_UNIT_CODES.MUNICIPAL_FIRE_TRUCKS,
+        POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS,
+        POWER_UNIT_CODES.OIL_AND_GAS_OILFIELD_SOWS,
+        POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS,
+        POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+        POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+        POWER_UNIT_CODES.TRUCK_WITH_PME,
+        POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
+        POWER_UNIT_CODES.TRUCKS_FRONT_OR_UNDERBODY_PLOW_BLADES,
+        POWER_UNIT_CODES.TAXIS,
+        POWER_UNIT_CODES.TRUCKS,
+        POWER_UNIT_CODES.SCRAPERS,
+        POWER_UNIT_CODES.TRUCK_TRACTORS_STINGER_STEERED,
+        POWER_UNIT_CODES.TOW_VEHICLES,
+        POWER_UNIT_CODES.TRUCK_TRACTORS,
       ],
       rules: [
         {
@@ -3121,32 +3122,32 @@ export const data: PolicyDefinition = {
       sizeDimensionRequired: false,
       commodityRequired: false,
       allowedVehicles: [
-        'BUSCRUM',
-        'BUSTRLR',
-        'CONCRET',
-        'CRANEAT',
-        'CRANEMB',
-        'DDCKBUS',
-        'GRADERS',
-        'LCVRMDB',
-        'LCVTPDB',
-        'LOGGING',
-        'LOGOFFH',
-        'MUNFITR',
-        'OGBEDTK',
-        'OGOILSW',
-        'OGSERVC',
-        'OGSRRAH',
-        'PICKRTT',
-        'TRCKPME',
-        'TRACPME',
-        'PLOWBLD',
-        'PUTAXIS',
-        'REGTRCK',
-        'SCRAPER',
-        'STINGER',
-        'TOWVEHC',
-        'TRKTRAC',
+        POWER_UNIT_CODES.BUSES,
+        POWER_UNIT_CODES.INTERCITY_BUSES_PULLING_PONY_TRAILERS,
+        POWER_UNIT_CODES.CONCRETE_PUMPER_TRUCKS,
+        POWER_UNIT_CODES.CRANES_ALL_TERRAIN,
+        POWER_UNIT_CODES.CRANES_MOBILE,
+        POWER_UNIT_CODES.DOUBLE_DECKER_BUSES,
+        POWER_UNIT_CODES.FIXED_EQUIPMENT_TRUCKS_GRADERS,
+        POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES,
+        POWER_UNIT_CODES.LCV_TURNPIKE_DOUBLES,
+        POWER_UNIT_CODES.LOGGING_TRUCKS,
+        POWER_UNIT_CODES.LOGGING_TRUCKS_OFF_HIGHWAY,
+        POWER_UNIT_CODES.MUNICIPAL_FIRE_TRUCKS,
+        POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS,
+        POWER_UNIT_CODES.OIL_AND_GAS_OILFIELD_SOWS,
+        POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS,
+        POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+        POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+        POWER_UNIT_CODES.TRUCK_WITH_PME,
+        POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
+        POWER_UNIT_CODES.TRUCKS_FRONT_OR_UNDERBODY_PLOW_BLADES,
+        POWER_UNIT_CODES.TAXIS,
+        POWER_UNIT_CODES.TRUCKS,
+        POWER_UNIT_CODES.SCRAPERS,
+        POWER_UNIT_CODES.TRUCK_TRACTORS_STINGER_STEERED,
+        POWER_UNIT_CODES.TOW_VEHICLES,
+        POWER_UNIT_CODES.TRUCK_TRACTORS,
       ],
       rules: [
         {
@@ -3298,30 +3299,30 @@ export const data: PolicyDefinition = {
       sizeDimensionRequired: false,
       commodityRequired: false,
       allowedVehicles: [
-        'BUSCRUM',
-        'BUSTRLR',
-        'CONCRET',
-        'CRANEAT',
-        'CRANEMB',
-        'DDCKBUS',
-        'GRADERS',
-        'LCVRMDB',
-        'LCVTPDB',
-        'LOGGING',
-        'LOGOFFH',
-        'OGBEDTK',
-        'OGOILSW',
-        'OGSERVC',
-        'OGSRRAH',
-        'PICKRTT',
-        'TRCKPME',
-        'TRACPME',
-        'PLOWBLD',
-        'REGTRCK',
-        'SCRAPER',
-        'STINGER',
-        'TOWVEHC',
-        'TRKTRAC',
+        POWER_UNIT_CODES.BUSES,
+        POWER_UNIT_CODES.INTERCITY_BUSES_PULLING_PONY_TRAILERS,
+        POWER_UNIT_CODES.CONCRETE_PUMPER_TRUCKS,
+        POWER_UNIT_CODES.CRANES_ALL_TERRAIN,
+        POWER_UNIT_CODES.CRANES_MOBILE,
+        POWER_UNIT_CODES.DOUBLE_DECKER_BUSES,
+        POWER_UNIT_CODES.FIXED_EQUIPMENT_TRUCKS_GRADERS,
+        POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES,
+        POWER_UNIT_CODES.LCV_TURNPIKE_DOUBLES,
+        POWER_UNIT_CODES.LOGGING_TRUCKS,
+        POWER_UNIT_CODES.LOGGING_TRUCKS_OFF_HIGHWAY,
+        POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS,
+        POWER_UNIT_CODES.OIL_AND_GAS_OILFIELD_SOWS,
+        POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS,
+        POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+        POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+        POWER_UNIT_CODES.TRUCK_WITH_PME,
+        POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
+        POWER_UNIT_CODES.TRUCKS_FRONT_OR_UNDERBODY_PLOW_BLADES,
+        POWER_UNIT_CODES.TRUCKS,
+        POWER_UNIT_CODES.SCRAPERS,
+        POWER_UNIT_CODES.TRUCK_TRACTORS_STINGER_STEERED,
+        POWER_UNIT_CODES.TOW_VEHICLES,
+        POWER_UNIT_CODES.TRUCK_TRACTORS,
       ],
       rules: [
         {
@@ -3487,33 +3488,33 @@ export const data: PolicyDefinition = {
       sizeDimensionRequired: false,
       commodityRequired: false,
       allowedVehicles: [
-        'BUSCRUM',
-        'BUSTRLR',
-        'CONCRET',
-        'CRANEAT',
-        'CRANEMB',
-        'DDCKBUS',
-        'FARMTRC',
-        'GRADERS',
-        'LCVRMDB',
-        'LCVTPDB',
-        'LOGGING',
-        'LOGOFFH',
-        'MUNFITR',
-        'OGBEDTK',
-        'OGOILSW',
-        'OGSERVC',
-        'OGSRRAH',
-        'PICKRTT',
-        'TRCKPME',
-        'TRACPME',
-        'PLOWBLD',
-        'PUTAXIS',
-        'REGTRCK',
-        'SCRAPER',
-        'STINGER',
-        'TOWVEHC',
-        'TRKTRAC',
+        POWER_UNIT_CODES.BUSES,
+        POWER_UNIT_CODES.INTERCITY_BUSES_PULLING_PONY_TRAILERS,
+        POWER_UNIT_CODES.CONCRETE_PUMPER_TRUCKS,
+        POWER_UNIT_CODES.CRANES_ALL_TERRAIN,
+        POWER_UNIT_CODES.CRANES_MOBILE,
+        POWER_UNIT_CODES.DOUBLE_DECKER_BUSES,
+        POWER_UNIT_CODES.FARM_TRACTORS,
+        POWER_UNIT_CODES.FIXED_EQUIPMENT_TRUCKS_GRADERS,
+        POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES,
+        POWER_UNIT_CODES.LCV_TURNPIKE_DOUBLES,
+        POWER_UNIT_CODES.LOGGING_TRUCKS,
+        POWER_UNIT_CODES.LOGGING_TRUCKS_OFF_HIGHWAY,
+        POWER_UNIT_CODES.MUNICIPAL_FIRE_TRUCKS,
+        POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS,
+        POWER_UNIT_CODES.OIL_AND_GAS_OILFIELD_SOWS,
+        POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS,
+        POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+        POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+        POWER_UNIT_CODES.TRUCK_WITH_PME,
+        POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
+        POWER_UNIT_CODES.TRUCKS_FRONT_OR_UNDERBODY_PLOW_BLADES,
+        POWER_UNIT_CODES.TAXIS,
+        POWER_UNIT_CODES.TRUCKS,
+        POWER_UNIT_CODES.SCRAPERS,
+        POWER_UNIT_CODES.TRUCK_TRACTORS_STINGER_STEERED,
+        POWER_UNIT_CODES.TOW_VEHICLES,
+        POWER_UNIT_CODES.TRUCK_TRACTORS,
       ],
       rules: [
         {
@@ -3796,33 +3797,33 @@ export const data: PolicyDefinition = {
       sizeDimensionRequired: false,
       commodityRequired: false,
       allowedVehicles: [
-        'BUSCRUM',
-        'BUSTRLR',
-        'CONCRET',
-        'CRANEAT',
-        'CRANEMB',
-        'DDCKBUS',
-        'FARMTRC',
-        'GRADERS',
-        'LCVRMDB',
-        'LCVTPDB',
-        'LOGGING',
-        'LOGOFFH',
-        'MUNFITR',
-        'OGBEDTK',
-        'OGOILSW',
-        'OGSERVC',
-        'OGSRRAH',
-        'PICKRTT',
-        'TRCKPME',
-        'TRACPME',
-        'PLOWBLD',
-        'PUTAXIS',
-        'REGTRCK',
-        'SCRAPER',
-        'STINGER',
-        'TOWVEHC',
-        'TRKTRAC',
+        POWER_UNIT_CODES.BUSES,
+        POWER_UNIT_CODES.INTERCITY_BUSES_PULLING_PONY_TRAILERS,
+        POWER_UNIT_CODES.CONCRETE_PUMPER_TRUCKS,
+        POWER_UNIT_CODES.CRANES_ALL_TERRAIN,
+        POWER_UNIT_CODES.CRANES_MOBILE,
+        POWER_UNIT_CODES.DOUBLE_DECKER_BUSES,
+        POWER_UNIT_CODES.FARM_TRACTORS,
+        POWER_UNIT_CODES.FIXED_EQUIPMENT_TRUCKS_GRADERS,
+        POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES,
+        POWER_UNIT_CODES.LCV_TURNPIKE_DOUBLES,
+        POWER_UNIT_CODES.LOGGING_TRUCKS,
+        POWER_UNIT_CODES.LOGGING_TRUCKS_OFF_HIGHWAY,
+        POWER_UNIT_CODES.MUNICIPAL_FIRE_TRUCKS,
+        POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS,
+        POWER_UNIT_CODES.OIL_AND_GAS_OILFIELD_SOWS,
+        POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS,
+        POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+        POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+        POWER_UNIT_CODES.TRUCK_WITH_PME,
+        POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
+        POWER_UNIT_CODES.TRUCKS_FRONT_OR_UNDERBODY_PLOW_BLADES,
+        POWER_UNIT_CODES.TAXIS,
+        POWER_UNIT_CODES.TRUCKS,
+        POWER_UNIT_CODES.SCRAPERS,
+        POWER_UNIT_CODES.TRUCK_TRACTORS_STINGER_STEERED,
+        POWER_UNIT_CODES.TOW_VEHICLES,
+        POWER_UNIT_CODES.TRUCK_TRACTORS,
       ],
       rules: [
         {
@@ -4095,7 +4096,11 @@ export const data: PolicyDefinition = {
       weightDimensionRequired: false,
       sizeDimensionRequired: false,
       commodityRequired: false,
-      allowedVehicles: ['BUSCRUM', 'DDCKBUS', 'PUTAXIS'],
+      allowedVehicles: [
+        POWER_UNIT_CODES.BUSES,
+        POWER_UNIT_CODES.DOUBLE_DECKER_BUSES,
+        POWER_UNIT_CODES.TAXIS,
+      ],
       rules: [
         {
           conditions: {
@@ -4324,7 +4329,7 @@ export const data: PolicyDefinition = {
           {
             axles: 3,
             modifier: {
-              type: 'BOOSTER',
+              type: TRAILER_CODES.BOOSTER,
               position: 'after',
               axles: 2,
             },
@@ -4334,7 +4339,7 @@ export const data: PolicyDefinition = {
           {
             axles: 3,
             modifier: {
-              type: 'BOOSTER',
+              type: TRAILER_CODES.BOOSTER,
               position: 'after',
               axles: 3,
             },
@@ -4440,12 +4445,12 @@ export const data: PolicyDefinition = {
   vehicleTypes: {
     powerUnitTypes: [
       {
-        id: 'BUSCRUM',
+        id: POWER_UNIT_CODES.BUSES,
         name: 'Buses',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
       },
       {
-        id: 'CONCRET',
+        id: POWER_UNIT_CODES.CONCRETE_PUMPER_TRUCKS,
         name: 'Concrete Pumper Trucks',
         category: VEHICLE_CATEGORIES.MULTI_STEER,
         displayCodePrefix: 'MC',
@@ -4453,16 +4458,17 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'A',
       },
       {
-        id: 'CRANEAT',
+        id: POWER_UNIT_CODES.CRANES_ALL_TERRAIN,
         name: 'Cranes - All Terrain',
-        category: VEHICLE_CATEGORIES.MULTI_STEER,
-        additionalAxleSubType: 'ATCAXLE',
+        category: 'multisteer',
+        additionalAxleSubType:
+          TRAILER_CODES.ADDITIONAL_AXLE_UNIT_ALL_TERRAIN_CRANE,
         displayCodePrefix: 'MC',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'A',
       },
       {
-        id: 'CRANEMB',
+        id: POWER_UNIT_CODES.CRANES_MOBILE,
         name: 'Cranes - Mobile',
         category: VEHICLE_CATEGORIES.MULTI_STEER,
         displayCodePrefix: 'MC',
@@ -4470,7 +4476,7 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'A',
       },
       {
-        id: 'CRAFTAT',
+        id: POWER_UNIT_CODES.CRANES_RUBBER_TIRED_LOADERS_FIRETRUCKS_ALL_TERRAIN,
         name: 'Cranes, Rubber-Tired Loaders, Firetrucks - All Terrain',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'MC',
@@ -4478,7 +4484,7 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'A',
       },
       {
-        id: 'CRAFTMB',
+        id: POWER_UNIT_CODES.CRANES_RUBBER_TIRED_LOADERS_FIRETRUCKS_MOBILE,
         name: 'Cranes, Rubber-Tired Loaders, Firetrucks - Mobile',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'MC',
@@ -4486,12 +4492,12 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'A',
       },
       {
-        id: 'DDCKBUS',
+        id: POWER_UNIT_CODES.DOUBLE_DECKER_BUSES,
         name: 'Double Decker Buses',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
       },
       {
-        id: 'FARMTRC',
+        id: POWER_UNIT_CODES.FARM_TRACTORS,
         name: 'Farm Tractors',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'TT',
@@ -4499,7 +4505,7 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'D',
       },
       {
-        id: 'FARMVEH',
+        id: POWER_UNIT_CODES.FARM_VEHICLES,
         name: 'Farm Vehicles',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'TT',
@@ -4507,7 +4513,7 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'D',
       },
       {
-        id: 'GRADERS',
+        id: POWER_UNIT_CODES.FIXED_EQUIPMENT_TRUCKS_GRADERS,
         name: 'Fixed Equipment - Trucks/Graders etc.',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
         defaultWeightDimensions: [
@@ -4545,12 +4551,12 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'A',
       },
       {
-        id: 'BUSTRLR',
+        id: POWER_UNIT_CODES.INTERCITY_BUSES_PULLING_PONY_TRAILERS,
         name: 'Intercity Buses (Pulling Pony Trailers)',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
       },
       {
-        id: 'LOGGING',
+        id: POWER_UNIT_CODES.LOGGING_TRUCKS,
         name: 'Logging Trucks',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'TT',
@@ -4558,7 +4564,7 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'D',
       },
       {
-        id: 'LOGOFFH',
+        id: POWER_UNIT_CODES.LOGGING_TRUCKS_OFF_HIGHWAY,
         name: 'Logging Trucks - Off-Highway',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'TT',
@@ -4566,7 +4572,7 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'D',
       },
       {
-        id: 'LCVRMDB',
+        id: POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES,
         name: 'Long Combination Vehicles (LCV) - Rocky Mountain Doubles',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
         isLcv: true,
@@ -4597,7 +4603,7 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'D',
       },
       {
-        id: 'LCVTPDB',
+        id: POWER_UNIT_CODES.LCV_TURNPIKE_DOUBLES,
         name: 'Long Combination Vehicles (LCV) - Turnpike Doubles',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
         isLcv: true,
@@ -4628,12 +4634,12 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'D',
       },
       {
-        id: 'LWBTRCT',
+        id: POWER_UNIT_CODES.LONG_WHEELBASE_TRUCK_TRACTORS,
         name: 'Long Wheelbase Truck Tractors Exceeding 6.2 m up to 7.25 m',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
       },
       {
-        id: 'MUNFITR',
+        id: POWER_UNIT_CODES.MUNICIPAL_FIRE_TRUCKS,
         name: 'Municipal Fire Trucks',
         category: VEHICLE_CATEGORIES.MULTI_STEER,
         displayCodePrefix: 'MC',
@@ -4641,7 +4647,7 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'A',
       },
       {
-        id: 'OGBEDTK',
+        id: POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS,
         name: 'Oil and Gas - Bed Trucks',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'TT',
@@ -4649,7 +4655,7 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'D',
       },
       {
-        id: 'OGOILSW',
+        id: POWER_UNIT_CODES.OIL_AND_GAS_OILFIELD_SOWS,
         name: 'Oil and Gas - Oilfield Sows',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'TT',
@@ -4657,7 +4663,7 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'D',
       },
       {
-        id: 'OGSERVC',
+        id: POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS,
         name: 'Oil and Gas - Service Rigs',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'TT',
@@ -4665,7 +4671,7 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'D',
       },
       {
-        id: 'OGSRRAH',
+        id: POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
         name: 'Oil and Gas - Service Rigs and Rathole Augers Only Equipped with Heavy Front Projected Crane (must exceed 14,000 kg tare weight)',
         category: VEHICLE_CATEGORIES.MULTI_STEER,
         displayCodePrefix: 'MC',
@@ -4673,7 +4679,7 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'A',
       },
       {
-        id: 'PICKRTT',
+        id: POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
         name: 'Picker Truck Tractors',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
         defaultWeightDimensions: [
@@ -4711,7 +4717,7 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'D',
       },
       {
-        id: 'TRCKPME',
+        id: POWER_UNIT_CODES.TRUCK_WITH_PME,
         name: 'Truck with PME',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
         defaultWeightDimensions: [
@@ -4749,7 +4755,7 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'D',
       },
       {
-        id: 'TRACPME',
+        id: POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
         name: 'Truck Tractor with PME',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
         defaultWeightDimensions: [
@@ -4787,7 +4793,7 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'D',
       },
       {
-        id: 'PICKRTR',
+        id: POWER_UNIT_CODES.PICKER_TRUCKS,
         name: 'Picker Trucks',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
         defaultWeightDimensions: [
@@ -4825,7 +4831,7 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'D',
       },
       {
-        id: 'RBTRLDR',
+        id: POWER_UNIT_CODES.RUBBER_TIRED_LOADERS,
         name: 'Rubber Tired Loaders',
         category: VEHICLE_CATEGORIES.MULTI_STEER,
         defaultWeightDimensions: [
@@ -4842,7 +4848,7 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'A',
       },
       {
-        id: 'SCRAPER',
+        id: POWER_UNIT_CODES.SCRAPERS,
         name: 'Scrapers',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
         defaultWeightDimensions: [
@@ -4859,17 +4865,17 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'D',
       },
       {
-        id: 'SPAUTHV',
+        id: POWER_UNIT_CODES.SPECIALLY_AUTHORIZED_VEHICLES,
         name: 'Specially Authorized Vehicles',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
       },
       {
-        id: 'PUTAXIS',
+        id: POWER_UNIT_CODES.TAXIS,
         name: 'Taxis',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
       },
       {
-        id: 'TLSCONV',
+        id: POWER_UNIT_CODES.TELESCOPIC_CONVEYOR_TRUCKS,
         name: 'Telescopic Conveyor Trucks',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
         defaultWeightDimensions: [
@@ -4907,7 +4913,7 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'D',
       },
       {
-        id: 'TOWVEHC',
+        id: POWER_UNIT_CODES.TOW_VEHICLES,
         name: 'Tow Vehicles',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'TT',
@@ -4915,7 +4921,7 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'D',
       },
       {
-        id: 'TRKTRAC',
+        id: POWER_UNIT_CODES.TRUCK_TRACTORS,
         name: 'Truck Tractors',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'TT',
@@ -4923,7 +4929,7 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'D',
       },
       {
-        id: 'STINGER',
+        id: POWER_UNIT_CODES.TRUCK_TRACTORS_STINGER_STEERED,
         name: 'Truck Tractors - Stinger Steered',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'TT',
@@ -4931,7 +4937,7 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'D',
       },
       {
-        id: 'REGTRCK',
+        id: POWER_UNIT_CODES.TRUCKS,
         name: 'Trucks',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
         defaultWeightDimensions: [
@@ -4955,7 +4961,7 @@ export const data: PolicyDefinition = {
         displayCodeDriveAxle: 'D',
       },
       {
-        id: 'PLOWBLD',
+        id: POWER_UNIT_CODES.TRUCKS_FRONT_OR_UNDERBODY_PLOW_BLADES,
         name: 'Trucks Equipped with Front or Underbody Plow Blades',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
         displayCodePrefix: 'TT',
@@ -4965,21 +4971,21 @@ export const data: PolicyDefinition = {
     ],
     trailerTypes: [
       {
-        id: 'PFMAXLE',
+        id: TRAILER_CODES.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER,
         name: 'Additional Axle Unit for Platform Trailer',
         category: VEHICLE_CATEGORIES.PSEUDO,
         ignoreForSizeDimensions: true,
         displayCode: 'A',
       },
       {
-        id: 'ATCAXLE',
+        id: TRAILER_CODES.ADDITIONAL_AXLE_UNIT_ALL_TERRAIN_CRANE,
         name: 'Additional Axle Unit for All-Terrain Crane',
         category: VEHICLE_CATEGORIES.PSEUDO,
         ignoreForSizeDimensions: true,
         displayCode: 'A',
       },
       {
-        id: 'BOOSTER',
+        id: TRAILER_CODES.BOOSTER,
         name: 'Boosters',
         category: VEHICLE_CATEGORIES.PSEUDO,
         ignoreForSizeDimensions: true,
@@ -5005,339 +5011,333 @@ export const data: PolicyDefinition = {
         displayCode: 'B',
       },
       {
-        id: 'DOLLIES',
-        name: 'Dollies',
-        category: VEHICLE_CATEGORIES.DOLLY,
+        id: TRAILER_CODES.DOLLIES,
+        name: TRAILER_CODES.DOLLIES,
+        category: 'dolly',
         displayCode: 'B',
       },
       {
-        id: 'EXPANDO',
+        id: TRAILER_CODES.EXPANDO_SEMI_TRAILERS,
         name: 'Expando Semi-Trailers',
         category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'FECVYRX',
+        id: TRAILER_CODES.FIXED_EQUIPMENT_CONVEYORS,
         name: 'Fixed Equipment - Conveyors',
         category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'FEDRMMX',
+        id: TRAILER_CODES.FIXED_EQUIPMENT_COUNTER_FLOW_ASPHALT_DRUM_MIXERS,
         name: 'Fixed Equipment - Counter Flow Asphalt Drum Mixers',
         category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'FEPNYTR',
+        id: TRAILER_CODES.FIXED_EQUIPMENT_PONY_TRAILERS,
         name: 'Fixed Equipment - Pony Trailers',
         category: VEHICLE_CATEGORIES.PONY_TRAILER,
         displayCode: 'B',
       },
       {
-        id: 'FEBGHSE',
+        id: TRAILER_CODES.FIXED_EQUIPMENT_PORTABLE_ASPHALT_BAGHOUSES,
         name: 'Fixed Equipment - Portable Asphalt Baghouses',
         category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'FESEMTR',
+        id: TRAILER_CODES.FIXED_EQUIPMENT_SEMI_TRAILERS,
         name: 'Fixed Equipment - Semi-Trailers',
         category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'FEWHELR',
+        id: TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS,
         name: 'Fixed Equipment - Wheeler Semi-Trailers',
         category: VEHICLE_CATEGORIES.WHEELER,
         displayCode: 'T',
       },
       {
-        id: 'FEWHLPR',
+        id: TRAILER_CODES.FIXED_EQUIPMENT_SEMI_TRAILER_PEACE_RIVER,
         name: 'Fixed Equipment - Semi Trailer (16 and 24 Wheeler) Peace River Only',
         // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'FLOATTR',
+        id: TRAILER_CODES.FLOAT_TRAILERS,
         name: 'Float Trailers',
         // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'FULLLTL',
+        id: TRAILER_CODES.FULL_TRAILERS,
         name: 'Full Trailers',
         // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'JEEPSRG',
+        id: TRAILER_CODES.JEEPS,
         name: 'Jeeps',
         category: VEHICLE_CATEGORIES.JEEP,
         ignoreForSizeDimensions: true,
         displayCode: 'J',
       },
       {
-        id: 'LOGNTAC',
+        id: TRAILER_CODES.LOGGING_NON_TAC_B_TRAINS,
         name: 'Legacy Logging Trailer Combinations - Non-TAC B-Trains',
         // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'LOGTNDM',
+        id: TRAILER_CODES.LOGGING_SINGLE_AXLE_JEEPS,
         name: 'Legacy Logging Trailer Combinations - Single Axle Jeeps, Tandem Axle Pole Trailers, Dogloggers',
         // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'LOGTRIX',
+        id: TRAILER_CODES.LOGGING_TRI_AXLE_TRAILERS,
         name: 'Legacy Logging Trailer Combinations - Single Axle Jeeps, Tri Axle Trailers',
         // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'LOGDGLG',
+        id: TRAILER_CODES.LOGGING_TANDEM_POLE_TRAILERS_DOGLOGGERS,
         name: 'Legacy Logging Trailer Combinations - Tandem Pole Trailers, Dogloggers',
         // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'LOGSMEM',
+        id: TRAILER_CODES.LOGGING_SEMI_TRAILER_EMPTY,
         name: 'Logging Semi-Trailer - Empty, 3.2 m Bunks',
         // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'LOGFULL',
+        id: TRAILER_CODES.LOGGING_FULL_TRAILERS,
         name: 'Logging Trailer - Full Trailers, Tri Axle, Quad Axle',
         // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'LOGOWBK',
+        id: TRAILER_CODES.LOGGING_OVERWIDTH_BUNKS,
         name: 'Logging Trailers - Overwidth Bunks',
         // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'MHMBSHG',
+        id: TRAILER_CODES.MANUFACTURED_HOMES_OVER_5M,
         name: 'Manufactured Homes, Modular Buildings, Structures and Houseboats (> 5.0 m OAW) with Attached Axles',
         category: VEHICLE_CATEGORIES.PONY_TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'MHMBSHL',
+        id: TRAILER_CODES.MANUFACTURED_HOMES_UNDER_5M,
         name: 'Manufactured Homes, Modular Buildings, Structures and Houseboats (<= 5.0 m OAW) with Attached Axles',
         category: VEHICLE_CATEGORIES.PONY_TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'OGOSFDT',
+        id: TRAILER_CODES.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK,
         name: 'Oil and Gas - Oversize Oilfield Flat Deck Semi-Trailers',
         category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'ODTRLEX',
+        id: TRAILER_CODES.OVERDIMENSIONAL_TRAILERS_FOR_EXPORT,
         name: 'Overdimensional Trailers and Semi-Trailers (For Export)',
         // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'PMHWAAX',
+        id: TRAILER_CODES.PARK_MODEL_HOMES,
         name: 'Park Model Homes with Attached Axles',
         // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'PLATFRM',
+        id: TRAILER_CODES.PLATFORM_TRAILERS,
         name: 'Platform Trailers',
-        category: VEHICLE_CATEGORIES.SEMI_TRAILER,
-        additionalAxleSubType: 'PFMAXLE',
+        category: 'semi',
+        additionalAxleSubType:
+          TRAILER_CODES.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER,
         displayCode: 'B',
       },
       {
-        id: 'PLATWHE',
-        name: 'Platform Trailers - Wheelers',
-        category: VEHICLE_CATEGORIES.WHEELER,
-        additionalAxleSubType: 'PFMAXLE',
-        displayCode: 'B',
-      },
-      {
-        id: 'POLETRL',
+        id: TRAILER_CODES.POLE_TRAILERS,
         name: 'Pole Trailers',
         category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'PONYTRL',
+        id: TRAILER_CODES.PONY_TRAILERS,
         name: 'Pony Trailers',
         category: VEHICLE_CATEGORIES.PONY_TRAILER,
         displayCode: 'B',
       },
       {
-        id: 'REDIMIX',
+        id: TRAILER_CODES.READY_MIX_CONCRETE_PUMP_SEMI_TRAILERS,
         name: 'Ready Mix Concrete Pump Semi-Trailers',
         category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'SEMITRL',
+        id: TRAILER_CODES.SEMI_TRAILERS,
         name: 'Semi-Trailers',
         category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'STACTRN',
+        id: TRAILER_CODES.SEMI_TRAILERS_A_TRAINS_C_TRAINS,
         name: 'Semi-Trailers - A-Trains and C-Trains',
         // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'STBTRAN',
+        id: TRAILER_CODES.SEMI_TRAILERS_B_TRAINS,
         name: 'Semi-Trailers - B-Trains',
         // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'HIBOEXP',
+        id: TRAILER_CODES.HIBOYS_EXPANDOS,
         name: 'Semi-Trailers - Hiboys/Expandos',
         category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'HIBOFLT',
+        id: TRAILER_CODES.HIBOYS_FLAT_DECKS,
         name: 'Semi-Trailers - Hiboys/Flat Decks',
         category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'STRDLY',
+        id: TRAILER_CODES.STEERING_DOLLIES,
         name: 'Steering Dollies',
         // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'B',
       },
       {
-        id: 'STREEFR',
+        id: TRAILER_CODES.SEMI_TRAILERS_INSULATED_VANS_REEFER,
         name: 'Semi-Trailers - Insulated Vans with Reefer/Refrigeration Units',
         // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'STLOGNG',
+        id: TRAILER_CODES.SEMI_TRAILERS_LOGGING,
         name: 'Semi-Trailers - Logging',
         // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'STNTSHC',
+        id: TRAILER_CODES.SEMI_TRAILERS_NON_TAC_SHORT_CHASSIS,
         name: 'Semi-Trailers - Non-Tac Short Chassis',
         // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'STSDBDK',
+        id: TRAILER_CODES.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED,
         name: 'Semi-Trailers - Single Drop, Double Drop, Step Decks, Lowbed, Expandos, etc.',
         category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'STWDTAN',
+        id: TRAILER_CODES.SEMI_TRAILERS_SPREAD_TANDEMS,
         name: 'Semi-Trailers - Spread Tandems',
         category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'STSTEER',
+        id: TRAILER_CODES.SEMI_TRAILERS_STEERING_TRAILERS,
         name: 'Semi-Trailers - Steering Trailers',
         category: VEHICLE_CATEGORIES.STEERING_TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'STSTNGR',
+        id: TRAILER_CODES.SEMI_TRAILERS_STINGER_STEEERED_AUTOMOBILE_TRANSPORTERS,
         name: 'Semi-Trailers - Stinger Steered Automobile Transporters',
         // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'STCHIPS',
+        id: TRAILER_CODES.SEMI_TRAILERS_WALLED_B_TRAINS,
         name: 'Semi-Trailers - Walled B-Trains (Chip Trucks)',
         // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'STWHELR',
+        id: TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
         name: 'Semi-Trailers - Wheelers',
         category: VEHICLE_CATEGORIES.WHEELER,
         displayCode: 'T',
       },
       {
-        id: 'STWIDWH',
+        id: TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
         name: 'Semi-Trailers - Wide Wheelers',
         category: VEHICLE_CATEGORIES.WIDE_WHEELERS,
         displayCode: 'T',
       },
       {
-        id: 'STCRANE',
+        id: TRAILER_CODES.SEMI_TRAILERS_WITH_CRANE,
         name: 'Semi-Trailers with Crane',
         category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'STROPRT',
+        id: TRAILER_CODES.STEERING_TRAILERS_MANNED,
         name: 'Steering Trailers - Manned',
         category: VEHICLE_CATEGORIES.STEERING_TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'STRSELF',
+        id: TRAILER_CODES.STEERING_TRAILERS_SELF_REMOTE,
         name: 'Steering Trailers - Self/Remote',
         category: VEHICLE_CATEGORIES.STEERING_TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'STINGAT',
+        id: TRAILER_CODES.STINGER_STEERED_AUTOMOBILE_TRANSPORTERS,
         name: 'Stinger Steered Automobile Transporters',
         // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'DBTRBTR',
+        id: TRAILER_CODES.TANDEM_TRIDEM_DRIVE_B_TRAIN,
         name: 'Tandem/Tridem Drive B-Train (Super B-Train)',
         // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'LOGLGCY',
+        id: TRAILER_CODES.LEGACY_LOGGING_TRAILER_COMBINATIONS,
         name: 'Legacy Logging Trailer Combinations',
         // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
-        id: 'XXXXXXX',
+        id: TRAILER_CODES.NONE,
         name: 'None',
         category: VEHICLE_CATEGORIES.PSEUDO,
         ignoreForAxleCalculation: true,
@@ -5350,10 +5350,10 @@ export const data: PolicyDefinition = {
       name: 'None',
       powerUnits: [
         {
-          type: 'TRKTRAC',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'FEDRMMX',
+              type: TRAILER_CODES.FIXED_EQUIPMENT_COUNTER_FLOW_ASPHALT_DRUM_MIXERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -5376,7 +5376,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'FEBGHSE',
+              type: TRAILER_CODES.FIXED_EQUIPMENT_PORTABLE_ASPHALT_BAGHOUSES,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -5399,19 +5399,19 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'FECVYRX',
+              type: TRAILER_CODES.FIXED_EQUIPMENT_CONVEYORS,
               jeep: true,
               booster: false,
               weightPermittable: true,
             },
             {
-              type: 'FESEMTR',
+              type: TRAILER_CODES.FIXED_EQUIPMENT_SEMI_TRAILERS,
               jeep: true,
               booster: true,
               weightPermittable: true,
             },
             {
-              type: 'ODTRLEX',
+              type: TRAILER_CODES.OVERDIMENSIONAL_TRAILERS_FOR_EXPORT,
               jeep: false,
               booster: false,
               selfIssue: false,
@@ -5427,7 +5427,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'REDIMIX',
+              type: TRAILER_CODES.READY_MIX_CONCRETE_PUMP_SEMI_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -5444,7 +5444,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'HIBOFLT',
+              type: TRAILER_CODES.HIBOYS_FLAT_DECKS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -5478,7 +5478,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STREEFR',
+              type: TRAILER_CODES.SEMI_TRAILERS_INSULATED_VANS_REEFER,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -5494,7 +5494,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STNTSHC',
+              type: TRAILER_CODES.SEMI_TRAILERS_NON_TAC_SHORT_CHASSIS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -5510,7 +5510,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STSDBDK',
+              type: TRAILER_CODES.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -5532,7 +5532,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STROPRT',
+              type: TRAILER_CODES.STEERING_TRAILERS_MANNED,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -5550,7 +5550,7 @@ export const data: PolicyDefinition = {
               canAddAxleUnits: true,
             },
             {
-              type: 'STRSELF',
+              type: TRAILER_CODES.STEERING_TRAILERS_SELF_REMOTE,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -5568,7 +5568,7 @@ export const data: PolicyDefinition = {
               canAddAxleUnits: true,
             },
             {
-              type: 'FEWHELR',
+              type: TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -5606,10 +5606,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'GRADERS',
+          type: POWER_UNIT_CODES.FIXED_EQUIPMENT_TRUCKS_GRADERS,
           trailers: [
             {
-              type: 'FEPNYTR',
+              type: TRAILER_CODES.FIXED_EQUIPMENT_PONY_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -5626,7 +5626,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: false,
@@ -5663,10 +5663,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'CRANEAT',
+          type: POWER_UNIT_CODES.CRANES_ALL_TERRAIN,
           trailers: [
             {
-              type: 'DOLLIES',
+              type: TRAILER_CODES.DOLLIES,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -5684,7 +5684,7 @@ export const data: PolicyDefinition = {
               canAddAxleUnits: true,
             },
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -5710,10 +5710,10 @@ export const data: PolicyDefinition = {
           canAddAxleUnits: true,
         },
         {
-          type: 'MUNFITR',
+          type: POWER_UNIT_CODES.MUNICIPAL_FIRE_TRUCKS,
           trailers: [
             {
-              type: 'DOLLIES',
+              type: TRAILER_CODES.DOLLIES,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -5732,10 +5732,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'RBTRLDR',
+          type: POWER_UNIT_CODES.RUBBER_TIRED_LOADERS,
           trailers: [
             {
-              type: 'DOLLIES',
+              type: TRAILER_CODES.DOLLIES,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -5754,10 +5754,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'CRANEMB',
+          type: POWER_UNIT_CODES.CRANES_MOBILE,
           trailers: [
             {
-              type: 'DOLLIES',
+              type: TRAILER_CODES.DOLLIES,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -5775,7 +5775,7 @@ export const data: PolicyDefinition = {
               canAddAxleUnits: true,
             },
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -5800,10 +5800,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'REGTRCK',
+          type: POWER_UNIT_CODES.TRUCKS,
           trailers: [
             {
-              type: 'FEPNYTR',
+              type: TRAILER_CODES.FIXED_EQUIPMENT_PONY_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -5820,7 +5820,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'FULLLTL',
+              type: TRAILER_CODES.FULL_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -5842,7 +5842,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'MHMBSHL',
+              type: TRAILER_CODES.MANUFACTURED_HOMES_UNDER_5M,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -5865,7 +5865,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'MHMBSHG',
+              type: TRAILER_CODES.MANUFACTURED_HOMES_OVER_5M,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -5890,7 +5890,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -5913,7 +5913,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'ODTRLEX',
+              type: TRAILER_CODES.OVERDIMENSIONAL_TRAILERS_FOR_EXPORT,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -5929,7 +5929,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'PMHWAAX',
+              type: TRAILER_CODES.PARK_MODEL_HOMES,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -5951,7 +5951,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'PONYTRL',
+              type: TRAILER_CODES.PONY_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -5981,10 +5981,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'TLSCONV',
+          type: POWER_UNIT_CODES.TELESCOPIC_CONVEYOR_TRUCKS,
           trailers: [
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -6002,10 +6002,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'CONCRET',
+          type: POWER_UNIT_CODES.CONCRETE_PUMPER_TRUCKS,
           trailers: [
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -6025,10 +6025,10 @@ export const data: PolicyDefinition = {
           canAddAxleUnits: true,
         },
         {
-          type: 'DDCKBUS',
+          type: POWER_UNIT_CODES.DOUBLE_DECKER_BUSES,
           trailers: [
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -6064,10 +6064,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'PICKRTT',
+          type: POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -6084,7 +6084,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STCRANE',
+              type: TRAILER_CODES.SEMI_TRAILERS_WITH_CRANE,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -6100,7 +6100,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STROPRT',
+              type: TRAILER_CODES.STEERING_TRAILERS_MANNED,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -6124,7 +6124,7 @@ export const data: PolicyDefinition = {
               canAddAxleUnits: true,
             },
             {
-              type: 'STRSELF',
+              type: TRAILER_CODES.STEERING_TRAILERS_SELF_REMOTE,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -6157,10 +6157,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'TRCKPME',
+          type: POWER_UNIT_CODES.TRUCK_WITH_PME,
           trailers: [
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -6177,7 +6177,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STCRANE',
+              type: TRAILER_CODES.SEMI_TRAILERS_WITH_CRANE,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -6193,7 +6193,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STROPRT',
+              type: TRAILER_CODES.STEERING_TRAILERS_MANNED,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -6217,7 +6217,7 @@ export const data: PolicyDefinition = {
               canAddAxleUnits: true,
             },
             {
-              type: 'STRSELF',
+              type: TRAILER_CODES.STEERING_TRAILERS_SELF_REMOTE,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -6250,10 +6250,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'TRACPME',
+          type: POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
           trailers: [
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -6270,7 +6270,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STCRANE',
+              type: TRAILER_CODES.SEMI_TRAILERS_WITH_CRANE,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -6286,7 +6286,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STROPRT',
+              type: TRAILER_CODES.STEERING_TRAILERS_MANNED,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -6310,7 +6310,7 @@ export const data: PolicyDefinition = {
               canAddAxleUnits: true,
             },
             {
-              type: 'STRSELF',
+              type: TRAILER_CODES.STEERING_TRAILERS_SELF_REMOTE,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -6343,10 +6343,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'SCRAPER',
+          type: POWER_UNIT_CODES.SCRAPERS,
           trailers: [
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -6365,10 +6365,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'PLOWBLD',
+          type: POWER_UNIT_CODES.TRUCKS_FRONT_OR_UNDERBODY_PLOW_BLADES,
           trailers: [
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -6386,10 +6386,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'BUSTRLR',
+          type: POWER_UNIT_CODES.INTERCITY_BUSES_PULLING_PONY_TRAILERS,
           trailers: [
             {
-              type: 'PONYTRL',
+              type: TRAILER_CODES.PONY_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: false,
@@ -6407,10 +6407,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'LCVRMDB',
+          type: POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES,
           trailers: [
             {
-              type: 'SEMITRL',
+              type: TRAILER_CODES.SEMI_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: false,
@@ -6435,10 +6435,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'LCVTPDB',
+          type: POWER_UNIT_CODES.LCV_TURNPIKE_DOUBLES,
           trailers: [
             {
-              type: 'SEMITRL',
+              type: TRAILER_CODES.SEMI_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -6457,10 +6457,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'LOGOFFH',
+          type: POWER_UNIT_CODES.LOGGING_TRUCKS_OFF_HIGHWAY,
           trailers: [
             {
-              type: 'STLOGNG',
+              type: TRAILER_CODES.SEMI_TRAILERS_LOGGING,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -6495,10 +6495,10 @@ export const data: PolicyDefinition = {
       name: 'Doglogger/Sjostrum Trailers (decked)',
       powerUnits: [
         {
-          type: 'TRKTRAC',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -6522,10 +6522,10 @@ export const data: PolicyDefinition = {
       name: 'Grader, Tractor Blades, Buckets',
       powerUnits: [
         {
-          type: 'GRADERS',
+          type: POWER_UNIT_CODES.FIXED_EQUIPMENT_TRUCKS_GRADERS,
           trailers: [
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -6549,10 +6549,10 @@ export const data: PolicyDefinition = {
       name: 'Hayrack Semi-Trailer with a Folded Chassis/Empty Piggyback',
       powerUnits: [
         {
-          type: 'TRKTRAC',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'STLOGNG',
+              type: TRAILER_CODES.SEMI_TRAILERS_LOGGING,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -6576,10 +6576,10 @@ export const data: PolicyDefinition = {
       name: 'Intermodal Containers',
       powerUnits: [
         {
-          type: 'REGTRCK',
+          type: POWER_UNIT_CODES.TRUCKS,
           trailers: [
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -6597,10 +6597,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'TRKTRAC',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'STACTRN',
+              type: TRAILER_CODES.SEMI_TRAILERS_A_TRAINS_C_TRAINS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -6616,7 +6616,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STBTRAN',
+              type: TRAILER_CODES.SEMI_TRAILERS_B_TRAINS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -6632,7 +6632,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'HIBOFLT',
+              type: TRAILER_CODES.HIBOYS_FLAT_DECKS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -6656,10 +6656,10 @@ export const data: PolicyDefinition = {
       name: 'Intermodal Containers without Sides',
       powerUnits: [
         {
-          type: 'TRKTRAC',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'STSDBDK',
+              type: TRAILER_CODES.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -6684,10 +6684,10 @@ export const data: PolicyDefinition = {
       name: 'Logs, Poles And Boomsticks (Up To 20.1)',
       powerUnits: [
         {
-          type: 'TRKTRAC',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'FULLLTL',
+              type: TRAILER_CODES.FULL_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -6703,7 +6703,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'LOGLGCY',
+              type: TRAILER_CODES.LEGACY_LOGGING_TRAILER_COMBINATIONS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -6719,7 +6719,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'POLETRL',
+              type: TRAILER_CODES.POLE_TRAILERS,
               jeep: true,
               booster: false,
               selfIssue: true,
@@ -6735,7 +6735,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STACTRN',
+              type: TRAILER_CODES.SEMI_TRAILERS_A_TRAINS_C_TRAINS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -6751,7 +6751,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STBTRAN',
+              type: TRAILER_CODES.SEMI_TRAILERS_B_TRAINS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -6767,7 +6767,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'HIBOFLT',
+              type: TRAILER_CODES.HIBOYS_FLAT_DECKS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -6783,7 +6783,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STLOGNG',
+              type: TRAILER_CODES.SEMI_TRAILERS_LOGGING,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -6807,10 +6807,10 @@ export const data: PolicyDefinition = {
       name: 'Logs, Poles And Boomsticks (Over 20.1)',
       powerUnits: [
         {
-          type: 'TRKTRAC',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'LOGFULL',
+              type: TRAILER_CODES.LOGGING_FULL_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: false,
@@ -6826,7 +6826,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'POLETRL',
+              type: TRAILER_CODES.POLE_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -6842,7 +6842,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STROPRT',
+              type: TRAILER_CODES.STEERING_TRAILERS_MANNED,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -6858,7 +6858,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STRSELF',
+              type: TRAILER_CODES.STEERING_TRAILERS_SELF_REMOTE,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -6882,10 +6882,10 @@ export const data: PolicyDefinition = {
       name: 'Manufactured Homes, Modular Buildings, Structures and Houseboats (<= 5.0 m OAW)',
       powerUnits: [
         {
-          type: 'REGTRCK',
+          type: POWER_UNIT_CODES.TRUCKS,
           trailers: [
             {
-              type: 'DOLLIES',
+              type: TRAILER_CODES.DOLLIES,
               jeep: false,
               booster: false,
               selfIssue: false,
@@ -6908,7 +6908,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'FLOATTR',
+              type: TRAILER_CODES.FLOAT_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: false,
@@ -6931,7 +6931,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'PONYTRL',
+              type: TRAILER_CODES.PONY_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -6956,10 +6956,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'TRKTRAC',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'SEMITRL',
+              type: TRAILER_CODES.SEMI_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -6982,7 +6982,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STSDBDK',
+              type: TRAILER_CODES.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -7013,10 +7013,10 @@ export const data: PolicyDefinition = {
       name: 'Manufactured Homes, Modular Buildings, Structures and Houseboats (> 5.0 m OAW)',
       powerUnits: [
         {
-          type: 'REGTRCK',
+          type: POWER_UNIT_CODES.TRUCKS,
           trailers: [
             {
-              type: 'DOLLIES',
+              type: TRAILER_CODES.DOLLIES,
               jeep: false,
               booster: false,
               selfIssue: false,
@@ -7040,7 +7040,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'FLOATTR',
+              type: TRAILER_CODES.FLOAT_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: false,
@@ -7064,7 +7064,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'PONYTRL',
+              type: TRAILER_CODES.PONY_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: false,
@@ -7090,10 +7090,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'TRKTRAC',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'SEMITRL',
+              type: TRAILER_CODES.SEMI_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -7117,7 +7117,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STSDBDK',
+              type: TRAILER_CODES.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -7163,10 +7163,10 @@ export const data: PolicyDefinition = {
       name: 'Park Model Homes',
       powerUnits: [
         {
-          type: 'REGTRCK',
+          type: POWER_UNIT_CODES.TRUCKS,
           trailers: [
             {
-              type: 'DOLLIES',
+              type: TRAILER_CODES.DOLLIES,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -7188,7 +7188,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'FLOATTR',
+              type: TRAILER_CODES.FLOAT_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -7210,7 +7210,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'PONYTRL',
+              type: TRAILER_CODES.PONY_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -7240,10 +7240,10 @@ export const data: PolicyDefinition = {
       name: 'Pipe And Steel Products (Rebar, Pilings, Reinforcing Steel, Etc.)',
       powerUnits: [
         {
-          type: 'TRKTRAC',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'HIBOEXP',
+              type: TRAILER_CODES.HIBOYS_EXPANDOS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -7259,7 +7259,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'HIBOFLT',
+              type: TRAILER_CODES.HIBOYS_FLAT_DECKS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -7275,7 +7275,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STSTEER',
+              type: TRAILER_CODES.SEMI_TRAILERS_STEERING_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -7291,7 +7291,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STROPRT',
+              type: TRAILER_CODES.STEERING_TRAILERS_MANNED,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -7315,10 +7315,10 @@ export const data: PolicyDefinition = {
       name: 'Reducible Loads',
       powerUnits: [
         {
-          type: 'TRKTRAC',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'STWHELR',
+              type: TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -7340,7 +7340,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STWIDWH',
+              type: TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -7362,7 +7362,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'PLATFRM',
+              type: TRAILER_CODES.PLATFORM_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -7384,7 +7384,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'SEMITRL',
+              type: TRAILER_CODES.SEMI_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -7407,7 +7407,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STACTRN',
+              type: TRAILER_CODES.SEMI_TRAILERS_A_TRAINS_C_TRAINS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -7429,7 +7429,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STBTRAN',
+              type: TRAILER_CODES.SEMI_TRAILERS_B_TRAINS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -7451,7 +7451,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'HIBOEXP',
+              type: TRAILER_CODES.HIBOYS_EXPANDOS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -7474,7 +7474,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'HIBOFLT',
+              type: TRAILER_CODES.HIBOYS_FLAT_DECKS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -7497,7 +7497,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STLOGNG',
+              type: TRAILER_CODES.SEMI_TRAILERS_LOGGING,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -7513,7 +7513,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STSDBDK',
+              type: TRAILER_CODES.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -7536,7 +7536,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STSTEER',
+              type: TRAILER_CODES.SEMI_TRAILERS_STEERING_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -7558,7 +7558,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STCRANE',
+              type: TRAILER_CODES.SEMI_TRAILERS_WITH_CRANE,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -7581,7 +7581,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STROPRT',
+              type: TRAILER_CODES.STEERING_TRAILERS_MANNED,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -7603,7 +7603,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STRSELF',
+              type: TRAILER_CODES.STEERING_TRAILERS_SELF_REMOTE,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -7627,10 +7627,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'REGTRCK',
+          type: POWER_UNIT_CODES.TRUCKS,
           trailers: [
             {
-              type: 'DOLLIES',
+              type: TRAILER_CODES.DOLLIES,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -7652,7 +7652,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'FULLLTL',
+              type: TRAILER_CODES.FULL_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -7674,7 +7674,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -7697,7 +7697,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'PONYTRL',
+              type: TRAILER_CODES.PONY_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -7722,10 +7722,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'PICKRTT',
+          type: POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'SEMITRL',
+              type: TRAILER_CODES.SEMI_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -7747,7 +7747,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'HIBOEXP',
+              type: TRAILER_CODES.HIBOYS_EXPANDOS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -7769,7 +7769,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'HIBOFLT',
+              type: TRAILER_CODES.HIBOYS_FLAT_DECKS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -7791,7 +7791,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STSDBDK',
+              type: TRAILER_CODES.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -7815,10 +7815,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'TRCKPME',
+          type: POWER_UNIT_CODES.TRUCK_WITH_PME,
           trailers: [
             {
-              type: 'SEMITRL',
+              type: TRAILER_CODES.SEMI_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -7840,7 +7840,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'HIBOEXP',
+              type: TRAILER_CODES.HIBOYS_EXPANDOS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -7862,7 +7862,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'HIBOFLT',
+              type: TRAILER_CODES.HIBOYS_FLAT_DECKS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -7884,7 +7884,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STSDBDK',
+              type: TRAILER_CODES.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -7908,10 +7908,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'TRACPME',
+          type: POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
           trailers: [
             {
-              type: 'SEMITRL',
+              type: TRAILER_CODES.SEMI_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -7933,7 +7933,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'HIBOEXP',
+              type: TRAILER_CODES.HIBOYS_EXPANDOS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -7955,7 +7955,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'HIBOFLT',
+              type: TRAILER_CODES.HIBOYS_FLAT_DECKS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -7977,7 +7977,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STSDBDK',
+              type: TRAILER_CODES.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -8001,10 +8001,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'STINGER',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS_STINGER_STEERED,
           trailers: [
             {
-              type: 'SEMITRL',
+              type: TRAILER_CODES.SEMI_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -8026,7 +8026,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STSTNGR',
+              type: TRAILER_CODES.SEMI_TRAILERS_STINGER_STEEERED_AUTOMOBILE_TRANSPORTERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -8052,14 +8052,14 @@ export const data: PolicyDefinition = {
       ],
     },
     {
-      id: COMMODITY_CODES.SCRAPER_ON_DOLLIES,
+      id: POWER_UNIT_CODES.SCRAPERS,
       name: 'Scraper on Dollies',
       powerUnits: [
         {
-          type: 'TRKTRAC',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'DOLLIES',
+              type: TRAILER_CODES.DOLLIES,
               jeep: true,
               booster: false,
               selfIssue: false,
@@ -8091,10 +8091,10 @@ export const data: PolicyDefinition = {
       name: 'Oil Field Equipment',
       powerUnits: [
         {
-          type: 'OGBEDTK',
+          type: POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS,
           trailers: [
             {
-              type: 'EXPANDO',
+              type: TRAILER_CODES.EXPANDO_SEMI_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -8110,7 +8110,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -8126,7 +8126,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'OGOSFDT',
+              type: TRAILER_CODES.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -8145,10 +8145,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'OGOILSW',
+          type: POWER_UNIT_CODES.OIL_AND_GAS_OILFIELD_SOWS,
           trailers: [
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -8165,7 +8165,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'HIBOFLT',
+              type: TRAILER_CODES.HIBOYS_FLAT_DECKS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -8183,10 +8183,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'OGSERVC',
+          type: POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS,
           trailers: [
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -8203,7 +8203,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'PONYTRL',
+              type: TRAILER_CODES.PONY_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -8221,10 +8221,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'OGSRRAH',
+          type: POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
           trailers: [
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: false,
@@ -8241,7 +8241,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'PONYTRL',
+              type: TRAILER_CODES.PONY_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: false,
@@ -8259,10 +8259,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'TRKTRAC',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'OGOSFDT',
+              type: TRAILER_CODES.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -8287,10 +8287,10 @@ export const data: PolicyDefinition = {
       name: 'Tandem Jeep/Pole Trailer Loaded on Logging Truck',
       powerUnits: [
         {
-          type: 'TRKTRAC',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -8308,10 +8308,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'REGTRCK',
+          type: POWER_UNIT_CODES.TRUCKS,
           trailers: [
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -8335,10 +8335,10 @@ export const data: PolicyDefinition = {
       name: 'Tow Trucks And Disabled Vehicles',
       powerUnits: [
         {
-          type: 'TOWVEHC',
+          type: POWER_UNIT_CODES.TOW_VEHICLES,
           trailers: [
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -8363,10 +8363,10 @@ export const data: PolicyDefinition = {
       name: 'Tri-Axle or Quad Axle Full Trailer Loaded on Logging Truck',
       powerUnits: [
         {
-          type: 'TRKTRAC',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -8384,10 +8384,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'REGTRCK',
+          type: POWER_UNIT_CODES.TRUCKS,
           trailers: [
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -8411,10 +8411,10 @@ export const data: PolicyDefinition = {
       name: 'Wood Chips, Residuals',
       powerUnits: [
         {
-          type: 'TRKTRAC',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'STBTRAN',
+              type: TRAILER_CODES.SEMI_TRAILERS_B_TRAINS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -8438,10 +8438,10 @@ export const data: PolicyDefinition = {
       name: 'Empty',
       powerUnits: [
         {
-          type: 'TRKTRAC',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'LOGOWBK',
+              type: TRAILER_CODES.LOGGING_OVERWIDTH_BUNKS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -8457,7 +8457,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'PLATFRM',
+              type: TRAILER_CODES.PLATFORM_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -8471,18 +8471,9 @@ export const data: PolicyDefinition = {
                   l: 27.5,
                 },
               ],
-              weightPermittable: true,
-              canAddAxleUnits: true,
             },
             {
-              type: 'PLATWHE',
-              jeep: true,
-              booster: true,
-              weightPermittable: true,
-              canAddAxleUnits: true,
-            },
-            {
-              type: 'HIBOEXP',
+              type: TRAILER_CODES.HIBOYS_EXPANDOS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -8509,7 +8500,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'HIBOFLT',
+              type: TRAILER_CODES.HIBOYS_FLAT_DECKS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -8536,7 +8527,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STSDBDK',
+              type: TRAILER_CODES.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -8563,7 +8554,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STWHELR',
+              type: TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -8590,7 +8581,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STWIDWH',
+              type: TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -8643,10 +8634,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'PICKRTT',
+          type: POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'OGOSFDT',
+              type: TRAILER_CODES.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -8663,7 +8654,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'PLATFRM',
+              type: TRAILER_CODES.PLATFORM_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -8678,17 +8669,9 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
-              canAddAxleUnits: true,
             },
             {
-              type: 'PLATWHE',
-              jeep: true,
-              booster: true,
-              weightPermittable: true,
-              canAddAxleUnits: true,
-            },
-            {
-              type: 'HIBOEXP',
+              type: TRAILER_CODES.HIBOYS_EXPANDOS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -8711,7 +8694,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STWHELR',
+              type: TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -8728,7 +8711,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STWIDWH',
+              type: TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -8783,10 +8766,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'TRCKPME',
+          type: POWER_UNIT_CODES.TRUCK_WITH_PME,
           trailers: [
             {
-              type: 'OGOSFDT',
+              type: TRAILER_CODES.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -8803,7 +8786,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'PLATFRM',
+              type: TRAILER_CODES.PLATFORM_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -8818,17 +8801,9 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
-              canAddAxleUnits: true,
             },
             {
-              type: 'PLATWHE',
-              jeep: true,
-              booster: true,
-              weightPermittable: true,
-              canAddAxleUnits: true,
-            },
-            {
-              type: 'HIBOEXP',
+              type: TRAILER_CODES.HIBOYS_EXPANDOS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -8851,7 +8826,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STWHELR',
+              type: TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -8868,7 +8843,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STWIDWH',
+              type: TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -8923,10 +8898,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'TRACPME',
+          type: POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
           trailers: [
             {
-              type: 'OGOSFDT',
+              type: TRAILER_CODES.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -8943,7 +8918,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'PLATFRM',
+              type: TRAILER_CODES.PLATFORM_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -8958,17 +8933,9 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
-              canAddAxleUnits: true,
             },
             {
-              type: 'PLATWHE',
-              jeep: true,
-              booster: true,
-              weightPermittable: true,
-              canAddAxleUnits: true,
-            },
-            {
-              type: 'HIBOEXP',
+              type: TRAILER_CODES.HIBOYS_EXPANDOS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -8991,7 +8958,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STWHELR',
+              type: TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -9008,7 +8975,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STWIDWH',
+              type: TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -9063,10 +9030,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'PICKRTR',
+          type: POWER_UNIT_CODES.PICKER_TRUCKS,
           trailers: [
             {
-              type: 'PONYTRL',
+              type: TRAILER_CODES.PONY_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -9107,10 +9074,10 @@ export const data: PolicyDefinition = {
       name: 'Garbage Bins',
       powerUnits: [
         {
-          type: 'REGTRCK',
+          type: POWER_UNIT_CODES.TRUCKS,
           trailers: [
             {
-              type: 'FULLLTL',
+              type: TRAILER_CODES.FULL_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -9126,7 +9093,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -9142,7 +9109,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'PONYTRL',
+              type: TRAILER_CODES.PONY_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -9166,10 +9133,10 @@ export const data: PolicyDefinition = {
       name: 'Laminated Beams',
       powerUnits: [
         {
-          type: 'TRKTRAC',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'POLETRL',
+              type: TRAILER_CODES.POLE_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -9185,7 +9152,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'HIBOEXP',
+              type: TRAILER_CODES.HIBOYS_EXPANDOS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -9210,10 +9177,10 @@ export const data: PolicyDefinition = {
       name: 'Hay Bales Large Rectangular',
       powerUnits: [
         {
-          type: 'REGTRCK',
+          type: POWER_UNIT_CODES.TRUCKS,
           trailers: [
             {
-              type: 'FULLLTL',
+              type: TRAILER_CODES.FULL_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -9235,7 +9202,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -9257,7 +9224,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'PONYTRL',
+              type: TRAILER_CODES.PONY_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -9281,10 +9248,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'TRKTRAC',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'STACTRN',
+              type: TRAILER_CODES.SEMI_TRAILERS_A_TRAINS_C_TRAINS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -9306,7 +9273,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STBTRAN',
+              type: TRAILER_CODES.SEMI_TRAILERS_B_TRAINS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -9328,7 +9295,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'HIBOFLT',
+              type: TRAILER_CODES.HIBOYS_FLAT_DECKS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -9362,7 +9329,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STSDBDK',
+              type: TRAILER_CODES.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -9392,10 +9359,10 @@ export const data: PolicyDefinition = {
       name: 'Hay Bales Round',
       powerUnits: [
         {
-          type: 'REGTRCK',
+          type: POWER_UNIT_CODES.TRUCKS,
           trailers: [
             {
-              type: 'FULLLTL',
+              type: TRAILER_CODES.FULL_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -9422,7 +9389,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -9449,7 +9416,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'PONYTRL',
+              type: TRAILER_CODES.PONY_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -9478,10 +9445,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'TRKTRAC',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'STACTRN',
+              type: TRAILER_CODES.SEMI_TRAILERS_A_TRAINS_C_TRAINS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -9508,7 +9475,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STBTRAN',
+              type: TRAILER_CODES.SEMI_TRAILERS_B_TRAINS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -9535,7 +9502,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'HIBOFLT',
+              type: TRAILER_CODES.HIBOYS_FLAT_DECKS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -9562,7 +9529,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STSDBDK',
+              type: TRAILER_CODES.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -9597,10 +9564,10 @@ export const data: PolicyDefinition = {
       name: 'Hay Bales Small Rectangular',
       powerUnits: [
         {
-          type: 'REGTRCK',
+          type: POWER_UNIT_CODES.TRUCKS,
           trailers: [
             {
-              type: 'FULLLTL',
+              type: TRAILER_CODES.FULL_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -9622,7 +9589,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -9644,7 +9611,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'PONYTRL',
+              type: TRAILER_CODES.PONY_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -9668,10 +9635,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'TRKTRAC',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'STACTRN',
+              type: TRAILER_CODES.SEMI_TRAILERS_A_TRAINS_C_TRAINS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -9693,7 +9660,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STBTRAN',
+              type: TRAILER_CODES.SEMI_TRAILERS_B_TRAINS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -9715,7 +9682,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'HIBOFLT',
+              type: TRAILER_CODES.HIBOYS_FLAT_DECKS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -9737,7 +9704,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STSDBDK',
+              type: TRAILER_CODES.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -9767,10 +9734,10 @@ export const data: PolicyDefinition = {
       name: 'Bridge Beams',
       powerUnits: [
         {
-          type: 'TRKTRAC',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'POLETRL',
+              type: TRAILER_CODES.POLE_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -9786,7 +9753,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'SEMITRL',
+              type: TRAILER_CODES.SEMI_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -9808,7 +9775,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STRDLY',
+              type: TRAILER_CODES.STEERING_DOLLIES,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -9832,10 +9799,10 @@ export const data: PolicyDefinition = {
       name: 'Non-Reducible Loads',
       powerUnits: [
         {
-          type: 'REGTRCK',
+          type: POWER_UNIT_CODES.TRUCKS,
           trailers: [
             {
-              type: 'DOLLIES',
+              type: TRAILER_CODES.DOLLIES,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -9857,7 +9824,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'FULLLTL',
+              type: TRAILER_CODES.FULL_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -9879,7 +9846,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -9902,7 +9869,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'PONYTRL',
+              type: TRAILER_CODES.PONY_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -9927,10 +9894,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'PICKRTT',
+          type: POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'OGOSFDT',
+              type: TRAILER_CODES.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -9947,7 +9914,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'SEMITRL',
+              type: TRAILER_CODES.SEMI_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -9970,7 +9937,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'HIBOEXP',
+              type: TRAILER_CODES.HIBOYS_EXPANDOS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -9993,7 +9960,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'HIBOFLT',
+              type: TRAILER_CODES.HIBOYS_FLAT_DECKS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10016,7 +9983,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STSDBDK',
+              type: TRAILER_CODES.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -10039,7 +10006,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STSTEER',
+              type: TRAILER_CODES.SEMI_TRAILERS_STEERING_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10062,7 +10029,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STWHELR',
+              type: TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -10085,7 +10052,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STCRANE',
+              type: TRAILER_CODES.SEMI_TRAILERS_WITH_CRANE,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10108,7 +10075,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STROPRT',
+              type: TRAILER_CODES.STEERING_TRAILERS_MANNED,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10131,7 +10098,7 @@ export const data: PolicyDefinition = {
               canAddAxleUnits: true,
             },
             {
-              type: 'STRSELF',
+              type: TRAILER_CODES.STEERING_TRAILERS_SELF_REMOTE,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10154,7 +10121,7 @@ export const data: PolicyDefinition = {
               canAddAxleUnits: true,
             },
             {
-              type: 'STWIDWH',
+              type: TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10187,10 +10154,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'TRCKPME',
+          type: POWER_UNIT_CODES.TRUCK_WITH_PME,
           trailers: [
             {
-              type: 'OGOSFDT',
+              type: TRAILER_CODES.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -10207,7 +10174,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'SEMITRL',
+              type: TRAILER_CODES.SEMI_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10230,7 +10197,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'HIBOEXP',
+              type: TRAILER_CODES.HIBOYS_EXPANDOS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10253,7 +10220,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'HIBOFLT',
+              type: TRAILER_CODES.HIBOYS_FLAT_DECKS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10276,7 +10243,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STSDBDK',
+              type: TRAILER_CODES.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -10299,7 +10266,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STSTEER',
+              type: TRAILER_CODES.SEMI_TRAILERS_STEERING_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10322,7 +10289,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STWHELR',
+              type: TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -10345,7 +10312,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STCRANE',
+              type: TRAILER_CODES.SEMI_TRAILERS_WITH_CRANE,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10368,7 +10335,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STROPRT',
+              type: TRAILER_CODES.STEERING_TRAILERS_MANNED,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10391,7 +10358,7 @@ export const data: PolicyDefinition = {
               canAddAxleUnits: true,
             },
             {
-              type: 'STRSELF',
+              type: TRAILER_CODES.STEERING_TRAILERS_SELF_REMOTE,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10414,7 +10381,7 @@ export const data: PolicyDefinition = {
               canAddAxleUnits: true,
             },
             {
-              type: 'STWIDWH',
+              type: TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10447,10 +10414,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'TRACPME',
+          type: POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
           trailers: [
             {
-              type: 'OGOSFDT',
+              type: TRAILER_CODES.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -10467,7 +10434,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'SEMITRL',
+              type: TRAILER_CODES.SEMI_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10490,7 +10457,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'HIBOEXP',
+              type: TRAILER_CODES.HIBOYS_EXPANDOS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10513,7 +10480,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'HIBOFLT',
+              type: TRAILER_CODES.HIBOYS_FLAT_DECKS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10536,7 +10503,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STSDBDK',
+              type: TRAILER_CODES.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -10559,7 +10526,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STSTEER',
+              type: TRAILER_CODES.SEMI_TRAILERS_STEERING_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10582,7 +10549,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STWHELR',
+              type: TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -10605,7 +10572,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STCRANE',
+              type: TRAILER_CODES.SEMI_TRAILERS_WITH_CRANE,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10628,7 +10595,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STROPRT',
+              type: TRAILER_CODES.STEERING_TRAILERS_MANNED,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10651,7 +10618,7 @@ export const data: PolicyDefinition = {
               canAddAxleUnits: true,
             },
             {
-              type: 'STRSELF',
+              type: TRAILER_CODES.STEERING_TRAILERS_SELF_REMOTE,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10674,7 +10641,7 @@ export const data: PolicyDefinition = {
               canAddAxleUnits: true,
             },
             {
-              type: 'STWIDWH',
+              type: TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10707,34 +10674,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'TRKTRAC',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'PLATFRM',
-              jeep: true,
-              booster: false,
-              selfIssue: false,
-              sizePermittable: true,
-              sizeDimensions: [
-                {
-                  fp: 3,
-                  rp: 6.5,
-                  w: 5,
-                  h: 4.88,
-                  l: 27.5,
-                  regions: [
-                    {
-                      region: 'PCE',
-                      h: 5.33,
-                    },
-                  ],
-                },
-              ],
-              weightPermittable: true,
-              canAddAxleUnits: true,
-            },
-            {
-              type: 'PLATWHE',
+              type: TRAILER_CODES.PLATFORM_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -10758,7 +10701,7 @@ export const data: PolicyDefinition = {
               canAddAxleUnits: true,
             },
             {
-              type: 'SEMITRL',
+              type: TRAILER_CODES.SEMI_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10781,7 +10724,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STACTRN',
+              type: TRAILER_CODES.SEMI_TRAILERS_A_TRAINS_C_TRAINS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -10803,7 +10746,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STBTRAN',
+              type: TRAILER_CODES.SEMI_TRAILERS_B_TRAINS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -10825,7 +10768,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'HIBOEXP',
+              type: TRAILER_CODES.HIBOYS_EXPANDOS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10848,7 +10791,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'HIBOFLT',
+              type: TRAILER_CODES.HIBOYS_FLAT_DECKS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10871,7 +10814,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STLOGNG',
+              type: TRAILER_CODES.SEMI_TRAILERS_LOGGING,
               jeep: false,
               booster: false,
               selfIssue: false,
@@ -10887,7 +10830,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STSDBDK',
+              type: TRAILER_CODES.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10910,7 +10853,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STSTEER',
+              type: TRAILER_CODES.SEMI_TRAILERS_STEERING_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -10932,7 +10875,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STWHELR',
+              type: TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10955,7 +10898,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STCRANE',
+              type: TRAILER_CODES.SEMI_TRAILERS_WITH_CRANE,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -10978,7 +10921,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STROPRT',
+              type: TRAILER_CODES.STEERING_TRAILERS_MANNED,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -11001,7 +10944,7 @@ export const data: PolicyDefinition = {
               canAddAxleUnits: true,
             },
             {
-              type: 'STRSELF',
+              type: TRAILER_CODES.STEERING_TRAILERS_SELF_REMOTE,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -11024,7 +10967,7 @@ export const data: PolicyDefinition = {
               canAddAxleUnits: true,
             },
             {
-              type: 'STWIDWH',
+              type: TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -11055,10 +10998,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'STINGER',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS_STINGER_STEERED,
           trailers: [
             {
-              type: 'SEMITRL',
+              type: TRAILER_CODES.SEMI_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: false,
@@ -11080,7 +11023,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STSTNGR',
+              type: TRAILER_CODES.SEMI_TRAILERS_STINGER_STEEERED_AUTOMOBILE_TRANSPORTERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -11121,10 +11064,10 @@ export const data: PolicyDefinition = {
       name: 'Auto Carrier, Campers And Boats (Stinger Steered Transporters Only)',
       powerUnits: [
         {
-          type: 'STINGER',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS_STINGER_STEERED,
           trailers: [
             {
-              type: 'STSTNGR',
+              type: TRAILER_CODES.SEMI_TRAILERS_STINGER_STEEERED_AUTOMOBILE_TRANSPORTERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -11171,10 +11114,10 @@ export const data: PolicyDefinition = {
       name: 'Brushcutters (Peace Only)',
       powerUnits: [
         {
-          type: 'REGTRCK',
+          type: POWER_UNIT_CODES.TRUCKS,
           trailers: [
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -11197,7 +11140,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'PONYTRL',
+              type: TRAILER_CODES.PONY_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -11222,10 +11165,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'TRKTRAC',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'SEMITRL',
+              type: TRAILER_CODES.SEMI_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -11248,7 +11191,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'STSDBDK',
+              type: TRAILER_CODES.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -11279,10 +11222,10 @@ export const data: PolicyDefinition = {
       name: 'Fixed Equipment',
       powerUnits: [
         {
-          type: 'TRKTRAC',
+          type: POWER_UNIT_CODES.TRUCK_TRACTORS,
           trailers: [
             {
-              type: 'FEWHLPR',
+              type: TRAILER_CODES.FIXED_EQUIPMENT_SEMI_TRAILER_PEACE_RIVER,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -11305,7 +11248,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'FECVYRX',
+              type: TRAILER_CODES.FIXED_EQUIPMENT_CONVEYORS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -11327,7 +11270,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'FEDRMMX',
+              type: TRAILER_CODES.FIXED_EQUIPMENT_COUNTER_FLOW_ASPHALT_DRUM_MIXERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -11349,7 +11292,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'FEBGHSE',
+              type: TRAILER_CODES.FIXED_EQUIPMENT_PORTABLE_ASPHALT_BAGHOUSES,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -11371,7 +11314,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'FESEMTR',
+              type: TRAILER_CODES.FIXED_EQUIPMENT_SEMI_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: true,
@@ -11393,7 +11336,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'FEWHELR',
+              type: TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS,
               jeep: true,
               booster: true,
               selfIssue: false,
@@ -11423,10 +11366,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'REGTRCK',
+          type: POWER_UNIT_CODES.TRUCKS,
           trailers: [
             {
-              type: 'FECVYRX',
+              type: TRAILER_CODES.FIXED_EQUIPMENT_CONVEYORS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -11442,7 +11385,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'FEDRMMX',
+              type: TRAILER_CODES.FIXED_EQUIPMENT_COUNTER_FLOW_ASPHALT_DRUM_MIXERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -11463,7 +11406,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'FEPNYTR',
+              type: TRAILER_CODES.FIXED_EQUIPMENT_PONY_TRAILERS,
               jeep: false,
               booster: false,
               selfIssue: true,
@@ -11479,7 +11422,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'FEBGHSE',
+              type: TRAILER_CODES.FIXED_EQUIPMENT_PORTABLE_ASPHALT_BAGHOUSES,
               jeep: false,
               booster: false,
               selfIssue: true,
