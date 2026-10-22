@@ -26,7 +26,7 @@ export type TrailerFixtureInput = {
  */
 type Neighbour =
   | 'no neighbour' // F, G, H, and I are all empty.
-  | 'nothing follows' // F = x, H is empty, I = "None".
+  | 'nothing follows' // F = x; H empty/I="None", or H="None"/I="NA".
   | 'booster follows' // F = x, H = "Booster".
   | 'power unit in front' // G = x, H = "Power Unit" (or "Cranes - Mobile").
   | 'semi-trailer in front'; // G = x, H = "Semi-Trailer".
@@ -152,6 +152,9 @@ function getNeighbour(row: TrailerFixtureInput): Neighbour {
   const trailerIsBefore = isMarked(row.before) && !row.after;
   const trailerIsAfter = isMarked(row.after) && !row.before;
   const neighbourHasAxles = isAxleType(row.neighbourAxleType);
+  const nothingFollows =
+    (!row.neighbourCategory && row.neighbourAxleType === 'None') ||
+    (row.neighbourCategory === 'None' && row.neighbourAxleType === 'NA');
 
   if (
     !row.before &&
@@ -161,11 +164,7 @@ function getNeighbour(row: TrailerFixtureInput): Neighbour {
   ) {
     return 'no neighbour';
   }
-  if (
-    trailerIsBefore &&
-    !row.neighbourCategory &&
-    row.neighbourAxleType === 'None'
-  ) {
+  if (trailerIsBefore && nothingFollows) {
     return 'nothing follows';
   }
   if (
