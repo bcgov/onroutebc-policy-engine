@@ -441,7 +441,7 @@ describe('ASW Tandem Drive Single Axle Jeep Exception', () => {
       },
     ];
 
-    let axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
+    const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
       policy,
       vehicleConfiguration,
       tandemDriveSingleAxleJepConfig,
