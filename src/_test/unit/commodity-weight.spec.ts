@@ -3,7 +3,7 @@ import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
 import { COMMODITY_CODES } from '../../constants/commodity-codes';
 import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { PolicyCheckId, PolicyCheckResultType } from '../../enum';
-import { AxleConfiguration } from '../../types';
+import { AxleConfiguration, PolicyDefinition } from '../../types';
 import { PermitAppInfo } from '../../enum/permit-app-info';
 import {
   convertToTimezone,
@@ -111,6 +111,42 @@ describe.each([
         });
       }
     });
+  },
+);
+
+it.each([
+  [COMMODITY_CODES.NON_REDUCIBLE_LOADS, 21000],
+  [COMMODITY_CODES.NONE, 0],
+])(
+  'uses available commodity weights when a default is absent: %s',
+  (commodity, limit) => {
+    const changed: PolicyDefinition = JSON.parse(JSON.stringify(config));
+    changed.globalWeightDefaults.trailers =
+      changed.globalWeightDefaults.trailers.filter(({ axles }) => axles !== 2);
+    const { results } = new Policy(changed).runAxleCalculation(
+      [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS],
+      [
+        ...axles(2),
+        {
+          numberOfAxles: 2,
+          vehicleIndex: 1,
+          axleUnitWeight: 21000,
+          axleSpread: 160,
+        },
+      ],
+      100000,
+      commodity,
+    );
+    for (const id of [
+      PolicyCheckId.LegalWeight,
+      PolicyCheckId.PermittableWeight,
+    ]) {
+      expect(
+        results.find(
+          (result) => result.id === id && result.startAxleUnit === 3,
+        ),
+      ).toMatchObject({ thresholdWeight: limit });
+    }
   },
 );
 
