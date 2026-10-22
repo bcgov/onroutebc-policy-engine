@@ -1,6 +1,18 @@
 import { PermittableAxleSpread } from '../types/weight-dimension';
 
-/** Check an own-spread condition without rounding fractional centimetres. */
+/**
+ * Check the `permittableAxleSpread` part of a trailer weight entry, in cm.
+ * Example in commodities[].powerUnits[].trailers[].weightDimensions[]
+ * (also supported in trailer subtype/category defaultWeightDimensions[]):
+ * {
+ *   "axles": 3,
+ *   "legal": 24000,
+ *   "permittable": 29000,
+ *   "permittableAxleSpread": { "minExclusive": 300, "max": 370 }
+ * }
+ * The caller passes that nested object as `range`: 300 fails, 300.5 passes.
+ * Use "min": 240 instead for an inclusive lower bound. No rounding is applied.
+ */
 export function matchesPermittableAxleSpread(
   spread: number | undefined,
   range: PermittableAxleSpread,

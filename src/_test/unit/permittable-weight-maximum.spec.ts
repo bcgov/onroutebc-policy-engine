@@ -719,9 +719,6 @@ describe('ORV2-5709 permittable weight maximums', () => {
         const changed: PolicyDefinition = JSON.parse(
           JSON.stringify(currentPolicyConfig),
         );
-        changed.globalWeightDefaults.trailers.find(
-          ({ axles }) => axles === 3,
-        )!.permittable = 27500;
         const trailer = changed.commodities
           .find(({ id }) => id === commodityId)!
           .powerUnits.find(
@@ -729,7 +726,10 @@ describe('ORV2-5709 permittable weight maximums', () => {
           )!
           .trailers.find(({ type }) => type === trailerType)!;
         trailer.weightDimensions!.find(
-          ({ axles }) => axles === 3,
+          (weight) => weight.axles === 3 && !weight.permittableAxleSpread,
+        )!.permittable = 27500;
+        trailer.weightDimensions!.find(
+          (weight) => weight.axles === 3 && weight.permittableAxleSpread,
         )!.permittable = 28500;
         const configuredPolicy = new Policy(changed);
 
