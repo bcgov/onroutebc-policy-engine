@@ -223,21 +223,27 @@ describe('worksheet vehicle and axle translation', () => {
     });
   });
 
-  it('does not append a neighbour or invent geometry when the row says None', () => {
-    const fixture = buildTrailerFixture(
-      { ...base, before: 'x', neighbourAxleType: 'None' },
-      29000,
-    );
-    expect(fixture.vehicles).toEqual([
-      POWER_UNIT_CODES.TRUCK_TRACTORS,
-      TRAILER_CODES.SEMI_TRAILERS,
-    ]);
-    expect(fixture.axles[2]).toEqual({
-      numberOfAxles: 3,
-      vehicleIndex: 1,
-      axleUnitWeight: 29000,
-    });
-  });
+  it.each([
+    ['', 'None'],
+    ['None', 'NA'],
+  ])(
+    'does not invent a neighbour or geometry for H=%s / I=%s',
+    (neighbourCategory, neighbourAxleType) => {
+      const fixture = buildTrailerFixture(
+        { ...base, before: 'x', neighbourCategory, neighbourAxleType },
+        29000,
+      );
+      expect(fixture.vehicles).toEqual([
+        POWER_UNIT_CODES.TRUCK_TRACTORS,
+        TRAILER_CODES.SEMI_TRAILERS,
+      ]);
+      expect(fixture.axles[2]).toEqual({
+        numberOfAxles: 3,
+        vehicleIndex: 1,
+        axleUnitWeight: 29000,
+      });
+    },
+  );
 
   it('does not choose a drive count for an underspecified Dolly', () => {
     expect(() =>
@@ -269,6 +275,18 @@ describe('worksheet vehicle and axle translation', () => {
     ).toThrow('Unsupported worksheet neighbour relationship');
     expect(() =>
       buildTrailerFixture({ ...base, spacingCm: 300 }, 29000),
+    ).toThrow('Spacing without an explicit neighbour');
+    expect(() =>
+      buildTrailerFixture(
+        {
+          ...base,
+          before: 'x',
+          neighbourCategory: 'None',
+          neighbourAxleType: 'NA',
+          spacingCm: 300,
+        },
+        29000,
+      ),
     ).toThrow('Spacing without an explicit neighbour');
   });
 });
