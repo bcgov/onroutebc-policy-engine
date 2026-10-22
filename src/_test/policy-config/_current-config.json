@@ -4248,7 +4248,23 @@
     "trailerCategories": [
       {
         "id": "trailer",
-        "name": "Default trailer category"
+        "name": "Default trailer category",
+        "defaultWeightDimensions": [
+          {
+            "axles": 3,
+            "legal": 24000,
+            "permittable": 28000
+          },
+          {
+            "axles": 3,
+            "legal": 24000,
+            "permittable": 29000,
+            "permittableAxleSpread": {
+              "min": 240,
+              "max": 370
+            }
+          }
+        ]
       },
       {
         "id": "accessory",
@@ -4260,7 +4276,23 @@
       },
       {
         "id": "semi",
-        "name": "Semi-Trailer"
+        "name": "Semi-Trailer",
+        "defaultWeightDimensions": [
+          {
+            "axles": 3,
+            "legal": 24000,
+            "permittable": 28000
+          },
+          {
+            "axles": 3,
+            "legal": 24000,
+            "permittable": 29000,
+            "permittableAxleSpread": {
+              "min": 240,
+              "max": 370
+            }
+          }
+        ]
       },
       {
         "id": "wheeler",
@@ -4285,7 +4317,23 @@
       },
       {
         "id": "steering",
-        "name": "Steering Trailer"
+        "name": "Steering Trailer",
+        "defaultWeightDimensions": [
+          {
+            "axles": 3,
+            "legal": 24000,
+            "permittable": 28000
+          },
+          {
+            "axles": 3,
+            "legal": 24000,
+            "permittable": 29000,
+            "permittableAxleSpread": {
+              "min": 240,
+              "max": 370
+            }
+          }
+        ]
       },
       {
         "id": "dolly",
@@ -5010,14 +5058,46 @@
         "name": "Additional Axle Unit for Platform Trailer",
         "category": "pseudo",
         "ignoreForSizeDimensions": true,
-        "displayCode": "A"
+        "displayCode": "A",
+        "defaultWeightDimensions": [
+          {
+            "axles": 3,
+            "legal": 24000,
+            "permittable": 28000
+          },
+          {
+            "axles": 3,
+            "legal": 24000,
+            "permittable": 29000,
+            "permittableAxleSpread": {
+              "min": 240,
+              "max": 370
+            }
+          }
+        ]
       },
       {
         "id": "ATCAXLE",
         "name": "Additional Axle Unit for All-Terrain Crane",
         "category": "pseudo",
         "ignoreForSizeDimensions": true,
-        "displayCode": "A"
+        "displayCode": "A",
+        "defaultWeightDimensions": [
+          {
+            "axles": 3,
+            "legal": 24000,
+            "permittable": 28000
+          },
+          {
+            "axles": 3,
+            "legal": 24000,
+            "permittable": 29000,
+            "permittableAxleSpread": {
+              "min": 240,
+              "max": 370
+            }
+          }
+        ]
       },
       {
         "id": "BOOSTER",
@@ -5354,7 +5434,23 @@
         "name": "Platform Trailers - Wheelers",
         "category": "wheeler",
         "additionalAxleSubType": "PFMAXLE",
-        "displayCode": "B"
+        "displayCode": "B",
+        "defaultWeightDimensions": [
+          {
+            "axles": 3,
+            "legal": 24000,
+            "permittable": 28000
+          },
+          {
+            "axles": 3,
+            "legal": 24000,
+            "permittable": 29000,
+            "permittableAxleSpread": {
+              "min": 240,
+              "max": 370
+            }
+          }
+        ]
       },
       {
         "id": "POLETRL",
@@ -5655,7 +5751,16 @@
                 {
                   "axles": 3,
                   "legal": 24000,
-                  "permittable": 29000
+                  "permittable": 28000
+                },
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 29000,
+                  "permittableAxleSpread": {
+                    "minExclusive": 300,
+                    "max": 370
+                  }
                 }
               ]
             },
@@ -5685,7 +5790,16 @@
                 {
                   "axles": 3,
                   "legal": 24000,
-                  "permittable": 29000
+                  "permittable": 28000
+                },
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 29000,
+                  "permittableAxleSpread": {
+                    "minExclusive": 300,
+                    "max": 370
+                  }
                 }
               ]
             },
@@ -5698,7 +5812,16 @@
                 {
                   "axles": 3,
                   "legal": 24000,
-                  "permittable": 29000
+                  "permittable": 28000
+                },
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 29000,
+                  "permittableAxleSpread": {
+                    "minExclusive": 300,
+                    "max": 370
+                  }
                 }
               ]
             },
@@ -5711,7 +5834,16 @@
                 {
                   "axles": 3,
                   "legal": 24000,
-                  "permittable": 29000
+                  "permittable": 28000
+                },
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 29000,
+                  "permittableAxleSpread": {
+                    "minExclusive": 300,
+                    "max": 370
+                  }
                 }
               ]
             },
@@ -5751,7 +5883,16 @@
                 {
                   "axles": 3,
                   "legal": 24000,
-                  "permittable": 29000
+                  "permittable": 28000
+                },
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 29000,
+                  "permittableAxleSpread": {
+                    "minExclusive": 300,
+                    "max": 370
+                  }
                 }
               ]
             },
@@ -6305,7 +6446,16 @@
                 {
                   "axles": 3,
                   "legal": 24000,
-                  "permittable": 29000
+                  "permittable": 28000
+                },
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 29000,
+                  "permittableAxleSpread": {
+                    "minExclusive": 300,
+                    "max": 370
+                  }
                 }
               ]
             }
@@ -8495,7 +8645,16 @@
                 {
                   "axles": 3,
                   "legal": 24000,
-                  "permittable": 29000
+                  "permittable": 28000
+                },
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 29000,
+                  "permittableAxleSpread": {
+                    "minExclusive": 300,
+                    "max": 370
+                  }
                 }
               ]
             }
@@ -8638,7 +8797,16 @@
                 {
                   "axles": 3,
                   "legal": 24000,
-                  "permittable": 29000
+                  "permittable": 28000
+                },
+                {
+                  "axles": 3,
+                  "legal": 24000,
+                  "permittable": 29000,
+                  "permittableAxleSpread": {
+                    "minExclusive": 300,
+                    "max": 370
+                  }
                 }
               ]
             }
