@@ -2482,7 +2482,12 @@ describe('Axle Calculation Functions', () => {
     ac[0].tireSize = 445;
     ac[0].axleUnitWeight = 9100;
 
-    const results = policy.runAxleCalculation(vehicleConfiguration, ac, 0);
+    const results = policy.runAxleCalculation(
+      vehicleConfiguration,
+      ac,
+      0,
+      COMMODITY_CODES.NONE,
+    );
 
     const maxTireResults = results.results.filter(
       (r) => r.id === PolicyCheckId.MaxTireLoad,
