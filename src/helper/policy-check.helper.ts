@@ -27,7 +27,6 @@ import {
 import { formatMeters } from './format-meters.helper';
 import { POWER_UNIT_CODES } from '../constants/power-unit-codes';
 import { TRAILER_CODES } from '../constants/trailer-codes';
-import { COMMODITY_CODES } from '../constants/commodity-codes';
 import { POWER_UNIT_AXLE_CODE_MULTIPLIER } from '../constants/power-unit-axle-code-multiplier';
 
 /**
@@ -626,11 +625,6 @@ export function CheckPermittableWeight(
     axleConfiguration,
   );
 
-  const QUALIFYING_TRIDEM_SPREAD_CM = {
-    MINIMUM: 240,
-    MAXIMUM: 370,
-  };
-
   return axleConfiguration.map((axleUnit, axleIndex) => {
     const vehicleIndex = axleUnitVehicleIndexes[axleIndex];
     const isSingleSteer =
@@ -640,8 +634,7 @@ export function CheckPermittableWeight(
     const isOtherTandemAxleUnit =
       axleUnit.numberOfAxles === 2 && (vehicleIndex !== 0 || axleIndex !== 1);
 
-    // I know this trailerDefinition and usesJSONTandemWeight are a bit ugly, but they should be temporary
-    // As we migrate more stuff over to the JSON/XLS instead of the policy engine, this will get a bit gnarly until we fix it all.
+    // Tandem types not yet migrated retain their existing TS maximum.
     const trailerDefinition =
       vehicleIndex !== 0
         ? policy.getTrailerDefinition(vehicleConfiguration[vehicleIndex])
@@ -654,137 +647,43 @@ export function CheckPermittableWeight(
         TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
         TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
       ].some((type) => type === trailerDefinition?.id);
-    const usesJSONTridemWeight =
-      trailerDefinition?.category === 'pony' ||
-      [
-        TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS,
-        TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
-        TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
-        TRAILER_CODES.JEEPS,
-        TRAILER_CODES.BOOSTER,
-        TRAILER_CODES.DOLLIES,
-      ].some((type) => type === trailerDefinition?.id);
 
-    let getConfiguredAxleUnitWeightThresholdResult: SingleAxleDimension | null;
+    let weightThreshold = getConfiguredAxleUnitWeightThreshold(
+      policy,
+      vehicleConfiguration,
+      axleConfiguration,
+      axleUnitVehicleIndexes,
+      axleIndex,
+      commodityId,
+    );
 
     if (!isSingleSteer && !isTandemSteer) {
       if (axleUnit.numberOfAxles === 1) {
-        getConfiguredAxleUnitWeightThresholdResult =
-          getConfiguredAxleUnitWeightThreshold(
-            policy,
-            vehicleConfiguration,
-            axleConfiguration,
-            axleUnitVehicleIndexes,
-            axleIndex,
-            commodityId,
-          ) || {
-            permittable: AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.SINGLE_NON_STEER,
-          };
+        weightThreshold ||= {
+          permittable: AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.SINGLE_NON_STEER,
+        };
       } else if (isOtherTandemAxleUnit && !usesJSONTandemWeight) {
         // Other trailer and additional power-unit tandems remain separately scoped.
-        getConfiguredAxleUnitWeightThresholdResult = {
+        weightThreshold = {
           permittable: AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.TANDEM,
         };
-      } else if (axleUnit.numberOfAxles === 3) {
-        const isTrailerAxleUnit =
-          policy.getTrailerDefinition(vehicleConfiguration[vehicleIndex]) !==
-          null;
-        let spreadQualifies =
-          axleUnit.axleSpread !== undefined &&
-          axleUnit.axleSpread >= QUALIFYING_TRIDEM_SPREAD_CM.MINIMUM &&
-          axleUnit.axleSpread <= QUALIFYING_TRIDEM_SPREAD_CM.MAXIMUM;
-
-        const isFixedEquipmentOrConcretePump = [
-          TRAILER_CODES.READY_MIX_CONCRETE_PUMP_SEMI_TRAILERS,
-          TRAILER_CODES.FIXED_EQUIPMENT_SEMI_TRAILERS,
-          TRAILER_CODES.FIXED_EQUIPMENT_CONVEYORS,
-          TRAILER_CODES.FIXED_EQUIPMENT_COUNTER_FLOW_ASPHALT_DRUM_MIXERS,
-          TRAILER_CODES.FIXED_EQUIPMENT_PORTABLE_ASPHALT_BAGHOUSES,
-        ].some((type) => type === trailerDefinition?.id);
-        const usesNoneCommoditySpreadBand =
-          commodityId === COMMODITY_CODES.NONE && isFixedEquipmentOrConcretePump;
-        const usesOilFieldCommoditySpreadBand =
-          commodityId === COMMODITY_CODES.OIL_FIELD_EQUIPMENT &&
-          trailerDefinition?.id ===
-            TRAILER_CODES.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK;
-
-        const usesCommoditySpreadBand =
-          usesNoneCommoditySpreadBand || usesOilFieldCommoditySpreadBand;
-
-        // Confirmed S2/S4 bands: the commodity maximum requires more than 3 m.
-        if (usesCommoditySpreadBand) {
-          const spreadExceedsThreeMetres =
-            axleUnit.axleSpread !== undefined && axleUnit.axleSpread > 300;
-          spreadQualifies = spreadQualifies && spreadExceedsThreeMetres;
-        }
-
-        const nextVehicleIndex = vehicleIndex + 1;
-        const hasImmediatelyFollowingBooster =
-          vehicleConfiguration[nextVehicleIndex] ===
-          AccessoryVehicleType.Booster;
-        const boosterAxle = axleConfiguration.find(
-          (_, candidateIndex) =>
-            candidateIndex > axleIndex &&
-            axleUnitVehicleIndexes[candidateIndex] === nextVehicleIndex,
-        );
-        const boosterQualifies =
-          !hasImmediatelyFollowingBooster || boosterAxle?.numberOfAxles === 1;
-
-        if (usesCommoditySpreadBand) {
-          // Use the commodity maximum when qualified; otherwise use the JSON default.
-          const weightCommodity =
-            spreadQualifies && boosterQualifies ? commodityId : undefined;
-          getConfiguredAxleUnitWeightThresholdResult =
-            getConfiguredAxleUnitWeightThreshold(
-              policy,
-              vehicleConfiguration,
-              axleConfiguration,
-              axleUnitVehicleIndexes,
-              axleIndex,
-              weightCommodity,
-            );
-        } else if (isTrailerAxleUnit && !usesJSONTridemWeight) {
-          // Other trailers retain the standard spread/Booster allowance.
-          getConfiguredAxleUnitWeightThresholdResult =
-            spreadQualifies && boosterQualifies
-              ? {
-                  permittable:
-                    AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.QUALIFYING_TRIDEM,
-                }
-              : {
-                  permittable: AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.STANDARD_TRIDEM,
-                };
-        }
       }
     }
 
-    getConfiguredAxleUnitWeightThresholdResult ??=
-      getConfiguredAxleUnitWeightThreshold(
-        policy,
-        vehicleConfiguration,
-        axleConfiguration,
-        axleUnitVehicleIndexes,
-        axleIndex,
-        commodityId,
-      );
-
-    const permittableWeight =
-      getConfiguredAxleUnitWeightThresholdResult?.permittable ?? 0;
+    const permittableWeight = weightThreshold?.permittable ?? 0;
 
     const result = axleUnit.axleUnitWeight <= permittableWeight;
     const axleUnitNumber = axleIndex + 1;
 
     let message;
 
-    if (
-      getConfiguredAxleUnitWeightThresholdResult?.hasInteraxleSpacingRestriction
-    ) {
-      message = `Interaxle Spacing for Axle Unit ${axleUnitNumber} restricts Axle Weight to ${getConfiguredAxleUnitWeightThresholdResult?.permittable} kg`;
+    if (weightThreshold?.hasInteraxleSpacingRestriction) {
+      message = `Interaxle Spacing for Axle Unit ${axleUnitNumber} restricts Axle Weight to ${weightThreshold?.permittable} kg`;
     } else {
       message = `Weight for axle unit ${axleUnitNumber} ${
         result
           ? 'is permittable'
-          : `must not exceed ${getConfiguredAxleUnitWeightThresholdResult?.permittable} kgs`
+          : `must not exceed ${weightThreshold?.permittable} kgs`
       }`;
     }
     return {
