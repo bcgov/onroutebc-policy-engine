@@ -786,31 +786,32 @@ describe('ORV2-5709 permittable weight maximums', () => {
       },
     );
 
-    it.each([
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.BOOSTER,
-      TRAILER_CODES.DOLLIES,
-    ])('reads the %s tridem limit from JSON', (trailerType) => {
+    // Booster-specific JSON keeps its 28,000 kg limit when the global default changes.
+    it.each<[string, number]>([
+      [TRAILER_CODES.JEEPS, 27500],
+      [TRAILER_CODES.BOOSTER, 28000],
+      [TRAILER_CODES.DOLLIES, 27500],
+    ])('reads the %s tridem limit from JSON', (trailerType, thresholdWeight) => {
       const changed: PolicyDefinition = JSON.parse(
         JSON.stringify(currentPolicyConfig),
       );
       changed.globalWeightDefaults.trailers.find(
         ({ axles }) => axles === 3,
-      )!.permittable = 28000;
+      )!.permittable = 27500;
 
       expect(
         getPermittableResult(
           {
             axleUnit: 3,
             axleCount: 3,
-            actualWeight: 28001,
+            actualWeight: thresholdWeight + 1,
             spread: 240,
             trailerType,
           },
           new Policy(changed),
         ),
       ).toMatchObject({
-        thresholdWeight: 28000,
+        thresholdWeight,
         result: PolicyCheckResultType.Fail,
       });
     });
