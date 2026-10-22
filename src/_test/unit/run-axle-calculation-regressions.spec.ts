@@ -1,3 +1,4 @@
+import { COMMODITY_CODES } from '../../constants/commodity-codes';
 import { Policy } from '../../policy-engine';
 import { PolicyCheckId, PolicyCheckResultType } from '../../enum';
 import {
@@ -33,6 +34,7 @@ describe('runAxleCalculation robustness regressions', () => {
         [POWER_UNIT_CODES.CRANES_ALL_TERRAIN],
         axleConfiguration,
         100000,
+        COMMODITY_CODES.NONE,
       );
     }).not.toThrow();
 
@@ -104,6 +106,7 @@ describe('runAxleCalculation robustness regressions', () => {
           },
         ],
         100000,
+        COMMODITY_CODES.NONE,
       );
     }).not.toThrow();
 
