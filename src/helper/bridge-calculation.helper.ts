@@ -20,7 +20,8 @@ export function runBridgeFormula(
   policy: Policy,
   axleConfiguration: Array<AxleConfiguration>,
   vehicleConfiguration: Array<string>,
-  // axleUnitVehicleIndexes: Array<number>,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Reserved for the deferred booster bridge exception below.
+  axleUnitVehicleIndexes: Array<number>,
 ): Array<BridgeCalculationResult> {
   const BRIDGE_MULTIPLIER =
     policy.policyDefinition.bridgeCalculationConstants.multiplier;
