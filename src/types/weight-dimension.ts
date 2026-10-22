@@ -15,6 +15,8 @@ export type SingleAxleDimension = {
   legal?: number;
   /** Permittable weight limit in kilograms (optional) */
   permittable?: number;
+  /** Is the legal or permittable weight restricted by interaxle spacing (optional) */
+  hasInteraxleSpacingRestriction?: boolean;
 };
 
 /**

@@ -976,6 +976,7 @@ export class Policy {
   calculateBridge(
     axleConfiguration: Array<AxleConfiguration>,
     vehicleConfiguration: Array<string>,
+    axleUnitVehicleIndexes: Array<number>,
   ): Array<BridgeCalculationResult> {
     let bridgeResults;
     try {
@@ -983,6 +984,7 @@ export class Policy {
         this,
         axleConfiguration,
         vehicleConfiguration,
+        axleUnitVehicleIndexes,
       );
     } catch (e: any) {
       console.log(`Error calculating bridge formula: ${e.message}`);
@@ -1115,6 +1117,7 @@ export class Policy {
       );
     }
     updateOverloadCalculation();
+
     return axleCalcResults;
   }
 
@@ -1221,60 +1224,48 @@ export class Policy {
   }
 
   /**
-   * Gets the default legal and permittable weights for a
+   * Gets the default interaxle spacing value for a
    * given power unit type and number of axles. The number of
    * axles is supplied as a 2-digit number, with the most
    * significant digit representing the current (steer) axle unit and the
    * least significant digit representing the next (drive) axle unit.
    * @param subType Power unit subtype
    * @param axles Number of axles in the power unit axle units
-   * @returns Array of power unit weights. Multiple power unit
-   * weights may be returned if there are different weights
+   * @returns Array of interaxle spacing requirements. Multiple requirements may be returned if there are different values
    * depending on prior / subsequent vehicles in the
-   * configuration (weight modifiers). Will return an empty array
+   * configuration (modifiers). Will return an empty array
    * if the number of axles is not configured in policy.
    */
   getDefaultPowerUnitInteraxleSpacing(
     subType: string,
     axles: number,
-  ): InteraxleSpacingRequirement {
-    return getDefaultInteraxleSpacingHelper(
-      this,
-      subType,
-      axles,
-      true,
-    ) as InteraxleSpacingRequirement;
+  ): Array<InteraxleSpacingRequirement> {
+    return getDefaultInteraxleSpacingHelper(this, subType, axles, true);
   }
 
   /**
-   * Gets the default legal and permittable weights for a
+   * Gets the default interaxle spacing value for a
    * given trailer type and number of axles. The number of
    * axles is supplied as a 2-digit number, with the most
    * significant digit representing the current axle unit and the
    * least significant digit representing the next axle unit.
    * @param subType Trailer subtype
    * @param axles Number of axles in the trailer axle units
-   * @returns Array of trailer weights. Multiple trailer
-   * weights may be returned if there are different weights
+   * @returns Array of interaxle spacing requirements. Multiple requirements may be returned if there are different values
    * depending on prior / subsequent vehicles in the
-   * configuration (weight modifiers). Will return an empty array
+   * configuration (modifiers). Will return an empty array
    * if the number of axles is not configured in policy.
    */
   getDefaultTrailerInteraxleSpacing(
     subType: string,
     axles: number,
-  ): InteraxleSpacingRequirement {
-    return getDefaultInteraxleSpacingHelper(
-      this,
-      subType,
-      axles,
-      false,
-    ) as InteraxleSpacingRequirement;
+  ): Array<InteraxleSpacingRequirement> {
+    return getDefaultInteraxleSpacingHelper(this, subType, axles, false);
   }
 
-  /** Get legal and permitable weights from JSON, 
-   * resolve commodity rows first, then inherited 
-   * defaults for this axle unit. 
+  /** Get legal and permitable weights from JSON,
+   * resolve commodity rows first, then inherited
+   * defaults for this axle unit.
    */
   getApplicableAxleWeight(
     configuration: Array<string>,

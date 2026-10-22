@@ -20,10 +20,10 @@ export type DimensionModifier = SelfIssuable & {
   category?: string;
   /** Number of axles in the axle unit affected by this modifier */
   axles?: number;
-  /** Minimum interaxle spacing in millimeters */
-  minInterAxleSpacing?: number;
-  /** Maximum interaxle spacing in millimeters */
-  maxInterAxleSpacing?: number;
+  /** Minimum interaxle spacing in centimetres */
+  minInteraxleSpacing?: number;
+  /** Maximum interaxle spacing in centimetres */
+  maxInteraxleSpacing?: number;
 };
 
 /**
