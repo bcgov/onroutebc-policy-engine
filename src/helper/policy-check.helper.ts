@@ -3,6 +3,7 @@ import {
   AxleConfiguration,
   AxleUnitPolicyCheckResult,
   AxleGroupPolicyCheckResult,
+  SingleAxleDimension,
 } from 'onroute-policy-engine/types';
 import { Policy } from 'onroute-policy-engine';
 import {
@@ -520,12 +521,70 @@ export function CheckNumTiresPerAxle(
 }
 
 /**
+ * Selects the axle weight limit from JSON configuration or TypeScript constants.
+ */
+function getApplicablePermittableWeightThreshold(
+  policy: Policy,
+  vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+  vehicleIndex: number,
+  axleIndex: number,
+  commodityId?: string,
+): SingleAxleDimension | null {
+  const axleUnit = axleConfiguration[axleIndex];
+  const trailerDefinition =
+    vehicleIndex !== 0
+      ? policy.getTrailerDefinition(vehicleConfiguration[vehicleIndex])
+      : null;
+  const usesJSONTandemWeight =
+    trailerDefinition?.category === 'semi' ||
+    trailerDefinition?.category === 'pony' ||
+    [
+      TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS,
+      TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
+      TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
+    ].some((type) => type === trailerDefinition?.id);
+
+  const configuredWeight = policy.getApplicableAxleWeight(
+    vehicleConfiguration,
+    axleConfiguration,
+    vehicleIndex,
+    axleIndex,
+    commodityId,
+  );
+  const isSteerAxleUnit =
+    axleIndex === 0 &&
+    vehicleIndex === 0 &&
+    (axleUnit.numberOfAxles === 1 || axleUnit.numberOfAxles === 2);
+
+  // Steer units never use the legacy single or tandem limits.
+  if (isSteerAxleUnit) return configuredWeight;
+
+  // A single axle uses the fallback only when no JSON entry was selected.
+  // Keep a selected entry even if its permittable field is missing or zero.
+  if (axleUnit.numberOfAxles === 1 && !configuredWeight) {
+    return {
+      permittable: AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.SINGLE_NON_STEER,
+    };
+  }
+
+  const isOtherTandemAxleUnit =
+    axleUnit.numberOfAxles === 2 && (vehicleIndex !== 0 || axleIndex !== 1);
+  // These tandems still use the legacy limit. Replace the whole JSON entry,
+  // including any restriction flag. The main drive tandem keeps its JSON limit.
+  if (isOtherTandemAxleUnit && !usesJSONTandemWeight) {
+    return { permittable: AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.TANDEM };
+  }
+
+  return configuredWeight;
+}
+
+/**
  * Validates that each axle unit's weight does not exceed the permittable weight limits.
  *
  * This function performs weight validation for each axle unit in a vehicle configuration.
- * It maps axle units to their owning vehicles, retrieves the default weight dimensions for
- * those vehicles based on vehicle type and axle count, then compares actual axle unit
- * weights against the permittable weight limits. Additional axle units require explicit
+ * It maps axle units to their owning vehicles, selects the configured or legacy limit,
+ * then compares actual axle unit weights against that limit. Additional axle units require explicit
  * vehicleIndex values on the axle configuration so ownership is not inferred.
  *
  * @param policy - The policy instance containing weight dimension configurations and validation rules
@@ -587,28 +646,8 @@ export function CheckPermittableWeight(
 
   return axleConfiguration.map((axleUnit, axleIndex) => {
     const vehicleIndex = axleUnitVehicleIndexes[axleIndex];
-    const isSingleSteer =
-      axleIndex === 0 && vehicleIndex === 0 && axleUnit.numberOfAxles === 1;
-    const isTandemSteer =
-      axleIndex === 0 && vehicleIndex === 0 && axleUnit.numberOfAxles === 2;
-    const isOtherTandemAxleUnit =
-      axleUnit.numberOfAxles === 2 && (vehicleIndex !== 0 || axleIndex !== 1);
-
-    // Tandem types not yet migrated retain their existing TS maximum.
-    const trailerDefinition =
-      vehicleIndex !== 0
-        ? policy.getTrailerDefinition(vehicleConfiguration[vehicleIndex])
-        : null;
-    const usesJSONTandemWeight =
-      trailerDefinition?.category === 'semi' ||
-      trailerDefinition?.category === 'pony' ||
-      [
-        TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS,
-        TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
-        TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
-      ].some((type) => type === trailerDefinition?.id);
-
-    let weightThreshold = policy.getApplicableAxleWeight(
+    const weightThreshold = getApplicablePermittableWeightThreshold(
+      policy,
       vehicleConfiguration,
       axleConfiguration,
       vehicleIndex,
@@ -616,19 +655,7 @@ export function CheckPermittableWeight(
       commodityId,
     );
 
-    if (!isSingleSteer && !isTandemSteer) {
-      if (axleUnit.numberOfAxles === 1) {
-        weightThreshold ||= {
-          permittable: AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.SINGLE_NON_STEER,
-        };
-      } else if (isOtherTandemAxleUnit && !usesJSONTandemWeight) {
-        // Other trailer and additional power-unit tandems remain separately scoped.
-        weightThreshold = {
-          permittable: AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.TANDEM,
-        };
-      }
-    }
-
+    // Preserve the existing zero threshold when the selected entry has no limit.
     const permittableWeight = weightThreshold?.permittable ?? 0;
 
     const result = axleUnit.axleUnitWeight <= permittableWeight;
