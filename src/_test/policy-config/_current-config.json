@@ -10263,6 +10263,22 @@
               "daPermittable": 28000
             }
           ],
+          "weightDimensions": [
+            {
+              "axles": 11,
+              "saLegal": 9100,
+              "saPermittable": 9100,
+              "daLegal": 9100,
+              "daPermittable": 11000
+            },
+            {
+              "axles": 13,
+              "saLegal": 9100,
+              "saPermittable": 9100,
+              "daLegal": 24000,
+              "daPermittable": 28000
+            }
+          ],
           "trailers": [
             {
               "type": "OGOSFDT",

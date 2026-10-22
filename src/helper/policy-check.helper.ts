@@ -1282,7 +1282,7 @@ export function CheckMaxTireLoad(
      *   <445 mm  => rate only (no cap)
      *   >=445 mm => min(100 kg/cm rate, 9,100 kg/axle)
      */
-   if (isSteeringAxle) {
+    if (isSteeringAxle) {
       //Exemption: 445 mm tires on a 2-wheel steer axle are permitted up to 9,100 kg. We handle this explicitly tobypass the 100 kg/cm rate calculation.
       if (tireSize === 445 && numberOfTires === 2) {
         if (axleWeight > 9100) {

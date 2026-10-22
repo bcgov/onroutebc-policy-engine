@@ -197,6 +197,92 @@ describe('ORV2-5709 permittable weight maximums', () => {
     },
   );
 
+  // Over Weight Dimension Set, Oil Field Equipment: Service Rigs single-steer permits 12,000 kg;
+  // Bed Trucks Tandem/Tridem steer permits 17,000 kg. Other steer and all drive limits are controls.
+  it.each([
+    [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS, 1, 1, 12000, 11000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS, 1, 2, 12000, 23000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS, 1, 3, 12000, 28000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS, 2, 2, 17000, 23000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS, 2, 3, 15200, 28000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 1, 1, 9100, 11000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 1, 2, 9100, 23000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 1, 3, 9100, 28000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 2, 2, 17000, 23000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 2, 3, 17000, 28000],
+    // Heavy-front-crane Service Rigs (>14,000 kg tare): tandem steer 20,000; tridem steer remains 24,000 kg.
+    [
+      POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+      2,
+      2,
+      20000,
+      23000,
+    ],
+    [
+      POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+      2,
+      3,
+      20000,
+      28000,
+    ],
+    [
+      POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+      3,
+      3,
+      24000,
+      28000,
+    ],
+  ] as const)(
+    'preserves %s %i/%i permit boundaries (steer %i, drive %i kg)',
+    (powerUnitType, steerAxles, driveAxles, steerLimit, driveLimit) => {
+      for (const excess of [0, 1]) {
+        const results = policy.runAxleCalculation(
+          [powerUnitType],
+          [
+            {
+              numberOfAxles: steerAxles,
+              axleUnitWeight: steerLimit + excess,
+              axleSpread: steerAxles > 1 ? 160 : undefined,
+              numberOfTires: steerAxles * 2,
+              tireSize: 455,
+              vehicleIndex: 0,
+            },
+            {
+              numberOfAxles: driveAxles,
+              axleUnitWeight: driveLimit + excess,
+              axleSpread: driveAxles > 1 ? 240 : undefined,
+              interaxleSpacing: 500,
+              numberOfTires: driveAxles * 4,
+              tireSize: 455,
+              vehicleIndex: 0,
+            },
+          ],
+          100000,
+          COMMODITY_CODES.NONE,
+        ).results;
+        for (const [index, thresholdWeight] of [
+          steerLimit,
+          driveLimit,
+        ].entries()) {
+          expect(
+            results.find(
+              ({ id, startAxleUnit }) =>
+                id === PolicyCheckId.PermittableWeight &&
+                startAxleUnit === index + 1,
+            ),
+          ).toMatchObject({
+            thresholdWeight,
+            actualWeight: thresholdWeight + excess,
+            result:
+              excess === 0
+                ? PolicyCheckResultType.Pass
+                : PolicyCheckResultType.Fail,
+          });
+        }
+      }
+    },
+  );
+
   // Source: ASW Permit Weight Maximums.feature @orv2-5709-1.
   describe('base axle-unit policy maximums', () => {
     it.each([
@@ -400,6 +486,62 @@ describe('ORV2-5709 permittable weight maximums', () => {
 
   // Source: ASW Permit Weight Maximums.feature @orv2-5709-6.
   describe('tridem spread and immediately following booster', () => {
+    describe.each([
+      POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+      POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
+      POWER_UNIT_CODES.TRUCK_WITH_PME,
+    ])(
+      '%s drive does not receive the trailer spread allowance',
+      (powerUnitType) => {
+        // These below values come from the Overweight Dimension Set: Picker Truck Tractors, and truck/tractors with PME, commodity None
+        // Single-steer/tridem-drive = 24,000 kg; tandem-steer/tridem-drive = 28,000 kg.
+        // @orv2-5709-6 supplies the trailer-only allowance exclusion, not the 24,000 kg subtype limit (from Overweight Dimension Set xls)
+        it.each([
+          [1, 24000, 24000, PolicyCheckResultType.Pass],
+          [1, 24001, 24000, PolicyCheckResultType.Fail],
+          [2, 28000, 28000, PolicyCheckResultType.Pass],
+          [2, 28001, 28000, PolicyCheckResultType.Fail],
+        ])(
+          'evaluates %i steer axles and tridem drive at %i kg (limit %i)',
+          (steerAxles, actualWeight, thresholdWeight, expectedResult) => {
+            const result = policy
+              .runAxleCalculation(
+                [powerUnitType],
+                [
+                  {
+                    numberOfAxles: steerAxles as number,
+                    axleUnitWeight: 9100,
+                    axleSpread: steerAxles === 2 ? 160 : undefined,
+                    numberOfTires: (steerAxles as number) * 2,
+                    tireSize: 455,
+                    vehicleIndex: 0,
+                  },
+                  {
+                    numberOfAxles: 3,
+                    axleUnitWeight: actualWeight as number,
+                    axleSpread: 240,
+                    interaxleSpacing: 500,
+                    numberOfTires: 12,
+                    tireSize: 455,
+                    vehicleIndex: 0,
+                  },
+                ],
+                100000,
+                COMMODITY_CODES.NONE,
+              )
+              .results.find(
+                ({ id, startAxleUnit }) =>
+                  id === PolicyCheckId.PermittableWeight && startAxleUnit === 2,
+              );
+            expect(result).toMatchObject({
+              actualWeight,
+              thresholdWeight,
+              result: expectedResult,
+            });
+          },
+        );
+      },
+    );
     describe.each([
       POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
       POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
