@@ -5,7 +5,6 @@ import {
 import { Policy } from 'onroute-policy-engine';
 import { TRAILER_CODES } from '../constants/trailer-codes';
 import { getAxleUnitType } from '../types/axle-unit-type';
-import { isSemiTrailerType } from '../constants/semi-trailer-codes';
 
 /**
  * Runs the bridge formula against the supplied vehicle axle configuration.
@@ -21,6 +20,7 @@ export function runBridgeFormula(
   policy: Policy,
   axleConfiguration: Array<AxleConfiguration>,
   vehicleConfiguration: Array<string>,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Reserved for the deferred booster bridge exception below.
   axleUnitVehicleIndexes: Array<number>,
 ): Array<BridgeCalculationResult> {
   const BRIDGE_MULTIPLIER =
