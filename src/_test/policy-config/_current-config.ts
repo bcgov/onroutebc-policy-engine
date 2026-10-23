@@ -5010,7 +5010,7 @@ export const data: PolicyDefinition = {
       },
       {
         id: TRAILER_CODES.DOLLIES,
-        name: TRAILER_CODES.DOLLIES,
+        name: 'Dollies',
         category: VEHICLE_CATEGORIES.DOLLY,
         displayCode: 'B',
       },
