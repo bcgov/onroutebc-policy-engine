@@ -4294,6 +4294,22 @@ export const data: PolicyDefinition = {
       {
         id: VEHICLE_CATEGORIES.TRAILER,
         name: 'Default trailer category',
+        defaultWeightDimensions: [
+          {
+            axles: 3,
+            legal: 24000,
+            permittable: 28000,
+          },
+          {
+            axles: 3,
+            legal: 24000,
+            permittable: 29000,
+            permittableAxleSpread: {
+              min: 240,
+              max: 370,
+            },
+          },
+        ],
       },
       {
         id: VEHICLE_CATEGORIES.PSEUDO,
@@ -4306,27 +4322,16 @@ export const data: PolicyDefinition = {
           {
             axles: 3,
             legal: 24000,
+            permittable: 28000,
+          },
+          {
+            axles: 3,
+            legal: 24000,
             permittable: 29000,
-          },
-          {
-            axles: 3,
-            modifier: {
-              type: 'BOOSTER',
-              position: 'after',
-              axles: 2,
+            permittableAxleSpread: {
+              min: 240,
+              max: 370,
             },
-            legal: 24000,
-            permittable: 28000,
-          },
-          {
-            axles: 3,
-            modifier: {
-              type: 'BOOSTER',
-              position: 'after',
-              axles: 3,
-            },
-            legal: 24000,
-            permittable: 28000,
           },
         ],
       },
@@ -4354,6 +4359,22 @@ export const data: PolicyDefinition = {
       {
         id: VEHICLE_CATEGORIES.STEERING_TRAILER,
         name: 'Steering Trailer',
+        defaultWeightDimensions: [
+          {
+            axles: 3,
+            legal: 24000,
+            permittable: 28000,
+          },
+          {
+            axles: 3,
+            legal: 24000,
+            permittable: 29000,
+            permittableAxleSpread: {
+              min: 240,
+              max: 370,
+            },
+          },
+        ],
       },
       {
         id: VEHICLE_CATEGORIES.DOLLY,
@@ -4632,6 +4653,36 @@ export const data: PolicyDefinition = {
         id: POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS,
         name: 'Oil and Gas - Bed Trucks',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
+        defaultWeightDimensions: [
+          {
+            axles: 11,
+            saLegal: 9100,
+            saPermittable: 9100,
+            daLegal: 9100,
+            daPermittable: 11000,
+          },
+          {
+            axles: 12,
+            saLegal: 9100,
+            saPermittable: 9100,
+            daLegal: 17000,
+            daPermittable: 23000,
+          },
+          {
+            axles: 13,
+            saLegal: 9100,
+            saPermittable: 9100,
+            daLegal: 24000,
+            daPermittable: 28000,
+          },
+          {
+            axles: 23,
+            saLegal: 13600,
+            saPermittable: 17000,
+            daLegal: 24000,
+            daPermittable: 28000,
+          },
+        ],
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
@@ -4640,6 +4691,29 @@ export const data: PolicyDefinition = {
         id: POWER_UNIT_CODES.OIL_AND_GAS_OILFIELD_SOWS,
         name: 'Oil and Gas - Oilfield Sows',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
+        defaultWeightDimensions: [
+          {
+            axles: 11,
+            saLegal: 9100,
+            saPermittable: 9100,
+            daLegal: 9100,
+            daPermittable: 11000,
+          },
+          {
+            axles: 12,
+            saLegal: 9100,
+            saPermittable: 9100,
+            daLegal: 17000,
+            daPermittable: 23000,
+          },
+          {
+            axles: 13,
+            saLegal: 9100,
+            saPermittable: 9100,
+            daLegal: 24000,
+            daPermittable: 28000,
+          },
+        ],
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
@@ -4648,6 +4722,29 @@ export const data: PolicyDefinition = {
         id: POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS,
         name: 'Oil and Gas - Service Rigs',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
+        defaultWeightDimensions: [
+          {
+            axles: 11,
+            saLegal: 9100,
+            saPermittable: 12000,
+            daLegal: 9100,
+            daPermittable: 11000,
+          },
+          {
+            axles: 12,
+            saLegal: 9100,
+            saPermittable: 12000,
+            daLegal: 17000,
+            daPermittable: 23000,
+          },
+          {
+            axles: 13,
+            saLegal: 9100,
+            saPermittable: 12000,
+            daLegal: 24000,
+            daPermittable: 28000,
+          },
+        ],
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
@@ -4656,6 +4753,22 @@ export const data: PolicyDefinition = {
         id: POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
         name: 'Oil and Gas - Service Rigs and Rathole Augers Only Equipped with Heavy Front Projected Crane (must exceed 14,000 kg tare weight)',
         category: VEHICLE_CATEGORIES.MULTI_STEER,
+        defaultWeightDimensions: [
+          {
+            axles: 22,
+            saLegal: 17000,
+            saPermittable: 20000,
+            daLegal: 17000,
+            daPermittable: 23000,
+          },
+          {
+            axles: 23,
+            saLegal: 17000,
+            saPermittable: 20000,
+            daLegal: 24000,
+            daPermittable: 28000,
+          },
+        ],
         displayCodePrefix: 'MC',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'A',
@@ -4684,12 +4797,12 @@ export const data: PolicyDefinition = {
             saLegal: 9100,
             saPermittable: 9100,
             daLegal: 24000,
-            daPermittable: 28000,
+            daPermittable: 24000,
           },
           {
             axles: 23,
             saLegal: 15200,
-            saPermittable: 15200,
+            saPermittable: 17000,
             daLegal: 24000,
             daPermittable: 28000,
           },
@@ -4722,7 +4835,7 @@ export const data: PolicyDefinition = {
             saLegal: 9100,
             saPermittable: 9100,
             daLegal: 24000,
-            daPermittable: 28000,
+            daPermittable: 24000,
           },
           {
             axles: 23,
@@ -4760,7 +4873,7 @@ export const data: PolicyDefinition = {
             saLegal: 9100,
             saPermittable: 9100,
             daLegal: 24000,
-            daPermittable: 28000,
+            daPermittable: 24000,
           },
           {
             axles: 23,
@@ -4898,6 +5011,36 @@ export const data: PolicyDefinition = {
         id: POWER_UNIT_CODES.TOW_VEHICLES,
         name: 'Tow Vehicles',
         category: VEHICLE_CATEGORIES.POWER_UNIT,
+        defaultWeightDimensions: [
+          {
+            axles: 11,
+            saLegal: 9100,
+            saPermittable: 9100,
+            daLegal: 9100,
+            daPermittable: 11000,
+          },
+          {
+            axles: 12,
+            saLegal: 9100,
+            saPermittable: 9100,
+            daLegal: 17000,
+            daPermittable: 23000,
+          },
+          {
+            axles: 13,
+            saLegal: 9100,
+            saPermittable: 9100,
+            daLegal: 24000,
+            daPermittable: 28000,
+          },
+          {
+            axles: 23,
+            saLegal: 15200,
+            saPermittable: 15200,
+            daLegal: 24000,
+            daPermittable: 28000,
+          },
+        ],
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
@@ -4958,6 +5101,22 @@ export const data: PolicyDefinition = {
         category: VEHICLE_CATEGORIES.PSEUDO,
         ignoreForSizeDimensions: true,
         displayCode: 'A',
+        defaultWeightDimensions: [
+          {
+            axles: 3,
+            legal: 24000,
+            permittable: 28000,
+          },
+          {
+            axles: 3,
+            legal: 24000,
+            permittable: 29000,
+            permittableAxleSpread: {
+              min: 240,
+              max: 370,
+            },
+          },
+        ],
       },
       {
         id: TRAILER_CODES.ADDITIONAL_AXLE_UNIT_ALL_TERRAIN_CRANE,
@@ -4965,25 +5124,49 @@ export const data: PolicyDefinition = {
         category: VEHICLE_CATEGORIES.PSEUDO,
         ignoreForSizeDimensions: true,
         displayCode: 'A',
+        defaultWeightDimensions: [
+          {
+            axles: 3,
+            legal: 24000,
+            permittable: 28000,
+          },
+          {
+            axles: 3,
+            legal: 24000,
+            permittable: 29000,
+            permittableAxleSpread: {
+              min: 240,
+              max: 370,
+            },
+          },
+        ],
       },
       {
         id: TRAILER_CODES.BOOSTER,
         name: 'Boosters',
-        category: VEHICLE_CATEGORIES.PSEUDO,
+        category: VEHICLE_CATEGORIES.BOOSTER,
         ignoreForSizeDimensions: true,
         defaultWeightDimensions: [
           {
             axles: 1,
             legal: 9100,
-            permittable: 11000,
+            permittable: 9100,
+          },
+          {
+            axles: 2,
+            legal: 17000,
+            permittable: 23000,
+          },
+          {
+            axles: 3,
+            legal: 24000,
+            permittable: 28000,
           },
           {
             axles: 1,
             modifier: {
               category: VEHICLE_CATEGORIES.SEMI_TRAILER,
               position: 'before',
-              axles: 3,
-              minInteraxleSpacing: 0,
               maxInteraxleSpacing: 419,
             },
             legal: 9100,
@@ -4992,23 +5175,14 @@ export const data: PolicyDefinition = {
           {
             axles: 1,
             modifier: {
-              category: 'semi',
+              category: VEHICLE_CATEGORIES.SEMI_TRAILER,
               position: 'before',
               minInteraxleSpacing: 420,
             },
+            legal: 9100,
             permittable: 11000,
           },
-          {
-            axles: 3,
-            modifier: {
-              category: 'semi',
-              position: 'before',
-              minInteraxleSpacing: 420,
-            },
-            permittable: 28000,
-          },
         ],
-        displayCode: 'B',
         interaxleSpacings: [
           {
             axles: [11, 21, 31],
@@ -5018,7 +5192,7 @@ export const data: PolicyDefinition = {
             axles: [12, 22, 32],
             maxAxleUnitWeight: 23000,
             modifier: {
-              category: 'semi',
+              category: VEHICLE_CATEGORIES.SEMI_TRAILER,
               position: 'before',
             },
             min: 420,
@@ -5027,12 +5201,13 @@ export const data: PolicyDefinition = {
             axles: [13, 23, 33],
             maxAxleUnitWeight: 28000,
             modifier: {
-              category: 'semi',
+              category: VEHICLE_CATEGORIES.SEMI_TRAILER,
               position: 'before',
             },
             min: 420,
           },
         ],
+        displayCode: 'B',
       },
       {
         id: TRAILER_CODES.DOLLIES,
@@ -5063,6 +5238,106 @@ export const data: PolicyDefinition = {
         name: 'Fixed Equipment - Pony Trailers',
         category: VEHICLE_CATEGORIES.PONY_TRAILER,
         displayCode: 'B',
+        defaultWeightDimensions: [
+          {
+            axles: 1,
+            legal: 9100,
+            permittable: 11000,
+          },
+          {
+            axles: 1,
+            modifier: {
+              category: VEHICLE_CATEGORIES.POWER_UNIT,
+              position: 'before',
+              axles: 2,
+              minInteraxleSpacing: 300,
+            },
+            legal: 9100,
+            permittable: 9100,
+          },
+          {
+            axles: 1,
+            modifier: {
+              category: VEHICLE_CATEGORIES.MULTI_STEER,
+              position: 'before',
+              axles: 2,
+              minInteraxleSpacing: 300,
+            },
+            legal: 9100,
+            permittable: 9100,
+          },
+          {
+            axles: 1,
+            modifier: {
+              category: VEHICLE_CATEGORIES.POWER_UNIT,
+              position: 'before',
+              axles: 3,
+              minInteraxleSpacing: 300,
+            },
+            legal: 9100,
+            permittable: 9100,
+          },
+          {
+            axles: 1,
+            modifier: {
+              category: VEHICLE_CATEGORIES.MULTI_STEER,
+              position: 'before',
+              axles: 3,
+              minInteraxleSpacing: 300,
+            },
+            legal: 9100,
+            permittable: 9100,
+          },
+          {
+            axles: 3,
+            legal: 21000,
+            permittable: 21000,
+          },
+          {
+            axles: 3,
+            modifier: {
+              category: VEHICLE_CATEGORIES.POWER_UNIT,
+              position: 'before',
+              axles: 1,
+              minInteraxleSpacing: 300,
+            },
+            legal: 17000,
+            permittable: 17000,
+          },
+          {
+            axles: 3,
+            modifier: {
+              category: VEHICLE_CATEGORIES.MULTI_STEER,
+              position: 'before',
+              axles: 1,
+              minInteraxleSpacing: 300,
+            },
+            legal: 17000,
+            permittable: 17000,
+          },
+          {
+            axles: 3,
+            modifier: {
+              category: VEHICLE_CATEGORIES.POWER_UNIT,
+              position: 'before',
+              axles: 2,
+              minInteraxleSpacing: 550,
+            },
+            legal: 17000,
+            permittable: 21000,
+          },
+          {
+            axles: 3,
+            modifier: {
+              category: VEHICLE_CATEGORIES.MULTI_STEER,
+              position: 'before',
+              axles: 2,
+              minInteraxleSpacing: 550,
+            },
+            legal: 17000,
+            permittable: 21000,
+          },
+        ],
       },
       {
         id: TRAILER_CODES.FIXED_EQUIPMENT_PORTABLE_ASPHALT_BAGHOUSES,
@@ -5216,6 +5491,22 @@ export const data: PolicyDefinition = {
         additionalAxleSubType:
           TRAILER_CODES.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER,
         displayCode: 'B',
+        defaultWeightDimensions: [
+          {
+            axles: 3,
+            legal: 24000,
+            permittable: 28000,
+          },
+          {
+            axles: 3,
+            legal: 24000,
+            permittable: 29000,
+            permittableAxleSpread: {
+              min: 240,
+              max: 370,
+            },
+          },
+        ],
       },
       {
         id: TRAILER_CODES.POLE_TRAILERS,
@@ -5228,6 +5519,106 @@ export const data: PolicyDefinition = {
         name: 'Pony Trailers',
         category: VEHICLE_CATEGORIES.PONY_TRAILER,
         displayCode: 'B',
+        defaultWeightDimensions: [
+          {
+            axles: 1,
+            legal: 9100,
+            permittable: 11000,
+          },
+          {
+            axles: 1,
+            modifier: {
+              category: VEHICLE_CATEGORIES.POWER_UNIT,
+              position: 'before',
+              axles: 2,
+              minInteraxleSpacing: 300,
+            },
+            legal: 9100,
+            permittable: 9100,
+          },
+          {
+            axles: 1,
+            modifier: {
+              category: VEHICLE_CATEGORIES.MULTI_STEER,
+              position: 'before',
+              axles: 2,
+              minInteraxleSpacing: 300,
+            },
+            legal: 9100,
+            permittable: 9100,
+          },
+          {
+            axles: 1,
+            modifier: {
+              category: VEHICLE_CATEGORIES.POWER_UNIT,
+              position: 'before',
+              axles: 3,
+              minInteraxleSpacing: 300,
+            },
+            legal: 9100,
+            permittable: 9100,
+          },
+          {
+            axles: 1,
+            modifier: {
+              category: VEHICLE_CATEGORIES.MULTI_STEER,
+              position: 'before',
+              axles: 3,
+              minInteraxleSpacing: 300,
+            },
+            legal: 9100,
+            permittable: 9100,
+          },
+          {
+            axles: 3,
+            legal: 21000,
+            permittable: 21000,
+          },
+          {
+            axles: 3,
+            modifier: {
+              category: VEHICLE_CATEGORIES.POWER_UNIT,
+              position: 'before',
+              axles: 1,
+              minInteraxleSpacing: 300,
+            },
+            legal: 17000,
+            permittable: 17000,
+          },
+          {
+            axles: 3,
+            modifier: {
+              category: VEHICLE_CATEGORIES.MULTI_STEER,
+              position: 'before',
+              axles: 1,
+              minInteraxleSpacing: 300,
+            },
+            legal: 17000,
+            permittable: 17000,
+          },
+          {
+            axles: 3,
+            modifier: {
+              category: VEHICLE_CATEGORIES.POWER_UNIT,
+              position: 'before',
+              axles: 2,
+              minInteraxleSpacing: 550,
+            },
+            legal: 17000,
+            permittable: 21000,
+          },
+          {
+            axles: 3,
+            modifier: {
+              category: VEHICLE_CATEGORIES.MULTI_STEER,
+              position: 'before',
+              axles: 2,
+              minInteraxleSpacing: 550,
+            },
+            legal: 17000,
+            permittable: 21000,
+          },
+        ],
       },
       {
         id: TRAILER_CODES.READY_MIX_CONCRETE_PUMP_SEMI_TRAILERS,
@@ -5306,6 +5697,13 @@ export const data: PolicyDefinition = {
         name: 'Semi-Trailers - Spread Tandems',
         category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
+        defaultWeightDimensions: [
+          {
+            axles: 2,
+            legal: 9100,
+            permittable: 18200,
+          },
+        ],
       },
       {
         id: TRAILER_CODES.SEMI_TRAILERS_STEERING_TRAILERS,
@@ -5416,6 +5814,22 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              weightDimensions: [
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 28000,
+                },
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 29000,
+                  permittableAxleSpread: {
+                    minExclusive: 300,
+                    max: 370,
+                  },
+                },
+              ],
             },
             {
               type: TRAILER_CODES.FIXED_EQUIPMENT_PORTABLE_ASPHALT_BAGHOUSES,
@@ -5439,18 +5853,66 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              weightDimensions: [
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 28000,
+                },
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 29000,
+                  permittableAxleSpread: {
+                    minExclusive: 300,
+                    max: 370,
+                  },
+                },
+              ],
             },
             {
               type: TRAILER_CODES.FIXED_EQUIPMENT_CONVEYORS,
               jeep: true,
               booster: false,
               weightPermittable: true,
+              weightDimensions: [
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 28000,
+                },
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 29000,
+                  permittableAxleSpread: {
+                    minExclusive: 300,
+                    max: 370,
+                  },
+                },
+              ],
             },
             {
               type: TRAILER_CODES.FIXED_EQUIPMENT_SEMI_TRAILERS,
               jeep: true,
               booster: true,
               weightPermittable: true,
+              weightDimensions: [
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 28000,
+                },
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 29000,
+                  permittableAxleSpread: {
+                    minExclusive: 300,
+                    max: 370,
+                  },
+                },
+              ],
             },
             {
               type: TRAILER_CODES.OVERDIMENSIONAL_TRAILERS_FOR_EXPORT,
@@ -5484,6 +5946,22 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              weightDimensions: [
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 28000,
+                },
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 29000,
+                  permittableAxleSpread: {
+                    minExclusive: 300,
+                    max: 370,
+                  },
+                },
+              ],
             },
             {
               type: TRAILER_CODES.HIBOYS_FLAT_DECKS,
@@ -5644,6 +6122,18 @@ export const data: PolicyDefinition = {
               booster: true,
               weightPermittable: true,
               canAddAxleUnits: true,
+            },
+            {
+              type: TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
+              jeep: false,
+              booster: false,
+              weightDimensions: [
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 52000,
+                },
+              ],
             },
           ],
         },
@@ -6015,10 +6505,26 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'FECVYRX',
+              type: TRAILER_CODES.FIXED_EQUIPMENT_CONVEYORS,
               jeep: false,
               booster: false,
               weightPermittable: true,
+              weightDimensions: [
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 28000,
+                },
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 29000,
+                  permittableAxleSpread: {
+                    minExclusive: 300,
+                    max: 370,
+                  },
+                },
+              ],
             },
           ],
         },
@@ -6520,10 +7026,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'PICKRTR',
+          type: POWER_UNIT_CODES.PICKER_TRUCKS,
           trailers: [
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               weightPermittable: true,
@@ -7184,17 +7690,36 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'DOLLIES',
+              type: TRAILER_CODES.DOLLIES,
               jeep: false,
               booster: false,
               weightPermittable: true,
               canAddAxleUnits: true,
             },
             {
-              type: 'STWHELR',
+              type: TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
               jeep: false,
               booster: false,
               weightPermittable: true,
+              weightDimensions: [
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 28000,
+                },
+              ],
+            },
+            {
+              type: TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
+              jeep: false,
+              booster: false,
+              weightDimensions: [
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 28000,
+                },
+              ],
             },
           ],
         },
@@ -8183,6 +8708,22 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              weightDimensions: [
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 28000,
+                },
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 29000,
+                  permittableAxleSpread: {
+                    minExclusive: 300,
+                    max: 370,
+                  },
+                },
+              ],
             },
           ],
         },
@@ -8319,6 +8860,22 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              weightDimensions: [
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 28000,
+                },
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 29000,
+                  permittableAxleSpread: {
+                    minExclusive: 300,
+                    max: 370,
+                  },
+                },
+              ],
             },
           ],
         },
@@ -8630,6 +9187,13 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              weightDimensions: [
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 40000,
+                },
+              ],
             },
             {
               type: TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
@@ -8657,27 +9221,34 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              weightDimensions: [
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 52000,
+                },
+              ],
             },
             {
-              type: 'EXPANDO',
+              type: TRAILER_CODES.EXPANDO_SEMI_TRAILERS,
               jeep: false,
               booster: true,
               weightPermittable: true,
             },
             {
-              type: 'OGOSFDT',
+              type: TRAILER_CODES.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK,
               jeep: false,
               booster: true,
               weightPermittable: true,
             },
             {
-              type: 'SEMITRL',
+              type: TRAILER_CODES.SEMI_TRAILERS,
               jeep: false,
               booster: true,
               weightPermittable: true,
             },
             {
-              type: 'STCRANE',
+              type: TRAILER_CODES.SEMI_TRAILERS_WITH_CRANE,
               jeep: false,
               booster: true,
               weightPermittable: true,
@@ -8785,39 +9356,46 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              weightDimensions: [
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 52000,
+                },
+              ],
             },
             {
-              type: 'EXPANDO',
+              type: TRAILER_CODES.EXPANDO_SEMI_TRAILERS,
               jeep: false,
               booster: true,
               weightPermittable: true,
             },
             {
-              type: 'SEMITRL',
+              type: TRAILER_CODES.SEMI_TRAILERS,
               jeep: false,
               booster: true,
               weightPermittable: true,
             },
             {
-              type: 'HIBOFLT',
+              type: TRAILER_CODES.HIBOYS_FLAT_DECKS,
               jeep: false,
               booster: true,
               weightPermittable: true,
             },
             {
-              type: 'STSDBDK',
+              type: TRAILER_CODES.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED,
               jeep: false,
               booster: true,
               weightPermittable: true,
             },
             {
-              type: 'STSTEER',
+              type: TRAILER_CODES.SEMI_TRAILERS_STEERING_TRAILERS,
               jeep: false,
               booster: true,
               weightPermittable: true,
             },
             {
-              type: 'STCRANE',
+              type: TRAILER_CODES.SEMI_TRAILERS_WITH_CRANE,
               jeep: false,
               booster: true,
               weightPermittable: true,
@@ -8925,39 +9503,46 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              weightDimensions: [
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 52000,
+                },
+              ],
             },
             {
-              type: 'EXPANDO',
+              type: TRAILER_CODES.EXPANDO_SEMI_TRAILERS,
               jeep: false,
               booster: true,
               weightPermittable: true,
             },
             {
-              type: 'SEMITRL',
+              type: TRAILER_CODES.SEMI_TRAILERS,
               jeep: false,
               booster: true,
               weightPermittable: true,
             },
             {
-              type: 'HIBOFLT',
+              type: TRAILER_CODES.HIBOYS_FLAT_DECKS,
               jeep: false,
               booster: true,
               weightPermittable: true,
             },
             {
-              type: 'STSDBDK',
+              type: TRAILER_CODES.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED,
               jeep: false,
               booster: true,
               weightPermittable: true,
             },
             {
-              type: 'STSTEER',
+              type: TRAILER_CODES.SEMI_TRAILERS_STEERING_TRAILERS,
               jeep: false,
               booster: true,
               weightPermittable: true,
             },
             {
-              type: 'STCRANE',
+              type: TRAILER_CODES.SEMI_TRAILERS_WITH_CRANE,
               jeep: false,
               booster: true,
               weightPermittable: true,
@@ -9065,39 +9650,46 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              weightDimensions: [
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 52000,
+                },
+              ],
             },
             {
-              type: 'EXPANDO',
+              type: TRAILER_CODES.EXPANDO_SEMI_TRAILERS,
               jeep: false,
               booster: true,
               weightPermittable: true,
             },
             {
-              type: 'SEMITRL',
+              type: TRAILER_CODES.SEMI_TRAILERS,
               jeep: false,
               booster: true,
               weightPermittable: true,
             },
             {
-              type: 'HIBOFLT',
+              type: TRAILER_CODES.HIBOYS_FLAT_DECKS,
               jeep: false,
               booster: true,
               weightPermittable: true,
             },
             {
-              type: 'STSDBDK',
+              type: TRAILER_CODES.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED,
               jeep: false,
               booster: true,
               weightPermittable: true,
             },
             {
-              type: 'STSTEER',
+              type: TRAILER_CODES.SEMI_TRAILERS_STEERING_TRAILERS,
               jeep: false,
               booster: true,
               weightPermittable: true,
             },
             {
-              type: 'STCRANE',
+              type: TRAILER_CODES.SEMI_TRAILERS_WITH_CRANE,
               jeep: false,
               booster: true,
               weightPermittable: true,
@@ -9124,7 +9716,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               weightPermittable: true,
@@ -9132,10 +9724,10 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'REGTRCK',
+          type: POWER_UNIT_CODES.TRUCKS,
           trailers: [
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               weightPermittable: true,
@@ -9970,6 +10562,22 @@ export const data: PolicyDefinition = {
         },
         {
           type: POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+          weightDimensions: [
+            {
+              axles: 11,
+              saLegal: 9100,
+              saPermittable: 9100,
+              daLegal: 9100,
+              daPermittable: 11000,
+            },
+            {
+              axles: 13,
+              saLegal: 9100,
+              saPermittable: 9100,
+              daLegal: 24000,
+              daPermittable: 28000,
+            },
+          ],
           trailers: [
             {
               type: TRAILER_CODES.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK,
@@ -10217,6 +10825,13 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              weightDimensions: [
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 52000,
+                },
+              ],
             },
             {
               type: TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
@@ -10230,6 +10845,22 @@ export const data: PolicyDefinition = {
         },
         {
           type: POWER_UNIT_CODES.TRUCK_WITH_PME,
+          weightDimensions: [
+            {
+              axles: 11,
+              saLegal: 9100,
+              saPermittable: 9100,
+              daLegal: 9100,
+              daPermittable: 11000,
+            },
+            {
+              axles: 13,
+              saLegal: 9100,
+              saPermittable: 9100,
+              daLegal: 24000,
+              daPermittable: 28000,
+            },
+          ],
           trailers: [
             {
               type: TRAILER_CODES.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK,
@@ -10477,6 +11108,13 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              weightDimensions: [
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 52000,
+                },
+              ],
             },
             {
               type: TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
@@ -10490,6 +11128,22 @@ export const data: PolicyDefinition = {
         },
         {
           type: POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
+          weightDimensions: [
+            {
+              axles: 11,
+              saLegal: 9100,
+              saPermittable: 9100,
+              daLegal: 9100,
+              daPermittable: 11000,
+            },
+            {
+              axles: 13,
+              saLegal: 9100,
+              saPermittable: 9100,
+              daLegal: 24000,
+              daPermittable: 28000,
+            },
+          ],
           trailers: [
             {
               type: TRAILER_CODES.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK,
@@ -10737,6 +11391,13 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              weightDimensions: [
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 52000,
+                },
+              ],
             },
             {
               type: TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
@@ -10821,6 +11482,18 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              weightDimensions: [
+                {
+                  axles: 1,
+                  legal: 17000,
+                  permittable: 21000,
+                },
+                {
+                  axles: 2,
+                  legal: 21000,
+                  permittable: 21000,
+                },
+              ],
             },
             {
               type: TRAILER_CODES.SEMI_TRAILERS_A_TRAINS_C_TRAINS,
@@ -10995,6 +11668,13 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              weightDimensions: [
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 40000,
+                },
+              ],
             },
             {
               type: TRAILER_CODES.SEMI_TRAILERS_WITH_CRANE,
@@ -11087,9 +11767,16 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              weightDimensions: [
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 52000,
+                },
+              ],
             },
             {
-              type: 'STWDTAN',
+              type: TRAILER_CODES.SEMI_TRAILERS_SPREAD_TANDEMS,
               jeep: false,
               booster: false,
               weightPermittable: true,
@@ -11146,10 +11833,26 @@ export const data: PolicyDefinition = {
           ],
         },
         {
-          type: 'PICKRTR',
+          type: POWER_UNIT_CODES.PICKER_TRUCKS,
+          weightDimensions: [
+            {
+              axles: 11,
+              saLegal: 9100,
+              saPermittable: 9100,
+              daLegal: 9100,
+              daPermittable: 11000,
+            },
+            {
+              axles: 13,
+              saLegal: 9100,
+              saPermittable: 9100,
+              daLegal: 24000,
+              daPermittable: 28000,
+            },
+          ],
           trailers: [
             {
-              type: 'XXXXXXX',
+              type: TRAILER_CODES.NONE,
               jeep: false,
               booster: false,
               weightPermittable: true,
@@ -11457,7 +12160,7 @@ export const data: PolicyDefinition = {
               weightPermittable: true,
             },
             {
-              type: 'STWDTAN',
+              type: TRAILER_CODES.SEMI_TRAILERS_SPREAD_TANDEMS,
               jeep: false,
               booster: false,
               weightPermittable: true,
@@ -11536,7 +12239,7 @@ export const data: PolicyDefinition = {
               ],
             },
             {
-              type: 'PONYTRL',
+              type: TRAILER_CODES.PONY_TRAILERS,
               jeep: false,
               booster: false,
               weightPermittable: true,
