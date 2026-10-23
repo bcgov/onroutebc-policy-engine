@@ -4312,15 +4312,11 @@ export const data: PolicyDefinition = {
         name: 'Default trailer category',
       },
       {
-        id: 'accessory',
-        name: 'Accessory trailer such as jeep or booster, to be used alongside other trailers. Not permittable on its own as a trailer in a combination.',
-      },
-      {
-        id: 'pseudo',
+        id: VEHICLE_CATEGORIES.PSEUDO,
         name: 'Placeholder for a trailer that is not technically a separate trailer, such as (None) to represent no trailer in a combination, or an extra axle.',
       },
       {
-        id: 'semi',
+        id: VEHICLE_CATEGORIES.SEMI_TRAILER,
         name: 'Semi-Trailer',
         defaultWeightDimensions: [
           {
@@ -4352,7 +4348,7 @@ export const data: PolicyDefinition = {
       },
       {
         id: VEHICLE_CATEGORIES.WHEELER,
-        name: VEHICLE_CATEGORIES.WHEELER,
+        name: 'Wheeler',
         defaultWeightDimensions: [
           {
             axles: 1,
@@ -4372,15 +4368,15 @@ export const data: PolicyDefinition = {
         ],
       },
       {
-        id: 'steering',
+        id: VEHICLE_CATEGORIES.STEERING_TRAILER,
         name: 'Steering Trailer',
       },
       {
-        id: 'dolly',
+        id: VEHICLE_CATEGORIES.DOLLY,
         name: 'Dolly',
       },
       {
-        id: 'pony',
+        id: VEHICLE_CATEGORIES.PONY_TRAILER,
         name: 'Pony Trailer',
         defaultWeightDimensions: [
           {
@@ -8481,6 +8477,15 @@ export const data: PolicyDefinition = {
                   l: 27.5,
                 },
               ],
+              weightPermittable: true,
+              canAddAxleUnits: true,
+            },
+            {
+              type: TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
+              jeep: true,
+              booster: true,
+              weightPermittable: true,
+              canAddAxleUnits: true,
             },
             {
               type: TRAILER_CODES.HIBOYS_EXPANDOS,
@@ -8679,6 +8684,14 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              canAddAxleUnits: true,
+            },
+            {
+              type: TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
+              jeep: true,
+              booster: true,
+              weightPermittable: true,
+              canAddAxleUnits: true,
             },
             {
               type: TRAILER_CODES.HIBOYS_EXPANDOS,
@@ -8811,6 +8824,14 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              canAddAxleUnits: true,
+            },
+            {
+              type: TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
+              jeep: true,
+              booster: true,
+              weightPermittable: true,
+              canAddAxleUnits: true,
             },
             {
               type: TRAILER_CODES.HIBOYS_EXPANDOS,
@@ -10688,6 +10709,30 @@ export const data: PolicyDefinition = {
           trailers: [
             {
               type: TRAILER_CODES.PLATFORM_TRAILERS,
+              jeep: true,
+              booster: true,
+              selfIssue: false,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 5,
+                  h: 4.88,
+                  l: 27.5,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+              weightPermittable: true,
+              canAddAxleUnits: true,
+            },
+            {
+              type: TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
               jeep: true,
               booster: true,
               selfIssue: false,

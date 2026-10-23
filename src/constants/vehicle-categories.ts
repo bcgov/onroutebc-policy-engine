@@ -10,7 +10,7 @@ export const VEHICLE_CATEGORIES = {
   POWER_UNIT: 'powerunit',
   PSEUDO: 'pseudo',
   SEMI_TRAILER: 'semi',
-  STEERING_TRAILER: 'steering-trailer',
+  STEERING_TRAILER: 'steering',
   // TODO ask Michael - is this category still valid
   TRAILER: 'trailer',
   WHEELER: 'wheeler',
