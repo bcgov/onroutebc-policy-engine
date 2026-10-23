@@ -1,5 +1,5 @@
 import { AXLE_SPREAD_LEGAL_LIMITS } from '../constants/axle-spread-legal-limits';
-import { POWER_UNIT_CODES } from '../constants/power-unit-codes';
+import { POWER_UNITS } from '../constants/power-units';
 import { isSemiTrailerType } from '../constants/semi-trailer-codes';
 import { TRAILER_CODES } from '../constants/trailer-codes';
 import { AxleConfiguration } from '../types/axle-configuration';
@@ -55,9 +55,9 @@ export function getTridemAxleSpreadThreshold(
   const isPonyTrailer = vehicleType === TRAILER_CODES.PONY_TRAILERS;
   const isPoleTrailer = vehicleType === TRAILER_CODES.POLE_TRAILERS;
   const isOilfieldBedTruck =
-    vehicleType === POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS;
+    vehicleType === POWER_UNITS.OIL_AND_GAS_BED_TRUCKS.id;
   const isPowerUnitTruckTractor =
-    vehicleConfiguration[0] === POWER_UNIT_CODES.TRUCK_TRACTORS;
+    vehicleConfiguration[0] === POWER_UNITS.TRUCK_TRACTORS.id;
 
   if (isOilfieldBedTruck && isDriveAxle) {
     return {

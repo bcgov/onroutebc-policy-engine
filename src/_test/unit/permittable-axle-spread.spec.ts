@@ -1,6 +1,5 @@
 import { Policy } from '../../policy-engine';
 import { COMMODITY_CODES } from '../../constants/commodity-codes';
-import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
 import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { PolicyCheckId } from '../../enum';
 import {
@@ -10,6 +9,7 @@ import {
 } from '../../types';
 import { matchesPermittableAxleSpread } from '../../helper/permittable-axle-spread.helper';
 import config from '../policy-config/_current-config.json';
+import { POWER_UNITS } from '../../constants/power-units';
 
 it.each([
   [undefined, false, false],
@@ -66,7 +66,7 @@ it.each(['category', 'subtype', 'commodity'] as const)(
     )!;
     const commodity = definition.commodities
       .find(({ id }) => id === COMMODITY_CODES.NONE)!
-      .powerUnits.find(({ type }) => type === POWER_UNIT_CODES.TRUCK_TRACTORS)!
+      .powerUnits.find(({ type }) => type === POWER_UNITS.TRUCK_TRACTORS.id)!
       .trailers.find(({ type }) => type === TRAILER_CODES.SEMI_TRAILERS)!;
 
     definition.globalWeightDefaults.trailers = [base];
@@ -86,7 +86,7 @@ it.each(['category', 'subtype', 'commodity'] as const)(
       [351, 27500],
     ]) {
       const results = policy.runAxleCalculation(
-        [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS],
+        [POWER_UNITS.TRUCK_TRACTORS.id, TRAILER_CODES.SEMI_TRAILERS],
         [
           { numberOfAxles: 1, vehicleIndex: 0, axleUnitWeight: 5000 },
           { numberOfAxles: 2, vehicleIndex: 0, axleUnitWeight: 15000 },

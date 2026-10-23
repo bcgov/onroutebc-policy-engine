@@ -9,7 +9,7 @@ import {
   getUtcDatetime,
   TIMEZONE_IDS,
 } from '../helper/date.helper';
-import { POWER_UNIT_CODES } from '../constants/power-unit-codes';
+import { POWER_UNITS } from '../constants/power-units';
 
 async function start() {
   const policy: Policy = new Policy(trosOnly, specialAuth);
@@ -22,7 +22,7 @@ async function start() {
 
   // Set an LCV vehicle type
   validTros30Day.permitData.vehicleDetails.vehicleSubType =
-    POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES;
+    POWER_UNITS.LCV_ROCKY_MOUNTAIN_DOUBLES.id;
 
   const validationResult2 = await policy.validate(validTros30Day);
   console.log(JSON.stringify(validationResult2, null, '   '));

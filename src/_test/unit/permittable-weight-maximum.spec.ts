@@ -3,10 +3,10 @@ import { Policy } from '../../policy-engine';
 import { PolicyCheckId, PolicyCheckResultType } from '../../enum/policy-check';
 import { AxleConfiguration, PolicyDefinition } from '../../types';
 import currentPolicyConfig from '../policy-config/_current-config.json';
-import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
 import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { CheckPermittableWeight } from '../../helper/policy-check.helper';
 import { getAxleUnitVehicleIndexLookup } from '../../helper/dimensions.helper';
+import { POWER_UNITS } from '../../constants/power-units';
 
 describe('ORV2-5709 permittable weight maximums', () => {
   const policy = new Policy(currentPolicyConfig);
@@ -28,7 +28,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
       actualWeight,
       spread,
       boosterAxleCount,
-      powerUnitType = POWER_UNIT_CODES.TRUCK_TRACTORS,
+      powerUnitType = POWER_UNITS.TRUCK_TRACTORS.id,
       trailerType = TRAILER_CODES.SEMI_TRAILERS,
       commodityId = COMMODITY_CODES.NONE,
     }: Scenario,
@@ -116,33 +116,33 @@ describe('ORV2-5709 permittable weight maximums', () => {
   // Over Weight Dimension Set, Oil Field Equipment: Service Rigs single-steer permits 12,000 kg;
   // Bed Trucks Tandem/Tridem steer permits 17,000 kg. Other steer and all drive limits are controls.
   it.each([
-    [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS, 1, 1, 12000, 11000],
-    [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS, 1, 2, 12000, 23000],
-    [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS, 1, 3, 12000, 28000],
-    [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS, 2, 2, 17000, 23000],
-    [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS, 2, 3, 15200, 28000],
-    [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 1, 1, 9100, 11000],
-    [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 1, 2, 9100, 23000],
-    [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 1, 3, 9100, 28000],
-    [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 2, 2, 17000, 23000],
-    [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 2, 3, 17000, 28000],
+    [POWER_UNITS.OIL_AND_GAS_SERVICE_RIGS.id, 1, 1, 12000, 11000],
+    [POWER_UNITS.OIL_AND_GAS_SERVICE_RIGS.id, 1, 2, 12000, 23000],
+    [POWER_UNITS.OIL_AND_GAS_SERVICE_RIGS.id, 1, 3, 12000, 28000],
+    [POWER_UNITS.OIL_AND_GAS_SERVICE_RIGS.id, 2, 2, 17000, 23000],
+    [POWER_UNITS.OIL_AND_GAS_SERVICE_RIGS.id, 2, 3, 15200, 28000],
+    [POWER_UNITS.OIL_AND_GAS_BED_TRUCKS.id, 1, 1, 9100, 11000],
+    [POWER_UNITS.OIL_AND_GAS_BED_TRUCKS.id, 1, 2, 9100, 23000],
+    [POWER_UNITS.OIL_AND_GAS_BED_TRUCKS.id, 1, 3, 9100, 28000],
+    [POWER_UNITS.OIL_AND_GAS_BED_TRUCKS.id, 2, 2, 17000, 23000],
+    [POWER_UNITS.OIL_AND_GAS_BED_TRUCKS.id, 2, 3, 17000, 28000],
     // Heavy-front-crane Service Rigs (>14,000 kg tare): tandem steer 20,000; tridem steer remains 24,000 kg.
     [
-      POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+      POWER_UNITS.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE.id,
       2,
       2,
       20000,
       23000,
     ],
     [
-      POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+      POWER_UNITS.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE.id,
       2,
       3,
       20000,
       28000,
     ],
     [
-      POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+      POWER_UNITS.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE.id,
       3,
       3,
       24000,
@@ -202,33 +202,33 @@ describe('ORV2-5709 permittable weight maximums', () => {
   // Over Weight Dimension Set, Oil Field Equipment: Service Rigs single-steer permits 12,000 kg;
   // Bed Trucks Tandem/Tridem steer permits 17,000 kg. Other steer and all drive limits are controls.
   it.each([
-    [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS, 1, 1, 12000, 11000],
-    [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS, 1, 2, 12000, 23000],
-    [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS, 1, 3, 12000, 28000],
-    [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS, 2, 2, 17000, 23000],
-    [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS, 2, 3, 15200, 28000],
-    [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 1, 1, 9100, 11000],
-    [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 1, 2, 9100, 23000],
-    [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 1, 3, 9100, 28000],
-    [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 2, 2, 17000, 23000],
-    [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 2, 3, 17000, 28000],
+    [POWER_UNITS.OIL_AND_GAS_SERVICE_RIGS.id, 1, 1, 12000, 11000],
+    [POWER_UNITS.OIL_AND_GAS_SERVICE_RIGS.id, 1, 2, 12000, 23000],
+    [POWER_UNITS.OIL_AND_GAS_SERVICE_RIGS.id, 1, 3, 12000, 28000],
+    [POWER_UNITS.OIL_AND_GAS_SERVICE_RIGS.id, 2, 2, 17000, 23000],
+    [POWER_UNITS.OIL_AND_GAS_SERVICE_RIGS.id, 2, 3, 15200, 28000],
+    [POWER_UNITS.OIL_AND_GAS_BED_TRUCKS.id, 1, 1, 9100, 11000],
+    [POWER_UNITS.OIL_AND_GAS_BED_TRUCKS.id, 1, 2, 9100, 23000],
+    [POWER_UNITS.OIL_AND_GAS_BED_TRUCKS.id, 1, 3, 9100, 28000],
+    [POWER_UNITS.OIL_AND_GAS_BED_TRUCKS.id, 2, 2, 17000, 23000],
+    [POWER_UNITS.OIL_AND_GAS_BED_TRUCKS.id, 2, 3, 17000, 28000],
     // Heavy-front-crane Service Rigs (>14,000 kg tare): tandem steer 20,000; tridem steer remains 24,000 kg.
     [
-      POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+      POWER_UNITS.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE.id,
       2,
       2,
       20000,
       23000,
     ],
     [
-      POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+      POWER_UNITS.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE.id,
       2,
       3,
       20000,
       28000,
     ],
     [
-      POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+      POWER_UNITS.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE.id,
       3,
       3,
       24000,
@@ -355,25 +355,17 @@ describe('ORV2-5709 permittable weight maximums', () => {
     // Over Weight Dimension Set: Rocky Mountain/Turnpike LCVs, commodity None, Single/Tandem drive = 17,000 kg.
     it.each([
       [
-        POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES,
+        POWER_UNITS.LCV_ROCKY_MOUNTAIN_DOUBLES.id,
         17000,
         PolicyCheckResultType.Pass,
       ],
       [
-        POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES,
+        POWER_UNITS.LCV_ROCKY_MOUNTAIN_DOUBLES.id,
         17001,
         PolicyCheckResultType.Fail,
       ],
-      [
-        POWER_UNIT_CODES.LCV_TURNPIKE_DOUBLES,
-        17000,
-        PolicyCheckResultType.Pass,
-      ],
-      [
-        POWER_UNIT_CODES.LCV_TURNPIKE_DOUBLES,
-        17001,
-        PolicyCheckResultType.Fail,
-      ],
+      [POWER_UNITS.LCV_TURNPIKE_DOUBLES.id, 17000, PolicyCheckResultType.Pass],
+      [POWER_UNITS.LCV_TURNPIKE_DOUBLES.id, 17001, PolicyCheckResultType.Fail],
     ])(
       'evaluates %s drive at %i kg',
       (powerUnitType, actualWeight, expectedResult) => {
@@ -447,7 +439,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
       (actualWeight) => {
         const results = CheckPermittableWeight(
           policy,
-          [POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES],
+          [POWER_UNITS.LCV_ROCKY_MOUNTAIN_DOUBLES.id],
           [
             { numberOfAxles: 1, axleUnitWeight: 6000, vehicleIndex: 0 },
             { numberOfAxles: 2, axleUnitWeight: 17000, vehicleIndex: 0 },
@@ -489,9 +481,9 @@ describe('ORV2-5709 permittable weight maximums', () => {
   // Source: ASW Permit Weight Maximums.feature @orv2-5709-6.
   describe('tridem spread and immediately following booster', () => {
     describe.each([
-      POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
-      POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
-      POWER_UNIT_CODES.TRUCK_WITH_PME,
+      POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
+      POWER_UNITS.TRUCK_TRACTOR_WITH_PME.id,
+      POWER_UNITS.TRUCK_WITH_PME.id,
     ])(
       '%s drive does not receive the trailer spread allowance',
       (powerUnitType) => {
@@ -545,9 +537,9 @@ describe('ORV2-5709 permittable weight maximums', () => {
       },
     );
     describe.each([
-      POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
-      POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
-      POWER_UNIT_CODES.TRUCK_WITH_PME,
+      POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
+      POWER_UNITS.TRUCK_TRACTOR_WITH_PME.id,
+      POWER_UNITS.TRUCK_WITH_PME.id,
     ])(
       '%s drive does not receive the trailer spread allowance',
       (powerUnitType) => {
@@ -723,7 +715,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
         const trailer = changed.commodities
           .find(({ id }) => id === commodityId)!
           .powerUnits.find(
-            ({ type }) => type === POWER_UNIT_CODES.TRUCK_TRACTORS,
+            ({ type }) => type === POWER_UNITS.TRUCK_TRACTORS.id,
           )!
           .trailers.find(({ type }) => type === trailerType)!;
         trailer.weightDimensions!.find(
@@ -791,30 +783,33 @@ describe('ORV2-5709 permittable weight maximums', () => {
       [TRAILER_CODES.JEEPS, 27500],
       [TRAILER_CODES.BOOSTER, 28000],
       [TRAILER_CODES.DOLLIES, 27500],
-    ])('reads the %s tridem limit from JSON', (trailerType, thresholdWeight) => {
-      const changed: PolicyDefinition = JSON.parse(
-        JSON.stringify(currentPolicyConfig),
-      );
-      changed.globalWeightDefaults.trailers.find(
-        ({ axles }) => axles === 3,
-      )!.permittable = 27500;
+    ])(
+      'reads the %s tridem limit from JSON',
+      (trailerType, thresholdWeight) => {
+        const changed: PolicyDefinition = JSON.parse(
+          JSON.stringify(currentPolicyConfig),
+        );
+        changed.globalWeightDefaults.trailers.find(
+          ({ axles }) => axles === 3,
+        )!.permittable = 27500;
 
-      expect(
-        getPermittableResult(
-          {
-            axleUnit: 3,
-            axleCount: 3,
-            actualWeight: thresholdWeight + 1,
-            spread: 240,
-            trailerType,
-          },
-          new Policy(changed),
-        ),
-      ).toMatchObject({
-        thresholdWeight,
-        result: PolicyCheckResultType.Fail,
-      });
-    });
+        expect(
+          getPermittableResult(
+            {
+              axleUnit: 3,
+              axleCount: 3,
+              actualWeight: thresholdWeight + 1,
+              spread: 240,
+              trailerType,
+            },
+            new Policy(changed),
+          ),
+        ).toMatchObject({
+          thresholdWeight,
+          result: PolicyCheckResultType.Fail,
+        });
+      },
+    );
 
     it.each([
       [240, undefined, 29000, 29000, PolicyCheckResultType.Pass],
@@ -868,14 +863,14 @@ describe('ORV2-5709 permittable weight maximums', () => {
         },
       ];
       const results = policy.runAxleCalculation(
-        [POWER_UNIT_CODES.TRUCK_TRACTORS],
+        [POWER_UNITS.TRUCK_TRACTORS.id],
         axleConfiguration,
         100000,
         COMMODITY_CODES.NONE,
       ).results;
 
       const vehicleConfiguration = [
-        POWER_UNIT_CODES.TRUCK_TRACTORS,
+        POWER_UNITS.TRUCK_TRACTORS.id,
         TRAILER_CODES.SEMI_TRAILERS,
       ];
 
@@ -930,7 +925,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
         },
       ];
       const results = policy.runAxleCalculation(
-        [POWER_UNIT_CODES.TRUCK_TRACTORS],
+        [POWER_UNITS.TRUCK_TRACTORS.id],
         axleConfiguration,
         100000,
         COMMODITY_CODES.NONE,
@@ -982,7 +977,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
         },
       ];
       const results = policy.runAxleCalculation(
-        [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS],
+        [POWER_UNITS.TRUCK_TRACTORS.id, TRAILER_CODES.SEMI_TRAILERS],
         axleConfiguration,
         100000,
         COMMODITY_CODES.NONE,
@@ -1029,7 +1024,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
       const conflictingPolicy = new Policy(conflictingConfig);
       const results = conflictingPolicy
         .runAxleCalculation(
-          [POWER_UNIT_CODES.TRUCK_TRACTORS],
+          [POWER_UNITS.TRUCK_TRACTORS.id],
           [
             {
               numberOfAxles: 1,
@@ -1074,7 +1069,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
     const configuredPolicy = new Policy(configuredPolicyDefinition);
     const result = configuredPolicy
       .runAxleCalculation(
-        [POWER_UNIT_CODES.TRUCK_TRACTORS],
+        [POWER_UNITS.TRUCK_TRACTORS.id],
         [
           {
             numberOfAxles: 2,

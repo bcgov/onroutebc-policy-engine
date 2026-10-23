@@ -1,12 +1,12 @@
 import { Policy } from '../../policy-engine';
 import { PolicyCheckId, PolicyCheckResultType } from '../../enum';
 import { AxleConfiguration, PolicyDefinition } from '../../types';
-import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
 import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { COMMODITY_CODES } from '../../constants/commodity-codes';
 import { CheckPermittableWeight } from '../../helper/policy-check.helper';
 import config from '../policy-config/_current-config.json';
 import { VEHICLE_CATEGORIES } from '../../constants/vehicle-categories';
+import { POWER_UNITS } from '../../constants/power-units';
 
 const axles = (weight: number): AxleConfiguration[] => [
   {
@@ -46,7 +46,7 @@ describe('configured semi-trailer tandem weights', () => {
   ])('checks %s at %i kg', (checkId, weight, limit, result) => {
     const calculated = new Policy(config).runAxleCalculation(
       [
-        POWER_UNIT_CODES.TRUCK_TRACTORS,
+        POWER_UNITS.TRUCK_TRACTORS.id,
         TRAILER_CODES.SEMI_TRAILERS_SPREAD_TANDEMS,
       ],
       axles(weight),
@@ -68,7 +68,7 @@ describe('configured semi-trailer tandem weights', () => {
 
     const results = CheckPermittableWeight(
       new Policy(changed),
-      [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS],
+      [POWER_UNITS.TRUCK_TRACTORS.id, TRAILER_CODES.SEMI_TRAILERS],
       axles(19501),
       COMMODITY_CODES.NONE,
     );
@@ -85,7 +85,7 @@ describe('configured semi-trailer tandem weights', () => {
   ])('preserves the existing tandem maximum for %s', (trailerType) => {
     const results = CheckPermittableWeight(
       new Policy(config),
-      [POWER_UNIT_CODES.TRUCK_TRACTORS, trailerType],
+      [POWER_UNITS.TRUCK_TRACTORS.id, trailerType],
       axles(23000),
       COMMODITY_CODES.NONE,
     );
@@ -110,7 +110,7 @@ describe('configured pony and wheeler tandem weights', () => {
   ])('uses the configured %s maximum of %i kg', (trailerType, limit) => {
     for (const weight of [limit, limit + 1]) {
       const calculated = new Policy(config).runAxleCalculation(
-        [POWER_UNIT_CODES.TRUCK_TRACTORS, trailerType],
+        [POWER_UNITS.TRUCK_TRACTORS.id, trailerType],
         axles(weight),
         100000,
         COMMODITY_CODES.NONE,
@@ -156,7 +156,7 @@ describe('configured pony and wheeler tandem weights', () => {
 
       const results = CheckPermittableWeight(
         new Policy(changed),
-        [POWER_UNIT_CODES.TRUCK_TRACTORS, trailerType],
+        [POWER_UNITS.TRUCK_TRACTORS.id, trailerType],
         axles(limit + 1),
         COMMODITY_CODES.NONE,
       );

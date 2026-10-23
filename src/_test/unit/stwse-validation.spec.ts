@@ -8,8 +8,8 @@ import {
   getUtcDatetime,
   TIMEZONE_IDS,
 } from '../../helper/date.helper';
-import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
 import { TRAILER_CODES } from '../../constants/trailer-codes';
+import { POWER_UNITS } from '../../constants/power-units';
 
 describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () => {
   const policy: Policy = new Policy(currentConfig);
@@ -135,7 +135,7 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
 
   it('should fail validation when Vehicle subtype is not part of allowable vehicles', async () => {
     const permit = getPermit();
-    permit.permitData.vehicleDetails.vehicleSubType = POWER_UNIT_CODES.BUSES;
+    permit.permitData.vehicleDetails.vehicleSubType = POWER_UNITS.BUSES.id;
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
     expect(validationResult.warnings).toHaveLength(0);
@@ -144,7 +144,7 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
   it('should pass when Vehicle subtype is part of allowable vehicles', async () => {
     const permit = getPermit();
     permit.permitData.vehicleDetails.vehicleSubType =
-      POWER_UNIT_CODES.LONG_WHEELBASE_TRUCK_TRACTORS;
+      POWER_UNITS.LONG_WHEELBASE_TRUCK_TRACTORS.id;
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(0);
     expect(validationResult.warnings).toHaveLength(0);

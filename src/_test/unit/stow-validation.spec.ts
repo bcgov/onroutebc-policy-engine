@@ -11,10 +11,10 @@ import {
   getUtcDatetime,
   TIMEZONE_IDS,
 } from '../../helper/date.helper';
-import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
 import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { COMMODITY_CODES } from '../../constants/commodity-codes';
 import { PERMIT_CODES } from '../../constants/permit-codes';
+import { POWER_UNITS } from '../../constants/power-units';
 
 const reportedTrailerCrashInput = {
   currentFormData: {
@@ -69,7 +69,7 @@ const reportedTrailerCrashInput = {
         countryCode: 'CA',
         provinceCode: 'BC',
         vehicleType: 'powerUnit',
-        vehicleSubType: POWER_UNIT_CODES.CONCRETE_PUMPER_TRUCKS,
+        vehicleSubType: POWER_UNITS.CONCRETE_PUMPER_TRUCKS.id,
         licensedGVW: 20000,
         saveVehicle: false,
       },
@@ -172,7 +172,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     axleSpread: number,
   ) => {
     permit.permitData.vehicleDetails.vehicleSubType =
-      POWER_UNIT_CODES.TRUCK_TRACTORS;
+      POWER_UNITS.TRUCK_TRACTORS.id;
     permit.permitData.vehicleConfiguration.axleConfiguration[0].numberOfAxles = 1;
     permit.permitData.vehicleConfiguration.axleConfiguration[1].numberOfAxles = 2;
     permit.permitData.vehicleConfiguration.axleConfiguration[1].axleSpread =
@@ -212,7 +212,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     driveAxleWeight: number,
   ) => {
     permit.permitData.vehicleDetails.vehicleSubType =
-      POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS;
+      POWER_UNITS.PICKER_TRUCK_TRACTORS.id;
     permit.permitData.vehicleConfiguration.trailers = [];
     permit.permitData.vehicleConfiguration.axleConfiguration = [
       {
@@ -627,7 +627,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     describe('Standard Vehicle Steer Axle (Rate Limit & Single Steer Cap)', () => {
       it('should pass exactly at the 9,100 kg limit - 445mm', async () => {
         await testTireLoadResult(
-          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          POWER_UNITS.TRUCK_TRACTORS.id,
           0,
           445,
           2,
@@ -637,27 +637,27 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
       });
       it('should fail just above the 9,100 kg limit - 445mm', async () => {
         await testTireLoadResult(
-          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          POWER_UNITS.TRUCK_TRACTORS.id,
           0,
           445,
           2,
-          9101, 
+          9101,
           true,
         );
       });
       it('should fail just above the 8900 kg limit for non-steering axles - 445mm', async () => {
         await testTireLoadResult(
-          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          POWER_UNITS.TRUCK_TRACTORS.id,
           1,
           445,
           2,
-          9101, 
+          9101,
           true,
         );
       });
       it('should pass at 9,100 kg/axle single steer cap limit - 457mm', async () => {
         await testTireLoadResult(
-          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          POWER_UNITS.TRUCK_TRACTORS.id,
           0,
           457,
           2,
@@ -667,7 +667,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
       });
       it('should fail just above 9,100 kg/axle single steer cap limit - 457mm', async () => {
         await testTireLoadResult(
-          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          POWER_UNITS.TRUCK_TRACTORS.id,
           0,
           457,
           2,
@@ -680,7 +680,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     describe('Standard Vehicle Non-Steering Axle (>=445mm and <=444mm)', () => {
       it('should pass at limit for tires >=445mm (rate limit binding)', async () => {
         await testTireLoadResult(
-          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          POWER_UNITS.TRUCK_TRACTORS.id,
           1,
           445,
           4,
@@ -690,7 +690,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
       });
       it('should fail just above limit for tires >=445mm (rate limit binding)', async () => {
         await testTireLoadResult(
-          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          POWER_UNITS.TRUCK_TRACTORS.id,
           1,
           445,
           4,
@@ -700,7 +700,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
       });
       it('should pass at limit for tires >=445mm (cap binding - 4,550 kg/tire)', async () => {
         await testTireLoadResult(
-          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          POWER_UNITS.TRUCK_TRACTORS.id,
           1,
           457,
           4,
@@ -710,7 +710,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
       });
       it('should fail just above limit for tires >=445mm (cap binding - 4,550 kg/tire)', async () => {
         await testTireLoadResult(
-          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          POWER_UNITS.TRUCK_TRACTORS.id,
           1,
           457,
           4,
@@ -720,7 +720,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
       });
       it('should pass at cap limit for tires <=444mm (3,000 kg/tire)', async () => {
         await testTireLoadResult(
-          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          POWER_UNITS.TRUCK_TRACTORS.id,
           1,
           385,
           4,
@@ -730,7 +730,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
       });
       it('should fail just above cap limit for tires <=444mm (3,000 kg/tire)', async () => {
         await testTireLoadResult(
-          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          POWER_UNITS.TRUCK_TRACTORS.id,
           1,
           385,
           4,
@@ -744,7 +744,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
       it('should allow the exact TPS configuration during permit validation', async () => {
         // TPS allowed this configuration. ORV2-5903 keeps it as a grandfathered case.
         await testTireLoadResult(
-          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          POWER_UNITS.TRUCK_TRACTORS.id,
           1,
           279.4,
           8,
@@ -757,7 +757,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     describe('Crane - All Terrain (CRANEAT)', () => {
       it('should pass at limit for tires >=520mm', async () => {
         await testTireLoadResult(
-          POWER_UNIT_CODES.CRANES_ALL_TERRAIN,
+          POWER_UNITS.CRANES_ALL_TERRAIN.id,
           0,
           550,
           2,
@@ -767,7 +767,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
       });
       it('should fail just above limit for tires >=520mm', async () => {
         await testTireLoadResult(
-          POWER_UNIT_CODES.CRANES_ALL_TERRAIN,
+          POWER_UNITS.CRANES_ALL_TERRAIN.id,
           0,
           550,
           2,
@@ -780,7 +780,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     describe('Crane - Mobile (CRANEMB)', () => {
       it('should pass at limit for non-steer axle tires >=520mm', async () => {
         await testTireLoadResult(
-          POWER_UNIT_CODES.CRANES_MOBILE,
+          POWER_UNITS.CRANES_MOBILE.id,
           1,
           550,
           2,
@@ -790,7 +790,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
       });
       it('should fail just above limit for non-steer axle tires >=520mm', async () => {
         await testTireLoadResult(
-          POWER_UNIT_CODES.CRANES_MOBILE,
+          POWER_UNITS.CRANES_MOBILE.id,
           1,
           550,
           2,
@@ -803,7 +803,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     describe('Rubber Tired Loaders (RBTRLDR)', () => {
       it('should pass at 11,000 kg/axle limit for tires >=520mm and <600mm', async () => {
         await testTireLoadResult(
-          POWER_UNIT_CODES.RUBBER_TIRED_LOADERS,
+          POWER_UNITS.RUBBER_TIRED_LOADERS.id,
           0,
           550,
           2,
@@ -813,7 +813,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
       });
       it('should fail just above 11,000 kg/axle limit for tires >=520mm and <600mm', async () => {
         await testTireLoadResult(
-          POWER_UNIT_CODES.RUBBER_TIRED_LOADERS,
+          POWER_UNITS.RUBBER_TIRED_LOADERS.id,
           0,
           550,
           2,
@@ -823,7 +823,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
       });
       it('should pass at 12,000 kg/axle limit for tires >=600mm', async () => {
         await testTireLoadResult(
-          POWER_UNIT_CODES.RUBBER_TIRED_LOADERS,
+          POWER_UNITS.RUBBER_TIRED_LOADERS.id,
           0,
           609,
           2,
@@ -833,7 +833,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
       });
       it('should fail just above 12,000 kg/axle limit for tires >=600mm', async () => {
         await testTireLoadResult(
-          POWER_UNIT_CODES.RUBBER_TIRED_LOADERS,
+          POWER_UNITS.RUBBER_TIRED_LOADERS.id,
           0,
           609,
           2,

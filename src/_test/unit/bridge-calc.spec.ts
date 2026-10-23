@@ -1,4 +1,4 @@
-import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
+import { POWER_UNITS } from '../../constants/power-units';
 import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { getAxleUnitVehicleIndexLookup } from '../../helper/dimensions.helper';
 import { Policy } from '../../policy-engine';
@@ -25,7 +25,7 @@ const threeAxleConfig: Array<AxleConfiguration> = [
 ];
 
 const vehicleConfiguration = [
-  POWER_UNIT_CODES.TRUCK_TRACTORS,
+  POWER_UNITS.TRUCK_TRACTORS.id,
   TRAILER_CODES.SEMI_TRAILERS,
 ];
 
@@ -412,10 +412,7 @@ describe('ASW Tandem Drive Single Axle Jeep Exception', () => {
   const policy: Policy = new Policy(minimalPolicyDef);
 
   it('should allow exception for tandem drive + single axle jeep', async () => {
-    const vehicleConfig = [
-      POWER_UNIT_CODES.TRUCK_TRACTORS,
-      TRAILER_CODES.JEEPS,
-    ];
+    const vehicleConfig = [POWER_UNITS.TRUCK_TRACTORS.id, TRAILER_CODES.JEEPS];
 
     const tandemDriveSingleAxleJepConfig = [
       {
