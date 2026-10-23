@@ -1,12 +1,9 @@
 import { COMMODITY_CODES } from '../../constants/commodity-codes';
 import { Policy } from '../../policy-engine';
 import { PolicyCheckId, PolicyCheckResultType } from '../../enum';
-import {
-  AxleCalcResults,
-  AxleConfiguration,
-} from '../../types';
+import { AxleCalcResults, AxleConfiguration } from '../../types';
 import currentPolicyConfig from '../policy-config/_current-config.json';
-import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
+import { POWER_UNITS } from '../../constants/power-units';
 
 describe('runAxleCalculation robustness regressions', () => {
   const policy = new Policy(currentPolicyConfig);
@@ -31,7 +28,7 @@ describe('runAxleCalculation robustness regressions', () => {
 
     expect(() => {
       calculation = policy.runAxleCalculation(
-        [POWER_UNIT_CODES.CRANES_ALL_TERRAIN],
+        [POWER_UNITS.CRANES_ALL_TERRAIN.id],
         axleConfiguration,
         100000,
         COMMODITY_CODES.NONE,
@@ -44,49 +41,48 @@ describe('runAxleCalculation robustness regressions', () => {
   };
 
   it('skips bridge formula for invalid interaxle spacing instead of throwing', () => {
-    expectBridgeCalculationSkipped(
-      [{ ...validFirstAxle }, { ...validSecondAxle, interaxleSpacing: -1000 }],
-    );
+    expectBridgeCalculationSkipped([
+      { ...validFirstAxle },
+      { ...validSecondAxle, interaxleSpacing: -1000 },
+    ]);
   });
 
   it('skips bridge formula for invalid first-unit axle spread instead of throwing', () => {
-    expectBridgeCalculationSkipped(
-      [
-        {
-          ...validFirstAxle,
-          numberOfAxles: 2,
-          numberOfTires: 4,
-          axleSpread: -1000,
-        },
-        { ...validSecondAxle },
-      ],
-    );
+    expectBridgeCalculationSkipped([
+      {
+        ...validFirstAxle,
+        numberOfAxles: 2,
+        numberOfTires: 4,
+        axleSpread: -1000,
+      },
+      { ...validSecondAxle },
+    ]);
   });
 
   it('skips bridge formula for invalid later-unit axle spread instead of throwing', () => {
-    expectBridgeCalculationSkipped(
-      [
-        { ...validFirstAxle },
-        {
-          ...validSecondAxle,
-          numberOfAxles: 2,
-          numberOfTires: 4,
-          axleSpread: -1000,
-        },
-      ],
-    );
+    expectBridgeCalculationSkipped([
+      { ...validFirstAxle },
+      {
+        ...validSecondAxle,
+        numberOfAxles: 2,
+        numberOfTires: 4,
+        axleSpread: -1000,
+      },
+    ]);
   });
 
   it('skips bridge formula for invalid first-unit weight instead of throwing', () => {
-    expectBridgeCalculationSkipped(
-      [{ ...validFirstAxle, axleUnitWeight: -100000 }, { ...validSecondAxle }],
-    );
+    expectBridgeCalculationSkipped([
+      { ...validFirstAxle, axleUnitWeight: -100000 },
+      { ...validSecondAxle },
+    ]);
   });
 
   it('skips bridge formula for invalid later-unit weight instead of throwing', () => {
-    expectBridgeCalculationSkipped(
-      [{ ...validFirstAxle }, { ...validSecondAxle, axleUnitWeight: -100000 }],
-    );
+    expectBridgeCalculationSkipped([
+      { ...validFirstAxle },
+      { ...validSecondAxle, axleUnitWeight: -100000 },
+    ]);
   });
 
   it('returns the legal axle spread violation for a zero tandem drive spread', () => {
@@ -94,7 +90,7 @@ describe('runAxleCalculation robustness regressions', () => {
 
     expect(() => {
       calculation = policy.runAxleCalculation(
-        [POWER_UNIT_CODES.TRUCK_TRACTORS],
+        [POWER_UNITS.TRUCK_TRACTORS.id],
         [
           { ...validFirstAxle, axleUnitWeight: 6700 },
           {

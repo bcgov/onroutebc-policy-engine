@@ -1,4 +1,3 @@
-export { AccessoryVehicleType } from './accessory-vehicle-type';
 export { CustomOperator } from './custom-operator';
 export { PolicyFacts, CostFacts } from './facts';
 export { PermitAppInfo } from './permit-app-info';
@@ -8,5 +7,4 @@ export { RelativePosition } from './relative-position';
 export { ValidationResultCode } from './validation-result-code';
 export { ValidationResultId } from './validation-result-id';
 export { ValidationResultType } from './validation-result-type';
-export { VehicleCategory } from './vehicle-category';
 export { VehicleTypes } from './vehicle-types';

@@ -1,7 +1,7 @@
 import { COMMODITY_CODES } from '../../constants/commodity-codes';
 import { PERMIT_CODES } from '../../constants/permit-codes';
-import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
-import { TRAILER_CODES } from '../../constants/trailer-codes';
+import { POWER_UNITS } from '../../constants/power-units';
+import { TRAILERS } from '../../constants/trailers';
 import { Policy } from '../../policy-engine';
 import currentPolicyConfig from '../policy-config/_current-config.json';
 import specialAuth from '../policy-config/special-auth-lcv.sample.json';
@@ -16,11 +16,11 @@ describe('Policy Engine Oversize Configuration Functions', () => {
       COMMODITY_CODES.EMPTY,
     );
     expect(puTypes.size).toBe(5);
-    expect(puTypes.keys()).toContain(POWER_UNIT_CODES.TRUCK_TRACTORS);
-    expect(puTypes.keys()).toContain(POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS);
-    expect(puTypes.keys()).toContain(POWER_UNIT_CODES.PICKER_TRUCKS);
-    expect(puTypes.keys()).toContain(POWER_UNIT_CODES.TRUCK_WITH_PME);
-    expect(puTypes.keys()).toContain(POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME);
+    expect(puTypes.keys()).toContain(POWER_UNITS.TRUCK_TRACTORS.id);
+    expect(puTypes.keys()).toContain(POWER_UNITS.PICKER_TRUCK_TRACTORS.id);
+    expect(puTypes.keys()).toContain(POWER_UNITS.PICKER_TRUCKS.id);
+    expect(puTypes.keys()).toContain(POWER_UNITS.TRUCK_WITH_PME.id);
+    expect(puTypes.keys()).toContain(POWER_UNITS.TRUCK_TRACTOR_WITH_PME.id);
   });
 
   it('should retrieve valid power unit types for STOW', async () => {
@@ -28,22 +28,22 @@ describe('Policy Engine Oversize Configuration Functions', () => {
       PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       COMMODITY_CODES.NONE,
     );
-    expect(puTypesNone.keys()).toContain(POWER_UNIT_CODES.TRUCK_TRACTORS);
-    expect(puTypesNone.keys()).toContain(POWER_UNIT_CODES.CRANES_ALL_TERRAIN);
+    expect(puTypesNone.keys()).toContain(POWER_UNITS.TRUCK_TRACTORS.id);
+    expect(puTypesNone.keys()).toContain(POWER_UNITS.CRANES_ALL_TERRAIN.id);
     expect(puTypesNone.keys()).not.toContain(
-      POWER_UNIT_CODES.TELESCOPIC_CONVEYOR_TRUCKS,
+      POWER_UNITS.TELESCOPIC_CONVEYOR_TRUCKS.id,
     );
 
     const puTypesNonredu = policy.getPermittablePowerUnitTypes(
       PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       COMMODITY_CODES.NON_REDUCIBLE_LOADS,
     );
-    expect(puTypesNonredu.keys()).toContain(POWER_UNIT_CODES.TRUCKS);
+    expect(puTypesNonredu.keys()).toContain(POWER_UNITS.TRUCKS.id);
     expect(puTypesNonredu.keys()).toContain(
-      POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+      POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
     );
     expect(puTypesNonredu.keys()).not.toContain(
-      POWER_UNIT_CODES.TRUCK_TRACTORS_STINGER_STEERED,
+      POWER_UNITS.TRUCK_TRACTORS_STINGER_STEERED.id,
     );
   });
 
@@ -69,9 +69,9 @@ describe('Policy Engine Oversize Configuration Functions', () => {
     const nonLcvPULength = puTypes.size;
 
     expect(puTypes.keys()).not.toContain(
-      POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES,
+      POWER_UNITS.LCV_ROCKY_MOUNTAIN_DOUBLES.id,
     );
-    expect(puTypes.keys()).not.toContain('LCVTPDB');
+    expect(puTypes.keys()).not.toContain(POWER_UNITS.LCV_TURNPIKE_DOUBLES.id);
 
     const lcvPuTypes = lcvPolicy.getPermittablePowerUnitTypes(
       PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
@@ -80,9 +80,9 @@ describe('Policy Engine Oversize Configuration Functions', () => {
     // There are 2 permittable LCV types
     expect(lcvPuTypes.size - nonLcvPULength).toBe(2);
     expect(lcvPuTypes.keys()).toContain(
-      POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES,
+      POWER_UNITS.LCV_ROCKY_MOUNTAIN_DOUBLES.id,
     );
-    expect(lcvPuTypes.keys()).toContain('LCVTPDB');
+    expect(lcvPuTypes.keys()).toContain(POWER_UNITS.LCV_TURNPIKE_DOUBLES.id);
   });
 });
 
@@ -103,7 +103,7 @@ describe('Policy Engine Vehicle Configuration Helpers', () => {
       ],
       [
         {
-          vehicleSubType: TRAILER_CODES.SEMI_TRAILERS,
+          vehicleSubType: TRAILERS.SEMI_TRAILERS.id,
           axleConfiguration: [
             {
               numberOfAxles: 2,
@@ -112,11 +112,11 @@ describe('Policy Engine Vehicle Configuration Helpers', () => {
           ],
         },
         {
-          vehicleSubType: TRAILER_CODES.BOOSTER,
+          vehicleSubType: TRAILERS.BOOSTER.id,
           axleConfiguration: null,
         },
         {
-          vehicleSubType: TRAILER_CODES.DOLLIES,
+          vehicleSubType: TRAILERS.DOLLIES.id,
           axleConfiguration: [
             {
               numberOfAxles: 1,
@@ -163,7 +163,7 @@ describe('Policy Engine Get Next Permittable Vehicles', () => {
       [],
     );
     expect(vehicles.size).toBe(1);
-    expect(vehicles.keys()).toContain(POWER_UNIT_CODES.TRUCK_TRACTORS);
+    expect(vehicles.keys()).toContain(POWER_UNITS.TRUCK_TRACTORS.id);
   });
 
   it('should return permittable power units for STOW with empty current configuration', async () => {
@@ -173,7 +173,7 @@ describe('Policy Engine Get Next Permittable Vehicles', () => {
       [],
     );
     expect(vehicles.size).toBe(1);
-    expect(vehicles.keys()).toContain(POWER_UNIT_CODES.TRUCK_TRACTORS);
+    expect(vehicles.keys()).toContain(POWER_UNITS.TRUCK_TRACTORS.id);
   });
 
   it('should return only non-lcv permittable power units with empty current configuration', async () => {
@@ -183,9 +183,9 @@ describe('Policy Engine Get Next Permittable Vehicles', () => {
       [],
     );
     expect(vehicles.keys()).not.toContain(
-      POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES,
+      POWER_UNITS.LCV_ROCKY_MOUNTAIN_DOUBLES.id,
     );
-    expect(vehicles.keys()).not.toContain('LCVTPDB');
+    expect(vehicles.keys()).not.toContain(POWER_UNITS.LCV_TURNPIKE_DOUBLES.id);
   });
 
   it('should return lcv permittable power units with empty current configuration and lcv auth', async () => {
@@ -195,16 +195,16 @@ describe('Policy Engine Get Next Permittable Vehicles', () => {
       [],
     );
     expect(vehicles.keys()).toContain(
-      POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES,
+      POWER_UNITS.LCV_ROCKY_MOUNTAIN_DOUBLES.id,
     );
-    expect(vehicles.keys()).toContain('LCVTPDB');
+    expect(vehicles.keys()).toContain(POWER_UNITS.LCV_TURNPIKE_DOUBLES.id);
   });
 
   it('should return no next vehicles with lcv pu and no lcv auth', async () => {
     const vehicles = policy.getNextPermittableVehicles(
       PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
       COMMODITY_CODES.NONE,
-      [POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES],
+      [POWER_UNITS.LCV_ROCKY_MOUNTAIN_DOUBLES.id],
     );
     expect(vehicles.size).toBe(0);
   });
@@ -213,10 +213,10 @@ describe('Policy Engine Get Next Permittable Vehicles', () => {
     const vehicles = lcvPolicy.getNextPermittableVehicles(
       PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
       COMMODITY_CODES.NONE,
-      [POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES],
+      [POWER_UNITS.LCV_ROCKY_MOUNTAIN_DOUBLES.id],
     );
     expect(vehicles.size).toBe(1);
-    expect(vehicles.keys()).toContain(TRAILER_CODES.SEMI_TRAILERS);
+    expect(vehicles.keys()).toContain(TRAILERS.SEMI_TRAILERS.id);
   });
 
   // ORV2-3953
@@ -224,72 +224,72 @@ describe('Policy Engine Get Next Permittable Vehicles', () => {
     const vehicles = policy.getNextPermittableVehicles(
       PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
       'BRSHCUT',
-      [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.JEEPS],
+      [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.JEEPS.id],
     );
     expect(vehicles.size).toBe(2);
-    expect(vehicles.keys()).not.toContain(TRAILER_CODES.SEMI_TRAILERS);
+    expect(vehicles.keys()).not.toContain(TRAILERS.SEMI_TRAILERS.id);
   });
 
   it('should not return invalid trailers after jeep selected (STOW)', async () => {
     const vehicles = policy.getNextPermittableVehicles(
       PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       'OILFILD',
-      [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, TRAILER_CODES.JEEPS],
+      [POWER_UNITS.OIL_AND_GAS_BED_TRUCKS.id, TRAILERS.JEEPS.id],
     );
     expect(vehicles.size).toBe(2);
-    expect(vehicles.keys()).not.toContain(TRAILER_CODES.EXPANDO_SEMI_TRAILERS);
+    expect(vehicles.keys()).not.toContain(TRAILERS.EXPANDO_SEMI_TRAILERS.id);
   });
 
   it('should return jeep and trailer when current config is just power unit (STOS)', async () => {
     const vehicles = policy.getNextPermittableVehicles(
       PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
       COMMODITY_CODES.LAMINATED_BEAMS,
-      [POWER_UNIT_CODES.TRUCK_TRACTORS],
+      [POWER_UNITS.TRUCK_TRACTORS.id],
     );
     expect(vehicles.size).toBe(3);
-    expect(vehicles.keys()).toContain(TRAILER_CODES.JEEPS);
-    expect(vehicles.keys()).toContain(TRAILER_CODES.POLE_TRAILERS);
-    expect(vehicles.keys()).toContain(TRAILER_CODES.HIBOYS_EXPANDOS);
+    expect(vehicles.keys()).toContain(TRAILERS.JEEPS.id);
+    expect(vehicles.keys()).toContain(TRAILERS.POLE_TRAILERS.id);
+    expect(vehicles.keys()).toContain(TRAILERS.HIBOYS_EXPANDOS.id);
   });
 
   it('should return jeep and trailer when current config is just power unit (STOW)', async () => {
     const vehicles = policy.getNextPermittableVehicles(
       PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       COMMODITY_CODES.LAMINATED_BEAMS,
-      [POWER_UNIT_CODES.TRUCK_TRACTORS],
+      [POWER_UNITS.TRUCK_TRACTORS.id],
     );
     expect(vehicles.size).toBe(2);
-    expect(vehicles.keys()).toContain(TRAILER_CODES.JEEPS);
-    expect(vehicles.keys()).toContain(TRAILER_CODES.HIBOYS_EXPANDOS);
+    expect(vehicles.keys()).toContain(TRAILERS.JEEPS.id);
+    expect(vehicles.keys()).toContain(TRAILERS.HIBOYS_EXPANDOS.id);
   });
 
   it('should return jeep and a trailer when current config is power unit and jeep', async () => {
     const vehicles = policy.getNextPermittableVehicles(
       PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
       COMMODITY_CODES.LAMINATED_BEAMS,
-      [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.JEEPS],
+      [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.JEEPS.id],
     );
     expect(vehicles.size).toBe(3);
-    expect(vehicles.keys()).toContain(TRAILER_CODES.JEEPS);
-    expect(vehicles.keys()).toContain(TRAILER_CODES.POLE_TRAILERS);
-    expect(vehicles.keys()).toContain(TRAILER_CODES.HIBOYS_EXPANDOS);
+    expect(vehicles.keys()).toContain(TRAILERS.JEEPS.id);
+    expect(vehicles.keys()).toContain(TRAILERS.POLE_TRAILERS.id);
+    expect(vehicles.keys()).toContain(TRAILERS.HIBOYS_EXPANDOS.id);
   });
 
   it('should return booster when current config is power unit and trailer', async () => {
     const vehicles = policy.getNextPermittableVehicles(
       PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
       COMMODITY_CODES.LAMINATED_BEAMS,
-      [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.POLE_TRAILERS],
+      [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.POLE_TRAILERS.id],
     );
     expect(vehicles.size).toBe(1);
-    expect(vehicles.keys()).toContain(TRAILER_CODES.BOOSTER);
+    expect(vehicles.keys()).toContain(TRAILERS.BOOSTER.id);
   });
 
   it('should return empty map when current configuration is invalid', async () => {
     const vehicles = policy.getNextPermittableVehicles(
       PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
       COMMODITY_CODES.LAMINATED_BEAMS,
-      [POWER_UNIT_CODES.TRUCK_TRACTORS, '_INVALID'],
+      [POWER_UNITS.TRUCK_TRACTORS.id, '_INVALID'],
     );
     expect(vehicles.size).toBe(0);
   });
@@ -298,10 +298,10 @@ describe('Policy Engine Get Next Permittable Vehicles', () => {
     const vehicles = policy.getNextPermittableVehicles(
       PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       COMMODITY_CODES.NONE,
-      [POWER_UNIT_CODES.CRANES_ALL_TERRAIN],
+      [POWER_UNITS.CRANES_ALL_TERRAIN.id],
     );
     expect(vehicles.size).toBe(2);
-    expect(vehicles.keys()).toContain(TRAILER_CODES.DOLLIES);
+    expect(vehicles.keys()).toContain(TRAILERS.DOLLIES.id);
     expect(vehicles.keys()).toContain(COMMODITY_CODES.NONE);
   });
 });
@@ -313,7 +313,7 @@ describe('Policy Engine Configuration Validation', () => {
     const isValid = policy.isConfigurationValid(
       PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
       COMMODITY_CODES.LAMINATED_BEAMS,
-      [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.HIBOYS_EXPANDOS],
+      [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.HIBOYS_EXPANDOS.id],
     );
     expect(isValid).toBe(true);
   });
@@ -322,7 +322,7 @@ describe('Policy Engine Configuration Validation', () => {
     const isValid = policy.isConfigurationValid(
       PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       COMMODITY_CODES.LAMINATED_BEAMS,
-      [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.HIBOYS_EXPANDOS],
+      [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.HIBOYS_EXPANDOS.id],
     );
     expect(isValid).toBe(true);
   });
@@ -332,10 +332,10 @@ describe('Policy Engine Configuration Validation', () => {
       PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
       COMMODITY_CODES.LAMINATED_BEAMS,
       [
-        POWER_UNIT_CODES.TRUCK_TRACTORS,
-        TRAILER_CODES.JEEPS,
-        TRAILER_CODES.POLE_TRAILERS,
-        TRAILER_CODES.BOOSTER,
+        POWER_UNITS.TRUCK_TRACTORS.id,
+        TRAILERS.JEEPS.id,
+        TRAILERS.POLE_TRAILERS.id,
+        TRAILERS.BOOSTER.id,
       ],
     );
     expect(isValid).toBe(true);
@@ -346,10 +346,10 @@ describe('Policy Engine Configuration Validation', () => {
       PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       COMMODITY_CODES.LAMINATED_BEAMS,
       [
-        POWER_UNIT_CODES.TRUCK_TRACTORS,
-        TRAILER_CODES.JEEPS,
-        TRAILER_CODES.HIBOYS_EXPANDOS,
-        TRAILER_CODES.BOOSTER,
+        POWER_UNITS.TRUCK_TRACTORS.id,
+        TRAILERS.JEEPS.id,
+        TRAILERS.HIBOYS_EXPANDOS.id,
+        TRAILERS.BOOSTER.id,
       ],
     );
     expect(isValid).toBe(true);
@@ -360,10 +360,10 @@ describe('Policy Engine Configuration Validation', () => {
       PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
       COMMODITY_CODES.LAMINATED_BEAMS,
       [
-        POWER_UNIT_CODES.TRUCK_TRACTORS,
-        TRAILER_CODES.POLE_TRAILERS,
-        TRAILER_CODES.JEEPS,
-        TRAILER_CODES.BOOSTER,
+        POWER_UNITS.TRUCK_TRACTORS.id,
+        TRAILERS.POLE_TRAILERS.id,
+        TRAILERS.JEEPS.id,
+        TRAILERS.BOOSTER.id,
       ],
     );
     expect(isValid).toBe(false);
@@ -374,10 +374,10 @@ describe('Policy Engine Configuration Validation', () => {
       PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       COMMODITY_CODES.LAMINATED_BEAMS,
       [
-        POWER_UNIT_CODES.TRUCK_TRACTORS,
-        TRAILER_CODES.POLE_TRAILERS,
-        TRAILER_CODES.JEEPS,
-        TRAILER_CODES.BOOSTER,
+        POWER_UNITS.TRUCK_TRACTORS.id,
+        TRAILERS.POLE_TRAILERS.id,
+        TRAILERS.JEEPS.id,
+        TRAILERS.BOOSTER.id,
       ],
     );
     expect(isValid).toBe(false);
@@ -386,8 +386,8 @@ describe('Policy Engine Configuration Validation', () => {
   it('should throw an error for an invalid permit type', async () => {
     expect(() => {
       policy.isConfigurationValid('_INVALID', COMMODITY_CODES.LAMINATED_BEAMS, [
-        POWER_UNIT_CODES.TRUCK_TRACTORS,
-        TRAILER_CODES.POLE_TRAILERS,
+        POWER_UNITS.TRUCK_TRACTORS.id,
+        TRAILERS.POLE_TRAILERS.id,
       ]);
     }).toThrow();
   });
@@ -397,7 +397,7 @@ describe('Policy Engine Configuration Validation', () => {
       policy.isConfigurationValid(
         PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
         '_INVALID',
-        [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.POLE_TRAILERS],
+        [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.POLE_TRAILERS.id],
       );
     }).toThrow();
   });
@@ -407,7 +407,7 @@ describe('Policy Engine Configuration Validation', () => {
       policy.isConfigurationValid(
         PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
         '_INVALID',
-        [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.POLE_TRAILERS],
+        [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.POLE_TRAILERS.id],
       );
     }).toThrow();
   });
@@ -416,7 +416,7 @@ describe('Policy Engine Configuration Validation', () => {
     const isValid = policy.isConfigurationValid(
       PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
       COMMODITY_CODES.LAMINATED_BEAMS,
-      [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.JEEPS],
+      [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.JEEPS.id],
     );
     expect(isValid).toBe(false);
   });
@@ -425,7 +425,7 @@ describe('Policy Engine Configuration Validation', () => {
     const isValid = policy.isConfigurationValid(
       PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       COMMODITY_CODES.LAMINATED_BEAMS,
-      [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.JEEPS],
+      [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.JEEPS.id],
     );
     expect(isValid).toBe(false);
   });
@@ -434,7 +434,7 @@ describe('Policy Engine Configuration Validation', () => {
     const isValid = policy.isConfigurationValid(
       PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
       COMMODITY_CODES.LAMINATED_BEAMS,
-      [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.JEEPS],
+      [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.JEEPS.id],
       true,
     );
     expect(isValid).toBe(true);
@@ -444,7 +444,7 @@ describe('Policy Engine Configuration Validation', () => {
     const isValid = policy.isConfigurationValid(
       PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       COMMODITY_CODES.LAMINATED_BEAMS,
-      [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.JEEPS],
+      [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.JEEPS.id],
       true,
     );
     expect(isValid).toBe(true);
@@ -455,9 +455,9 @@ describe('Policy Engine Configuration Validation', () => {
       PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       COMMODITY_CODES.NONE,
       [
-        POWER_UNIT_CODES.CRANES_ALL_TERRAIN,
-        TRAILER_CODES.ADDITIONAL_AXLE_UNIT_ALL_TERRAIN_CRANE,
-        TRAILER_CODES.NONE,
+        POWER_UNITS.CRANES_ALL_TERRAIN.id,
+        TRAILERS.ADDITIONAL_AXLE_UNIT_ALL_TERRAIN_CRANE.id,
+        TRAILERS.NONE.id,
       ],
     );
     expect(isValid).toBe(true);
@@ -468,11 +468,11 @@ describe('Policy Engine Configuration Validation', () => {
       PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       COMMODITY_CODES.NONE,
       [
-        POWER_UNIT_CODES.CRANES_ALL_TERRAIN,
-        TRAILER_CODES.ADDITIONAL_AXLE_UNIT_ALL_TERRAIN_CRANE,
-        TRAILER_CODES.ADDITIONAL_AXLE_UNIT_ALL_TERRAIN_CRANE,
-        TRAILER_CODES.ADDITIONAL_AXLE_UNIT_ALL_TERRAIN_CRANE,
-        TRAILER_CODES.NONE,
+        POWER_UNITS.CRANES_ALL_TERRAIN.id,
+        TRAILERS.ADDITIONAL_AXLE_UNIT_ALL_TERRAIN_CRANE.id,
+        TRAILERS.ADDITIONAL_AXLE_UNIT_ALL_TERRAIN_CRANE.id,
+        TRAILERS.ADDITIONAL_AXLE_UNIT_ALL_TERRAIN_CRANE.id,
+        TRAILERS.NONE.id,
       ],
     );
     expect(isValid).toBe(true);
@@ -483,9 +483,9 @@ describe('Policy Engine Configuration Validation', () => {
       PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       COMMODITY_CODES.NONE,
       [
-        POWER_UNIT_CODES.CRANES_ALL_TERRAIN,
-        TRAILER_CODES.ADDITIONAL_AXLE_UNIT_ALL_TERRAIN_CRANE,
-        TRAILER_CODES.DOLLIES,
+        POWER_UNITS.CRANES_ALL_TERRAIN.id,
+        TRAILERS.ADDITIONAL_AXLE_UNIT_ALL_TERRAIN_CRANE.id,
+        TRAILERS.DOLLIES.id,
       ],
     );
     expect(isValid).toBe(true);
@@ -496,9 +496,9 @@ describe('Policy Engine Configuration Validation', () => {
       PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       COMMODITY_CODES.NONE,
       [
-        POWER_UNIT_CODES.CRANES_ALL_TERRAIN,
-        TRAILER_CODES.NONE,
-        TRAILER_CODES.ADDITIONAL_AXLE_UNIT_ALL_TERRAIN_CRANE,
+        POWER_UNITS.CRANES_ALL_TERRAIN.id,
+        TRAILERS.NONE.id,
+        TRAILERS.ADDITIONAL_AXLE_UNIT_ALL_TERRAIN_CRANE.id,
       ],
     );
     expect(isValid).toBe(false);
@@ -509,9 +509,9 @@ describe('Policy Engine Configuration Validation', () => {
       PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       COMMODITY_CODES.NON_REDUCIBLE_LOADS,
       [
-        POWER_UNIT_CODES.TRUCK_TRACTORS,
-        TRAILER_CODES.PLATFORM_TRAILERS,
-        TRAILER_CODES.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER,
+        POWER_UNITS.TRUCK_TRACTORS.id,
+        TRAILERS.PLATFORM_TRAILERS.id,
+        TRAILERS.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER.id,
       ],
     );
     expect(isValid).toBe(true);
@@ -522,11 +522,11 @@ describe('Policy Engine Configuration Validation', () => {
       PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       COMMODITY_CODES.NON_REDUCIBLE_LOADS,
       [
-        POWER_UNIT_CODES.TRUCK_TRACTORS,
-        TRAILER_CODES.PLATFORM_TRAILERS,
-        TRAILER_CODES.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER,
-        TRAILER_CODES.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER,
-        TRAILER_CODES.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER,
+        POWER_UNITS.TRUCK_TRACTORS.id,
+        TRAILERS.PLATFORM_TRAILERS.id,
+        TRAILERS.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER.id,
+        TRAILERS.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER.id,
+        TRAILERS.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER.id,
       ],
     );
     expect(isValid).toBe(true);
@@ -537,16 +537,16 @@ describe('Policy Engine Configuration Validation', () => {
       PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       COMMODITY_CODES.NON_REDUCIBLE_LOADS,
       [
-        POWER_UNIT_CODES.TRUCK_TRACTORS,
-        TRAILER_CODES.JEEPS,
-        TRAILER_CODES.JEEPS,
-        TRAILER_CODES.JEEPS,
-        TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
-        TRAILER_CODES.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER,
-        TRAILER_CODES.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER,
-        TRAILER_CODES.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER,
-        TRAILER_CODES.BOOSTER,
-        TRAILER_CODES.BOOSTER,
+        POWER_UNITS.TRUCK_TRACTORS.id,
+        TRAILERS.JEEPS.id,
+        TRAILERS.JEEPS.id,
+        TRAILERS.JEEPS.id,
+        TRAILERS.PLATFORM_TRAILERS_WHEELERS.id,
+        TRAILERS.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER.id,
+        TRAILERS.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER.id,
+        TRAILERS.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER.id,
+        TRAILERS.BOOSTER.id,
+        TRAILERS.BOOSTER.id,
       ],
     );
     expect(isValid).toBe(true);
@@ -554,9 +554,11 @@ describe('Policy Engine Configuration Validation', () => {
 
   it('should throw an error for a permit type not requiring commodity', async () => {
     expect(() => {
-      policy.isConfigurationValid('TROS', COMMODITY_CODES.LAMINATED_BEAMS, [
-        POWER_UNIT_CODES.TRUCK_TRACTORS,
-      ]);
+      policy.isConfigurationValid(
+        PERMIT_CODES.TERM_OVERSIZE,
+        COMMODITY_CODES.LAMINATED_BEAMS,
+        [POWER_UNITS.TRUCK_TRACTORS.id],
+      );
     }).toThrow();
   });
 
@@ -578,12 +580,12 @@ describe('Policy Engine Configuration Validation', () => {
     const canAddAxleUnits1 = policy.canAddAxleUnitsToPowerUnit(
       PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       COMMODITY_CODES.NONE,
-      POWER_UNIT_CODES.CONCRETE_PUMPER_TRUCKS,
+      POWER_UNITS.CONCRETE_PUMPER_TRUCKS.id,
     );
     const canAddAxleUnits2 = policy.canAddAxleUnitsToPowerUnit(
       PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       COMMODITY_CODES.NONE,
-      POWER_UNIT_CODES.CRANES_ALL_TERRAIN,
+      POWER_UNITS.CRANES_ALL_TERRAIN.id,
     );
 
     expect(canAddAxleUnits1).toBe(true);
@@ -594,12 +596,12 @@ describe('Policy Engine Configuration Validation', () => {
     const canAddAxleUnits1 = policy.canAddAxleUnitsToPowerUnit(
       PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       COMMODITY_CODES.NONE,
-      POWER_UNIT_CODES.CRANES_MOBILE,
+      POWER_UNITS.CRANES_MOBILE.id,
     );
     const canAddAxleUnits2 = policy.canAddAxleUnitsToPowerUnit(
       PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       COMMODITY_CODES.NONE,
-      POWER_UNIT_CODES.TRUCK_TRACTORS,
+      POWER_UNITS.TRUCK_TRACTORS.id,
     );
 
     expect(canAddAxleUnits1).toBe(false);
@@ -610,14 +612,14 @@ describe('Policy Engine Configuration Validation', () => {
     const canAddAxleUnits1 = policy.canAddAxleUnitsToTrailer(
       PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       COMMODITY_CODES.NONE,
-      POWER_UNIT_CODES.CRANES_MOBILE,
-      TRAILER_CODES.DOLLIES,
+      POWER_UNITS.CRANES_MOBILE.id,
+      TRAILERS.DOLLIES.id,
     );
     const canAddAxleUnits2 = policy.canAddAxleUnitsToTrailer(
       PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       COMMODITY_CODES.NONE,
-      POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
-      TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
+      POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
+      TRAILERS.PLATFORM_TRAILERS_WHEELERS.id,
     );
 
     expect(canAddAxleUnits1).toBe(true);
@@ -628,14 +630,14 @@ describe('Policy Engine Configuration Validation', () => {
     const canAddAxleUnits1 = policy.canAddAxleUnitsToTrailer(
       PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       COMMODITY_CODES.EMPTY,
-      POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
-      TRAILER_CODES.SEMI_TRAILERS,
+      POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
+      TRAILERS.SEMI_TRAILERS.id,
     );
     const canAddAxleUnits2 = policy.canAddAxleUnitsToTrailer(
       PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
       COMMODITY_CODES.NON_REDUCIBLE_LOADS,
-      POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
-      TRAILER_CODES.SEMI_TRAILERS,
+      POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
+      TRAILERS.SEMI_TRAILERS.id,
     );
 
     expect(canAddAxleUnits1).toBe(false);

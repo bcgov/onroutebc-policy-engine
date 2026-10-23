@@ -1567,6 +1567,7 @@
         "ODTRLEX",
         "PMHWAAX",
         "PLATFRM",
+        "PLATWHE",
         "POLETRL",
         "PONYTRL",
         "REDIMIX",
@@ -1589,8 +1590,7 @@
         "STROPRT",
         "STRSELF",
         "STINGAT",
-        "DBTRBTR",
-        "PLATWHE"
+        "DBTRBTR"
       ],
       "rules": [
         {
@@ -1937,7 +1937,19 @@
                   "fact": "permitData",
                   "path": "permitDuration",
                   "operator": "in",
-                  "value": [30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330]
+                  "value": [
+                    30,
+                    60,
+                    90,
+                    120,
+                    150,
+                    180,
+                    210,
+                    240,
+                    270,
+                    300,
+                    330
+                  ]
                 }
               },
               {
@@ -2059,7 +2071,19 @@
                   "fact": "permitData",
                   "path": "permitDuration",
                   "operator": "in",
-                  "value": [30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330]
+                  "value": [
+                    30,
+                    60,
+                    90,
+                    120,
+                    150,
+                    180,
+                    210,
+                    240,
+                    270,
+                    300,
+                    330
+                  ]
                 }
               },
               {
@@ -3053,7 +3077,10 @@
               "fact": "permitData",
               "path": "thirdPartyLiability",
               "operator": "in",
-              "value": ["GENERAL_GOODS", "DANGEROUS_GOODS"]
+              "value": [
+                "GENERAL_GOODS",
+                "DANGEROUS_GOODS"
+              ]
             }
           },
           "event": {
@@ -3228,7 +3255,10 @@
             "not": {
               "fact": "permitData",
               "operator": "in",
-              "value": ["GENERAL_GOODS", "DANGEROUS_GOODS"],
+              "value": [
+                "GENERAL_GOODS",
+                "DANGEROUS_GOODS"
+              ],
               "path": "thirdPartyLiability"
             }
           },
@@ -4058,7 +4088,11 @@
       "weightDimensionRequired": false,
       "sizeDimensionRequired": false,
       "commodityRequired": false,
-      "allowedVehicles": ["BUSCRUM", "DDCKBUS", "PUTAXIS"],
+      "allowedVehicles": [
+        "BUSCRUM",
+        "DDCKBUS",
+        "PUTAXIS"
+      ],
       "rules": [
         {
           "conditions": {
@@ -4224,23 +4258,37 @@
   },
   "globalInteraxleSpacingDefaults": [
     {
-      "axles": [11, 12, 13, 21, 31],
+      "axles": [
+        11,
+        12,
+        13,
+        21,
+        31
+      ],
       "min": 300
     },
     {
-      "axles": [22],
+      "axles": [
+        22
+      ],
       "min": 500
     },
     {
-      "axles": [23],
+      "axles": [
+        23
+      ],
       "min": 550
     },
     {
-      "axles": [32],
+      "axles": [
+        32
+      ],
       "min": 550
     },
     {
-      "axles": [33],
+      "axles": [
+        33
+      ],
       "min": 600
     }
   ],
@@ -4265,10 +4313,6 @@
             }
           }
         ]
-      },
-      {
-        "id": "accessory",
-        "name": "Accessory trailer such as jeep or booster, to be used alongside other trailers. Not permittable on its own as a trailer in a combination."
       },
       {
         "id": "pseudo",
@@ -5102,7 +5146,7 @@
       {
         "id": "BOOSTER",
         "name": "Boosters",
-        "category": "accessory",
+        "category": "booster",
         "ignoreForSizeDimensions": true,
         "defaultWeightDimensions": [
           {
@@ -5143,11 +5187,19 @@
         ],
         "interaxleSpacings": [
           {
-            "axles": [11, 21, 31],
+            "axles": [
+              11,
+              21,
+              31
+            ],
             "min": 0
           },
           {
-            "axles": [12, 22, 32],
+            "axles": [
+              12,
+              22,
+              32
+            ],
             "maxAxleUnitWeight": 23000,
             "modifier": {
               "category": "semi",
@@ -5156,7 +5208,11 @@
             "min": 420
           },
           {
-            "axles": [13, 23, 33],
+            "axles": [
+              13,
+              23,
+              33
+            ],
             "maxAxleUnitWeight": 28000,
             "modifier": {
               "category": "semi",
@@ -5336,16 +5392,25 @@
       {
         "id": "JEEPSRG",
         "name": "Jeeps",
-        "category": "accessory",
+        "category": "jeep",
         "ignoreForSizeDimensions": true,
         "displayCode": "J",
         "interaxleSpacings": [
           {
-            "axles": [11, 21, 31],
+            "axles": [
+              11,
+              21,
+              31
+            ],
             "min": 120
           },
           {
-            "axles": [22, 32, 23, 33],
+            "axles": [
+              22,
+              32,
+              23,
+              33
+            ],
             "min": 420
           }
         ]
@@ -5401,7 +5466,7 @@
       {
         "id": "MHMBSHL",
         "name": "Manufactured Homes, Modular Buildings, Structures and Houseboats (<= 5.0 m OAW) with Attached Axles",
-        "category": "trailer",
+        "category": "pony",
         "displayCode": "T"
       },
       {
@@ -5646,7 +5711,7 @@
       {
         "id": "STSTEER",
         "name": "Semi-Trailers - Steering Trailers",
-        "category": "semi",
+        "category": "steering",
         "displayCode": "T"
       },
       {
@@ -5670,7 +5735,7 @@
       {
         "id": "STWIDWH",
         "name": "Semi-Trailers - Wide Wheelers",
-        "category": "wheeler",
+        "category": "wide-wheelers",
         "displayCode": "T"
       },
       {
@@ -10495,22 +10560,6 @@
         },
         {
           "type": "PICKRTT",
-          "weightDimensions": [
-            {
-              "axles": 11,
-              "saLegal": 9100,
-              "saPermittable": 9100,
-              "daLegal": 9100,
-              "daPermittable": 11000
-            },
-            {
-              "axles": 13,
-              "saLegal": 9100,
-              "saPermittable": 9100,
-              "daLegal": 24000,
-              "daPermittable": 28000
-            }
-          ],
           "weightDimensions": [
             {
               "axles": 11,

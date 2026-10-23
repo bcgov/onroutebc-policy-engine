@@ -4,12 +4,12 @@ import currentConfig from '../policy-config/_current-config.json';
 import testStow from '../permit-app/test-stow.json';
 import { PolicyCheckId, PolicyCheckResultType } from '../../enum';
 import { calculateOverload } from '../../helper/overload.helper';
-import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
+import { POWER_UNITS } from '../../constants/power-units';
 
 const createPermit = (licensedGVW: number, distance: number) => {
   const permit = structuredClone(testStow);
   permit.permitData.vehicleDetails.vehicleSubType =
-    POWER_UNIT_CODES.CRANES_ALL_TERRAIN;
+    POWER_UNITS.CRANES_ALL_TERRAIN.id;
   permit.permitData.vehicleDetails.licensedGVW = licensedGVW;
   permit.permitData.vehicleConfiguration.trailers = [];
   permit.permitData.vehicleConfiguration.axleConfiguration = [
@@ -57,7 +57,7 @@ describe('ORV2-5692 STOW fee uses the selected OCD overload', () => {
     const policy = new Policy(currentConfig);
     const permit = createPermit(34000 - overload, distance);
     const axleResults = policy.runAxleCalculation(
-      [POWER_UNIT_CODES.CRANES_ALL_TERRAIN],
+      [POWER_UNITS.CRANES_ALL_TERRAIN.id],
       permit.permitData.vehicleConfiguration.axleConfiguration,
       permit.permitData.vehicleDetails.licensedGVW,
       COMMODITY_CODES.NONE,
@@ -102,7 +102,7 @@ describe('ORV2-5692 STOW fee uses the selected OCD overload', () => {
     const policy = new Policy(currentConfig);
     const permit = createPermit(60000, 1000);
     const axleResults = policy.runAxleCalculation(
-      [POWER_UNIT_CODES.CRANES_ALL_TERRAIN],
+      [POWER_UNITS.CRANES_ALL_TERRAIN.id],
       permit.permitData.vehicleConfiguration.axleConfiguration,
       60000,
       COMMODITY_CODES.NONE,

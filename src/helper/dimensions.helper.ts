@@ -1,9 +1,5 @@
 import { matchesPermittableAxleSpread } from './permittable-axle-spread.helper';
-import {
-  AccessoryVehicleType,
-  RelativePosition,
-  VehicleCategory,
-} from 'onroute-policy-engine/enum';
+import { RelativePosition } from 'onroute-policy-engine/enum';
 import { Policy } from 'onroute-policy-engine';
 import {
   AxleConfiguration,
@@ -17,6 +13,8 @@ import {
   VehicleType,
   WeightDimension,
 } from 'onroute-policy-engine/types';
+import { VEHICLE_CATEGORIES } from '../constants/vehicle-categories';
+import { TRAILERS } from '../constants/trailers';
 
 /**
  * Gets the maximum size dimensions for a given permit type, commodity,
@@ -447,7 +445,7 @@ export function selectCorrectWeightDimensionHelper(
   // Keep the existing Tridem allowance limited to no Booster or a Single Booster.
   const boosterQualifies =
     axleUnit.numberOfAxles !== 3 ||
-    configuration[nextVehicleIndex] !== AccessoryVehicleType.Booster ||
+    configuration[nextVehicleIndex] !== TRAILERS.BOOSTER.id ||
     boosterAxle?.numberOfAxles === 1;
 
   for (const weightDimension of weightDimensions) {
@@ -768,7 +766,7 @@ function walk(
   let vehicleType: VehicleType | null = null;
   while (i >= 0 && i < configuration.length) {
     const nextType = policy.getVehicleDefinition(configuration[i]);
-    if (nextType && nextType.category !== VehicleCategory.Pseudo) {
+    if (nextType && nextType.category !== VEHICLE_CATEGORIES.PSEUDO) {
       vehicleType = nextType;
       break;
     }

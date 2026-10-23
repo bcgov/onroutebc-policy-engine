@@ -1,4 +1,3 @@
-import { VehicleCategory } from 'onroute-policy-engine/enum';
 import {
   AxleConfiguration,
   IndexedAxleConfiguration,
@@ -8,6 +7,7 @@ import {
   VehicleType,
   VehicleTypes,
 } from 'onroute-policy-engine/types';
+import { VEHICLE_CATEGORIES } from '../constants/vehicle-categories';
 
 /**
  * Filters out all LCV vehicles from a supplied list of vehicle IDs.
@@ -51,14 +51,14 @@ export function filterVehiclesByType(
   type: string,
 ): Array<string> {
   if (
-    type !== VehicleCategory.PowerUnit.toString() &&
-    type !== VehicleCategory.Trailer.toString()
+    type !== VEHICLE_CATEGORIES.POWER_UNIT &&
+    type !== VEHICLE_CATEGORIES.TRAILER
   ) {
     throw new Error(`Cannot filter based on invalid type '${type}'`);
   }
 
   let targetVehicleTypes;
-  if (type === VehicleCategory.PowerUnit) {
+  if (type === VEHICLE_CATEGORIES.POWER_UNIT) {
     targetVehicleTypes = vehicleTypes.powerUnitTypes;
   } else {
     targetVehicleTypes = vehicleTypes.trailerTypes;

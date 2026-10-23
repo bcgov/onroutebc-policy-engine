@@ -1,9 +1,9 @@
 import { Policy } from 'onroute-policy-engine';
 import completePolicyConfig from '../_test/policy-config/_current-config.json';
 import { COMMODITY_CODES } from '../constants/commodity-codes';
-import { POWER_UNIT_CODES } from '../constants/power-unit-codes';
-import { TRAILER_CODES } from '../constants/trailer-codes';
 import { PERMIT_CODES } from '../constants/permit-codes';
+import { POWER_UNITS } from '../constants/power-units';
+import { TRAILERS } from '../constants/trailers';
 
 function start() {
   const policy: Policy = new Policy(completePolicyConfig);
@@ -21,7 +21,9 @@ function start() {
   );
 
   console.log('***COMMODITIES FOR STOS***');
-  const stosCommodities = policy.getCommodities(PERMIT_CODES.SINGLE_TRIP_OVERSIZE);
+  const stosCommodities = policy.getCommodities(
+    PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
+  );
   console.log(
     JSON.stringify(Array.from(stosCommodities.entries()), null, '   '),
   );
@@ -60,18 +62,22 @@ function start() {
   const vehicleTypes2 = policy.getNextPermittableVehicles(
     PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
     COMMODITY_CODES.EMPTY,
-    [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.JEEPS],
+    [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.JEEPS.id],
   );
   console.log(JSON.stringify(Array.from(vehicleTypes2.entries()), null, '   '));
 
   console.log(
     '***MAX SIZE FOR TRUCK TRACTOR, JEEP, HIBOEXP, STOS AND EMPTYXX***',
   );
-  const sizeDimension = policy.getSizeDimension(PERMIT_CODES.SINGLE_TRIP_OVERSIZE, COMMODITY_CODES.EMPTY, [
-    POWER_UNIT_CODES.TRUCK_TRACTORS,
-    TRAILER_CODES.JEEPS,
-    TRAILER_CODES.HIBOYS_EXPANDOS,
-  ]);
+  const sizeDimension = policy.getSizeDimension(
+    PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
+    COMMODITY_CODES.EMPTY,
+    [
+      POWER_UNITS.TRUCK_TRACTORS.id,
+      TRAILERS.JEEPS.id,
+      TRAILERS.HIBOYS_EXPANDOS.id,
+    ],
+  );
   console.log(JSON.stringify(sizeDimension, null, '   '));
 
   console.log(
@@ -81,9 +87,9 @@ function start() {
     PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
     COMMODITY_CODES.EMPTY,
     [
-      POWER_UNIT_CODES.TRUCK_TRACTORS,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.HIBOYS_EXPANDOS,
+      POWER_UNITS.TRUCK_TRACTORS.id,
+      TRAILERS.JEEPS.id,
+      TRAILERS.HIBOYS_EXPANDOS.id,
     ],
     ['PCE'],
   );
@@ -96,9 +102,9 @@ function start() {
     PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
     COMMODITY_CODES.EMPTY,
     [
-      POWER_UNIT_CODES.TRUCK_TRACTORS,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.HIBOYS_EXPANDOS,
+      POWER_UNITS.TRUCK_TRACTORS.id,
+      TRAILERS.JEEPS.id,
+      TRAILERS.HIBOYS_EXPANDOS.id,
     ],
     ['PCE', 'BCD'],
   );
@@ -111,9 +117,9 @@ function start() {
     PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
     COMMODITY_CODES.EMPTY,
     [
-      POWER_UNIT_CODES.TRUCK_TRACTORS,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
+      POWER_UNITS.TRUCK_TRACTORS.id,
+      TRAILERS.JEEPS.id,
+      TRAILERS.SEMI_TRAILERS_WHEELERS.id,
     ],
     ['BCD'],
   );
@@ -126,9 +132,9 @@ function start() {
     PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
     COMMODITY_CODES.EMPTY,
     [
-      POWER_UNIT_CODES.TRUCK_TRACTORS,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
+      POWER_UNITS.TRUCK_TRACTORS.id,
+      TRAILERS.JEEPS.id,
+      TRAILERS.SEMI_TRAILERS_WHEELERS.id,
     ],
     ['PCE'],
   );

@@ -1,10 +1,10 @@
 import { COMMODITY_CODES } from '../../constants/commodity-codes';
 import { PERMIT_CODES } from '../../constants/permit-codes';
-import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
-import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { Policy } from '../../policy-engine';
 import { PolicyCheckId, PolicyCheckResultType } from '../../enum/policy-check';
 import currentPolicyConfig from '../policy-config/_current-config.json';
+import { POWER_UNITS } from '../../constants/power-units';
+import { TRAILERS } from '../../constants/trailers';
 
 // The purpose of this file is to basically add tests for the new PME type, make sure it's there and properly configured.
 // Added on July 2026.
@@ -12,8 +12,8 @@ import currentPolicyConfig from '../policy-config/_current-config.json';
 describe('PME power-unit policy configuration foundation', () => {
   const policy = new Policy(currentPolicyConfig);
   const pmeTypes = [
-    [POWER_UNIT_CODES.TRUCK_WITH_PME, 'Truck with PME'],
-    [POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME, 'Truck Tractor with PME'],
+    [POWER_UNITS.TRUCK_WITH_PME.id, 'Truck with PME'],
+    [POWER_UNITS.TRUCK_TRACTOR_WITH_PME.id, 'Truck Tractor with PME'],
   ] as const;
 
   const normalizePowerUnitEligibility = (powerUnit: {
@@ -28,7 +28,7 @@ describe('PME power-unit policy configuration foundation', () => {
     'defines %s with the expected name and PICKRTT display metadata',
     (vehicleType, expectedName) => {
       const pickerTruckTractor = policy.getPowerUnitDefinition(
-        POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+        POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
       );
       const pmePowerUnit = policy.getPowerUnitDefinition(vehicleType);
 
@@ -52,7 +52,7 @@ describe('PME power-unit policy configuration foundation', () => {
           policy.getDefaultPowerUnitWeight(vehicleType, axleConfiguration),
         ).toEqual(
           policy.getDefaultPowerUnitWeight(
-            POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+            POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
             axleConfiguration,
           ),
         );
@@ -62,9 +62,9 @@ describe('PME power-unit policy configuration foundation', () => {
 
   // Over Weight Dimension Set, commodity None, Tandem/Tridem: picker steer permits 17,000; separate PME types 15,200.
   describe.each([
-    [POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS, 17000],
-    [POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME, 15200],
-    [POWER_UNIT_CODES.TRUCK_WITH_PME, 15200],
+    [POWER_UNITS.PICKER_TRUCK_TRACTORS.id, 17000],
+    [POWER_UNITS.TRUCK_TRACTOR_WITH_PME.id, 15200],
+    [POWER_UNITS.TRUCK_WITH_PME.id, 15200],
   ] as const)('%s Tandem/Tridem limits', (vehicleType, steerPermittable) => {
     it('preserves legal and drive limits alongside the subtype steer permit limit', () => {
       expect(policy.getDefaultPowerUnitWeight(vehicleType, 23)).toEqual([
@@ -135,12 +135,10 @@ describe('PME power-unit policy configuration foundation', () => {
         commodityType,
       );
 
+      expect(powerUnits.keys()).toContain(POWER_UNITS.PICKER_TRUCK_TRACTORS.id);
+      expect(powerUnits.keys()).toContain(POWER_UNITS.TRUCK_WITH_PME.id);
       expect(powerUnits.keys()).toContain(
-        POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
-      );
-      expect(powerUnits.keys()).toContain(POWER_UNIT_CODES.TRUCK_WITH_PME);
-      expect(powerUnits.keys()).toContain(
-        POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
+        POWER_UNITS.TRUCK_TRACTOR_WITH_PME.id,
       );
     },
   );
@@ -152,7 +150,7 @@ describe('PME power-unit policy configuration foundation', () => {
         policy.isConfigurationValid(
           PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
           COMMODITY_CODES.NON_REDUCIBLE_LOADS,
-          [vehicleType, TRAILER_CODES.SEMI_TRAILERS],
+          [vehicleType, TRAILERS.SEMI_TRAILERS.id],
           false,
         ),
       ).toBe(true);
@@ -162,15 +160,14 @@ describe('PME power-unit policy configuration foundation', () => {
   it('clones normalized PICKRTT commodity and trailer eligibility for both PME types', () => {
     for (const commodity of currentPolicyConfig.commodities) {
       const pickerTruckTractor = commodity.powerUnits.find(
-        (powerUnit) =>
-          powerUnit.type === POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+        (powerUnit) => powerUnit.type === POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
       );
 
       if (!pickerTruckTractor) {
         const hasPME = commodity.powerUnits.some(
           ({ type }) =>
-            type === POWER_UNIT_CODES.TRUCK_WITH_PME ||
-            type === POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
+            type === POWER_UNITS.TRUCK_WITH_PME.id ||
+            type === POWER_UNITS.TRUCK_TRACTOR_WITH_PME.id,
         );
         expect(hasPME).toBe(false);
         continue;
@@ -189,11 +186,11 @@ describe('PME power-unit policy configuration foundation', () => {
 
   it('clones PICKRTT permit allowed-vehicle eligibility without changing PICKRTT', () => {
     const pickerDefinition = policy.getPowerUnitDefinition(
-      POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+      POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
     );
 
     expect(pickerDefinition).toMatchObject({
-      id: POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+      id: POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
       name: 'Picker Truck Tractors',
       category: 'powerunit',
       displayCodePrefix: 'TT',
@@ -204,7 +201,7 @@ describe('PME power-unit policy configuration foundation', () => {
       policy.isConfigurationValid(
         PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
         COMMODITY_CODES.NON_REDUCIBLE_LOADS,
-        [POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS],
+        [POWER_UNITS.PICKER_TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id],
         false,
       ),
     ).toBe(true);
@@ -212,7 +209,7 @@ describe('PME power-unit policy configuration foundation', () => {
     for (const permitType of currentPolicyConfig.permitTypes) {
       if (
         !permitType.allowedVehicles?.includes(
-          POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+          POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
         )
       ) {
         continue;
@@ -220,8 +217,8 @@ describe('PME power-unit policy configuration foundation', () => {
 
       expect(permitType.allowedVehicles).toEqual(
         expect.arrayContaining([
-          POWER_UNIT_CODES.TRUCK_WITH_PME,
-          POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
+          POWER_UNITS.TRUCK_WITH_PME.id,
+          POWER_UNITS.TRUCK_TRACTOR_WITH_PME.id,
         ]),
       );
     }

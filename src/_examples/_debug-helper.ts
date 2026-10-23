@@ -1,11 +1,14 @@
 import { Policy } from 'onroute-policy-engine';
 import completePolicyConfig from '../_test/policy-config/_current-config.json';
+import { PERMIT_CODES } from '../constants/permit-codes';
 
 function start() {
   const policy: Policy = new Policy(completePolicyConfig);
   //console.log(JSON.stringify(policy.policyDefinition));
 
-  const allVehicles = policy.getPermittableVehicleTypes('QRFR');
+  const allVehicles = policy.getPermittableVehicleTypes(
+    PERMIT_CODES.QUARTERLY_ICBC_BASIC_INSURANCE_FR,
+  );
   const powerUnits: any = allVehicles.get('powerUnits');
   const trailers: any = allVehicles.get('trailers');
   console.log('***POWER UNIT TYPES FOR QRFR***');
@@ -35,20 +38,20 @@ function start() {
   );
 
   console.log('***COMMODITIES FOR STOS***');
-  const stosCommodities = policy.getCommodities('STOS');
+  const stosCommodities = policy.getCommodities(PERMIT_CODES.SINGLE_TRIP_OVERSIZE);
   console.log(
     JSON.stringify(Array.from(stosCommodities.entries()), null, '   '),
   );
 
   console.log('***POWER UNITS PERMITTABLE FOR STOS AND EMPTY COMMODITY***');
-  const puTypesEmpty = policy.getPermittablePowerUnitTypes('STOS', 'EMPTYXX');
+  const puTypesEmpty = policy.getPermittablePowerUnitTypes(PERMIT_CODES.SINGLE_TRIP_OVERSIZE, 'EMPTYXX');
   console.log(JSON.stringify(Array.from(puTypesEmpty.entries()), null, '   '));
 
   console.log(
     '***POWER UNITS PERMITTABLE FOR STOS AND BRIDGE BEAMS COMMODITY***',
   );
   const puTypesBridgeBeams = policy.getPermittablePowerUnitTypes(
-    'STOS',
+    PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
     'BRGBEAM',
   );
   console.log(
@@ -59,7 +62,7 @@ function start() {
     '***PERMITTABLE NEXT VEHICLES WITH EMPTY CONFIGURATION, STOS AND EMPTY***',
   );
   const vehicleTypes1 = policy.getNextPermittableVehicles(
-    'STOS',
+    PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
     'EMPTYXX',
     [],
   );
@@ -68,28 +71,28 @@ function start() {
   console.log(
     '***PERMITTABLE NEXT VEHICLES WITH TRUCK TRACTOR AND JEEP, STOS AND EMPTY***',
   );
-  const vehicleTypes2 = policy.getNextPermittableVehicles('STOS', 'EMPTYXX', [
-    'TRKTRAC',
-    'JEEPSRG',
+  const vehicleTypes2 = policy.getNextPermittableVehicles(PERMIT_CODES.SINGLE_TRIP_OVERSIZE, 'EMPTYXX', [
+    POWER_UNIT_CODES.TRUCK_TRACTORS,
+    TRAILER_CODES.JEEPS,
   ]);
   console.log(JSON.stringify(Array.from(vehicleTypes2.entries()), null, '   '));
 
   console.log(
     '***MAX SIZE FOR TRUCK TRACTOR, JEEP, HIBOEXP, STOS AND EMPTYXX***',
   );
-  const sizeDimension = policy.getSizeDimension('STOS', 'EMPTYXX', ['TRKTRAC', 'JEEPSRG', 'HIBOEXP']);
+  const sizeDimension = policy.getSizeDimension(PERMIT_CODES.SINGLE_TRIP_OVERSIZE, 'EMPTYXX', [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.JEEPS, TRAILER_CODES.HIBOYS_EXPANDOS]);
   console.log(JSON.stringify(sizeDimension, null, '   '));
 
   console.log(
     '***MAX SIZE FOR TRUCK TRACTOR, JEEP, HIBOEXP, STOS AND EMPTYXX IN PEACE***',
   );
-  const sizeDimensionPeace = policy.getSizeDimension('STOS', 'EMPTYXX', ['TRKTRAC', 'JEEPSRG', 'HIBOEXP'], ['PCE']);
+  const sizeDimensionPeace = policy.getSizeDimension(PERMIT_CODES.SINGLE_TRIP_OVERSIZE, 'EMPTYXX', [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.JEEPS, TRAILER_CODES.HIBOYS_EXPANDOS], ['PCE']);
   console.log(JSON.stringify(sizeDimensionPeace, null, '   '));
 
   console.log(
     '***MAX SIZE FOR TRUCK TRACTOR, JEEP, HIBOEXP, STOS AND EMPTYXX IN PEACE,BC DEFAULT***',
   );
-  const sizeDimensionPeaceBC = policy.getSizeDimension('STOS', 'EMPTYXX', ['TRKTRAC', 'JEEPSRG', 'HIBOEXP'], ['PCE','BCD']);
+  const sizeDimensionPeaceBC = policy.getSizeDimension(PERMIT_CODES.SINGLE_TRIP_OVERSIZE, 'EMPTYXX', [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.JEEPS, TRAILER_CODES.HIBOYS_EXPANDOS], ['PCE','BCD']);
   console.log(JSON.stringify(sizeDimensionPeaceBC, null, '   '));
   */
 }

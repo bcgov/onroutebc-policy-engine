@@ -4,6 +4,7 @@ import { AxleConfiguration } from '../types/axle-configuration';
 import { InteraxleSpacingRequirement } from '../types/interaxle-spacing-requirement';
 import { formatMeters } from './format-meters.helper';
 import { getVehicleRelatives } from './dimensions.helper';
+import { RelativePosition } from '../enum';
 
 export function getFailedInteraxleSpacingMessage(
   requirement: InteraxleSpacingRequirement,
@@ -142,7 +143,7 @@ export function selectCorrectInteraxleSpacingRequirementHelper(
       continue;
     }
 
-    if (modifier.position === 'before') {
+    if (modifier.position === RelativePosition.Before) {
       isMatch =
         matcher == (isTypeMatch ? relatives.prevType : relatives.prevCategory);
 
@@ -151,7 +152,7 @@ export function selectCorrectInteraxleSpacingRequirementHelper(
       }
     }
 
-    if (modifier.position === 'after') {
+    if (modifier.position === RelativePosition.After) {
       const nextAxleUnit = axleConfiguration[axleIndex + 1];
       if (!nextAxleUnit) {
         continue;
