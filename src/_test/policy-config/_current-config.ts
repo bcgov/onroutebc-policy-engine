@@ -5734,6 +5734,7 @@ export const data: PolicyDefinition = {
       {
         id: TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
         name: 'Semi-Trailers - Wide Wheelers',
+        // TODO the category for this trailer has been updated from 'wheeler' to 'wider-wheelers' in accordance with the OWDS. This causes a single test to fail (see TODO in semi-tandem-configured-weight.spec)
         category: VEHICLE_CATEGORIES.WIDE_WHEELERS,
         displayCode: 'T',
       },

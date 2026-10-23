@@ -133,6 +133,7 @@ describe('configured pony and wheeler tandem weights', () => {
     [TRAILER_CODES.PONY_TRAILERS, 'pony', 19500],
     [TRAILER_CODES.PONY_TRAILERS, 'pony', 0],
     [TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS, 'wheeler', 31500],
+    // TODO the category for this trailer has been updated from 'wheeler' to 'wider-wheelers' in accordance with the OWDS. This causes this test to fail
     [TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS, 'wheeler', 0],
   ])(
     'reads %s category %s tandem limit %i kg',
