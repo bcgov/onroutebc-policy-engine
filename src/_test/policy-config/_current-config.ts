@@ -9,25 +9,26 @@ import {
   ValidationResultCode,
   ValidationResultType,
 } from '../../enum';
+import { GEOGRAPHIC_REGIONS } from '../../constants/geographic-regions';
 
 export const data: PolicyDefinition = {
   minPEVersion: '2.0.0',
   geographicRegions: [
     {
-      id: 'LMN',
-      name: 'Lower Mainland',
+      id: GEOGRAPHIC_REGIONS.LOWER_MAINLAND.id,
+      name: GEOGRAPHIC_REGIONS.LOWER_MAINLAND.name,
     },
     {
-      id: 'ELK',
-      name: 'Elk Valley',
+      id: GEOGRAPHIC_REGIONS.ELK_VALLEY.id,
+      name: GEOGRAPHIC_REGIONS.ELK_VALLEY.name,
     },
     {
-      id: 'YHO',
-      name: 'Yoho',
+      id: GEOGRAPHIC_REGIONS.YOHO.id,
+      name: GEOGRAPHIC_REGIONS.YOHO.name,
     },
     {
-      id: 'PCE',
-      name: 'Peace',
+      id: GEOGRAPHIC_REGIONS.PEACE.id,
+      name: GEOGRAPHIC_REGIONS.PEACE.name,
     },
   ],
   rangeMatrices: [
@@ -5984,19 +5985,19 @@ export const data: PolicyDefinition = {
                   l: 31,
                   regions: [
                     {
-                      region: 'LMN',
+                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND.id,
                       l: 23,
                     },
                     {
-                      region: 'ELK',
+                      region: GEOGRAPHIC_REGIONS.ELK_VALLEY.id,
                       l: 23,
                     },
                     {
-                      region: 'YHO',
+                      region: GEOGRAPHIC_REGIONS.YOHO.id,
                       l: 23,
                     },
                     {
-                      region: 'PCE',
+                      region: GEOGRAPHIC_REGIONS.PEACE.id,
                       h: 5.33,
                     },
                   ],
@@ -6178,19 +6179,19 @@ export const data: PolicyDefinition = {
                   l: 12.5,
                   regions: [
                     {
-                      region: 'LMN',
+                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND.id,
                       h: 4.3,
                     },
                     {
-                      region: 'ELK',
+                      region: GEOGRAPHIC_REGIONS.ELK_VALLEY.id,
                       h: 4.3,
                     },
                     {
-                      region: 'YHO',
+                      region: GEOGRAPHIC_REGIONS.YOHO.id,
                       h: 4.3,
                     },
                     {
-                      region: 'PCE',
+                      region: GEOGRAPHIC_REGIONS.PEACE.id,
                       h: 5.33,
                     },
                   ],
@@ -6596,19 +6597,19 @@ export const data: PolicyDefinition = {
                   l: 12.5,
                   regions: [
                     {
-                      region: 'LMN',
+                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND.id,
                       h: 4.3,
                     },
                     {
-                      region: 'ELK',
+                      region: GEOGRAPHIC_REGIONS.ELK_VALLEY.id,
                       h: 4.3,
                     },
                     {
-                      region: 'YHO',
+                      region: GEOGRAPHIC_REGIONS.YOHO.id,
                       h: 4.3,
                     },
                     {
-                      region: 'PCE',
+                      region: GEOGRAPHIC_REGIONS.PEACE.id,
                       h: 4.3,
                     },
                   ],
@@ -9101,7 +9102,7 @@ export const data: PolicyDefinition = {
                   l: 31,
                   regions: [
                     {
-                      region: 'LMN',
+                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND.id,
                       h: 4.15,
                     },
                     {
@@ -9128,7 +9129,7 @@ export const data: PolicyDefinition = {
                   l: 27.5,
                   regions: [
                     {
-                      region: 'LMN',
+                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND.id,
                       h: 4.15,
                     },
                     {
@@ -9155,7 +9156,7 @@ export const data: PolicyDefinition = {
                   l: 31,
                   regions: [
                     {
-                      region: 'LMN',
+                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND.id,
                       h: 4.15,
                     },
                     {
@@ -9182,7 +9183,7 @@ export const data: PolicyDefinition = {
                   l: 27.5,
                   regions: [
                     {
-                      region: 'LMN',
+                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND.id,
                       h: 4.15,
                     },
                     {
@@ -9216,7 +9217,7 @@ export const data: PolicyDefinition = {
                   l: 27.5,
                   regions: [
                     {
-                      region: 'LMN',
+                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND.id,
                       h: 4.15,
                     },
                     {
@@ -9982,19 +9983,19 @@ export const data: PolicyDefinition = {
                   l: 23,
                   regions: [
                     {
-                      region: 'LMN',
+                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND.id,
                       h: 4.3,
                     },
                     {
-                      region: 'ELK',
+                      region: GEOGRAPHIC_REGIONS.ELK_VALLEY.id,
                       h: 4.3,
                     },
                     {
-                      region: 'YHO',
+                      region: GEOGRAPHIC_REGIONS.YOHO.id,
                       h: 4.3,
                     },
                     {
-                      region: 'PCE',
+                      region: GEOGRAPHIC_REGIONS.PEACE.id,
                       h: 4.8,
                     },
                   ],
@@ -10049,11 +10050,11 @@ export const data: PolicyDefinition = {
                   l: 23,
                   regions: [
                     {
-                      region: 'YHO',
+                      region: GEOGRAPHIC_REGIONS.YOHO.id,
                       h: 4.8,
                     },
                     {
-                      region: 'PCE',
+                      region: GEOGRAPHIC_REGIONS.PEACE.id,
                       w: 3.84,
                       h: 4.8,
                     },
@@ -10076,11 +10077,11 @@ export const data: PolicyDefinition = {
                   l: 12.5,
                   regions: [
                     {
-                      region: 'YHO',
+                      region: GEOGRAPHIC_REGIONS.YOHO.id,
                       h: 4.8,
                     },
                     {
-                      region: 'PCE',
+                      region: GEOGRAPHIC_REGIONS.PEACE.id,
                       w: 3.84,
                       h: 4.8,
                     },
@@ -10103,11 +10104,11 @@ export const data: PolicyDefinition = {
                   l: 23,
                   regions: [
                     {
-                      region: 'YHO',
+                      region: GEOGRAPHIC_REGIONS.YOHO.id,
                       h: 4.8,
                     },
                     {
-                      region: 'PCE',
+                      region: GEOGRAPHIC_REGIONS.PEACE.id,
                       w: 3.84,
                       h: 4.8,
                     },
@@ -10135,11 +10136,11 @@ export const data: PolicyDefinition = {
                   l: 26,
                   regions: [
                     {
-                      region: 'YHO',
+                      region: GEOGRAPHIC_REGIONS.YOHO.id,
                       h: 4.8,
                     },
                     {
-                      region: 'PCE',
+                      region: GEOGRAPHIC_REGIONS.PEACE.id,
                       w: 3.84,
                       h: 4.8,
                     },
@@ -10162,11 +10163,11 @@ export const data: PolicyDefinition = {
                   l: 27.5,
                   regions: [
                     {
-                      region: 'YHO',
+                      region: GEOGRAPHIC_REGIONS.YOHO.id,
                       h: 4.8,
                     },
                     {
-                      region: 'PCE',
+                      region: GEOGRAPHIC_REGIONS.PEACE.id,
                       w: 3.84,
                       h: 4.8,
                     },
@@ -10189,11 +10190,11 @@ export const data: PolicyDefinition = {
                   l: 23,
                   regions: [
                     {
-                      region: 'YHO',
+                      region: GEOGRAPHIC_REGIONS.YOHO.id,
                       h: 4.8,
                     },
                     {
-                      region: 'PCE',
+                      region: GEOGRAPHIC_REGIONS.PEACE.id,
                       w: 3.84,
                       h: 4.8,
                     },
@@ -10216,11 +10217,11 @@ export const data: PolicyDefinition = {
                   l: 23,
                   regions: [
                     {
-                      region: 'YHO',
+                      region: GEOGRAPHIC_REGIONS.YOHO.id,
                       h: 4.8,
                     },
                     {
-                      region: 'PCE',
+                      region: GEOGRAPHIC_REGIONS.PEACE.id,
                       w: 3.84,
                       h: 4.8,
                     },
@@ -11889,19 +11890,19 @@ export const data: PolicyDefinition = {
                   l: 25,
                   regions: [
                     {
-                      region: 'LMN',
+                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND.id,
                       h: 4.3,
                     },
                     {
-                      region: 'ELK',
+                      region: GEOGRAPHIC_REGIONS.ELK_VALLEY.id,
                       h: 4.3,
                     },
                     {
-                      region: 'YHO',
+                      region: GEOGRAPHIC_REGIONS.YOHO.id,
                       h: 4.3,
                     },
                     {
-                      region: 'PCE',
+                      region: GEOGRAPHIC_REGIONS.PEACE.id,
                       h: 4.88,
                     },
                   ],
