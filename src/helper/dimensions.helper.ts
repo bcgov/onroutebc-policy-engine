@@ -1,4 +1,9 @@
-import { RelativePosition, VehicleCategory } from 'onroute-policy-engine/enum';
+import { matchesPermittableAxleSpread } from './permittable-axle-spread.helper';
+import {
+  AccessoryVehicleType,
+  RelativePosition,
+  VehicleCategory,
+} from 'onroute-policy-engine/enum';
 import { Policy } from 'onroute-policy-engine';
 import {
   AxleConfiguration,
@@ -198,7 +203,6 @@ export function selectCorrectSizeDimension(
         // This dimension has no modifiers, so it is the default if none of
         // the other specific modifiers match.
         matchingDimension = sizeDimension;
-        console.log('Using default size dimension, no modifiers specified');
       } else {
         const sizeTrailerIndex = configuration.findIndex(
           (c) => sizeTrailer == c,
@@ -403,9 +407,11 @@ export function selectCorrectWeightDimensionHelper(
   const hasVehicleIndexes = axleConfiguration.some(
     (axleUnit) => axleUnit.vehicleIndex !== undefined,
   );
+
   const axleUnitVehicleIndexes = hasVehicleIndexes
     ? getAxleUnitVehicleIndexes(policy, configuration, axleConfiguration)
     : undefined;
+
   const powerUnitAxleUnitCount = axleUnitVehicleIndexes
     ? axleUnitVehicleIndexes.filter((vehicleIndex) => vehicleIndex === 0).length
     : 2;
@@ -430,10 +436,33 @@ export function selectCorrectWeightDimensionHelper(
     axleUnitVehicleIndexes,
   );
 
+  const axleUnit = axleConfiguration[axleIndex];
+  const vehicleIndex = axleUnitVehicleIndexes?.[axleIndex] ?? axleIndex - 1;
+  const nextVehicleIndex = vehicleIndex + 1;
+  const boosterAxle = axleConfiguration.find(
+    (_, index) =>
+      index > axleIndex &&
+      (axleUnitVehicleIndexes?.[index] ?? index - 1) === nextVehicleIndex,
+  );
+  // Keep the existing Tridem allowance limited to no Booster or a Single Booster.
+  const boosterQualifies =
+    axleUnit.numberOfAxles !== 3 ||
+    configuration[nextVehicleIndex] !== AccessoryVehicleType.Booster ||
+    boosterAxle?.numberOfAxles === 1;
+
   for (const weightDimension of weightDimensions) {
+    const spread = (weightDimension as TrailerWeightDimension)
+      .permittableAxleSpread;
+    if (
+      spread &&
+      (!boosterQualifies ||
+        !matchesPermittableAxleSpread(axleUnit.axleSpread, spread))
+    ) {
+      continue;
+    }
     // Just renaming this for conciseness
-    const m = weightDimension.modifier;
-    if (!m) {
+    const modifier = weightDimension.modifier;
+    if (!modifier) {
       // This dimension has no modifiers, so it is the default
       if (axleIndex < powerUnitAxleUnitCount) {
         const pwd = weightDimension as PowerUnitWeightDimension;
@@ -451,15 +480,15 @@ export function selectCorrectWeightDimensionHelper(
     } else {
       let isMatch = false;
       // We can match by vehicle type or vehicle category
-      let matcher = m.type;
+      let matcher = modifier.type;
       let isTypeMatch = true;
       if (!matcher) {
-        matcher = m.category;
+        matcher = modifier.category;
         isTypeMatch = false;
       }
 
       if (matcher) {
-        switch (m.position) {
+        switch (modifier.position) {
           case RelativePosition.First.toString():
             isMatch =
               matcher ==
@@ -474,23 +503,24 @@ export function selectCorrectWeightDimensionHelper(
             isMatch =
               matcher ==
               (isTypeMatch ? relatives.prevType : relatives.prevCategory);
-            if (isMatch && m.axles) {
+            if (isMatch && modifier.axles) {
               isMatch =
-                m.axles == axleConfiguration[axleIndex - 1].numberOfAxles;
+                modifier.axles ==
+                axleConfiguration[axleIndex - 1].numberOfAxles;
             }
-            const spacingFromPrev =
+            const spacingFromCurrent =
               axleConfiguration[axleIndex].interaxleSpacing;
-            if (!spacingFromPrev) {
+            if (!spacingFromCurrent) {
               console.log(
                 `Axle configuration incorrect, missing interaxle spacing`,
               );
               isMatch = false;
               break;
-            } else if (isMatch && m.minInterAxleSpacing) {
-              isMatch = m.minInterAxleSpacing <= spacingFromPrev;
+            } else if (isMatch && modifier.minInteraxleSpacing) {
+              isMatch = modifier.minInteraxleSpacing <= spacingFromCurrent;
             }
-            if (isMatch && m.maxInterAxleSpacing) {
-              isMatch = m.maxInterAxleSpacing >= spacingFromPrev;
+            if (isMatch && modifier.maxInteraxleSpacing) {
+              isMatch = modifier.maxInteraxleSpacing >= spacingFromCurrent;
             }
             break;
           }
@@ -501,23 +531,21 @@ export function selectCorrectWeightDimensionHelper(
             if (!isMatch) {
               break;
             }
-            if (isMatch && m.axles) {
+            if (isMatch && modifier.axles) {
               isMatch =
-                m.axles == axleConfiguration[axleIndex + 1].numberOfAxles;
+                modifier.axles ==
+                axleConfiguration[axleIndex + 1].numberOfAxles;
             }
             const spacingToNext =
               axleConfiguration[axleIndex + 1].interaxleSpacing;
             if (!spacingToNext) {
-              console.log(
-                `Axle configuration incorrect, missing interaxle spacing`,
-              );
               isMatch = false;
               break;
-            } else if (isMatch && m.minInterAxleSpacing) {
-              isMatch = m.minInterAxleSpacing <= spacingToNext;
+            } else if (isMatch && modifier.minInteraxleSpacing) {
+              isMatch = modifier.minInteraxleSpacing <= spacingToNext;
             }
-            if (isMatch && m.maxInterAxleSpacing) {
-              isMatch = m.maxInterAxleSpacing >= spacingToNext;
+            if (isMatch && modifier.maxInteraxleSpacing) {
+              isMatch = modifier.maxInteraxleSpacing >= spacingToNext;
             }
             break;
           }
@@ -535,6 +563,10 @@ export function selectCorrectWeightDimensionHelper(
         const twd = weightDimension as TrailerWeightDimension;
         const { legal, permittable } = twd;
         matchingDimension = { legal, permittable };
+
+        if (modifier.minInteraxleSpacing || modifier.maxInteraxleSpacing) {
+          matchingDimension.hasInteraxleSpacingRestriction = true;
+        }
         break;
       }
     }

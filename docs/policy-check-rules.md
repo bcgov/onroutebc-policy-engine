@@ -136,6 +136,7 @@ const results = policy.runAxleCalculation(
     }, // Trailer axle
   ],
   63500, // Licensed GVW
+  'NONREDU', // Selected commodity ID
 );
 ```
 

@@ -65,5 +65,7 @@ export type {
   TrailerWeightDimension,
   DefaultWeightDimensions,
   SingleAxleDimension,
+  PermittableAxleSpread,
 } from './weight-dimension';
 export type { InteraxleSpacingRequirement } from './interaxle-spacing-requirement';
+export type { InteraxleSpacingModifier } from './interaxle-spacing-modifier';

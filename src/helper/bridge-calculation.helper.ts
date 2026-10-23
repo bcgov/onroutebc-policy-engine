@@ -20,6 +20,8 @@ export function runBridgeFormula(
   policy: Policy,
   axleConfiguration: Array<AxleConfiguration>,
   vehicleConfiguration: Array<string>,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Reserved for the deferred booster bridge exception below.
+  axleUnitVehicleIndexes: Array<number>,
 ): Array<BridgeCalculationResult> {
   const BRIDGE_MULTIPLIER =
     policy.policyDefinition.bridgeCalculationConstants.multiplier;
@@ -46,16 +48,16 @@ export function runBridgeFormula(
     // by then.
     if (index <= axleConfiguration.length) {
       // Initialize the variables for our start axle
-      const currentAxleIdex: number = index + 1;
-      let nextAxleIndex: number = currentAxleIdex + 1;
+      const startAxleIndex: number = index + 1;
+      let endAxleIndex: number = startAxleIndex + 1;
       if (!axle.numberOfAxles || axle.numberOfAxles < 0) {
         throw new Error(
-          `Invalid or missing number of axles for axle unit number ${currentAxleIdex}`,
+          `Invalid or missing number of axles for axle unit number ${startAxleIndex}`,
         );
       }
       if (!axle.axleUnitWeight || axle.axleUnitWeight < 0) {
         throw new Error(
-          `Invalid or missing weight for axle unit number ${currentAxleIdex}`,
+          `Invalid or missing weight for axle unit number ${startAxleIndex}`,
         );
       }
       let totalWeight: number = axle.axleUnitWeight;
@@ -67,7 +69,7 @@ export function runBridgeFormula(
       // unit in the configuration.
       if (axle.numberOfAxles > 1 && (!axle.axleSpread || axle.axleSpread < 0)) {
         throw new Error(
-          `Invalid or missing axle spread for axle unit number ${currentAxleIdex}`,
+          `Invalid or missing axle spread for axle unit number ${startAxleIndex}`,
         );
       }
       if (axle.numberOfAxles == 1 && axle.axleSpread && axle.axleSpread < 0) {
@@ -79,10 +81,10 @@ export function runBridgeFormula(
 
       // Now loop through all of the next axles, building up a group
       // for each.
-      axleConfiguration.slice(currentAxleIdex).forEach((axleN) => {
+      axleConfiguration.slice(startAxleIndex).forEach((axleN) => {
         if (!axleN.axleUnitWeight || axleN.axleUnitWeight < 0) {
           throw new Error(
-            `Invalid or missing weight for axle unit number ${nextAxleIndex}`,
+            `Invalid or missing weight for axle unit number ${endAxleIndex}`,
           );
         }
         totalWeight += axleN.axleUnitWeight;
@@ -91,12 +93,12 @@ export function runBridgeFormula(
           (!axleN.axleSpread || axleN.axleSpread < 0)
         ) {
           throw new Error(
-            `Invalid or missing axle spread for axle unit number ${nextAxleIndex}`,
+            `Invalid or missing axle spread for axle unit number ${endAxleIndex}`,
           );
         }
         if (!axleN.interaxleSpacing || axleN.interaxleSpacing < 0) {
           throw new Error(
-            `Invalid or missing axle spacing between axle units ${currentAxleIdex} and ${nextAxleIndex}`,
+            `Invalid or missing axle spacing between axle units ${startAxleIndex} and ${endAxleIndex}`,
           );
         }
         wheelbase += (axleN.axleSpread ?? 0) + axleN.interaxleSpacing;
@@ -109,8 +111,8 @@ export function runBridgeFormula(
           getAxleUnitType(axleConfiguration[1]?.numberOfAxles) === 'TANDEM';
 
         const driveAxleSpread = axleConfiguration[1]?.axleSpread ?? 0;
-        const isDriveAxle = currentAxleIdex === 1;
-        const isJeepAxle = hasSingleAxleJeep && currentAxleIdex === 2;
+        const isDriveAxle = startAxleIndex === 1;
+        const isJeepAxle = hasSingleAxleJeep && startAxleIndex === 2;
         const firstTrailerInteraxleSpacing =
           axleConfiguration[2]?.interaxleSpacing ?? 0;
 
@@ -144,17 +146,41 @@ export function runBridgeFormula(
           maxBridge = Math.max(formulaMaxBridge, 29000);
         }
 
+        // TODO leaving this code commented for now since we will need to dicuss this with Michael when he returns from vacation
+        /* Source: ASW Permittable Interaxle Spacing - Boosters.feature
+         * @orv2-6030-3 bridge formula result is not applicable
+         */
+        // const startAxleVehicleIndex =
+        //   axleUnitVehicleIndexes[startAxleIndex - 1];
+        // const endAxleVehicleIndex = axleUnitVehicleIndexes[endAxleIndex - 1];
+
+        // const startAxleVehicleType =
+        //   vehicleConfiguration[startAxleVehicleIndex];
+
+        // const endAxleVehicleType = vehicleConfiguration[endAxleVehicleIndex];
+
+        // const isStartAxleVehicleTypeSemiTrailer =
+        //   isSemiTrailerType(startAxleVehicleType);
+
+        // const isEndAxleVehicleTypeBooster =
+        //   endAxleVehicleType === TRAILER_CODES.BOOSTER;
+
+        // const exception =
+        //   isStartAxleVehicleTypeSemiTrailer && isEndAxleVehicleTypeBooster;
+
+        // const exception = false;
+
         // Push the axle group result to the results array, including
         // a convenience success indicator.
         results.push({
-          startAxleUnit: currentAxleIdex,
-          endAxleUnit: nextAxleIndex,
+          startAxleUnit: startAxleIndex,
+          endAxleUnit: endAxleIndex,
           maxBridge: maxBridge,
           actualWeight: totalWeight,
           success: totalWeight <= maxBridge,
         });
 
-        nextAxleIndex++;
+        endAxleIndex++;
       });
     }
     index++;

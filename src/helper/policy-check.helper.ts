@@ -3,6 +3,7 @@ import {
   AxleConfiguration,
   AxleUnitPolicyCheckResult,
   AxleGroupPolicyCheckResult,
+  SingleAxleDimension,
 } from 'onroute-policy-engine/types';
 import { Policy } from 'onroute-policy-engine';
 import {
@@ -17,7 +18,6 @@ import {
   PolicyCheckResultType,
 } from '../enum';
 import { AXLE_WEIGHT_PERMITTABLE_MAXIMUMS } from '../constants/axle-weight-permittable-maximums';
-import { POWER_UNIT_AXLE_CODE_MULTIPLIER } from '../constants/power-unit-axle-code-multiplier';
 import { getAxleSpreadThreshold } from './axle-spread.helper';
 import { isSemiTrailerType } from '../constants/semi-trailer-codes';
 import {
@@ -26,6 +26,7 @@ import {
 } from './interaxle-spacing.helper';
 import { formatMeters } from './format-meters.helper';
 import { POWER_UNIT_CODES } from '../constants/power-unit-codes';
+import { TRAILER_CODES } from '../constants/trailer-codes';
 
 /**
  * Type definition for policy check functions.
@@ -44,6 +45,7 @@ type PolicyCheck = (
   policy: Policy,
   vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
+  commodityId?: string,
 ) => Array<PolicyCheckResult>;
 
 /** Applies the standard lower-of rule or the exact 7.16(g) exception. */
@@ -65,6 +67,7 @@ function getApplicableLegalWeightThreshold(
   axleConfiguration: Array<AxleConfiguration>,
   axleUnitVehicleIndexes: Array<number>,
   axleIndex: number,
+  commodityId?: string,
 ): number | undefined {
   const vehicleIndex = axleUnitVehicleIndexes[axleIndex];
   const vehicleType = vehicleConfiguration[vehicleIndex];
@@ -74,64 +77,13 @@ function getApplicableLegalWeightThreshold(
     return undefined;
   }
 
-  const weights =
-    vehicleIndex === 0
-      ? policy.getDefaultPowerUnitWeight(
-          vehicleType,
-          axleConfiguration[0].numberOfAxles * POWER_UNIT_AXLE_CODE_MULTIPLIER +
-            axleConfiguration[1].numberOfAxles,
-        )
-      : policy.getDefaultTrailerWeight(vehicleType, axle.numberOfAxles);
-
-  if (weights.length === 0) {
-    return undefined;
-  }
-
-  return policy.selectCorrectWeightDimension(
-    weights,
+  return policy.getApplicableAxleWeight(
     vehicleConfiguration,
     axleConfiguration,
+    vehicleIndex,
     axleIndex,
+    commodityId,
   )?.legal;
-}
-
-function getConfiguredAxleUnitWeightThreshold(
-  policy: Policy,
-  vehicleConfiguration: Array<string>,
-  axleConfiguration: Array<AxleConfiguration>,
-  axleUnitVehicleIndexes: Array<number>,
-  axleIndex: number,
-  threshold: 'legal' | 'permittable',
-): number {
-  const vehicleIndex = axleUnitVehicleIndexes[axleIndex];
-  const vehicleType = vehicleConfiguration[vehicleIndex];
-  const axleUnit = axleConfiguration[axleIndex];
-
-  if (!vehicleType || !axleUnit) {
-    return 0;
-  }
-
-  const weights =
-    vehicleIndex === 0
-      ? policy.getDefaultPowerUnitWeight(
-          vehicleType,
-          axleConfiguration[0].numberOfAxles * POWER_UNIT_AXLE_CODE_MULTIPLIER +
-            axleConfiguration[1].numberOfAxles,
-        )
-      : policy.getDefaultTrailerWeight(vehicleType, axleUnit.numberOfAxles);
-
-  if (weights.length === 0) {
-    return 0;
-  }
-
-  return (
-    policy.selectCorrectWeightDimension(
-      weights,
-      vehicleConfiguration,
-      axleConfiguration,
-      axleIndex,
-    )?.[threshold] ?? 0
-  );
 }
 
 /**
@@ -143,6 +95,7 @@ export function CheckLegalWeight(
   policy: Policy,
   vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
+  commodityId?: string,
 ): Array<PolicyCheckResult> {
   const policyId = PolicyCheckId.LegalWeight;
   const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
@@ -152,14 +105,15 @@ export function CheckLegalWeight(
   );
 
   return axleConfiguration.map((axleUnit, axleIndex) => {
-    const legalWeight = getConfiguredAxleUnitWeightThreshold(
-      policy,
+    const weightThreshold = policy.getApplicableAxleWeight(
       vehicleConfiguration,
       axleConfiguration,
-      axleUnitVehicleIndexes,
+      axleUnitVehicleIndexes[axleIndex],
       axleIndex,
-      'legal',
+      commodityId,
     );
+    const legalWeight = weightThreshold?.legal ?? 0;
+
     const result = axleUnit.axleUnitWeight <= legalWeight;
     const axleUnitNumber = axleIndex + 1;
 
@@ -189,6 +143,7 @@ export function CheckAxleGroupMaximumLegalWeightThreshold(
   policy: Policy,
   vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
+  commodityId?: string,
 ): Array<AxleGroupPolicyCheckResult> {
   const ctr717MaxSpreadCm = 800;
   const policyCheckResults = new Array<AxleGroupPolicyCheckResult>();
@@ -213,6 +168,7 @@ export function CheckAxleGroupMaximumLegalWeightThreshold(
       axleConfiguration,
       axleUnitVehicleIndexes,
       axleIndex,
+      commodityId,
     ),
   );
 
@@ -462,9 +418,16 @@ export function CheckBridgeFormula(
     return [];
   }
 
+  const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
+    policy,
+    vehicleConfiguration,
+    axleConfiguration,
+  );
+
   const bridgeCalcResults = policy.calculateBridge(
     axleConfiguration,
     vehicleConfiguration,
+    axleUnitVehicleIndexes,
   );
   bridgeCalcResults.forEach((br) => {
     const message = `Axle group ${br.startAxleUnit} to ${br.endAxleUnit} ${br.success ? 'passes' : 'does not pass'} bridge formula.`;
@@ -554,12 +517,70 @@ export function CheckNumTiresPerAxle(
 }
 
 /**
+ * Selects the axle weight limit from JSON configuration or TypeScript constants.
+ */
+function getApplicablePermittableWeightThreshold(
+  policy: Policy,
+  vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+  vehicleIndex: number,
+  axleIndex: number,
+  commodityId?: string,
+): SingleAxleDimension | null {
+  const axleUnit = axleConfiguration[axleIndex];
+  const trailerDefinition =
+    vehicleIndex !== 0
+      ? policy.getTrailerDefinition(vehicleConfiguration[vehicleIndex])
+      : null;
+  const usesJSONTandemWeight =
+    trailerDefinition?.category === 'semi' ||
+    trailerDefinition?.category === 'pony' ||
+    [
+      TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS,
+      TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
+      TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
+    ].some((type) => type === trailerDefinition?.id);
+
+  const configuredWeight = policy.getApplicableAxleWeight(
+    vehicleConfiguration,
+    axleConfiguration,
+    vehicleIndex,
+    axleIndex,
+    commodityId,
+  );
+  const isSteerAxleUnit =
+    axleIndex === 0 &&
+    vehicleIndex === 0 &&
+    (axleUnit.numberOfAxles === 1 || axleUnit.numberOfAxles === 2);
+
+  // Steer units never use the legacy single or tandem limits.
+  if (isSteerAxleUnit) return configuredWeight;
+
+  // A single axle uses the fallback only when no JSON entry was selected.
+  // Keep a selected entry even if its permittable field is missing or zero.
+  if (axleUnit.numberOfAxles === 1 && !configuredWeight) {
+    return {
+      permittable: AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.SINGLE_NON_STEER,
+    };
+  }
+
+  const isOtherTandemAxleUnit =
+    axleUnit.numberOfAxles === 2 && (vehicleIndex !== 0 || axleIndex !== 1);
+  // These tandems still use the legacy limit. Replace the whole JSON entry,
+  // including any restriction flag. The main drive tandem keeps its JSON limit.
+  if (isOtherTandemAxleUnit && !usesJSONTandemWeight) {
+    return { permittable: AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.TANDEM };
+  }
+
+  return configuredWeight;
+}
+
+/**
  * Validates that each axle unit's weight does not exceed the permittable weight limits.
  *
  * This function performs weight validation for each axle unit in a vehicle configuration.
- * It maps axle units to their owning vehicles, retrieves the default weight dimensions for
- * those vehicles based on vehicle type and axle count, then compares actual axle unit
- * weights against the permittable weight limits. Additional axle units require explicit
+ * It maps axle units to their owning vehicles, selects the configured or legacy limit,
+ * then compares actual axle unit weights against that limit. Additional axle units require explicit
  * vehicleIndex values on the axle configuration so ownership is not inferred.
  *
  * @param policy - The policy instance containing weight dimension configurations and validation rules
@@ -610,6 +631,7 @@ export function CheckPermittableWeight(
   policy: Policy,
   vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
+  commodityId?: string,
 ): Array<PolicyCheckResult> {
   const policyId = PolicyCheckId.PermittableWeight;
   const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
@@ -618,77 +640,37 @@ export function CheckPermittableWeight(
     axleConfiguration,
   );
 
-  const QUALIFYING_TRIDEM_SPREAD_CM = {
-    MINIMUM: 240,
-    MAXIMUM: 370,
-  };
-
   return axleConfiguration.map((axleUnit, axleIndex) => {
     const vehicleIndex = axleUnitVehicleIndexes[axleIndex];
-    const isSingleSteer =
-      axleIndex === 0 && vehicleIndex === 0 && axleUnit.numberOfAxles === 1;
-    const isTandemSteer =
-      axleIndex === 0 && vehicleIndex === 0 && axleUnit.numberOfAxles === 2;
-    let permittableWeight: number | undefined;
-
-    if (!isSingleSteer && !isTandemSteer) {
-      if (axleUnit.numberOfAxles === 1) {
-        permittableWeight =
-          getConfiguredAxleUnitWeightThreshold(
-            policy,
-            vehicleConfiguration,
-            axleConfiguration,
-            axleUnitVehicleIndexes,
-            axleIndex,
-            'permittable',
-          ) || AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.SINGLE_NON_STEER;
-      } else if (axleUnit.numberOfAxles === 2) {
-        permittableWeight = AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.TANDEM;
-      } else if (axleUnit.numberOfAxles === 3) {
-        const isTrailerAxleUnit =
-          policy.getTrailerDefinition(vehicleConfiguration[vehicleIndex]) !==
-          null;
-        const spreadQualifies =
-          axleUnit.axleSpread !== undefined &&
-          axleUnit.axleSpread >= QUALIFYING_TRIDEM_SPREAD_CM.MINIMUM &&
-          axleUnit.axleSpread <= QUALIFYING_TRIDEM_SPREAD_CM.MAXIMUM;
-        const nextVehicleIndex = vehicleIndex + 1;
-        const hasImmediatelyFollowingBooster =
-          vehicleConfiguration[nextVehicleIndex] ===
-          AccessoryVehicleType.Booster;
-        const boosterAxle = axleConfiguration.find(
-          (_, candidateIndex) =>
-            candidateIndex > axleIndex &&
-            axleUnitVehicleIndexes[candidateIndex] === nextVehicleIndex,
-        );
-        const boosterQualifies =
-          !hasImmediatelyFollowingBooster || boosterAxle?.numberOfAxles === 1;
-
-        if (isTrailerAxleUnit) {
-          permittableWeight =
-            spreadQualifies && boosterQualifies
-              ? AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.QUALIFYING_TRIDEM
-              : AXLE_WEIGHT_PERMITTABLE_MAXIMUMS.STANDARD_TRIDEM;
-        }
-      }
-    }
-
-    permittableWeight ??= getConfiguredAxleUnitWeightThreshold(
+    const weightThreshold = getApplicablePermittableWeightThreshold(
       policy,
       vehicleConfiguration,
       axleConfiguration,
-      axleUnitVehicleIndexes,
+      vehicleIndex,
       axleIndex,
-      'permittable',
+      commodityId,
     );
+
+    // Preserve the existing zero threshold when the selected entry has no limit.
+    const permittableWeight = weightThreshold?.permittable ?? 0;
 
     const result = axleUnit.axleUnitWeight <= permittableWeight;
     const axleUnitNumber = axleIndex + 1;
+
+    let message;
+
+    if (weightThreshold?.hasInteraxleSpacingRestriction) {
+      message = `Interaxle Spacing for Axle Unit ${axleUnitNumber} restricts Axle Weight to ${weightThreshold?.permittable} kg`;
+    } else {
+      message = `Weight for axle unit ${axleUnitNumber} ${
+        result
+          ? 'is permittable'
+          : `must not exceed ${weightThreshold?.permittable} kgs`
+      }`;
+    }
     return {
       id: policyId,
-      message: `Weight for axle unit ${axleUnitNumber} ${
-        result ? 'is permittable' : `must not exceed ${permittableWeight} kgs`
-      }`,
+      message,
       result: result ? PolicyCheckResultType.Pass : PolicyCheckResultType.Fail,
       axleUnit: axleUnitNumber,
       actualWeight: axleUnit.axleUnitWeight,
@@ -1224,7 +1206,7 @@ export function CheckMaxTireLoad(
      *   <445 mm  => rate only (no cap)
      *   >=445 mm => min(100 kg/cm rate, 9,100 kg/axle)
      */
-   if (isSteeringAxle) {
+    if (isSteeringAxle) {
       //Exemption: 445 mm tires on a 2-wheel steer axle are permitted up to 9,100 kg. We handle this explicitly tobypass the 100 kg/cm rate calculation.
       if (tireSize === 445 && numberOfTires === 2) {
         if (axleWeight > 9100) {
@@ -1643,14 +1625,16 @@ export function CheckDriveJeepLoadEqualization(
 
 /**
  * Validates each axle unit against the minimum interaxle spacing for its
- * current axle unit and the next axle unit, per Table II.
+ * current axle unit and the next axle unit.
+ * This function effectively handles both 'legal' and 'permittable' interaxle spacings.
+ * See Table II for 'legal' interaxle spacings and exception stories for 'permittable' interaxle spacings
  */
-export function CheckLegalInteraxleSpacing(
+export function CheckInteraxleSpacing(
   policy: Policy,
   vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
 ): Array<PolicyCheckResult> {
-  const policyId = PolicyCheckId.LegalInteraxleSpacing;
+  const policyId = PolicyCheckId.InteraxleSpacing;
 
   const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
     policy,
@@ -1799,7 +1783,7 @@ export const policyCheckMap = new Map<string, PolicyCheck>([
     CheckPickerTruckTractorWeightRestrictions,
   ],
   [PolicyCheckId.NumberOfWheelsPerAxle, CheckNumTiresPerAxle],
-  [PolicyCheckId.LegalInteraxleSpacing, CheckLegalInteraxleSpacing],
+  [PolicyCheckId.InteraxleSpacing, CheckInteraxleSpacing],
   [PolicyCheckId.BoosterAxleLimit, CheckBoosterAxleLimit],
   [PolicyCheckId.DriveJeepLoadEqualization, CheckDriveJeepLoadEqualization],
   [PolicyCheckId.WheelbaseLegalLimits, CheckWheelbaseLegalLimits],

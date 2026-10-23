@@ -64,7 +64,7 @@ const getAxleOverloadCandidates = (
         startAxleUnit,
         endAxleUnit,
         actualWeight: actualWeight as number,
-        legalMaxWeight: thresholdWeight as number,
+        maxWeight: thresholdWeight as number,
         overload: (actualWeight as number) - (thresholdWeight as number),
       }),
     )
@@ -120,7 +120,10 @@ export const calculateOverload = (
 
   // Licensed GVW intentionally wins an exact tie with the axle calculation. We have
   // to pick one, so this one made sense.
-  if (licensedGvwOverload > 0 && licensedGvwOverload >= axleSelection.overload) {
+  if (
+    licensedGvwOverload > 0 &&
+    licensedGvwOverload >= axleSelection.overload
+  ) {
     return {
       overload: licensedGvwOverload,
       overloadDetails: [

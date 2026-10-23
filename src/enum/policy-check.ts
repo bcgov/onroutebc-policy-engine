@@ -10,7 +10,7 @@ export enum PolicyCheckId {
   BridgeFormula = 'bridge-formula',
   DriveJeepLoadEqualization = 'drive-jeep-load-equalization',
   LegalAxleSpread = 'legal-axle-spread',
-  LegalInteraxleSpacing = 'legal-interaxle-spacing',
+  InteraxleSpacing = 'interaxle-spacing',
   LegalWeight = 'legal-weight',
   MaxTireLoad = 'max-tire-load',
   MinDriveAxleWeight = 'minimum-drive-axle-weight',

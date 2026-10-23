@@ -1572,19 +1572,7 @@
                   "fact": "permitData",
                   "path": "permitDuration",
                   "operator": "in",
-                  "value": [
-                    30,
-                    60,
-                    90,
-                    120,
-                    150,
-                    180,
-                    210,
-                    240,
-                    270,
-                    300,
-                    330
-                  ]
+                  "value": [30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330]
                 }
               },
               {
@@ -1704,19 +1692,7 @@
                   "fact": "permitData",
                   "path": "permitDuration",
                   "operator": "in",
-                  "value": [
-                    30,
-                    60,
-                    90,
-                    120,
-                    150,
-                    180,
-                    210,
-                    240,
-                    270,
-                    300,
-                    330
-                  ]
+                  "value": [30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330]
                 }
               },
               {
@@ -2683,10 +2659,7 @@
               "fact": "permitData",
               "path": "thirdPartyLiability",
               "operator": "in",
-              "value": [
-                "GENERAL_GOODS",
-                "DANGEROUS_GOODS"
-              ]
+              "value": ["GENERAL_GOODS", "DANGEROUS_GOODS"]
             }
           },
           "event": {
@@ -2859,10 +2832,7 @@
             "not": {
               "fact": "permitData",
               "operator": "in",
-              "value": [
-                "GENERAL_GOODS",
-                "DANGEROUS_GOODS"
-              ],
+              "value": ["GENERAL_GOODS", "DANGEROUS_GOODS"],
               "path": "thirdPartyLiability"
             }
           },
@@ -4212,8 +4182,8 @@
               "category": "semi",
               "position": "before",
               "axles": 3,
-              "minInterAxleSpacing": 0,
-              "maxInterAxleSpacing": 419
+              "minInteraxleSpacing": 0,
+              "maxInteraxleSpacing": 419
             },
             "legal": 9100,
             "permittable": 9100

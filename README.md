@@ -93,6 +93,7 @@ class Policy {
     vehicleConfiguration: string[],
     axleConfiguration: AxleConfiguration[],
     licensedGVW: number,
+    commodityId: string,
   ): AxleCalcResults;
 
   // Policy information
@@ -222,10 +223,23 @@ const axleResults = policy.runAxleCalculation(
     },
   ],
   63500,
+  'NONREDU', // Selected commodity ID
 );
 
 console.log('Axle validation results:', axleResults.results);
 ```
+
+The fourth argument is required and must identify a configured commodity. Use
+`XXXXXXX` only when None was explicitly selected. Matching commodity weight rows
+replace inherited rows for that axle layout; other layouts retain their defaults.
+`validate(permit)` reads the same selection from
+`permitData.permittedCommodity.commodityType`. Invalid or missing required
+commodity selections retain configuration violations and omit axle calculations.
+
+This API change requires coordinated engine and frontend deployment. Publish the
+commodity weight configuration with the engine release and set its `minPEVersion`
+to that released version; older engines ignore commodity weight rows. The vehicles
+backend continues passing commodity in the existing permit payload to `validate`.
 
 ### Getting Available Options
 

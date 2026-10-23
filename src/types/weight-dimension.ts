@@ -7,6 +7,12 @@
 
 import { DimensionModifier, SelfIssuable } from 'onroute-policy-engine/types';
 
+/** Own axle spread in centimetres. The maximum is inclusive. */
+export type PermittableAxleSpread = { max: number } & (
+  | { min: number; minExclusive?: never }
+  | { min?: never; minExclusive: number }
+);
+
 /**
  * Weight limits for a single axle unit
  */
@@ -15,6 +21,8 @@ export type SingleAxleDimension = {
   legal?: number;
   /** Permittable weight limit in kilograms (optional) */
   permittable?: number;
+  /** Is the legal or permittable weight restricted by interaxle spacing (optional) */
+  hasInteraxleSpacingRestriction?: boolean;
 };
 
 /**
@@ -47,7 +55,11 @@ export type PowerUnitWeightDimension = WeightDimension & {
  * Weight dimension specific to trailers
  * Extends WeightDimension with single axle dimension limits
  */
-export type TrailerWeightDimension = WeightDimension & SingleAxleDimension;
+export type TrailerWeightDimension = WeightDimension &
+  SingleAxleDimension & {
+    /** Optional spread allowance. Put the base weight before the conditional entry. */
+    permittableAxleSpread?: PermittableAxleSpread;
+  };
 
 /**
  * Default weight dimensions for all vehicle types
