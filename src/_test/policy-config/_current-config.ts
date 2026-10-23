@@ -4,7 +4,11 @@ import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
 import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { COMMODITY_CODES } from '../../constants/commodity-codes';
 import { VEHICLE_CATEGORIES } from '../../constants/vehicle-categories';
-import { RelativePosition, ValidationResultCode } from '../../enum';
+import {
+  RelativePosition,
+  ValidationResultCode,
+  ValidationResultType,
+} from '../../enum';
 
 export const data: PolicyDefinition = {
   minPEVersion: '2.0.0',
@@ -2491,7 +2495,7 @@ export const data: PolicyDefinition = {
             ],
           },
           event: {
-            type: 'warning',
+            type: ValidationResultType.Warning,
             params: {
               message:
                 'The provided dimensions make this application ineligible for self-issue and must be reviewed by the Provincial Permit Centre.',
@@ -2530,7 +2534,7 @@ export const data: PolicyDefinition = {
             ],
           },
           event: {
-            type: 'warning',
+            type: ValidationResultType.Warning,
             params: {
               message:
                 'The provided dimensions make this application ineligible for self-issue and must be reviewed by the Provincial Permit Centre.',
@@ -2569,7 +2573,7 @@ export const data: PolicyDefinition = {
             ],
           },
           event: {
-            type: 'warning',
+            type: ValidationResultType.Warning,
             params: {
               message:
                 'The provided dimensions make this application ineligible for self-issue and must be reviewed by the Provincial Permit Centre.',
