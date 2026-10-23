@@ -37,7 +37,6 @@ import { ValidationResults } from './validation-results';
 import { ValidationResult } from './validation-result';
 import { addRuntimeFacts } from './helper/facts.helper';
 import {
-  AccessoryVehicleType,
   PolicyFacts,
   PolicyCheckId,
   PolicyCheckResultType,
@@ -45,7 +44,6 @@ import {
   ValidationResultCode,
   ValidationResultId,
   VehicleTypes,
-  VehicleCategory,
 } from 'onroute-policy-engine/enum';
 import { runBridgeFormula } from './helper/bridge-calculation.helper';
 import { version } from './version';
@@ -78,6 +76,8 @@ import { calculateOverload } from './helper/overload.helper';
 import { PERMIT_CODES } from './constants/permit-codes';
 import { InteraxleSpacingRequirement } from './types/interaxle-spacing-requirement';
 import { getDefaultInteraxleSpacingHelper } from './helper/interaxle-spacing.helper';
+import { VEHICLE_CATEGORIES } from './constants/vehicle-categories';
+import { TRAILER_CODES } from './constants/trailer-codes';
 
 /** Class representing commercial vehicle policy. */
 export class Policy {
@@ -584,7 +584,7 @@ export class Policy {
       // ORV2-3953
       // If a jeep has been added, only add trailers that
       // permit jeeps from the trailer list
-      if (currentConfiguration.includes(AccessoryVehicleType.Jeep)) {
+      if (currentConfiguration.includes(TRAILER_CODES.JEEPS)) {
         validTrailers = powerUnit?.trailers.filter((t) => t.jeep);
       } else {
         validTrailers = powerUnit?.trailers;
@@ -613,19 +613,19 @@ export class Policy {
           powerUnit?.trailers &&
           powerUnit?.trailers.filter((t) => t.jeep).length > 0
         ) {
-          trailerIds?.push(AccessoryVehicleType.Jeep);
+          trailerIds?.push(TRAILER_CODES.JEEPS);
         }
         vehicleTypeIds = trailerIds;
       } else {
         switch (lastVehicleId) {
-          case AccessoryVehicleType.Jeep:
+          case TRAILER_CODES.JEEPS:
             // If there is one jeep, there can be more
-            trailerIds?.push(AccessoryVehicleType.Jeep);
+            trailerIds?.push(TRAILER_CODES.JEEPS);
             vehicleTypeIds = trailerIds;
             break;
-          case AccessoryVehicleType.Booster:
+          case TRAILER_CODES.BOOSTER:
             // If there is one booster, there can be more
-            vehicleTypeIds = [AccessoryVehicleType.Booster];
+            vehicleTypeIds = [TRAILER_CODES.BOOSTER];
             break;
           default:
             {
@@ -652,7 +652,7 @@ export class Policy {
               }
 
               if (trailer && trailer.booster) {
-                vehicleTypeIds = [AccessoryVehicleType.Booster];
+                vehicleTypeIds = [TRAILER_CODES.BOOSTER];
               } else {
                 // Either the trailer does not permit a booster, or
                 // we did not find the trailer which would be
@@ -767,7 +767,7 @@ export class Policy {
 
     for (let i = 1; i < currentConfiguration.length; i++) {
       switch (currentConfiguration[i]) {
-        case AccessoryVehicleType.Jeep:
+        case TRAILER_CODES.JEEPS:
           if (!jeepAllowed) {
             return false;
           }
@@ -785,7 +785,7 @@ export class Policy {
           }
           additionalAxleType = '';
           break;
-        case AccessoryVehicleType.Booster:
+        case TRAILER_CODES.BOOSTER:
           if (!boosterAllowed) {
             return false;
           }
@@ -878,7 +878,7 @@ export class Policy {
     let allTypes = this.policyDefinition.vehicleTypes.trailerTypes;
     if (!includePseudo) {
       allTypes = allTypes.filter(
-        (t) => t.category !== VehicleCategory.Pseudo.toString(),
+        (t) => t.category !== VEHICLE_CATEGORIES.PSEUDO,
       );
     }
     return extractIdentifiedObjects(allTypes);
@@ -1150,12 +1150,12 @@ export class Policy {
     const powerUnitIds = filterVehiclesByType(
       allowedVehicles,
       this.policyDefinition.vehicleTypes,
-      VehicleCategory.PowerUnit,
+      VEHICLE_CATEGORIES.POWER_UNIT,
     );
     const trailerIds = filterVehiclesByType(
       allowedVehicles,
       this.policyDefinition.vehicleTypes,
-      VehicleCategory.Trailer,
+      VEHICLE_CATEGORIES.TRAILER,
     );
 
     allowedVehicleMap.set(
@@ -1555,8 +1555,8 @@ export class Policy {
     }
 
     if (
-      trailerSubtype === AccessoryVehicleType.Jeep ||
-      trailerSubtype === AccessoryVehicleType.Booster
+      trailerSubtype === TRAILER_CODES.JEEPS ||
+      trailerSubtype === TRAILER_CODES.BOOSTER
     ) {
       return false;
     }

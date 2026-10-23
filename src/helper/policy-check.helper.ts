@@ -11,12 +11,7 @@ import {
   getAxleUnitVehicleIndexLookup,
 } from './dimensions.helper';
 import { getCtr717TableValue } from './ctr-717.helper';
-import {
-  AccessoryVehicleType,
-  PolicyCheckId,
-  VehicleCategory,
-  PolicyCheckResultType,
-} from '../enum';
+import { PolicyCheckId, PolicyCheckResultType } from '../enum';
 import { AXLE_WEIGHT_PERMITTABLE_MAXIMUMS } from '../constants/axle-weight-permittable-maximums';
 import { getAxleSpreadThreshold } from './axle-spread.helper';
 import { isSemiTrailerType } from '../constants/semi-trailer-codes';
@@ -27,6 +22,7 @@ import {
 import { formatMeters } from './format-meters.helper';
 import { POWER_UNIT_CODES } from '../constants/power-unit-codes';
 import { TRAILER_CODES } from '../constants/trailer-codes';
+import { VEHICLE_CATEGORIES } from '../constants/vehicle-categories';
 
 /**
  * Type definition for policy check functions.
@@ -232,7 +228,7 @@ export function CheckAxleGroupMaximumLegalWeightThreshold(
         startAxleIndex === 1 &&
         endAxleIndex === 2 &&
         vehicleConfiguration[0] === POWER_UNIT_CODES.TRUCK_TRACTORS &&
-        vehicleConfiguration[1] === AccessoryVehicleType.Jeep &&
+        vehicleConfiguration[1] === TRAILER_CODES.JEEPS &&
         axleUnitVehicleIndexes[1] === 0 &&
         axleUnitVehicleIndexes[2] === 1 &&
         axleConfiguration[1].numberOfAxles === 2 &&
@@ -1305,7 +1301,7 @@ export function CheckBoosterAxleLimit(
       return;
     }
 
-    if (vehicleSubType === AccessoryVehicleType.Booster) {
+    if (vehicleSubType === TRAILER_CODES.BOOSTER) {
       if (trailerAxleConfigIndex === undefined) {
         return;
       }
@@ -1336,8 +1332,8 @@ export function CheckBoosterAxleLimit(
     // (for example PFMAXLE), so keep comparing boosters to the last real trailer.
     // Basically, skip pseudo axle units when deciding which trailer the booster follows.
     if (
-      vehicleSubType !== AccessoryVehicleType.Jeep &&
-      vehicleDefinition?.category !== VehicleCategory.Pseudo
+      vehicleSubType !== TRAILER_CODES.JEEPS &&
+      vehicleDefinition?.category !== VEHICLE_CATEGORIES.PSEUDO
     ) {
       trailerAxleConfigIndex = axleConfigIndex;
     }
@@ -1583,7 +1579,7 @@ export function CheckDriveJeepLoadEqualization(
   const maxWeightDifferenceKg = 1000;
   const driveAxleConfigIndex = 1;
   const jeepVehicleIndex = vehicleConfiguration.findIndex(
-    (vehicleSubType) => vehicleSubType === AccessoryVehicleType.Jeep,
+    (vehicleSubType) => vehicleSubType === TRAILER_CODES.JEEPS,
   );
 
   if (jeepVehicleIndex < 1) {

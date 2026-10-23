@@ -6,6 +6,7 @@ import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { COMMODITY_CODES } from '../../constants/commodity-codes';
 import { CheckPermittableWeight } from '../../helper/policy-check.helper';
 import config from '../policy-config/_current-config.json';
+import { VEHICLE_CATEGORIES } from '../../constants/vehicle-categories';
 
 const axles = (weight: number): AxleConfiguration[] => [
   {
@@ -104,6 +105,7 @@ describe('configured pony and wheeler tandem weights', () => {
     [TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS, 31000],
     // XLS: regular/Wide Wheeler Tandems, K320/323/327/329/330/331/333/337.
     [TRAILER_CODES.SEMI_TRAILERS_WHEELERS, 31000],
+    // TODO the category for this trailer has been updated from 'wheeler' to 'wide-wheelers' in accordance with the OWDS. This causes this test to fail
     [TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS, 31000],
   ])('uses the configured %s maximum of %i kg', (trailerType, limit) => {
     for (const weight of [limit, limit + 1]) {
@@ -130,11 +132,18 @@ describe('configured pony and wheeler tandem weights', () => {
   });
 
   it.each<[string, string, number]>([
-    [TRAILER_CODES.PONY_TRAILERS, 'pony', 19500],
-    [TRAILER_CODES.PONY_TRAILERS, 'pony', 0],
-    [TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS, 'wheeler', 31500],
-    // TODO the category for this trailer has been updated from 'wheeler' to 'wider-wheelers' in accordance with the OWDS. This causes this test to fail
-    [TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS, 'wheeler', 0],
+    [TRAILER_CODES.PONY_TRAILERS, VEHICLE_CATEGORIES.PONY_TRAILER, 19500],
+    [TRAILER_CODES.PONY_TRAILERS, VEHICLE_CATEGORIES.PONY_TRAILER, 0],
+    [
+      TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS,
+      VEHICLE_CATEGORIES.WHEELER,
+      31500,
+    ],
+    [
+      TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS,
+      VEHICLE_CATEGORIES.WHEELER,
+      0,
+    ],
   ])(
     'reads %s category %s tandem limit %i kg',
     (trailerType, category, limit) => {

@@ -4,6 +4,7 @@ import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
 import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { COMMODITY_CODES } from '../../constants/commodity-codes';
 import { VEHICLE_CATEGORIES } from '../../constants/vehicle-categories';
+import { RelativePosition, ValidationResultCode } from '../../enum';
 
 export const data: PolicyDefinition = {
   minPEVersion: '2.0.0',
@@ -1283,7 +1284,7 @@ export const data: PolicyDefinition = {
         type: 'violation',
         params: {
           message: 'Company is required',
-          code: 'field-validation-error',
+          code: ValidationResultCode.FieldValidationError,
           fieldReference: 'permitData.companyName',
         },
       },
@@ -1301,7 +1302,7 @@ export const data: PolicyDefinition = {
         type: 'violation',
         params: {
           message: 'Contact first name is required',
-          code: 'field-validation-error',
+          code: ValidationResultCode.FieldValidationError,
           fieldReference: 'permitData.contactDetails.firstName',
         },
       },
@@ -1319,7 +1320,7 @@ export const data: PolicyDefinition = {
         type: 'violation',
         params: {
           message: 'Contact last name is required',
-          code: 'field-validation-error',
+          code: ValidationResultCode.FieldValidationError,
           fieldReference: 'permitData.contactDetails.lastName',
         },
       },
@@ -1337,7 +1338,7 @@ export const data: PolicyDefinition = {
         type: 'violation',
         params: {
           message: 'Contact phone number is required',
-          code: 'field-validation-error',
+          code: ValidationResultCode.FieldValidationError,
           fieldReference: 'permitData.contactDetails.phone1',
         },
       },
@@ -1355,7 +1356,7 @@ export const data: PolicyDefinition = {
         type: 'violation',
         params: {
           message: 'Company contact email is required',
-          code: 'field-validation-error',
+          code: ValidationResultCode.FieldValidationError,
           fieldReference: 'permitData.contactDetails.email',
         },
       },
@@ -1377,7 +1378,7 @@ export const data: PolicyDefinition = {
         type: 'violation',
         params: {
           message: 'Permit start date cannot be in the past',
-          code: 'field-validation-error',
+          code: ValidationResultCode.FieldValidationError,
           fieldReference: 'permitData.startDate',
         },
       },
@@ -1414,7 +1415,7 @@ export const data: PolicyDefinition = {
         params: {
           message:
             'Permit start date cannot be more than 14 days in the future',
-          code: 'field-validation-error',
+          code: ValidationResultCode.FieldValidationError,
           fieldReference: 'permitData.startDate',
         },
       },
@@ -1433,7 +1434,7 @@ export const data: PolicyDefinition = {
         params: {
           message:
             'Vehicle Identification Number (vin) must be 6 alphanumeric characters',
-          code: 'field-validation-error',
+          code: ValidationResultCode.FieldValidationError,
           fieldReference: 'permitData.vehicleDetails.vin',
         },
       },
@@ -1451,7 +1452,7 @@ export const data: PolicyDefinition = {
         type: 'violation',
         params: {
           message: 'Vehicle plate is required',
-          code: 'field-validation-error',
+          code: ValidationResultCode.FieldValidationError,
           fieldReference: 'permitData.vehicleDetails.plate',
         },
       },
@@ -1469,7 +1470,7 @@ export const data: PolicyDefinition = {
         type: 'violation',
         params: {
           message: 'Vehicle make is required',
-          code: 'field-validation-error',
+          code: ValidationResultCode.FieldValidationError,
           fieldReference: 'permitData.vehicleDetails.make',
         },
       },
@@ -1487,7 +1488,7 @@ export const data: PolicyDefinition = {
         type: 'violation',
         params: {
           message: 'Vehicle year is required',
-          code: 'field-validation-error',
+          code: ValidationResultCode.FieldValidationError,
           fieldReference: 'permitData.vehicleDetails.year',
         },
       },
@@ -1505,7 +1506,7 @@ export const data: PolicyDefinition = {
         type: 'violation',
         params: {
           message: 'Vehicle country of registration is required',
-          code: 'field-validation-error',
+          code: ValidationResultCode.FieldValidationError,
           fieldReference: 'permitData.vehicleDetails.countryCode',
         },
       },
@@ -1626,7 +1627,7 @@ export const data: PolicyDefinition = {
             params: {
               message:
                 'Permit start date cannot be more than 90 days in the future',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.startDate',
             },
           },
@@ -1655,7 +1656,7 @@ export const data: PolicyDefinition = {
             params: {
               message:
                 'Vehicle description should not exist unless the permit vehicle type is Other.',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleDetails.vehicleDescription',
             },
           },
@@ -1684,7 +1685,7 @@ export const data: PolicyDefinition = {
             params: {
               message:
                 'Vehicle description must be present if the permit vehicle type is Other.',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleDetails.vehicleDescription',
             },
           },
@@ -1713,7 +1714,7 @@ export const data: PolicyDefinition = {
             params: {
               message:
                 'ICBC certificate number should not exist if no certificate is being used.',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference:
                 'permitData.icbcInsuranceCertificate.certificateNumber',
             },
@@ -1743,7 +1744,7 @@ export const data: PolicyDefinition = {
             params: {
               message:
                 'ICBC certificate number is required if certificate is being used.',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference:
                 'permitData.icbcInsuranceCertificate.certificateNumber',
             },
@@ -1776,7 +1777,7 @@ export const data: PolicyDefinition = {
             params: {
               message:
                 'ICBC certificate number must match the vehicle plate number.',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference:
                 'permitData.icbcInsuranceCertificate.certificateNumber',
             },
@@ -1809,7 +1810,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Vehicle type not permittable for this permit type',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleDetails.vehicleSubType',
             },
           },
@@ -1836,7 +1837,7 @@ export const data: PolicyDefinition = {
             params: {
               message:
                 'Vehicle subtype not permittable for Vehicle Type Other.',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleDetails.vehicleSubType',
             },
           },
@@ -1857,7 +1858,7 @@ export const data: PolicyDefinition = {
             params: {
               message:
                 'Permit end date must be the end of the year in which the permit starts',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.expiryDate',
             },
           },
@@ -1976,7 +1977,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Duration must be in 30 day increments or a full year',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.permitDuration',
             },
           },
@@ -1996,7 +1997,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Vehicle type not permittable for this permit type',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleDetails.vehicleSubType',
             },
           },
@@ -2098,7 +2099,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Duration must be in 30 day increments or a full year',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.permitDuration',
             },
           },
@@ -2118,7 +2119,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Vehicle type not permittable for this permit type',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleDetails.vehicleSubType',
             },
           },
@@ -2180,7 +2181,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Duration must be 7 days or less',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.permitDuration',
             },
           },
@@ -2198,7 +2199,7 @@ export const data: PolicyDefinition = {
             params: {
               message:
                 'Vehicle configuration is not permittable for this commodity',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleConfiguration.trailers',
             },
           },
@@ -2216,7 +2217,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Commodity load description is required',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.permittedCommodity.loadDescription',
             },
           },
@@ -2282,7 +2283,7 @@ export const data: PolicyDefinition = {
             params: {
               message:
                 'Vehicle configuration is not permittable for this commodity',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleConfiguration.trailers',
             },
           },
@@ -2300,7 +2301,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Commodity load description is required',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.permittedCommodity.loadDescription',
             },
           },
@@ -2318,7 +2319,7 @@ export const data: PolicyDefinition = {
             params: {
               message:
                 'Vehicle configuration failed axle calculation policy checks',
-              code: 'policy-validation-error',
+              code: ValidationResultCode.PolicyValidationError,
               details: {
                 fact: 'axleCalcViolations',
               },
@@ -2349,7 +2350,7 @@ export const data: PolicyDefinition = {
             params: {
               message:
                 'Approval number is required when an extraordinary load request is being used.',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference:
                 'permitData.extraordinaryLoadRequest.approvalNumber',
             },
@@ -2377,7 +2378,7 @@ export const data: PolicyDefinition = {
             params: {
               message:
                 'Approval number should not exist if no extraordinary load request is being used.',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference:
                 'permitData.extraordinaryLoadRequest.approvalNumber',
             },
@@ -2455,7 +2456,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Duration must be 7 days or less',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.permitDuration',
             },
           },
@@ -2473,7 +2474,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Must be greater than 0m.',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleConfiguration.overallWidth',
             },
           },
@@ -2494,7 +2495,7 @@ export const data: PolicyDefinition = {
             params: {
               message:
                 'The provided dimensions make this application ineligible for self-issue and must be reviewed by the Provincial Permit Centre.',
-              code: 'dimension-oversize',
+              code: ValidationResultCode.DimensionOversize,
               fieldReference: 'permitData.vehicleConfiguration.overallWidth',
             },
           },
@@ -2512,7 +2513,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Must be greater than 0m.',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleConfiguration.overallHeight',
             },
           },
@@ -2533,7 +2534,7 @@ export const data: PolicyDefinition = {
             params: {
               message:
                 'The provided dimensions make this application ineligible for self-issue and must be reviewed by the Provincial Permit Centre.',
-              code: 'dimension-oversize',
+              code: ValidationResultCode.DimensionOversize,
               fieldReference: 'permitData.vehicleConfiguration.overallHeight',
             },
           },
@@ -2551,7 +2552,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Must be greater than 27.5m.',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleConfiguration.overallLength',
             },
           },
@@ -2572,7 +2573,7 @@ export const data: PolicyDefinition = {
             params: {
               message:
                 'The provided dimensions make this application ineligible for self-issue and must be reviewed by the Provincial Permit Centre.',
-              code: 'dimension-oversize',
+              code: ValidationResultCode.DimensionOversize,
               fieldReference: 'permitData.vehicleConfiguration.overallLength',
             },
           },
@@ -2590,7 +2591,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Must be greater than 0kg.',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleConfiguration.overloadWeight',
             },
           },
@@ -2610,7 +2611,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Vehicle type not permittable for this permit type',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleDetails.vehicleSubType',
             },
           },
@@ -2628,7 +2629,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Route origin is required',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.permittedRoute.manualRoute.origin',
             },
           },
@@ -2646,7 +2647,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Route destination is required',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.permittedRoute.manualRoute.origin',
             },
           },
@@ -2664,7 +2665,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Trip distance must be greater than zero',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference:
                 'permitData.permittedRoute.manualRoute.totalDistance',
             },
@@ -2758,7 +2759,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Duration must be 7 days or less',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.permitDuration',
             },
           },
@@ -2776,7 +2777,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'This is a required field',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleConfiguration.actualGVW',
             },
           },
@@ -2807,7 +2808,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Must be greater than Licensed GVW.',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleConfiguration.actualGVW',
             },
           },
@@ -2833,7 +2834,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Cannot exceed 63,500kg',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleConfiguration.actualGVW',
             },
           },
@@ -2853,7 +2854,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Vehicle type not permittable for this permit type',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleDetails.vehicleSubType',
             },
           },
@@ -2871,7 +2872,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Route origin is required',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.permittedRoute.manualRoute.origin',
             },
           },
@@ -2889,7 +2890,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Route destination is required',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.permittedRoute.manualRoute.origin',
             },
           },
@@ -2907,7 +2908,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Trip distance must be greater than zero',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference:
                 'permitData.permittedRoute.manualRoute.totalDistance',
             },
@@ -2991,7 +2992,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Duration must be 30 days or less',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.permitDuration',
             },
           },
@@ -3009,7 +3010,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Licensed GVW must be greater than zero',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleDetails.licensedGVW',
             },
           },
@@ -3029,7 +3030,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Licensed GVW may not exceed 63,500 kg',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleDetails.licensedGVW',
             },
           },
@@ -3055,7 +3056,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'BC plated vehicles do not require this permit',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleDetails.provinceCode',
             },
           },
@@ -3075,7 +3076,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Vehicle type not permittable for this permit type',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleDetails.vehicleSubType',
             },
           },
@@ -3093,7 +3094,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Third party liability is invalid',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.thirdPartyLiability',
             },
           },
@@ -3168,7 +3169,7 @@ export const data: PolicyDefinition = {
             params: {
               message:
                 'Permit end date must be the end of the quarter in which the permit starts',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.expiryDate',
             },
           },
@@ -3186,7 +3187,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Licensed GVW must be greater than zero',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleDetails.licensedGVW',
             },
           },
@@ -3206,7 +3207,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Licensed GVW may not exceed 63,500 kg',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleDetails.licensedGVW',
             },
           },
@@ -3232,7 +3233,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'BC plated vehicles do not require this permit',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleDetails.provinceCode',
             },
           },
@@ -3252,7 +3253,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Vehicle type not permittable for this permit type',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleDetails.vehicleSubType',
             },
           },
@@ -3270,7 +3271,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Third party liability is invalid',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.thirdPartyLiability',
             },
           },
@@ -3352,7 +3353,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Duration must be 7 days or less',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.permitDuration',
             },
           },
@@ -3370,7 +3371,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Licensed GVW must be greater than zero',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleDetails.licensedGVW',
             },
           },
@@ -3390,7 +3391,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Licensed GVW may not exceed 63,500 kg',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleDetails.licensedGVW',
             },
           },
@@ -3410,7 +3411,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Vehicle type not permittable for this permit type',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleDetails.vehicleSubType',
             },
           },
@@ -3428,7 +3429,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Route origin is required',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.permittedRoute.manualRoute.origin',
             },
           },
@@ -3446,7 +3447,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Route destination is required',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.permittedRoute.manualRoute.origin',
             },
           },
@@ -3464,7 +3465,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Trip distance must be greater than zero',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference:
                 'permitData.permittedRoute.manualRoute.totalDistance',
             },
@@ -3544,7 +3545,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Duration must be 30 days or less',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.permitDuration',
             },
           },
@@ -3578,7 +3579,7 @@ export const data: PolicyDefinition = {
             params: {
               message:
                 'Loaded GVW must be greater than zero for the selected conditional license fee type',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleConfiguration.loadedGVW',
             },
           },
@@ -3607,7 +3608,7 @@ export const data: PolicyDefinition = {
             params: {
               message:
                 'Net weight must be greater than zero for a farm vehicle',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleConfiguration.netWeight',
             },
           },
@@ -3633,7 +3634,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Net weight may not exceed 24,400 kg for a farm vehicle',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleConfiguration.netWeight',
             },
           },
@@ -3659,7 +3660,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Loaded GVW may not exceed 63,500 kg',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleConfiguration.loadedGVW',
             },
           },
@@ -3685,7 +3686,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'BC plated vehicles do not require this permit',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleDetails.provinceCode',
             },
           },
@@ -3705,7 +3706,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Vehicle type not permittable for this permit type',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleDetails.vehicleSubType',
             },
           },
@@ -3730,7 +3731,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Conditional licensing selection is invalid',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.conditionalLicensingFee',
             },
           },
@@ -3844,7 +3845,7 @@ export const data: PolicyDefinition = {
             params: {
               message:
                 'Permit end date must be the end of the quarter in which the permit starts',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.expiryDate',
             },
           },
@@ -3878,7 +3879,7 @@ export const data: PolicyDefinition = {
             params: {
               message:
                 'Loaded GVW must be greater than zero for the selected conditional license fee type',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleConfiguration.loadedGVW',
             },
           },
@@ -3907,7 +3908,7 @@ export const data: PolicyDefinition = {
             params: {
               message:
                 'Net weight must be greater than zero for a farm vehicle',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleConfiguration.netWeight',
             },
           },
@@ -3933,7 +3934,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Net weight may not exceed 24,400 kg for a farm vehicle',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleConfiguration.netWeight',
             },
           },
@@ -3959,7 +3960,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Loaded GVW may not exceed 63,500 kg',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleConfiguration.loadedGVW',
             },
           },
@@ -3985,7 +3986,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'BC plated vehicles do not require this permit',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleDetails.provinceCode',
             },
           },
@@ -4005,7 +4006,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Vehicle type not permittable for this permit type',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleDetails.vehicleSubType',
             },
           },
@@ -4030,7 +4031,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Conditional licensing selection is invalid',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.conditionalLicensingFee',
             },
           },
@@ -4129,7 +4130,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Duration must be 7 days or less',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.permitDuration',
             },
           },
@@ -4155,7 +4156,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'BC plated vehicles do not require this permit',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleDetails.provinceCode',
             },
           },
@@ -4175,7 +4176,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Vehicle type not permittable for this permit type',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference: 'permitData.vehicleDetails.vehicleSubType',
             },
           },
@@ -4193,7 +4194,7 @@ export const data: PolicyDefinition = {
             type: 'violation',
             params: {
               message: 'Entry Point is required',
-              code: 'field-validation-error',
+              code: ValidationResultCode.FieldValidationError,
               fieldReference:
                 'permitData.permittedRoute.manualRoute.entryPoint',
             },
@@ -5166,7 +5167,7 @@ export const data: PolicyDefinition = {
             axles: 1,
             modifier: {
               category: VEHICLE_CATEGORIES.SEMI_TRAILER,
-              position: 'before',
+              position: RelativePosition.Before,
               maxInteraxleSpacing: 419,
             },
             legal: 9100,
@@ -5176,7 +5177,7 @@ export const data: PolicyDefinition = {
             axles: 1,
             modifier: {
               category: VEHICLE_CATEGORIES.SEMI_TRAILER,
-              position: 'before',
+              position: RelativePosition.Before,
               minInteraxleSpacing: 420,
             },
             legal: 9100,
@@ -5193,7 +5194,7 @@ export const data: PolicyDefinition = {
             maxAxleUnitWeight: 23000,
             modifier: {
               category: VEHICLE_CATEGORIES.SEMI_TRAILER,
-              position: 'before',
+              position: RelativePosition.Before,
             },
             min: 420,
           },
@@ -5202,7 +5203,7 @@ export const data: PolicyDefinition = {
             maxAxleUnitWeight: 28000,
             modifier: {
               category: VEHICLE_CATEGORIES.SEMI_TRAILER,
-              position: 'before',
+              position: RelativePosition.Before,
             },
             min: 420,
           },
@@ -5248,7 +5249,7 @@ export const data: PolicyDefinition = {
             axles: 1,
             modifier: {
               category: VEHICLE_CATEGORIES.POWER_UNIT,
-              position: 'before',
+              position: RelativePosition.Before,
               axles: 2,
               minInteraxleSpacing: 300,
             },
@@ -5259,7 +5260,7 @@ export const data: PolicyDefinition = {
             axles: 1,
             modifier: {
               category: VEHICLE_CATEGORIES.MULTI_STEER,
-              position: 'before',
+              position: RelativePosition.Before,
               axles: 2,
               minInteraxleSpacing: 300,
             },
@@ -5270,7 +5271,7 @@ export const data: PolicyDefinition = {
             axles: 1,
             modifier: {
               category: VEHICLE_CATEGORIES.POWER_UNIT,
-              position: 'before',
+              position: RelativePosition.Before,
               axles: 3,
               minInteraxleSpacing: 300,
             },
@@ -5281,7 +5282,7 @@ export const data: PolicyDefinition = {
             axles: 1,
             modifier: {
               category: VEHICLE_CATEGORIES.MULTI_STEER,
-              position: 'before',
+              position: RelativePosition.Before,
               axles: 3,
               minInteraxleSpacing: 300,
             },
@@ -5297,7 +5298,7 @@ export const data: PolicyDefinition = {
             axles: 3,
             modifier: {
               category: VEHICLE_CATEGORIES.POWER_UNIT,
-              position: 'before',
+              position: RelativePosition.Before,
               axles: 1,
               minInteraxleSpacing: 300,
             },
@@ -5308,7 +5309,7 @@ export const data: PolicyDefinition = {
             axles: 3,
             modifier: {
               category: VEHICLE_CATEGORIES.MULTI_STEER,
-              position: 'before',
+              position: RelativePosition.Before,
               axles: 1,
               minInteraxleSpacing: 300,
             },
@@ -5319,7 +5320,7 @@ export const data: PolicyDefinition = {
             axles: 3,
             modifier: {
               category: VEHICLE_CATEGORIES.POWER_UNIT,
-              position: 'before',
+              position: RelativePosition.Before,
               axles: 2,
               minInteraxleSpacing: 550,
             },
@@ -5330,7 +5331,7 @@ export const data: PolicyDefinition = {
             axles: 3,
             modifier: {
               category: VEHICLE_CATEGORIES.MULTI_STEER,
-              position: 'before',
+              position: RelativePosition.Before,
               axles: 2,
               minInteraxleSpacing: 550,
             },
@@ -5529,7 +5530,7 @@ export const data: PolicyDefinition = {
             axles: 1,
             modifier: {
               category: VEHICLE_CATEGORIES.POWER_UNIT,
-              position: 'before',
+              position: RelativePosition.Before,
               axles: 2,
               minInteraxleSpacing: 300,
             },
@@ -5540,7 +5541,7 @@ export const data: PolicyDefinition = {
             axles: 1,
             modifier: {
               category: VEHICLE_CATEGORIES.MULTI_STEER,
-              position: 'before',
+              position: RelativePosition.Before,
               axles: 2,
               minInteraxleSpacing: 300,
             },
@@ -5551,7 +5552,7 @@ export const data: PolicyDefinition = {
             axles: 1,
             modifier: {
               category: VEHICLE_CATEGORIES.POWER_UNIT,
-              position: 'before',
+              position: RelativePosition.Before,
               axles: 3,
               minInteraxleSpacing: 300,
             },
@@ -5562,7 +5563,7 @@ export const data: PolicyDefinition = {
             axles: 1,
             modifier: {
               category: VEHICLE_CATEGORIES.MULTI_STEER,
-              position: 'before',
+              position: RelativePosition.Before,
               axles: 3,
               minInteraxleSpacing: 300,
             },
@@ -5578,7 +5579,7 @@ export const data: PolicyDefinition = {
             axles: 3,
             modifier: {
               category: VEHICLE_CATEGORIES.POWER_UNIT,
-              position: 'before',
+              position: RelativePosition.Before,
               axles: 1,
               minInteraxleSpacing: 300,
             },
@@ -5589,7 +5590,7 @@ export const data: PolicyDefinition = {
             axles: 3,
             modifier: {
               category: VEHICLE_CATEGORIES.MULTI_STEER,
-              position: 'before',
+              position: RelativePosition.Before,
               axles: 1,
               minInteraxleSpacing: 300,
             },
@@ -5600,7 +5601,7 @@ export const data: PolicyDefinition = {
             axles: 3,
             modifier: {
               category: VEHICLE_CATEGORIES.POWER_UNIT,
-              position: 'before',
+              position: RelativePosition.Before,
               axles: 2,
               minInteraxleSpacing: 550,
             },
@@ -5611,7 +5612,7 @@ export const data: PolicyDefinition = {
             axles: 3,
             modifier: {
               category: VEHICLE_CATEGORIES.MULTI_STEER,
-              position: 'before',
+              position: RelativePosition.Before,
               axles: 2,
               minInteraxleSpacing: 550,
             },
@@ -5734,7 +5735,7 @@ export const data: PolicyDefinition = {
       {
         id: TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
         name: 'Semi-Trailers - Wide Wheelers',
-        // TODO the category for this trailer has been updated from 'wheeler' to 'wider-wheelers' in accordance with the OWDS. This causes a single test to fail (see TODO in semi-tandem-configured-weight.spec)
+        // TODO the category for this trailer has been updated from 'wheeler' to 'wide-wheelers' in accordance with the OWDS. This causes a single test to fail (see TODO in semi-tandem-configured-weight.spec)
         category: VEHICLE_CATEGORIES.WIDE_WHEELERS,
         displayCode: 'T',
       },
