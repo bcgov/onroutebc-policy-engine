@@ -8964,6 +8964,14 @@ export const data: PolicyDefinition = {
                 },
               ],
               weightPermittable: true,
+              canAddAxleUnits: true,
+            },
+            {
+              type: TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
+              jeep: true,
+              booster: true,
+              weightPermittable: true,
+              canAddAxleUnits: true,
             },
             {
               type: TRAILER_CODES.HIBOYS_EXPANDOS,
@@ -10710,7 +10718,7 @@ export const data: PolicyDefinition = {
             {
               type: TRAILER_CODES.PLATFORM_TRAILERS,
               jeep: true,
-              booster: true,
+              booster: false,
               selfIssue: false,
               sizePermittable: true,
               sizeDimensions: [
