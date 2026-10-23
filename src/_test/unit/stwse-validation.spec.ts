@@ -8,8 +8,8 @@ import {
   getUtcDatetime,
   TIMEZONE_IDS,
 } from '../../helper/date.helper';
-import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { POWER_UNITS } from '../../constants/power-units';
+import { TRAILERS } from '../../constants/trailers';
 
 describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () => {
   const policy: Policy = new Policy(currentConfig);
@@ -153,8 +153,7 @@ describe('Empty - Single Trip Over Length 27.5m (STWSE) Validation Tests', () =>
   it('should fail validation when Vehicle subtype is a Trailer', async () => {
     const permit = getPermit();
     permit.permitData.vehicleDetails.vehicleType = 'trailer';
-    permit.permitData.vehicleDetails.vehicleSubType =
-      TRAILER_CODES.FULL_TRAILERS;
+    permit.permitData.vehicleDetails.vehicleSubType = TRAILERS.FULL_TRAILERS.id;
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
     expect(validationResult.warnings).toHaveLength(0);

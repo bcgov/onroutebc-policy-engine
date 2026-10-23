@@ -1,7 +1,7 @@
 import { COMMODITY_CODES } from '../../constants/commodity-codes';
 import { PERMIT_CODES } from '../../constants/permit-codes';
 import { POWER_UNITS } from '../../constants/power-units';
-import { TRAILER_CODES } from '../../constants/trailer-codes';
+import { TRAILERS } from '../../constants/trailers';
 import { Policy } from '../../policy-engine';
 import currentPolicyConfig from '../policy-config/_current-config.json';
 
@@ -14,7 +14,7 @@ describe('Policy Engine Jeep and Booster Configuration Functions', () => {
         PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
         COMMODITY_CODES.LAMINATED_BEAMS,
         POWER_UNITS.TRUCK_TRACTORS.id,
-        TRAILER_CODES.JEEPS,
+        TRAILERS.JEEPS.id,
       );
     }).not.toThrow();
 
@@ -22,7 +22,7 @@ describe('Policy Engine Jeep and Booster Configuration Functions', () => {
       PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
       COMMODITY_CODES.LAMINATED_BEAMS,
       POWER_UNITS.TRUCK_TRACTORS.id,
-      TRAILER_CODES.JEEPS,
+      TRAILERS.JEEPS.id,
     );
 
     expect(canAddAxleUnits).toBe(false);
@@ -34,7 +34,7 @@ describe('Policy Engine Jeep and Booster Configuration Functions', () => {
         PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
         COMMODITY_CODES.LAMINATED_BEAMS,
         POWER_UNITS.TRUCK_TRACTORS.id,
-        TRAILER_CODES.BOOSTER,
+        TRAILERS.BOOSTER.id,
       );
     }).not.toThrow();
 
@@ -42,7 +42,7 @@ describe('Policy Engine Jeep and Booster Configuration Functions', () => {
       PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
       COMMODITY_CODES.LAMINATED_BEAMS,
       POWER_UNITS.TRUCK_TRACTORS.id,
-      TRAILER_CODES.BOOSTER,
+      TRAILERS.BOOSTER.id,
     );
 
     expect(canAddAxleUnits).toBe(false);

@@ -1,7 +1,7 @@
 import { Policy } from 'onroute-policy-engine';
 import currentConfig from '../policy-config/_current-config.json';
-import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { POWER_UNITS } from '../../constants/power-units';
+import { TRAILERS } from '../../constants/trailers';
 
 //#region AxleConfiguration constants
 const axleConfig11 = [
@@ -155,7 +155,7 @@ describe('Simple power unit vehicle display code tests', () => {
   });
 
   it('should generate a correct display code for a single steer, tandem drive power unit with NONE trailer', async () => {
-    const configuration = [POWER_UNITS.TRUCK_TRACTORS.id, TRAILER_CODES.NONE];
+    const configuration = [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.NONE.id];
     const displayCode = policy.getVehicleDisplayCode(
       configuration,
       axleConfig12,
@@ -166,16 +166,16 @@ describe('Simple power unit vehicle display code tests', () => {
   it('should generate a correct display code for configuration with more than 9 axle units', async () => {
     const configuration = [
       POWER_UNITS.TRUCK_TRACTORS.id,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.SEMI_TRAILERS,
-      TRAILER_CODES.BOOSTER,
+      TRAILERS.JEEPS.id,
+      TRAILERS.JEEPS.id,
+      TRAILERS.JEEPS.id,
+      TRAILERS.JEEPS.id,
+      TRAILERS.JEEPS.id,
+      TRAILERS.JEEPS.id,
+      TRAILERS.JEEPS.id,
+      TRAILERS.JEEPS.id,
+      TRAILERS.SEMI_TRAILERS.id,
+      TRAILERS.BOOSTER.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig12,
@@ -294,7 +294,7 @@ describe('Power unit with trailer display code tests', () => {
   it('should generate a correct display code for a single steer, single drive power unit and single trailer', async () => {
     const configuration = [
       POWER_UNITS.TRUCK_TRACTORS.id,
-      TRAILER_CODES.SEMI_TRAILERS,
+      TRAILERS.SEMI_TRAILERS.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig11,
@@ -306,7 +306,7 @@ describe('Power unit with trailer display code tests', () => {
   it('should generate a correct display code for a single steer, single drive power unit and tandem trailer', async () => {
     const configuration = [
       POWER_UNITS.TRUCK_TRACTORS.id,
-      TRAILER_CODES.SEMI_TRAILERS,
+      TRAILERS.SEMI_TRAILERS.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig11,
@@ -318,7 +318,7 @@ describe('Power unit with trailer display code tests', () => {
   it('should generate a correct display code for a single steer, tandem drive power unit and single trailer', async () => {
     const configuration = [
       POWER_UNITS.TRUCK_TRACTORS.id,
-      TRAILER_CODES.SEMI_TRAILERS,
+      TRAILERS.SEMI_TRAILERS.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig12,
@@ -330,7 +330,7 @@ describe('Power unit with trailer display code tests', () => {
   it('should generate a correct display code for a single steer, tandem drive power unit and tandem trailer', async () => {
     const configuration = [
       POWER_UNITS.TRUCK_TRACTORS.id,
-      TRAILER_CODES.SEMI_TRAILERS,
+      TRAILERS.SEMI_TRAILERS.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig12,
@@ -342,7 +342,7 @@ describe('Power unit with trailer display code tests', () => {
   it('should generate a correct display code for a single steer, tandem drive power unit and tridem trailer', async () => {
     const configuration = [
       POWER_UNITS.TRUCK_TRACTORS.id,
-      TRAILER_CODES.SEMI_TRAILERS,
+      TRAILERS.SEMI_TRAILERS.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig12,
@@ -354,7 +354,7 @@ describe('Power unit with trailer display code tests', () => {
   it('should generate a correct display code for a single steer, tandem drive power unit and quad trailer', async () => {
     const configuration = [
       POWER_UNITS.TRUCK_TRACTORS.id,
-      TRAILER_CODES.SEMI_TRAILERS,
+      TRAILERS.SEMI_TRAILERS.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig12,
@@ -366,7 +366,7 @@ describe('Power unit with trailer display code tests', () => {
   it('should generate a correct display code for a single steer, tridem drive power unit and single trailer', async () => {
     const configuration = [
       POWER_UNITS.TRUCK_TRACTORS.id,
-      TRAILER_CODES.SEMI_TRAILERS,
+      TRAILERS.SEMI_TRAILERS.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig13,
@@ -378,7 +378,7 @@ describe('Power unit with trailer display code tests', () => {
   it('should generate a correct display code for a single steer, quad drive power unit and single trailer', async () => {
     const configuration = [
       POWER_UNITS.TRUCK_TRACTORS.id,
-      TRAILER_CODES.SEMI_TRAILERS,
+      TRAILERS.SEMI_TRAILERS.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig14,
@@ -394,7 +394,7 @@ describe('Multisteer power unit with dolly display code tests', () => {
   it('should generate a correct display code for a single steer, single drive multisteer power unit with single dolly', async () => {
     const configuration = [
       POWER_UNITS.CRANES_ALL_TERRAIN.id,
-      TRAILER_CODES.DOLLIES,
+      TRAILERS.DOLLIES.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig11,
@@ -406,7 +406,7 @@ describe('Multisteer power unit with dolly display code tests', () => {
   it('should generate a correct display code for a single steer, single drive multisteer power unit with tandem dolly', async () => {
     const configuration = [
       POWER_UNITS.CRANES_ALL_TERRAIN.id,
-      TRAILER_CODES.DOLLIES,
+      TRAILERS.DOLLIES.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig11,
@@ -418,7 +418,7 @@ describe('Multisteer power unit with dolly display code tests', () => {
   it('should generate a correct display code for a single steer, tandem drive multisteer power unit with single dolly', async () => {
     const configuration = [
       POWER_UNITS.CRANES_ALL_TERRAIN.id,
-      TRAILER_CODES.DOLLIES,
+      TRAILERS.DOLLIES.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig12,
@@ -430,7 +430,7 @@ describe('Multisteer power unit with dolly display code tests', () => {
   it('should generate a correct display code for a single steer, tandem drive multisteer power unit with tandem dolly', async () => {
     const configuration = [
       POWER_UNITS.CRANES_ALL_TERRAIN.id,
-      TRAILER_CODES.DOLLIES,
+      TRAILERS.DOLLIES.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig12,
@@ -442,7 +442,7 @@ describe('Multisteer power unit with dolly display code tests', () => {
   it('should generate a correct display code for a single steer, tandem drive multisteer power unit with tridem dolly', async () => {
     const configuration = [
       POWER_UNITS.CRANES_ALL_TERRAIN.id,
-      TRAILER_CODES.DOLLIES,
+      TRAILERS.DOLLIES.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig12,
@@ -454,7 +454,7 @@ describe('Multisteer power unit with dolly display code tests', () => {
   it('should generate a correct display code for a single steer, tandem drive multisteer power unit with quad dolly', async () => {
     const configuration = [
       POWER_UNITS.CRANES_ALL_TERRAIN.id,
-      TRAILER_CODES.DOLLIES,
+      TRAILERS.DOLLIES.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig12,
@@ -466,7 +466,7 @@ describe('Multisteer power unit with dolly display code tests', () => {
   it('should generate a correct display code for a single steer, tridem drive multisteer power unit with single dolly', async () => {
     const configuration = [
       POWER_UNITS.CRANES_ALL_TERRAIN.id,
-      TRAILER_CODES.DOLLIES,
+      TRAILERS.DOLLIES.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig13,
@@ -478,7 +478,7 @@ describe('Multisteer power unit with dolly display code tests', () => {
   it('should generate a correct display code for a single steer, quad drive multisteer power unit with single dolly', async () => {
     const configuration = [
       POWER_UNITS.CRANES_ALL_TERRAIN.id,
-      TRAILER_CODES.DOLLIES,
+      TRAILERS.DOLLIES.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig14,
@@ -494,9 +494,9 @@ describe('Power unit with jeep, trailer, and booster display code tests', () => 
   it('should generate a correct display code for a single steer, single drive power unit, single jeep, single trailer, and single booster', async () => {
     const configuration = [
       POWER_UNITS.TRUCK_TRACTORS.id,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.SEMI_TRAILERS,
-      TRAILER_CODES.BOOSTER,
+      TRAILERS.JEEPS.id,
+      TRAILERS.SEMI_TRAILERS.id,
+      TRAILERS.BOOSTER.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig11,
@@ -510,9 +510,9 @@ describe('Power unit with jeep, trailer, and booster display code tests', () => 
   it('should generate a correct display code for a single steer, tridem drive power unit, tandem jeep, tridem trailer, and single booster', async () => {
     const configuration = [
       POWER_UNITS.TRUCK_TRACTORS.id,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.SEMI_TRAILERS,
-      TRAILER_CODES.BOOSTER,
+      TRAILERS.JEEPS.id,
+      TRAILERS.SEMI_TRAILERS.id,
+      TRAILERS.BOOSTER.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig13,
@@ -530,7 +530,7 @@ describe('Additional axle display code tests', () => {
   it('should generate a correct display code for a single steer, single drive multisteer power unit with single additional axle', async () => {
     const configuration = [
       POWER_UNITS.CRANES_ALL_TERRAIN.id,
-      TRAILER_CODES.ADDITIONAL_AXLE_UNIT_ALL_TERRAIN_CRANE,
+      TRAILERS.ADDITIONAL_AXLE_UNIT_ALL_TERRAIN_CRANE.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig11,
@@ -542,9 +542,9 @@ describe('Additional axle display code tests', () => {
   it('should generate a correct display code for a tandem steer, tridem drive multisteer power unit with three tandem additional axles', async () => {
     const configuration = [
       POWER_UNITS.CRANES_ALL_TERRAIN.id,
-      TRAILER_CODES.ADDITIONAL_AXLE_UNIT_ALL_TERRAIN_CRANE,
-      TRAILER_CODES.ADDITIONAL_AXLE_UNIT_ALL_TERRAIN_CRANE,
-      TRAILER_CODES.ADDITIONAL_AXLE_UNIT_ALL_TERRAIN_CRANE,
+      TRAILERS.ADDITIONAL_AXLE_UNIT_ALL_TERRAIN_CRANE.id,
+      TRAILERS.ADDITIONAL_AXLE_UNIT_ALL_TERRAIN_CRANE.id,
+      TRAILERS.ADDITIONAL_AXLE_UNIT_ALL_TERRAIN_CRANE.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig23,
@@ -558,10 +558,10 @@ describe('Additional axle display code tests', () => {
   it('should generate a correct display code for a single steer, tridem drive power unit, tridem platform trailer with two additional tandem axles, and single booster', async () => {
     const configuration = [
       POWER_UNITS.TRUCK_TRACTORS.id,
-      TRAILER_CODES.PLATFORM_TRAILERS,
-      TRAILER_CODES.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER,
-      TRAILER_CODES.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER,
-      TRAILER_CODES.BOOSTER,
+      TRAILERS.PLATFORM_TRAILERS.id,
+      TRAILERS.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER.id,
+      TRAILERS.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER.id,
+      TRAILERS.BOOSTER.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig13,
@@ -589,8 +589,8 @@ describe('Universal display code tests', () => {
   it('should generate a universal display code for configuration with an unknown vehicle type (multi axles)', async () => {
     const configuration = [
       POWER_UNITS.TRUCK_TRACTORS.id,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.SEMI_TRAILERS,
+      TRAILERS.JEEPS.id,
+      TRAILERS.SEMI_TRAILERS.id,
       '__INVALID',
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
@@ -605,9 +605,9 @@ describe('Universal display code tests', () => {
   it('should generate a universal display code for configuration with at least one axle unit greater than 4 axles', async () => {
     const configuration = [
       POWER_UNITS.TRUCK_TRACTORS.id,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.SEMI_TRAILERS,
-      TRAILER_CODES.BOOSTER,
+      TRAILERS.JEEPS.id,
+      TRAILERS.SEMI_TRAILERS.id,
+      TRAILERS.BOOSTER.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig23,
@@ -621,9 +621,9 @@ describe('Universal display code tests', () => {
   it('should generate a universal display code for configuration with at least one axle unit exactly 4 axles', async () => {
     const configuration = [
       '__INVALID',
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.SEMI_TRAILERS,
-      TRAILER_CODES.BOOSTER,
+      TRAILERS.JEEPS.id,
+      TRAILERS.SEMI_TRAILERS.id,
+      TRAILERS.BOOSTER.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig23,
@@ -637,9 +637,9 @@ describe('Universal display code tests', () => {
   it('should generate a universal display code for axle unit with 7 axles', async () => {
     const configuration = [
       POWER_UNITS.TRUCK_TRACTORS.id,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.SEMI_TRAILERS,
-      TRAILER_CODES.BOOSTER,
+      TRAILERS.JEEPS.id,
+      TRAILERS.SEMI_TRAILERS.id,
+      TRAILERS.BOOSTER.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig23,
@@ -653,16 +653,16 @@ describe('Universal display code tests', () => {
   it('should generate a correct universal display code for configuration with more than 9 axle units', async () => {
     const configuration = [
       POWER_UNITS.TRUCK_TRACTORS.id,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.SEMI_TRAILERS,
-      TRAILER_CODES.BOOSTER,
+      TRAILERS.JEEPS.id,
+      TRAILERS.JEEPS.id,
+      TRAILERS.JEEPS.id,
+      TRAILERS.JEEPS.id,
+      TRAILERS.JEEPS.id,
+      TRAILERS.JEEPS.id,
+      TRAILERS.JEEPS.id,
+      TRAILERS.JEEPS.id,
+      TRAILERS.SEMI_TRAILERS.id,
+      TRAILERS.BOOSTER.id,
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [
       ...axleConfig12,
@@ -685,8 +685,8 @@ describe('Universal display code tests', () => {
   it('should generate a universal display code with varying spacing widths', async () => {
     const configuration = [
       POWER_UNITS.TRUCK_TRACTORS.id,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.SEMI_TRAILERS,
+      TRAILERS.JEEPS.id,
+      TRAILERS.SEMI_TRAILERS.id,
       '__INVALID',
     ];
     const displayCode = policy.getVehicleDisplayCode(configuration, [

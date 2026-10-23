@@ -20,9 +20,9 @@ import {
   getInteraxleSpacingRequirement,
 } from './interaxle-spacing.helper';
 import { formatMeters } from './format-meters.helper';
-import { TRAILER_CODES } from '../constants/trailer-codes';
 import { VEHICLE_CATEGORIES } from '../constants/vehicle-categories';
 import { POWER_UNITS } from '../constants/power-units';
+import { TRAILERS } from '../constants/trailers';
 
 /**
  * Type definition for policy check functions.
@@ -228,7 +228,7 @@ export function CheckAxleGroupMaximumLegalWeightThreshold(
         startAxleIndex === 1 &&
         endAxleIndex === 2 &&
         vehicleConfiguration[0] === POWER_UNITS.TRUCK_TRACTORS.id &&
-        vehicleConfiguration[1] === TRAILER_CODES.JEEPS &&
+        vehicleConfiguration[1] === TRAILERS.JEEPS.id &&
         axleUnitVehicleIndexes[1] === 0 &&
         axleUnitVehicleIndexes[2] === 1 &&
         axleConfiguration[1].numberOfAxles === 2 &&
@@ -387,7 +387,7 @@ function hasInvalidBridgeFormulaInput(
  *
  * @example
  * // For a vehicle with 3 axle groups
- * const results = CheckBridgeFormula(policy, [POWER_UNITS.TRUCK_TRACTORS.id, TRAILER_CODES.SEMI_TRAILERS], [
+ * const results = CheckBridgeFormula(policy, [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id], [
  *   { numberOfAxles: 2, axleSpread: 1.8, weight: 12000 },
  *   { numberOfAxles: 3, axleSpread: 4.2, weight: 34000 },
  *   { numberOfAxles: 3, axleSpread: 3.0, weight: 34000 }
@@ -532,9 +532,9 @@ function getApplicablePermittableWeightThreshold(
     trailerDefinition?.category === 'semi' ||
     trailerDefinition?.category === 'pony' ||
     [
-      TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS,
-      TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
-      TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
+      TRAILERS.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS.id,
+      TRAILERS.SEMI_TRAILERS_WHEELERS.id,
+      TRAILERS.SEMI_TRAILERS_WIDE_WHEELERS.id,
     ].some((type) => type === trailerDefinition?.id);
 
   const configuredWeight = policy.getApplicableAxleWeight(
@@ -590,7 +590,7 @@ function getApplicablePermittableWeightThreshold(
  *
  * @example
  * // For a truck-tractor with 2-axle steer, 3-axle drive, and a 3-axle semi-trailer
- * const results = CheckPermittableWeight(policy, [POWER_UNITS.TRUCK_TRACTORS.id, TRAILER_CODES.SEMI_TRAILERS], [
+ * const results = CheckPermittableWeight(policy, [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id], [
  *   { numberOfAxles: 2, axleUnitWeight: 12000 },  // Steer axle unit
  *   { numberOfAxles: 3, axleUnitWeight: 34000 },  // Drive axle unit
  *   { numberOfAxles: 3, axleUnitWeight: 34000 }   // Trailer axle unit
@@ -1300,7 +1300,7 @@ export function CheckBoosterAxleLimit(
       return;
     }
 
-    if (vehicleSubType === TRAILER_CODES.BOOSTER) {
+    if (vehicleSubType === TRAILERS.BOOSTER.id) {
       if (trailerAxleConfigIndex === undefined) {
         return;
       }
@@ -1331,7 +1331,7 @@ export function CheckBoosterAxleLimit(
     // (for example PFMAXLE), so keep comparing boosters to the last real trailer.
     // Basically, skip pseudo axle units when deciding which trailer the booster follows.
     if (
-      vehicleSubType !== TRAILER_CODES.JEEPS &&
+      vehicleSubType !== TRAILERS.JEEPS.id &&
       vehicleDefinition?.category !== VEHICLE_CATEGORIES.PSEUDO
     ) {
       trailerAxleConfigIndex = axleConfigIndex;
@@ -1578,7 +1578,7 @@ export function CheckDriveJeepLoadEqualization(
   const maxWeightDifferenceKg = 1000;
   const driveAxleConfigIndex = 1;
   const jeepVehicleIndex = vehicleConfiguration.findIndex(
-    (vehicleSubType) => vehicleSubType === TRAILER_CODES.JEEPS,
+    (vehicleSubType) => vehicleSubType === TRAILERS.JEEPS.id,
   );
 
   if (jeepVehicleIndex < 1) {

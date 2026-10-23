@@ -3,9 +3,9 @@ import { Policy } from '../../policy-engine';
 import { PolicyCheckId, PolicyCheckResultType } from '../../enum/policy-check';
 import { AxleConfiguration, PolicyDefinition } from '../../types';
 import currentPolicyConfig from '../policy-config/_current-config.json';
-import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { CheckPickerTruckTractorWeightRestrictions } from '../../helper/policy-check.helper';
 import { POWER_UNITS } from '../../constants/power-units';
+import { TRAILERS } from '../../constants/trailers';
 
 describe('ORV2-5706 legal weight maximums', () => {
   const policy = new Policy(currentPolicyConfig);
@@ -83,7 +83,7 @@ describe('ORV2-5706 legal weight maximums', () => {
         weights[field] = field === 'saLegal' ? 13000 : 23000;
         const results = CheckPickerTruckTractorWeightRestrictions(
           new Policy(config),
-          [POWER_UNITS.PICKER_TRUCK_TRACTORS.id, TRAILER_CODES.SEMI_TRAILERS],
+          [POWER_UNITS.PICKER_TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id],
           [
             {
               numberOfAxles: 2,
@@ -508,7 +508,7 @@ describe('ORV2-5706 legal weight maximums', () => {
     ];
     const results = policy
       .runAxleCalculation(
-        [POWER_UNITS.TRUCK_WITH_PME.id, TRAILER_CODES.SEMI_TRAILERS],
+        [POWER_UNITS.TRUCK_WITH_PME.id, TRAILERS.SEMI_TRAILERS.id],
         axleConfiguration,
         100000,
         COMMODITY_CODES.NONE,
@@ -558,7 +558,7 @@ describe('ORV2-5706 legal weight maximums', () => {
     ];
     const results = policy
       .runAxleCalculation(
-        [POWER_UNITS.CONCRETE_PUMPER_TRUCKS.id, TRAILER_CODES.SEMI_TRAILERS],
+        [POWER_UNITS.CONCRETE_PUMPER_TRUCKS.id, TRAILERS.SEMI_TRAILERS.id],
         axleConfiguration,
         100000,
         COMMODITY_CODES.NONE,

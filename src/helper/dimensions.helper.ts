@@ -14,7 +14,7 @@ import {
   WeightDimension,
 } from 'onroute-policy-engine/types';
 import { VEHICLE_CATEGORIES } from '../constants/vehicle-categories';
-import { TRAILER_CODES } from '../constants/trailer-codes';
+import { TRAILERS } from '../constants/trailers';
 
 /**
  * Gets the maximum size dimensions for a given permit type, commodity,
@@ -445,7 +445,7 @@ export function selectCorrectWeightDimensionHelper(
   // Keep the existing Tridem allowance limited to no Booster or a Single Booster.
   const boosterQualifies =
     axleUnit.numberOfAxles !== 3 ||
-    configuration[nextVehicleIndex] !== TRAILER_CODES.BOOSTER ||
+    configuration[nextVehicleIndex] !== TRAILERS.BOOSTER.id ||
     boosterAxle?.numberOfAxles === 1;
 
   for (const weightDimension of weightDimensions) {

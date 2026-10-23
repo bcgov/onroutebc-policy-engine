@@ -34,8 +34,8 @@ import {
   getUtcDatetime,
   TIMEZONE_IDS,
 } from '../../helper/date.helper';
-import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { POWER_UNITS } from '../../constants/power-units';
+import { TRAILERS } from '../../constants/trailers';
 
 describe('Axle Calculation Functions', () => {
   const policy: Policy = new Policy(currentPolicyConfig);
@@ -640,8 +640,8 @@ describe('Axle Calculation Functions', () => {
       driveAxleWeight: number,
       vehicleTypes = [
         POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
-        TRAILER_CODES.SEMI_TRAILERS,
-        TRAILER_CODES.NONE,
+        TRAILERS.SEMI_TRAILERS.id,
+        TRAILERS.NONE.id,
       ],
       steerAxleSpread = 100,
       driveAxleSpread = 240,
@@ -690,7 +690,7 @@ describe('Axle Calculation Functions', () => {
     it('rejects a trailer when the axle weights fail the 50% requirement', () => {
       const trailerResult = getResults(9000, 20000, [
         POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
-        TRAILER_CODES.SEMI_TRAILERS,
+        TRAILERS.SEMI_TRAILERS.id,
       ])[1];
 
       expect(trailerResult).toMatchObject({
@@ -812,7 +812,7 @@ describe('Axle Calculation Functions', () => {
     it('still applies the towing restriction at the 17,000 kg steer permit maximum', () => {
       const [ratioResult, trailerResult] = getResults(17000, 24000, [
         POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
-        TRAILER_CODES.SEMI_TRAILERS,
+        TRAILERS.SEMI_TRAILERS.id,
       ]);
       expect(ratioResult).toMatchObject({
         result: PolicyCheckResultType.Pass,
@@ -827,7 +827,7 @@ describe('Axle Calculation Functions', () => {
     it('still applies the towing restriction at the 17,000 kg steer permit maximum', () => {
       const [ratioResult, trailerResult] = getResults(17000, 24000, [
         POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
-        TRAILER_CODES.SEMI_TRAILERS,
+        TRAILERS.SEMI_TRAILERS.id,
       ]);
       expect(ratioResult).toMatchObject({
         result: PolicyCheckResultType.Pass,
@@ -842,7 +842,7 @@ describe('Axle Calculation Functions', () => {
     it('allows a trailer at the 15,200 kg picker tandem-steer legal maximum', () => {
       const trailerResult = getResults(15200, 24000, [
         POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
-        TRAILER_CODES.SEMI_TRAILERS,
+        TRAILERS.SEMI_TRAILERS.id,
       ])[1];
 
       expect(trailerResult).toMatchObject({
@@ -864,7 +864,7 @@ describe('Axle Calculation Functions', () => {
 
       const results = policy
         .runAxleCalculation(
-          [POWER_UNITS.PICKER_TRUCK_TRACTORS.id, TRAILER_CODES.SEMI_TRAILERS],
+          [POWER_UNITS.PICKER_TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id],
           axles,
           100000,
           COMMODITY_CODES.NONE,
@@ -889,7 +889,7 @@ describe('Axle Calculation Functions', () => {
     it('rejects a trailer when the drive axle exceeds its legal maximum', () => {
       const trailerResult = getResults(14000, 24001, [
         POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
-        TRAILER_CODES.SEMI_TRAILERS,
+        TRAILERS.SEMI_TRAILERS.id,
       ])[1];
 
       expect(trailerResult).toMatchObject({
@@ -901,7 +901,7 @@ describe('Axle Calculation Functions', () => {
     it('does not treat the None pseudo trailer as towing', () => {
       const trailerResult = getResults(14000, 24001, [
         POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
-        TRAILER_CODES.NONE,
+        TRAILERS.NONE.id,
       ])[1];
 
       expect(trailerResult).toMatchObject({
@@ -913,7 +913,7 @@ describe('Axle Calculation Functions', () => {
     it('returns both failures when the ratio and trailer rules fail', () => {
       const results = getResults(13000, 28000, [
         POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
-        TRAILER_CODES.SEMI_TRAILERS,
+        TRAILERS.SEMI_TRAILERS.id,
       ]);
 
       expect(results).toEqual(
@@ -1679,8 +1679,8 @@ describe('Axle Calculation Functions', () => {
   it('should fail booster axle limit through axle calculation results when booster has more axles than trailer', async () => {
     const vc = [
       POWER_UNITS.TRUCK_TRACTORS.id,
-      TRAILER_CODES.DOLLIES,
-      TRAILER_CODES.BOOSTER,
+      TRAILERS.DOLLIES.id,
+      TRAILERS.BOOSTER.id,
     ];
     const ac = [
       {
@@ -1766,7 +1766,7 @@ describe('Axle Calculation Functions', () => {
   it('should not treat a booster without a preceding trailer as an axle limit violation', async () => {
     const results = CheckBoosterAxleLimit(
       policy,
-      [POWER_UNITS.TRUCK_TRACTORS.id, TRAILER_CODES.BOOSTER],
+      [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.BOOSTER.id],
       [
         { numberOfAxles: 1, axleUnitWeight: 6700 },
         { numberOfAxles: 2, axleUnitWeight: 12000 },
@@ -1780,11 +1780,7 @@ describe('Axle Calculation Functions', () => {
   it('should ignore booster entries that have no matching axle configuration', async () => {
     const results = CheckBoosterAxleLimit(
       policy,
-      [
-        POWER_UNITS.TRUCK_TRACTORS.id,
-        TRAILER_CODES.DOLLIES,
-        TRAILER_CODES.BOOSTER,
-      ],
+      [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.DOLLIES.id, TRAILERS.BOOSTER.id],
       [
         { numberOfAxles: 1, axleUnitWeight: 6700 },
         { numberOfAxles: 2, axleUnitWeight: 12000 },
@@ -1798,10 +1794,10 @@ describe('Axle Calculation Functions', () => {
   it('should compare booster axles to the real trailer before additional axle units', async () => {
     const vc = [
       POWER_UNITS.TRUCK_TRACTORS.id,
-      TRAILER_CODES.PLATFORM_TRAILERS,
-      TRAILER_CODES.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER,
-      TRAILER_CODES.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER,
-      TRAILER_CODES.BOOSTER,
+      TRAILERS.PLATFORM_TRAILERS.id,
+      TRAILERS.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER.id,
+      TRAILERS.ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER.id,
+      TRAILERS.BOOSTER.id,
     ];
     const ac = [
       { numberOfAxles: 1, axleUnitWeight: 6700 },
@@ -1958,7 +1954,7 @@ describe('Axle Calculation Functions', () => {
   it('should warn truck tractor wheelbase at the maximum allowed value with semi-trailer', async () => {
     const results = CheckWheelbaseLegalLimits(
       policy,
-      [POWER_UNITS.TRUCK_TRACTORS.id, TRAILER_CODES.SEMI_TRAILERS],
+      [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id],
       [
         { numberOfAxles: 1, axleUnitWeight: 6700 },
         {
@@ -1984,7 +1980,7 @@ describe('Axle Calculation Functions', () => {
   it('should fail truck tractor wheelbase above the maximum allowed value', async () => {
     const results = CheckWheelbaseLegalLimits(
       policy,
-      [POWER_UNITS.TRUCK_TRACTORS.id, TRAILER_CODES.SEMI_TRAILERS],
+      [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id],
       [
         { numberOfAxles: 1, axleUnitWeight: 6700 },
         {
@@ -2010,11 +2006,7 @@ describe('Axle Calculation Functions', () => {
   it('should pass truck tractor wheelbase below the minimum restricted value', async () => {
     const results = CheckWheelbaseLegalLimits(
       policy,
-      [
-        POWER_UNITS.TRUCK_TRACTORS.id,
-        TRAILER_CODES.JEEPS,
-        TRAILER_CODES.BOOSTER,
-      ],
+      [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.JEEPS.id, TRAILERS.BOOSTER.id],
       [
         { numberOfAxles: 1, axleUnitWeight: 6700 },
         {
@@ -2039,7 +2031,7 @@ describe('Axle Calculation Functions', () => {
   it('should fail truck tractor wheelbase between 6.2m and 7.2m when trailer type is not semi-trailer type', async () => {
     const jeepResults = CheckWheelbaseLegalLimits(
       policy,
-      [POWER_UNITS.TRUCK_TRACTORS.id, TRAILER_CODES.JEEPS],
+      [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.JEEPS.id],
       [
         { numberOfAxles: 1, axleUnitWeight: 5000 },
         {
@@ -2059,8 +2051,8 @@ describe('Axle Calculation Functions', () => {
       policy,
       [
         POWER_UNITS.TRUCK_TRACTORS.id,
-        TRAILER_CODES.SEMI_TRAILERS,
-        TRAILER_CODES.BOOSTER,
+        TRAILERS.SEMI_TRAILERS.id,
+        TRAILERS.BOOSTER.id,
       ],
       [
         { numberOfAxles: 1, axleUnitWeight: 5000 },
@@ -2159,7 +2151,7 @@ describe('Axle Calculation Functions', () => {
     it('should fail invalid pony trailer tridem axle spread above 2.5m', () => {
       const results = CheckLegalAxleSpread(
         policy,
-        [POWER_UNITS.TRUCK_TRACTORS.id, TRAILER_CODES.PONY_TRAILERS],
+        [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.PONY_TRAILERS.id],
         [
           { numberOfAxles: 1, axleUnitWeight: 6700 },
           { numberOfAxles: 1, axleUnitWeight: 6700 },
@@ -2181,7 +2173,7 @@ describe('Axle Calculation Functions', () => {
         policy,
         [
           POWER_UNITS.TRUCK_TRACTORS.id,
-          TRAILER_CODES.SEMI_TRAILERS_SPREAD_TANDEMS,
+          TRAILERS.SEMI_TRAILERS_SPREAD_TANDEMS.id,
         ],
         [
           { numberOfAxles: 1, axleUnitWeight: 6700, vehicleIndex: 0 },
@@ -2214,7 +2206,7 @@ describe('Axle Calculation Functions', () => {
         policy,
         [
           POWER_UNITS.TRUCK_TRACTORS.id,
-          TRAILER_CODES.SEMI_TRAILERS_SPREAD_TANDEMS,
+          TRAILERS.SEMI_TRAILERS_SPREAD_TANDEMS.id,
         ],
         [
           { numberOfAxles: 1, axleUnitWeight: 6700, vehicleIndex: 0 },
@@ -2249,7 +2241,7 @@ describe('Axle Calculation Functions', () => {
       // tridem on semi-trailer (power unit TRKTRAC)
       const semiResults = CheckLegalAxleSpread(
         policy,
-        [POWER_UNITS.TRUCK_TRACTORS.id, TRAILER_CODES.SEMI_TRAILERS],
+        [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id],
         [
           { numberOfAxles: 1, axleUnitWeight: 6700, vehicleIndex: 0 },
           {
@@ -2279,7 +2271,7 @@ describe('Axle Calculation Functions', () => {
 
       const semiFail = CheckLegalAxleSpread(
         policy,
-        [POWER_UNITS.TRUCK_TRACTORS.id, TRAILER_CODES.SEMI_TRAILERS],
+        [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id],
         [
           { numberOfAxles: 1, axleUnitWeight: 6700, vehicleIndex: 0 },
           {
@@ -2303,7 +2295,7 @@ describe('Axle Calculation Functions', () => {
       // pole trailer special max
       const poleResults = CheckLegalAxleSpread(
         policy,
-        [POWER_UNITS.TRUCK_TRACTORS.id, TRAILER_CODES.POLE_TRAILERS],
+        [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.POLE_TRAILERS.id],
         [
           { numberOfAxles: 1, axleUnitWeight: 6700, vehicleIndex: 0 },
           {
@@ -2406,8 +2398,8 @@ describe('Axle Calculation Functions', () => {
       'Axle Unit 2 and Axle Unit 3 must be load equalized within 1000 kg.';
     const vc = [
       POWER_UNITS.TRUCK_TRACTORS.id,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.SEMI_TRAILERS,
+      TRAILERS.JEEPS.id,
+      TRAILERS.SEMI_TRAILERS.id,
     ];
     const getAxleConfig = (
       axleUnit2Weight: number,
@@ -2505,7 +2497,7 @@ describe('Axle Calculation Functions', () => {
     it('should return no result when there is no jeep', () => {
       const results = CheckDriveJeepLoadEqualization(
         policy,
-        [POWER_UNITS.TRUCK_TRACTORS.id, TRAILER_CODES.SEMI_TRAILERS],
+        [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id],
         getAxleConfig(12000, 10999),
       );
 

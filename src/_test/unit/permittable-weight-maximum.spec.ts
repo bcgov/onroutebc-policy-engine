@@ -3,10 +3,10 @@ import { Policy } from '../../policy-engine';
 import { PolicyCheckId, PolicyCheckResultType } from '../../enum/policy-check';
 import { AxleConfiguration, PolicyDefinition } from '../../types';
 import currentPolicyConfig from '../policy-config/_current-config.json';
-import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { CheckPermittableWeight } from '../../helper/policy-check.helper';
 import { getAxleUnitVehicleIndexLookup } from '../../helper/dimensions.helper';
 import { POWER_UNITS } from '../../constants/power-units';
+import { TRAILERS } from '../../constants/trailers';
 
 describe('ORV2-5709 permittable weight maximums', () => {
   const policy = new Policy(currentPolicyConfig);
@@ -29,7 +29,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
       spread,
       boosterAxleCount,
       powerUnitType = POWER_UNITS.TRUCK_TRACTORS.id,
-      trailerType = TRAILER_CODES.SEMI_TRAILERS,
+      trailerType = TRAILERS.SEMI_TRAILERS.id,
       commodityId = COMMODITY_CODES.NONE,
     }: Scenario,
     // Allow isolated tests to prove that modified JSON controls the limit.
@@ -40,7 +40,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
     const vehicleConfiguration = [
       powerUnitType,
       ...(hasTrailer ? [trailerType] : []),
-      ...(hasBooster ? [TRAILER_CODES.BOOSTER] : []),
+      ...(hasBooster ? [TRAILERS.BOOSTER.id] : []),
     ];
     const axleConfiguration: Array<AxleConfiguration> = [
       {
@@ -413,9 +413,9 @@ describe('ORV2-5709 permittable weight maximums', () => {
 
     // Platform Wheeler, accessory and additional power-unit tandems remain separately scoped.
     it.each([
-      TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
-      TRAILER_CODES.JEEPS,
-      TRAILER_CODES.BOOSTER,
+      TRAILERS.PLATFORM_TRAILERS_WHEELERS.id,
+      TRAILERS.JEEPS.id,
+      TRAILERS.BOOSTER.id,
     ])('preserves the existing tandem limit for %s', (trailerType) => {
       for (const actualWeight of [23000, 23001]) {
         expectPermittableResult(
@@ -601,7 +601,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
           actualWeight: 29000,
           spread: 240,
           trailerType:
-            TRAILER_CODES.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED,
+            TRAILERS.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED.id,
         },
         29000,
         PolicyCheckResultType.Pass,
@@ -611,33 +611,29 @@ describe('ORV2-5709 permittable weight maximums', () => {
     // Nicole's S2/S4 bands. Non-Reducible Oilfield trailers retain 29,000 from 2.4 m.
     it.each<[string, string, number]>([
       [
-        TRAILER_CODES.READY_MIX_CONCRETE_PUMP_SEMI_TRAILERS,
+        TRAILERS.READY_MIX_CONCRETE_PUMP_SEMI_TRAILERS.id,
+        COMMODITY_CODES.NONE,
+        28000,
+      ],
+      [TRAILERS.FIXED_EQUIPMENT_SEMI_TRAILERS.id, COMMODITY_CODES.NONE, 28000],
+      [TRAILERS.FIXED_EQUIPMENT_CONVEYORS.id, COMMODITY_CODES.NONE, 28000],
+      [
+        TRAILERS.FIXED_EQUIPMENT_COUNTER_FLOW_ASPHALT_DRUM_MIXERS.id,
         COMMODITY_CODES.NONE,
         28000,
       ],
       [
-        TRAILER_CODES.FIXED_EQUIPMENT_SEMI_TRAILERS,
-        COMMODITY_CODES.NONE,
-        28000,
-      ],
-      [TRAILER_CODES.FIXED_EQUIPMENT_CONVEYORS, COMMODITY_CODES.NONE, 28000],
-      [
-        TRAILER_CODES.FIXED_EQUIPMENT_COUNTER_FLOW_ASPHALT_DRUM_MIXERS,
+        TRAILERS.FIXED_EQUIPMENT_PORTABLE_ASPHALT_BAGHOUSES.id,
         COMMODITY_CODES.NONE,
         28000,
       ],
       [
-        TRAILER_CODES.FIXED_EQUIPMENT_PORTABLE_ASPHALT_BAGHOUSES,
-        COMMODITY_CODES.NONE,
-        28000,
-      ],
-      [
-        TRAILER_CODES.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK,
+        TRAILERS.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK.id,
         COMMODITY_CODES.OIL_FIELD_EQUIPMENT,
         28000,
       ],
       [
-        TRAILER_CODES.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK,
+        TRAILERS.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK.id,
         COMMODITY_CODES.NON_REDUCIBLE_LOADS,
         29000,
       ],
@@ -698,12 +694,9 @@ describe('ORV2-5709 permittable weight maximums', () => {
     );
 
     it.each([
+      [TRAILERS.READY_MIX_CONCRETE_PUMP_SEMI_TRAILERS.id, COMMODITY_CODES.NONE],
       [
-        TRAILER_CODES.READY_MIX_CONCRETE_PUMP_SEMI_TRAILERS,
-        COMMODITY_CODES.NONE,
-      ],
-      [
-        TRAILER_CODES.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK,
+        TRAILERS.OIL_AND_GAS_OVERSIZE_OILFIELD_FLAT_DECK.id,
         COMMODITY_CODES.OIL_FIELD_EQUIPMENT,
       ],
     ])(
@@ -757,12 +750,12 @@ describe('ORV2-5709 permittable weight maximums', () => {
 
     // XLS: Jeep/Booster limits and S3's confirmed 2.4–3.7 m Dolly spread.
     it.each([
-      [TRAILER_CODES.JEEPS, 240],
-      [TRAILER_CODES.JEEPS, 370],
-      [TRAILER_CODES.BOOSTER, 240],
-      [TRAILER_CODES.BOOSTER, 310],
-      [TRAILER_CODES.DOLLIES, 240],
-      [TRAILER_CODES.DOLLIES, 370],
+      [TRAILERS.JEEPS.id, 240],
+      [TRAILERS.JEEPS.id, 370],
+      [TRAILERS.BOOSTER.id, 240],
+      [TRAILERS.BOOSTER.id, 310],
+      [TRAILERS.DOLLIES.id, 240],
+      [TRAILERS.DOLLIES.id, 370],
     ] as const)(
       'keeps %s tridem at 28,000 kg with %i cm spread',
       (trailerType, spread) => {
@@ -780,9 +773,9 @@ describe('ORV2-5709 permittable weight maximums', () => {
 
     // Booster-specific JSON keeps its 28,000 kg limit when the global default changes.
     it.each<[string, number]>([
-      [TRAILER_CODES.JEEPS, 27500],
-      [TRAILER_CODES.BOOSTER, 28000],
-      [TRAILER_CODES.DOLLIES, 27500],
+      [TRAILERS.JEEPS.id, 27500],
+      [TRAILERS.BOOSTER.id, 28000],
+      [TRAILERS.DOLLIES.id, 27500],
     ])(
       'reads the %s tridem limit from JSON',
       (trailerType, thresholdWeight) => {
@@ -871,7 +864,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
 
       const vehicleConfiguration = [
         POWER_UNITS.TRUCK_TRACTORS.id,
-        TRAILER_CODES.SEMI_TRAILERS,
+        TRAILERS.SEMI_TRAILERS.id,
       ];
 
       const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
@@ -977,7 +970,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
         },
       ];
       const results = policy.runAxleCalculation(
-        [POWER_UNITS.TRUCK_TRACTORS.id, TRAILER_CODES.SEMI_TRAILERS],
+        [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id],
         axleConfiguration,
         100000,
         COMMODITY_CODES.NONE,

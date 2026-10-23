@@ -11,10 +11,10 @@ import {
   getUtcDatetime,
   TIMEZONE_IDS,
 } from '../../helper/date.helper';
-import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { COMMODITY_CODES } from '../../constants/commodity-codes';
 import { PERMIT_CODES } from '../../constants/permit-codes';
 import { POWER_UNITS } from '../../constants/power-units';
+import { TRAILERS } from '../../constants/trailers';
 
 const reportedTrailerCrashInput = {
   currentFormData: {
@@ -114,11 +114,11 @@ const reportedTrailerCrashInput = {
         ],
         trailers: [
           {
-            vehicleSubType: TRAILER_CODES.NONE,
+            vehicleSubType: TRAILERS.NONE.id,
             axleConfiguration: null,
           },
           {
-            vehicleSubType: TRAILER_CODES.BOOSTER,
+            vehicleSubType: TRAILERS.BOOSTER.id,
             axleConfiguration: [
               {
                 interaxleSpacing: 2,
@@ -533,7 +533,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     setPickerTruckTractorScenario(permit, 14000, 24001);
     permit.permitData.vehicleConfiguration.trailers = [
       {
-        vehicleSubType: TRAILER_CODES.SEMI_TRAILERS_A_TRAINS_C_TRAINS,
+        vehicleSubType: TRAILERS.SEMI_TRAILERS_A_TRAINS_C_TRAINS.id,
       },
     ];
     permit.permitData.vehicleConfiguration.axleConfiguration.push({

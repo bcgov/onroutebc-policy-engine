@@ -21,8 +21,8 @@ import {
   getUtcDatetime,
   TIMEZONE_IDS,
 } from '../../helper/date.helper';
-import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { POWER_UNITS } from '../../constants/power-units';
+import { TRAILERS } from '../../constants/trailers';
 
 describe('ORV2-5617 axle group maximum legal weight threshold', () => {
   const policy = new Policy(currentPolicyConfig);
@@ -40,7 +40,7 @@ describe('ORV2-5617 axle group maximum legal weight threshold', () => {
   const getThreeUnitConfiguration = ({
     vehicleConfiguration = [
       POWER_UNITS.TRUCK_TRACTORS.id,
-      TRAILER_CODES.SEMI_TRAILERS,
+      TRAILERS.SEMI_TRAILERS.id,
     ],
     spreadCm = 315,
     driveAxleCount = 2,
@@ -251,8 +251,8 @@ describe('ORV2-5617 axle group maximum legal weight threshold', () => {
     it('evaluates every contiguous eligible group and excludes axle unit 1', () => {
       const vehicleConfiguration = [
         POWER_UNITS.TRUCK_TRACTORS.id,
-        TRAILER_CODES.SEMI_TRAILERS,
-        TRAILER_CODES.SEMI_TRAILERS,
+        TRAILERS.SEMI_TRAILERS.id,
+        TRAILERS.SEMI_TRAILERS.id,
       ];
       const axleConfiguration: Array<AxleConfiguration> = [
         { numberOfAxles: 1, axleUnitWeight: 6000, vehicleIndex: 0 },
@@ -315,7 +315,7 @@ describe('ORV2-5617 axle group maximum legal weight threshold', () => {
         const [result] = getResults({
           vehicleConfiguration: [
             POWER_UNITS.TRUCK_TRACTORS.id,
-            TRAILER_CODES.JEEPS,
+            TRAILERS.JEEPS.id,
           ],
           spreadCm,
         });
@@ -328,7 +328,7 @@ describe('ORV2-5617 axle group maximum legal weight threshold', () => {
       {
         description: 'another power-unit subtype',
         options: {
-          vehicleConfiguration: [POWER_UNITS.TRUCKS.id, TRAILER_CODES.JEEPS],
+          vehicleConfiguration: [POWER_UNITS.TRUCKS.id, TRAILERS.JEEPS.id],
         } as GroupOptions,
       },
       {
@@ -336,7 +336,7 @@ describe('ORV2-5617 axle group maximum legal weight threshold', () => {
         options: {
           vehicleConfiguration: [
             POWER_UNITS.TRUCK_TRACTORS.id,
-            TRAILER_CODES.JEEPS,
+            TRAILERS.JEEPS.id,
           ],
           trailingAxleCount: 2,
         } as GroupOptions,
@@ -346,7 +346,7 @@ describe('ORV2-5617 axle group maximum legal weight threshold', () => {
         options: {
           vehicleConfiguration: [
             POWER_UNITS.TRUCK_TRACTORS.id,
-            TRAILER_CODES.JEEPS,
+            TRAILERS.JEEPS.id,
           ],
           driveAxleCount: 3,
         } as GroupOptions,
@@ -360,8 +360,8 @@ describe('ORV2-5617 axle group maximum legal weight threshold', () => {
     it('does not apply the exception when the jeep is not immediately after the power unit', () => {
       const vehicleConfiguration = [
         POWER_UNITS.TRUCK_TRACTORS.id,
-        TRAILER_CODES.SEMI_TRAILERS,
-        TRAILER_CODES.JEEPS,
+        TRAILERS.SEMI_TRAILERS.id,
+        TRAILERS.JEEPS.id,
       ];
       const axleConfiguration: Array<AxleConfiguration> = [
         { numberOfAxles: 1, axleUnitWeight: 6700, vehicleIndex: 0 },
@@ -398,8 +398,8 @@ describe('ORV2-5617 axle group maximum legal weight threshold', () => {
     it('uses the standard rule for a larger group containing the exact exception pair', () => {
       const vehicleConfiguration = [
         POWER_UNITS.TRUCK_TRACTORS.id,
-        TRAILER_CODES.JEEPS,
-        TRAILER_CODES.SEMI_TRAILERS,
+        TRAILERS.JEEPS.id,
+        TRAILERS.SEMI_TRAILERS.id,
       ];
       const axleConfiguration: Array<AxleConfiguration> = [
         { numberOfAxles: 1, axleUnitWeight: 6700, vehicleIndex: 0 },

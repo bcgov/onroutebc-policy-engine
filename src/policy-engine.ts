@@ -77,7 +77,7 @@ import { PERMIT_CODES } from './constants/permit-codes';
 import { InteraxleSpacingRequirement } from './types/interaxle-spacing-requirement';
 import { getDefaultInteraxleSpacingHelper } from './helper/interaxle-spacing.helper';
 import { VEHICLE_CATEGORIES } from './constants/vehicle-categories';
-import { TRAILER_CODES } from './constants/trailer-codes';
+import { TRAILERS } from './constants/trailers';
 
 /** Class representing commercial vehicle policy. */
 export class Policy {
@@ -584,7 +584,7 @@ export class Policy {
       // ORV2-3953
       // If a jeep has been added, only add trailers that
       // permit jeeps from the trailer list
-      if (currentConfiguration.includes(TRAILER_CODES.JEEPS)) {
+      if (currentConfiguration.includes(TRAILERS.JEEPS.id)) {
         validTrailers = powerUnit?.trailers.filter((t) => t.jeep);
       } else {
         validTrailers = powerUnit?.trailers;
@@ -613,19 +613,19 @@ export class Policy {
           powerUnit?.trailers &&
           powerUnit?.trailers.filter((t) => t.jeep).length > 0
         ) {
-          trailerIds?.push(TRAILER_CODES.JEEPS);
+          trailerIds?.push(TRAILERS.JEEPS.id);
         }
         vehicleTypeIds = trailerIds;
       } else {
         switch (lastVehicleId) {
-          case TRAILER_CODES.JEEPS:
+          case TRAILERS.JEEPS.id:
             // If there is one jeep, there can be more
-            trailerIds?.push(TRAILER_CODES.JEEPS);
+            trailerIds?.push(TRAILERS.JEEPS.id);
             vehicleTypeIds = trailerIds;
             break;
-          case TRAILER_CODES.BOOSTER:
+          case TRAILERS.BOOSTER.id:
             // If there is one booster, there can be more
-            vehicleTypeIds = [TRAILER_CODES.BOOSTER];
+            vehicleTypeIds = [TRAILERS.BOOSTER.id];
             break;
           default:
             {
@@ -652,7 +652,7 @@ export class Policy {
               }
 
               if (trailer && trailer.booster) {
-                vehicleTypeIds = [TRAILER_CODES.BOOSTER];
+                vehicleTypeIds = [TRAILERS.BOOSTER.id];
               } else {
                 // Either the trailer does not permit a booster, or
                 // we did not find the trailer which would be
@@ -767,7 +767,7 @@ export class Policy {
 
     for (let i = 1; i < currentConfiguration.length; i++) {
       switch (currentConfiguration[i]) {
-        case TRAILER_CODES.JEEPS:
+        case TRAILERS.JEEPS.id:
           if (!jeepAllowed) {
             return false;
           }
@@ -785,7 +785,7 @@ export class Policy {
           }
           additionalAxleType = '';
           break;
-        case TRAILER_CODES.BOOSTER:
+        case TRAILERS.BOOSTER.id:
           if (!boosterAllowed) {
             return false;
           }
@@ -1003,7 +1003,7 @@ export class Policy {
    *
    * @param vehicleConfiguration Array of vehicle type identifiers representing the vehicle configuration.
    *                            The first element should be a power unit type, followed by trailer types.
-   *                            Example: [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS] for a truck tractor with semi-trailer.
+   *                            Example: [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILERS.SEMI_TRAILERS.id] for a truck tractor with semi-trailer.
    * @param axleConfiguration Array of axle configurations corresponding to each vehicle in the configuration.
    *                          Each axle configuration contains details like number of axles, spacing, tire count, etc.
    *                          The length should match the vehicleConfiguration array plus one (since the first
@@ -1018,7 +1018,7 @@ export class Policy {
    * @example
    * // For a truck-tractor with 2-axle steer, 3-axle drive, and a 3-axle semi-trailer
    * const results = policy.runAxleCalculation(
-   *   [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS],
+   *   [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILERS.SEMI_TRAILERS.id],
    *   [
    *     { numberOfAxles: 2, axleSpread: 1.8, numberOfTires: 4 },
    *     { numberOfAxles: 3, axleSpread: 4.2, numberOfTires: 12 },
@@ -1420,9 +1420,9 @@ export class Policy {
    * // For a truck-tractor with a semi-trailer
    * const config = policy.getSimplifiedVehicleConfiguration(
    *   { vehicleSubType: POWER_UNIT_CODES.TRUCK_TRACTORS, ... },
-   *   { trailers: [{ vehicleSubType: TRAILER_CODES.SEMI_TRAILERS }] }
+   *   { trailers: [{ vehicleSubType: TRAILERS.SEMI_TRAILERS.id }] }
    * );
-   * // Returns: [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS]
+   * // Returns: [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILERS.SEMI_TRAILERS.id]
    *
    * @example
    * // For a single power unit with no trailers
@@ -1555,8 +1555,8 @@ export class Policy {
     }
 
     if (
-      trailerSubtype === TRAILER_CODES.JEEPS ||
-      trailerSubtype === TRAILER_CODES.BOOSTER
+      trailerSubtype === TRAILERS.JEEPS.id ||
+      trailerSubtype === TRAILERS.BOOSTER.id
     ) {
       return false;
     }

@@ -1,10 +1,10 @@
 import { COMMODITY_CODES } from '../../constants/commodity-codes';
 import { PERMIT_CODES } from '../../constants/permit-codes';
-import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { Policy } from '../../policy-engine';
 import { PolicyCheckId, PolicyCheckResultType } from '../../enum/policy-check';
 import currentPolicyConfig from '../policy-config/_current-config.json';
 import { POWER_UNITS } from '../../constants/power-units';
+import { TRAILERS } from '../../constants/trailers';
 
 // The purpose of this file is to basically add tests for the new PME type, make sure it's there and properly configured.
 // Added on July 2026.
@@ -150,7 +150,7 @@ describe('PME power-unit policy configuration foundation', () => {
         policy.isConfigurationValid(
           PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
           COMMODITY_CODES.NON_REDUCIBLE_LOADS,
-          [vehicleType, TRAILER_CODES.SEMI_TRAILERS],
+          [vehicleType, TRAILERS.SEMI_TRAILERS.id],
           false,
         ),
       ).toBe(true);
@@ -201,7 +201,7 @@ describe('PME power-unit policy configuration foundation', () => {
       policy.isConfigurationValid(
         PERMIT_CODES.SINGLE_TRIP_OVERWEIGHT,
         COMMODITY_CODES.NON_REDUCIBLE_LOADS,
-        [POWER_UNITS.PICKER_TRUCK_TRACTORS.id, TRAILER_CODES.SEMI_TRAILERS],
+        [POWER_UNITS.PICKER_TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id],
         false,
       ),
     ).toBe(true);

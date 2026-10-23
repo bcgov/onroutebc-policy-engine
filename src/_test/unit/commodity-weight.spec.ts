@@ -1,6 +1,5 @@
 import { Policy } from '../../policy-engine';
 import { COMMODITY_CODES } from '../../constants/commodity-codes';
-import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { PolicyCheckId, PolicyCheckResultType } from '../../enum';
 import { AxleConfiguration, PolicyDefinition } from '../../types';
 import { PermitAppInfo } from '../../enum/permit-app-info';
@@ -12,6 +11,7 @@ import {
 import config from '../policy-config/_current-config.json';
 import testStow from '../permit-app/test-stow.json';
 import { POWER_UNITS } from '../../constants/power-units';
+import { TRAILERS } from '../../constants/trailers';
 
 const axles = (driveCount: number): AxleConfiguration[] => [
   {
@@ -87,7 +87,7 @@ describe.each([
     ])('uses %s threshold %i', (id, limit, above) => {
       for (const excess of [0, 1]) {
         const calculated = policy.runAxleCalculation(
-          [POWER_UNITS.TRUCK_TRACTORS.id, TRAILER_CODES.SEMI_TRAILERS],
+          [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id],
           [
             ...axles(2),
             {
@@ -124,7 +124,7 @@ it.each([
     changed.globalWeightDefaults.trailers =
       changed.globalWeightDefaults.trailers.filter(({ axles }) => axles !== 2);
     const { results } = new Policy(changed).runAxleCalculation(
-      [POWER_UNITS.TRUCK_TRACTORS.id, TRAILER_CODES.SEMI_TRAILERS],
+      [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id],
       [
         ...axles(2),
         {

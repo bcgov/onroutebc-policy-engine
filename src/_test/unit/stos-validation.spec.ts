@@ -10,7 +10,7 @@ import {
   getUtcDatetime,
   TIMEZONE_IDS,
 } from '../../helper/date.helper';
-import { TRAILER_CODES } from '../../constants/trailer-codes';
+import { TRAILERS } from '../../constants/trailers';
 
 describe('Single Trip Oversize Policy Configuration Validator', () => {
   const policy: Policy = new Policy(currentConfig);
@@ -131,10 +131,10 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
     // Add two boosters to the configuration list
     // Note that this configuration allows boosters.
     permit.permitData.vehicleConfiguration.trailers.push({
-      vehicleSubType: TRAILER_CODES.BOOSTER,
+      vehicleSubType: TRAILERS.BOOSTER.id,
     });
     permit.permitData.vehicleConfiguration.trailers.push({
-      vehicleSubType: TRAILER_CODES.BOOSTER,
+      vehicleSubType: TRAILERS.BOOSTER.id,
     });
 
     const validationResult = await policy.validate(permit);
@@ -156,10 +156,10 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
       1,
       0,
       {
-        vehicleSubType: TRAILER_CODES.JEEPS,
+        vehicleSubType: TRAILERS.JEEPS.id,
       },
       {
-        vehicleSubType: TRAILER_CODES.JEEPS,
+        vehicleSubType: TRAILERS.JEEPS.id,
       },
     );
 
@@ -179,7 +179,7 @@ describe('Single Trip Oversize Policy Configuration Validator', () => {
     // Add jeep to the end of the configuration.
     // Note that this configuration allows jeeps.
     permit.permitData.vehicleConfiguration.trailers.push({
-      vehicleSubType: TRAILER_CODES.JEEPS,
+      vehicleSubType: TRAILERS.JEEPS.id,
     });
 
     const validationResult = await policy.validate(permit);
