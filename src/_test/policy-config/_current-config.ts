@@ -15,20 +15,20 @@ export const data: PolicyDefinition = {
   minPEVersion: '2.0.0',
   geographicRegions: [
     {
-      id: GEOGRAPHIC_REGIONS.LOWER_MAINLAND.id,
-      name: GEOGRAPHIC_REGIONS.LOWER_MAINLAND.name,
+      id: GEOGRAPHIC_REGIONS.LOWER_MAINLAND,
+      name: 'Lower Mainland',
     },
     {
-      id: GEOGRAPHIC_REGIONS.ELK_VALLEY.id,
-      name: GEOGRAPHIC_REGIONS.ELK_VALLEY.name,
+      id: GEOGRAPHIC_REGIONS.ELK_VALLEY,
+      name: 'Elk Valley',
     },
     {
-      id: GEOGRAPHIC_REGIONS.YOHO.id,
-      name: GEOGRAPHIC_REGIONS.YOHO.name,
+      id: GEOGRAPHIC_REGIONS.YOHO,
+      name: 'Yoho',
     },
     {
-      id: GEOGRAPHIC_REGIONS.PEACE.id,
-      name: GEOGRAPHIC_REGIONS.PEACE.name,
+      id: GEOGRAPHIC_REGIONS.PEACE,
+      name: 'Peace',
     },
   ],
   rangeMatrices: [
@@ -5985,19 +5985,19 @@ export const data: PolicyDefinition = {
                   l: 31,
                   regions: [
                     {
-                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND.id,
+                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND,
                       l: 23,
                     },
                     {
-                      region: GEOGRAPHIC_REGIONS.ELK_VALLEY.id,
+                      region: GEOGRAPHIC_REGIONS.ELK_VALLEY,
                       l: 23,
                     },
                     {
-                      region: GEOGRAPHIC_REGIONS.YOHO.id,
+                      region: GEOGRAPHIC_REGIONS.YOHO,
                       l: 23,
                     },
                     {
-                      region: GEOGRAPHIC_REGIONS.PEACE.id,
+                      region: GEOGRAPHIC_REGIONS.PEACE,
                       h: 5.33,
                     },
                   ],
@@ -6179,19 +6179,19 @@ export const data: PolicyDefinition = {
                   l: 12.5,
                   regions: [
                     {
-                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND.id,
+                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND,
                       h: 4.3,
                     },
                     {
-                      region: GEOGRAPHIC_REGIONS.ELK_VALLEY.id,
+                      region: GEOGRAPHIC_REGIONS.ELK_VALLEY,
                       h: 4.3,
                     },
                     {
-                      region: GEOGRAPHIC_REGIONS.YOHO.id,
+                      region: GEOGRAPHIC_REGIONS.YOHO,
                       h: 4.3,
                     },
                     {
-                      region: GEOGRAPHIC_REGIONS.PEACE.id,
+                      region: GEOGRAPHIC_REGIONS.PEACE,
                       h: 5.33,
                     },
                   ],
@@ -6597,19 +6597,19 @@ export const data: PolicyDefinition = {
                   l: 12.5,
                   regions: [
                     {
-                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND.id,
+                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND,
                       h: 4.3,
                     },
                     {
-                      region: GEOGRAPHIC_REGIONS.ELK_VALLEY.id,
+                      region: GEOGRAPHIC_REGIONS.ELK_VALLEY,
                       h: 4.3,
                     },
                     {
-                      region: GEOGRAPHIC_REGIONS.YOHO.id,
+                      region: GEOGRAPHIC_REGIONS.YOHO,
                       h: 4.3,
                     },
                     {
-                      region: GEOGRAPHIC_REGIONS.PEACE.id,
+                      region: GEOGRAPHIC_REGIONS.PEACE,
                       h: 4.3,
                     },
                   ],
@@ -9102,7 +9102,7 @@ export const data: PolicyDefinition = {
                   l: 31,
                   regions: [
                     {
-                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND.id,
+                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND,
                       h: 4.15,
                     },
                     {
@@ -9129,7 +9129,7 @@ export const data: PolicyDefinition = {
                   l: 27.5,
                   regions: [
                     {
-                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND.id,
+                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND,
                       h: 4.15,
                     },
                     {
@@ -9156,7 +9156,7 @@ export const data: PolicyDefinition = {
                   l: 31,
                   regions: [
                     {
-                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND.id,
+                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND,
                       h: 4.15,
                     },
                     {
@@ -9183,7 +9183,7 @@ export const data: PolicyDefinition = {
                   l: 27.5,
                   regions: [
                     {
-                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND.id,
+                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND,
                       h: 4.15,
                     },
                     {
@@ -9217,7 +9217,7 @@ export const data: PolicyDefinition = {
                   l: 27.5,
                   regions: [
                     {
-                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND.id,
+                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND,
                       h: 4.15,
                     },
                     {
@@ -9983,19 +9983,19 @@ export const data: PolicyDefinition = {
                   l: 23,
                   regions: [
                     {
-                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND.id,
+                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND,
                       h: 4.3,
                     },
                     {
-                      region: GEOGRAPHIC_REGIONS.ELK_VALLEY.id,
+                      region: GEOGRAPHIC_REGIONS.ELK_VALLEY,
                       h: 4.3,
                     },
                     {
-                      region: GEOGRAPHIC_REGIONS.YOHO.id,
+                      region: GEOGRAPHIC_REGIONS.YOHO,
                       h: 4.3,
                     },
                     {
-                      region: GEOGRAPHIC_REGIONS.PEACE.id,
+                      region: GEOGRAPHIC_REGIONS.PEACE,
                       h: 4.8,
                     },
                   ],
@@ -10050,11 +10050,11 @@ export const data: PolicyDefinition = {
                   l: 23,
                   regions: [
                     {
-                      region: GEOGRAPHIC_REGIONS.YOHO.id,
+                      region: GEOGRAPHIC_REGIONS.YOHO,
                       h: 4.8,
                     },
                     {
-                      region: GEOGRAPHIC_REGIONS.PEACE.id,
+                      region: GEOGRAPHIC_REGIONS.PEACE,
                       w: 3.84,
                       h: 4.8,
                     },
@@ -10077,11 +10077,11 @@ export const data: PolicyDefinition = {
                   l: 12.5,
                   regions: [
                     {
-                      region: GEOGRAPHIC_REGIONS.YOHO.id,
+                      region: GEOGRAPHIC_REGIONS.YOHO,
                       h: 4.8,
                     },
                     {
-                      region: GEOGRAPHIC_REGIONS.PEACE.id,
+                      region: GEOGRAPHIC_REGIONS.PEACE,
                       w: 3.84,
                       h: 4.8,
                     },
@@ -10104,11 +10104,11 @@ export const data: PolicyDefinition = {
                   l: 23,
                   regions: [
                     {
-                      region: GEOGRAPHIC_REGIONS.YOHO.id,
+                      region: GEOGRAPHIC_REGIONS.YOHO,
                       h: 4.8,
                     },
                     {
-                      region: GEOGRAPHIC_REGIONS.PEACE.id,
+                      region: GEOGRAPHIC_REGIONS.PEACE,
                       w: 3.84,
                       h: 4.8,
                     },
@@ -10136,11 +10136,11 @@ export const data: PolicyDefinition = {
                   l: 26,
                   regions: [
                     {
-                      region: GEOGRAPHIC_REGIONS.YOHO.id,
+                      region: GEOGRAPHIC_REGIONS.YOHO,
                       h: 4.8,
                     },
                     {
-                      region: GEOGRAPHIC_REGIONS.PEACE.id,
+                      region: GEOGRAPHIC_REGIONS.PEACE,
                       w: 3.84,
                       h: 4.8,
                     },
@@ -10163,11 +10163,11 @@ export const data: PolicyDefinition = {
                   l: 27.5,
                   regions: [
                     {
-                      region: GEOGRAPHIC_REGIONS.YOHO.id,
+                      region: GEOGRAPHIC_REGIONS.YOHO,
                       h: 4.8,
                     },
                     {
-                      region: GEOGRAPHIC_REGIONS.PEACE.id,
+                      region: GEOGRAPHIC_REGIONS.PEACE,
                       w: 3.84,
                       h: 4.8,
                     },
@@ -10190,11 +10190,11 @@ export const data: PolicyDefinition = {
                   l: 23,
                   regions: [
                     {
-                      region: GEOGRAPHIC_REGIONS.YOHO.id,
+                      region: GEOGRAPHIC_REGIONS.YOHO,
                       h: 4.8,
                     },
                     {
-                      region: GEOGRAPHIC_REGIONS.PEACE.id,
+                      region: GEOGRAPHIC_REGIONS.PEACE,
                       w: 3.84,
                       h: 4.8,
                     },
@@ -10217,11 +10217,11 @@ export const data: PolicyDefinition = {
                   l: 23,
                   regions: [
                     {
-                      region: GEOGRAPHIC_REGIONS.YOHO.id,
+                      region: GEOGRAPHIC_REGIONS.YOHO,
                       h: 4.8,
                     },
                     {
-                      region: GEOGRAPHIC_REGIONS.PEACE.id,
+                      region: GEOGRAPHIC_REGIONS.PEACE,
                       w: 3.84,
                       h: 4.8,
                     },
@@ -11890,19 +11890,19 @@ export const data: PolicyDefinition = {
                   l: 25,
                   regions: [
                     {
-                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND.id,
+                      region: GEOGRAPHIC_REGIONS.LOWER_MAINLAND,
                       h: 4.3,
                     },
                     {
-                      region: GEOGRAPHIC_REGIONS.ELK_VALLEY.id,
+                      region: GEOGRAPHIC_REGIONS.ELK_VALLEY,
                       h: 4.3,
                     },
                     {
-                      region: GEOGRAPHIC_REGIONS.YOHO.id,
+                      region: GEOGRAPHIC_REGIONS.YOHO,
                       h: 4.3,
                     },
                     {
-                      region: GEOGRAPHIC_REGIONS.PEACE.id,
+                      region: GEOGRAPHIC_REGIONS.PEACE,
                       h: 4.88,
                     },
                   ],
