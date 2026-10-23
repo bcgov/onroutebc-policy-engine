@@ -1,3 +1,4 @@
+// TODO delete this constant once it is no longer in use by xls code
 export const TRAILER_CODES = {
   ADDITIONAL_AXLE_UNIT_ALL_TERRAIN_CRANE: 'ATCAXLE',
   ADDITIONAL_AXLE_UNIT_PLATFORM_TRAILER: 'PFMAXLE',
