@@ -5,7 +5,6 @@ import {
 import { Policy } from 'onroute-policy-engine';
 import { TRAILER_CODES } from '../constants/trailer-codes';
 import { getAxleUnitType } from '../types/axle-unit-type';
-import { isSemiTrailerType } from '../constants/semi-trailer-codes';
 
 /**
  * Runs the bridge formula against the supplied vehicle axle configuration.
@@ -21,7 +20,8 @@ export function runBridgeFormula(
   policy: Policy,
   axleConfiguration: Array<AxleConfiguration>,
   vehicleConfiguration: Array<string>,
-  axleUnitVehicleIndexes: Array<number>,
+  // TODO leaving this code commented for now since we will need to dicuss this with Michael when he returns from vacation
+  // axleUnitVehicleIndexes: Array<number>,
 ): Array<BridgeCalculationResult> {
   const BRIDGE_MULTIPLIER =
     policy.policyDefinition.bridgeCalculationConstants.multiplier;
