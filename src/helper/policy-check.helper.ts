@@ -461,16 +461,20 @@ export function CheckBridgeFormula(
     return [];
   }
 
-  const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
-    policy,
-    vehicleConfiguration,
-    axleConfiguration,
-  );
+  // TODO leaving this code commented for now since we will need to dicuss this with Michael when he returns from vacation
+  // axleUnitVehicleIndexes: Array<number>,
+  // const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
+  //   policy,
+  //   vehicleConfiguration,
+  //   axleConfiguration,
+  // );
 
   const bridgeCalcResults = policy.calculateBridge(
     axleConfiguration,
     vehicleConfiguration,
-    axleUnitVehicleIndexes,
+    // TODO leaving this code commented for now since we will need to dicuss this with Michael when he returns from vacation
+    // axleUnitVehicleIndexes: Array<number>,
+    // axleUnitVehicleIndexes,
   );
   bridgeCalcResults.forEach((br) => {
     const message = `Axle group ${br.startAxleUnit} to ${br.endAxleUnit} ${br.success ? 'passes' : 'does not pass'} bridge formula.`;

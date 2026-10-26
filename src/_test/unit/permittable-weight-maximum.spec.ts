@@ -6,7 +6,6 @@ import currentPolicyConfig from '../policy-config/_current-config.json';
 import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
 import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { CheckPermittableWeight } from '../../helper/policy-check.helper';
-import { getAxleUnitVehicleIndexLookup } from '../../helper/dimensions.helper';
 
 describe('ORV2-5709 permittable weight maximums', () => {
   const policy = new Policy(currentPolicyConfig);
@@ -726,17 +725,19 @@ describe('ORV2-5709 permittable weight maximums', () => {
         TRAILER_CODES.SEMI_TRAILERS,
       ];
 
-      const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
-        policy,
-        vehicleConfiguration,
-        axleConfiguration,
-      );
+      // TODO leaving this code commented for now since we will need to dicuss this with Michael when he returns from vacation
+      // const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
+      //   policy,
+      //   vehicleConfiguration,
+      //   axleConfiguration,
+      // );
 
       expect(
         policy.calculateBridge(
           axleConfiguration,
           vehicleConfiguration,
-          axleUnitVehicleIndexes,
+          // TODO leaving this code commented for now since we will need to dicuss this with Michael when he returns from vacation
+          // axleUnitVehicleIndexes,
         )[0].maxBridge,
       ).toBe(21000);
       expect(
