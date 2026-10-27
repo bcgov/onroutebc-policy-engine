@@ -5836,7 +5836,7 @@ export const data: PolicyDefinition = {
                   legal: 24000,
                   permittable: 29000,
                   permittableAxleSpread: {
-                    minExclusive: 300,
+                    min: 301,
                     max: 370,
                   },
                 },
@@ -5875,7 +5875,7 @@ export const data: PolicyDefinition = {
                   legal: 24000,
                   permittable: 29000,
                   permittableAxleSpread: {
-                    minExclusive: 300,
+                    min: 301,
                     max: 370,
                   },
                 },
@@ -5897,7 +5897,7 @@ export const data: PolicyDefinition = {
                   legal: 24000,
                   permittable: 29000,
                   permittableAxleSpread: {
-                    minExclusive: 300,
+                    min: 301,
                     max: 370,
                   },
                 },
@@ -5919,7 +5919,7 @@ export const data: PolicyDefinition = {
                   legal: 24000,
                   permittable: 29000,
                   permittableAxleSpread: {
-                    minExclusive: 300,
+                    min: 301,
                     max: 370,
                   },
                 },
@@ -5968,7 +5968,7 @@ export const data: PolicyDefinition = {
                   legal: 24000,
                   permittable: 29000,
                   permittableAxleSpread: {
-                    minExclusive: 300,
+                    min: 301,
                     max: 370,
                   },
                 },
@@ -6532,7 +6532,7 @@ export const data: PolicyDefinition = {
                   legal: 24000,
                   permittable: 29000,
                   permittableAxleSpread: {
-                    minExclusive: 300,
+                    min: 301,
                     max: 370,
                   },
                 },
@@ -8739,7 +8739,7 @@ export const data: PolicyDefinition = {
                   legal: 24000,
                   permittable: 29000,
                   permittableAxleSpread: {
-                    minExclusive: 300,
+                    min: 301,
                     max: 370,
                   },
                 },
@@ -8891,7 +8891,7 @@ export const data: PolicyDefinition = {
                   legal: 24000,
                   permittable: 29000,
                   permittableAxleSpread: {
-                    minExclusive: 300,
+                    min: 301,
                     max: 370,
                   },
                 },
