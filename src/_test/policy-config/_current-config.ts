@@ -12,7 +12,7 @@ import { POWER_UNITS } from '../../constants/power-units';
 import { TRAILERS } from '../../constants/trailers';
 
 export const data: PolicyDefinition = {
-  minPEVersion: '2.0.0',
+  minPEVersion: '3.0.0',
   geographicRegions: [
     {
       id: GEOGRAPHIC_REGIONS.LOWER_MAINLAND,
