@@ -1637,13 +1637,32 @@ export function CheckInteraxleSpacing(
     axleConfiguration,
   );
 
+  const checkAxleGroupMaximumLegalWeightThresholdResults =
+    CheckAxleGroupMaximumLegalWeightThreshold(
+      policy,
+      vehicleConfiguration,
+      axleConfiguration,
+    );
+
   return axleConfiguration.map((axleUnit, axleIndex) => {
+    let groupWeight;
+
+    if (
+      checkAxleGroupMaximumLegalWeightThresholdResults[axleIndex]?.actualWeight
+    ) {
+      groupWeight =
+        checkAxleGroupMaximumLegalWeightThresholdResults[axleIndex]
+          .actualWeight;
+      console.log({ groupWeight });
+    }
+
     const requirement = getInteraxleSpacingRequirement(
       policy,
       axleConfiguration,
       axleIndex,
       vehicleConfiguration,
       axleUnitVehicleIndexes,
+      groupWeight,
     );
 
     // Pass when no requirement exists, interaxle spacing is missing, or interaxle spacing falls within the requirement's min/max bounds.

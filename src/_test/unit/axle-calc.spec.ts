@@ -175,7 +175,11 @@ describe('Axle Calculation Functions', () => {
             ? `Interaxle Spacing between Axle Unit 3 and Axle Unit 4 must be at least 4.2 m.`
             : '';
 
-        const customVehicleConfiguration = ['TRKTRAC', 'FEDRMMX', 'JEEPSRG'];
+        const customVehicleConfiguration = [
+          POWER_UNITS.TRUCK_TRACTORS.id,
+          TRAILERS.FIXED_EQUIPMENT_COUNTER_FLOW_ASPHALT_DRUM_MIXERS.id,
+          TRAILERS.JEEPS.id,
+        ];
 
         expectInteraxleSpacingResult(
           ac,
@@ -188,7 +192,11 @@ describe('Axle Calculation Functions', () => {
     );
 
     it('skips the booster tridem interaxle-spacing exception when the booster axle unit exceeds maxAxleUnitWeight', () => {
-      const customVehicleConfiguration = ['TRKTRAC', 'SEMITRL', 'BOOSTER'];
+      const customVehicleConfiguration = [
+        POWER_UNITS.TRUCK_TRACTORS.id,
+        TRAILERS.SEMI_TRAILERS.id,
+        TRAILERS.BOOSTER.id,
+      ];
       const customAxleConfiguration: Array<AxleConfiguration> = [
         { numberOfAxles: 1, axleUnitWeight: 6000 },
         { numberOfAxles: 2, axleUnitWeight: 18000 },
@@ -2795,7 +2803,11 @@ describe('booster exceptions', () => {
     JSON.stringify(currentPolicyConfig),
   ) as PolicyDefinition;
   const configuredPolicy = new Policy(configuredPolicyDefinition);
-  const vehicleConfiguration = ['TRKTRAC', 'SEMITRL', 'BOOSTER'];
+  const vehicleConfiguration = [
+    POWER_UNITS.TRUCK_TRACTORS.id,
+    TRAILERS.SEMI_TRAILERS.id,
+    TRAILERS.BOOSTER.id,
+  ];
   const axleConfiguration: Array<AxleConfiguration> = [
     {
       numberOfAxles: 1,
@@ -2878,6 +2890,90 @@ describe('booster exceptions', () => {
 
     expect(failedResult?.message).toBe(
       'Interaxle Spacing between Axle Unit 3 and Axle Unit 4 must be at least 4.2 m.',
+    );
+  });
+});
+
+describe('jeep exceptions', () => {
+  const configuredPolicyDefinition = JSON.parse(
+    JSON.stringify(currentPolicyConfig),
+  ) as PolicyDefinition;
+  const configuredPolicy = new Policy(configuredPolicyDefinition);
+  const vehicleConfiguration = [
+    POWER_UNITS.TRUCK_TRACTORS.id,
+    TRAILERS.JEEPS.id,
+  ];
+  const axleConfiguration: Array<AxleConfiguration> = [
+    {
+      numberOfAxles: 1,
+      axleUnitWeight: 8000,
+      numberOfTires: 2,
+      tireSize: 711.2,
+      vehicleIndex: 0,
+    },
+    {
+      numberOfAxles: 2,
+      axleSpread: 240,
+      interaxleSpacing: 300,
+      axleUnitWeight: 8000,
+      numberOfTires: 8,
+      tireSize: 711.2,
+      vehicleIndex: 0,
+    },
+    {
+      numberOfAxles: 1,
+      interaxleSpacing: 119,
+      axleUnitWeight: 11000,
+      numberOfTires: 4,
+      tireSize: 711.2,
+      vehicleIndex: 1,
+    },
+  ];
+
+  // Source: ASW Permittable Interaxle Spacing - Jeeps.feature @orv2-6069-1
+  it('raises interaxle spacing restriction for single axle jeep with interaxle spacing of less than 1.2 m behind power unit', () => {
+    axleConfiguration[2].numberOfAxles = 1;
+    axleConfiguration[2].interaxleSpacing = 119;
+    axleConfiguration[2].axleUnitWeight = 11000;
+
+    const results = configuredPolicy.runAxleCalculation(
+      vehicleConfiguration,
+      axleConfiguration,
+      100000,
+      COMMODITY_CODES.FIXED_EQUIPMENT,
+    ).results;
+
+    const failedResult = results.find(
+      (result) =>
+        result.id === PolicyCheckId.InteraxleSpacing &&
+        result.result === PolicyCheckResultType.Fail,
+    );
+
+    expect(failedResult?.message).toBe(
+      'Interaxle Spacing between Axle Unit 2 and Axle Unit 3 must be between 1.2 m and 3.5 m.',
+    );
+  });
+
+  it('does not raise below interaxle spacing failure for single axle jeep with interaxle spacing of less than 1.2 m behind power unit when group weight is less than 24,000 kg', () => {
+    axleConfiguration[2].numberOfAxles = 1;
+    axleConfiguration[2].interaxleSpacing = 119;
+    axleConfiguration[2].axleUnitWeight = 11000;
+
+    const results = configuredPolicy.runAxleCalculation(
+      vehicleConfiguration,
+      axleConfiguration,
+      100000,
+      COMMODITY_CODES.FIXED_EQUIPMENT,
+    ).results;
+
+    const failedResult = results.find(
+      (result) =>
+        result.id === PolicyCheckId.InteraxleSpacing &&
+        result.result === PolicyCheckResultType.Fail,
+    );
+
+    expect(failedResult?.message).toBe(
+      'Interaxle Spacing between Axle Unit 2 and Axle Unit 3 must be between 1.2 m and 3.5 m.',
     );
   });
 });

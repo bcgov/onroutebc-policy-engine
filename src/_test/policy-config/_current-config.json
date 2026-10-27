@@ -5395,6 +5395,7 @@
         "category": "jeep",
         "ignoreForSizeDimensions": true,
         "displayCode": "J",
+        "defaultWeightDimensions": [],
         "interaxleSpacings": [
           {
             "axles": [

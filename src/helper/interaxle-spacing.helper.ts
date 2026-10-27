@@ -39,6 +39,7 @@ export function getInteraxleSpacingRequirement(
   axleIndex: number,
   vehicleConfiguration: Array<string>,
   axleUnitVehicleIndexes: Array<number>,
+  groupWeight?: number,
 ): InteraxleSpacingRequirement | undefined {
   // the first axle unit will never have an interaxle spacing value or previous axle unit to compare against
   if (axleIndex === 0) {
@@ -52,6 +53,8 @@ export function getInteraxleSpacingRequirement(
   const vehicleType = vehicleConfiguration[vehicleIndex];
 
   const isPowerUnit = vehicleIndex === 0;
+
+  console.log(`${vehicleType} groupWeight: ${groupWeight}`);
 
   if (
     !Number.isFinite(currentAxleUnit.interaxleSpacing) ||
