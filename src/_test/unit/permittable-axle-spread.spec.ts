@@ -16,30 +16,37 @@ it.each([
   [239, false, false],
   [240, true, false],
   [300, true, false],
-  [300.5, true, true],
+  [300.5, true, false],
+  [301, true, true],
   [370, true, true],
   [371, false, false],
   [NaN, false, false],
-])(
-  'checks inclusive and exclusive spread bounds at %s cm',
-  (spread, standard, upper) => {
-    expect(matchesPermittableAxleSpread(spread, { min: 240, max: 370 })).toBe(
-      standard,
-    );
-    expect(
-      matchesPermittableAxleSpread(spread, { minExclusive: 300, max: 370 }),
-    ).toBe(upper);
-  },
-);
+])('checks inclusive spread bounds at %s cm', (spread, standard, upper) => {
+  expect(matchesPermittableAxleSpread(spread, { min: 240, max: 370 })).toBe(
+    standard,
+  );
+  expect(matchesPermittableAxleSpread(spread, { min: 301, max: 370 })).toBe(
+    upper,
+  );
+});
 
 it.each([
-  { min: 240, minExclusive: 300, max: 370 },
   { max: 370 },
+  { min: 240 },
+  { min: NaN, max: 370 },
+  { min: 240, max: Infinity },
   { min: 370, max: 240 },
 ])('rejects an invalid spread condition: %j', (range) => {
   expect(() =>
     matchesPermittableAxleSpread(300, range as PermittableAxleSpread),
   ).toThrow('Invalid permittableAxleSpread');
+});
+
+it('allows equal inclusive bounds', () => {
+  const range = { min: 301, max: 301 };
+  expect(matchesPermittableAxleSpread(300, range)).toBe(false);
+  expect(matchesPermittableAxleSpread(301, range)).toBe(true);
+  expect(matchesPermittableAxleSpread(302, range)).toBe(false);
 });
 
 // Use distinct test values to prove that both weights and bounds come from JSON.

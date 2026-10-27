@@ -643,7 +643,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
           [239, 28000],
           [240, lowerLimit],
           [300, lowerLimit],
-          [300.5, 29000],
+          [300.5, lowerLimit],
           [301, 29000],
           [370, 29000],
           [371, 28000],
@@ -669,7 +669,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
         for (const [boosterAxleCount, spread, limit] of [
           [1, 240, lowerLimit],
           [1, 300, lowerLimit],
-          [1, 300.5, 29000],
+          [1, 300.5, lowerLimit],
           [1, 301, 29000],
           [1, 370, 29000],
           [2, 301, 28000],
@@ -721,9 +721,10 @@ describe('ORV2-5709 permittable weight maximums', () => {
         for (const [spread, boosterAxleCount, limit] of [
           [undefined, undefined, 27500],
           [300, undefined, 27500],
-          [300.5, undefined, 28500],
-          [300.5, 1, 28500],
-          [300.5, 2, 27500],
+          [300.5, undefined, 27500],
+          [301, undefined, 28500],
+          [301, 1, 28500],
+          [301, 2, 27500],
           [371, undefined, 27500],
         ] as const) {
           expect(
