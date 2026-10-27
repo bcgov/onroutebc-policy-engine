@@ -9,7 +9,6 @@ import { CheckPermittableWeight } from '../../helper/policy-check.helper';
 
 describe('ORV2-5709 permittable weight maximums', () => {
   const policy = new Policy(currentPolicyConfig);
-
   type Scenario = {
     axleUnit: 1 | 2 | 3;
     axleCount: number;
@@ -87,11 +86,11 @@ describe('ORV2-5709 permittable weight maximums', () => {
 
     return configuredPolicy
       .runAxleCalculation(
-      vehicleConfiguration,
-      axleConfiguration,
-      100000,
-      COMMODITY_CODES.NONE,
-    )
+        vehicleConfiguration,
+        axleConfiguration,
+        100000,
+        COMMODITY_CODES.NONE,
+      )
       .results.find(
         (result) =>
           result.id === PolicyCheckId.PermittableWeight &&
@@ -110,6 +109,92 @@ describe('ORV2-5709 permittable weight maximums', () => {
       result: expectedResult,
     });
   };
+
+  // Over Weight Dimension Set, Oil Field Equipment: Service Rigs single-steer permits 12,000 kg;
+  // Bed Trucks Tandem/Tridem steer permits 17,000 kg. Other steer and all drive limits are controls.
+  it.each([
+    [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS, 1, 1, 12000, 11000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS, 1, 2, 12000, 23000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS, 1, 3, 12000, 28000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS, 2, 2, 17000, 23000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS, 2, 3, 15200, 28000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 1, 1, 9100, 11000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 1, 2, 9100, 23000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 1, 3, 9100, 28000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 2, 2, 17000, 23000],
+    [POWER_UNIT_CODES.OIL_AND_GAS_BED_TRUCKS, 2, 3, 17000, 28000],
+    // Heavy-front-crane Service Rigs (>14,000 kg tare): tandem steer 20,000; tridem steer remains 24,000 kg.
+    [
+      POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+      2,
+      2,
+      20000,
+      23000,
+    ],
+    [
+      POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+      2,
+      3,
+      20000,
+      28000,
+    ],
+    [
+      POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+      3,
+      3,
+      24000,
+      28000,
+    ],
+  ] as const)(
+    'preserves %s %i/%i permit boundaries (steer %i, drive %i kg)',
+    (powerUnitType, steerAxles, driveAxles, steerLimit, driveLimit) => {
+      for (const excess of [0, 1]) {
+        const results = policy.runAxleCalculation(
+          [powerUnitType],
+          [
+            {
+              numberOfAxles: steerAxles,
+              axleUnitWeight: steerLimit + excess,
+              axleSpread: steerAxles > 1 ? 160 : undefined,
+              numberOfTires: steerAxles * 2,
+              tireSize: 455,
+              vehicleIndex: 0,
+            },
+            {
+              numberOfAxles: driveAxles,
+              axleUnitWeight: driveLimit + excess,
+              axleSpread: driveAxles > 1 ? 240 : undefined,
+              interaxleSpacing: 500,
+              numberOfTires: driveAxles * 4,
+              tireSize: 455,
+              vehicleIndex: 0,
+            },
+          ],
+          100000,
+          COMMODITY_CODES.NONE,
+        ).results;
+        for (const [index, thresholdWeight] of [
+          steerLimit,
+          driveLimit,
+        ].entries()) {
+          expect(
+            results.find(
+              ({ id, startAxleUnit }) =>
+                id === PolicyCheckId.PermittableWeight &&
+                startAxleUnit === index + 1,
+            ),
+          ).toMatchObject({
+            thresholdWeight,
+            actualWeight: thresholdWeight + excess,
+            result:
+              excess === 0
+                ? PolicyCheckResultType.Pass
+                : PolicyCheckResultType.Fail,
+          });
+        }
+      }
+    },
+  );
 
   // Over Weight Dimension Set, Oil Field Equipment: Service Rigs single-steer permits 12,000 kg;
   // Bed Trucks Tandem/Tridem steer permits 17,000 kg. Other steer and all drive limits are controls.
@@ -336,26 +421,23 @@ describe('ORV2-5709 permittable weight maximums', () => {
       TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
       TRAILER_CODES.JEEPS,
       TRAILER_CODES.BOOSTER,
-    ])(
-      'preserves the existing tandem limit for %s',
-      (trailerType) => {
-        for (const actualWeight of [23000, 23001]) {
-          expectPermittableResult(
-            {
-              axleUnit: 3,
-              axleCount: 2,
-              actualWeight,
-              spread: 160,
-              trailerType,
-            },
-            23000,
-            actualWeight === 23000
-              ? PolicyCheckResultType.Pass
-              : PolicyCheckResultType.Fail,
-          );
-        }
-      },
-    );
+    ])('preserves the existing tandem limit for %s', (trailerType) => {
+      for (const actualWeight of [23000, 23001]) {
+        expectPermittableResult(
+          {
+            axleUnit: 3,
+            axleCount: 2,
+            actualWeight,
+            spread: 160,
+            trailerType,
+          },
+          23000,
+          actualWeight === 23000
+            ? PolicyCheckResultType.Pass
+            : PolicyCheckResultType.Fail,
+        );
+      }
+    });
 
     it.each([23000, 23001])(
       'preserves an additional power-unit tandem at %i kg',
@@ -459,6 +541,62 @@ describe('ORV2-5709 permittable weight maximums', () => {
         );
       },
     );
+    describe.each([
+      POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+      POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
+      POWER_UNIT_CODES.TRUCK_WITH_PME,
+    ])(
+      '%s drive does not receive the trailer spread allowance',
+      (powerUnitType) => {
+        // These below values come from the Overweight Dimension Set: Picker Truck Tractors, and truck/tractors with PME, commodity None
+        // Single-steer/tridem-drive = 24,000 kg; tandem-steer/tridem-drive = 28,000 kg.
+        // @orv2-5709-6 supplies the trailer-only allowance exclusion, not the 24,000 kg subtype limit (from Overweight Dimension Set xls)
+        it.each([
+          [1, 24000, 24000, PolicyCheckResultType.Pass],
+          [1, 24001, 24000, PolicyCheckResultType.Fail],
+          [2, 28000, 28000, PolicyCheckResultType.Pass],
+          [2, 28001, 28000, PolicyCheckResultType.Fail],
+        ])(
+          'evaluates %i steer axles and tridem drive at %i kg (limit %i)',
+          (steerAxles, actualWeight, thresholdWeight, expectedResult) => {
+            const result = policy
+              .runAxleCalculation(
+                [powerUnitType],
+                [
+                  {
+                    numberOfAxles: steerAxles as number,
+                    axleUnitWeight: 9100,
+                    axleSpread: steerAxles === 2 ? 160 : undefined,
+                    numberOfTires: (steerAxles as number) * 2,
+                    tireSize: 455,
+                    vehicleIndex: 0,
+                  },
+                  {
+                    numberOfAxles: 3,
+                    axleUnitWeight: actualWeight as number,
+                    axleSpread: 240,
+                    interaxleSpacing: 500,
+                    numberOfTires: 12,
+                    tireSize: 455,
+                    vehicleIndex: 0,
+                  },
+                ],
+                100000,
+                COMMODITY_CODES.NONE,
+              )
+              .results.find(
+                ({ id, startAxleUnit }) =>
+                  id === PolicyCheckId.PermittableWeight && startAxleUnit === 2,
+              );
+            expect(result).toMatchObject({
+              actualWeight,
+              thresholdWeight,
+              result: expectedResult,
+            });
+          },
+        );
+      },
+    );
 
     it('allows 29,000 kg on a qualifying lowbed semi-trailer tridem', () => {
       expectPermittableResult(
@@ -504,21 +642,21 @@ describe('ORV2-5709 permittable weight maximums', () => {
         );
         changed.globalWeightDefaults.trailers.find(
           ({ axles }) => axles === 3,
-        )!.permittable = 27500;
+        )!.permittable = 28000;
 
         expect(
           getPermittableResult(
             {
               axleUnit: 3,
               axleCount: 3,
-              actualWeight: 27501,
+              actualWeight: 28001,
               spread: 240,
               trailerType,
             },
             new Policy(changed),
           ),
         ).toMatchObject({
-          thresholdWeight: 27500,
+          thresholdWeight: 28000,
           result: PolicyCheckResultType.Fail,
         });
       },
@@ -587,9 +725,20 @@ describe('ORV2-5709 permittable weight maximums', () => {
         TRAILER_CODES.SEMI_TRAILERS,
       ];
 
+      // TODO leaving this code commented for now since we will need to dicuss this with Michael when he returns from vacation
+      // const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
+      //   policy,
+      //   vehicleConfiguration,
+      //   axleConfiguration,
+      // );
+
       expect(
-        policy.calculateBridge(axleConfiguration, vehicleConfiguration)[0]
-          .maxBridge,
+        policy.calculateBridge(
+          axleConfiguration,
+          vehicleConfiguration,
+          // TODO leaving this code commented for now since we will need to dicuss this with Michael when he returns from vacation
+          // axleUnitVehicleIndexes,
+        )[0].maxBridge,
       ).toBe(21000);
       expect(
         getPermittableResult({
@@ -803,5 +952,99 @@ describe('ORV2-5709 permittable weight maximums', () => {
       thresholdWeight: 16555,
       result: PolicyCheckResultType.Pass,
     });
+  });
+});
+
+/* Source: ASW Permittable Interaxle Spacing - Boosters.feature
+ * Although this feature title appears to describe Interaxle Spacing outcomes, the actual outcomes are related to Permittable Weight maximums for booster axles, therefore these tests have been included here.
+ */
+describe('booster exceptions', () => {
+  const configuredPolicyDefinition = JSON.parse(
+    JSON.stringify(currentPolicyConfig),
+  ) as PolicyDefinition;
+  const configuredPolicy = new Policy(configuredPolicyDefinition);
+  const vehicleConfiguration = ['TRKTRAC', 'SEMITRL', 'BOOSTER'];
+  const axleConfiguration: Array<AxleConfiguration> = [
+    {
+      numberOfAxles: 1,
+      axleUnitWeight: 6000,
+      numberOfTires: 2,
+      tireSize: 711.2,
+      vehicleIndex: 0,
+    },
+    {
+      numberOfAxles: 1,
+      interaxleSpacing: 300,
+      axleUnitWeight: 7000,
+      numberOfTires: 2,
+      tireSize: 711.2,
+      vehicleIndex: 0,
+    },
+    {
+      numberOfAxles: 3,
+      axleSpread: 240,
+      interaxleSpacing: 300,
+      axleUnitWeight: 16000,
+      numberOfTires: 6,
+      tireSize: 711.2,
+      vehicleIndex: 1,
+    },
+    {
+      numberOfAxles: 1,
+      interaxleSpacing: 419,
+      axleUnitWeight: 9101,
+      numberOfTires: 4,
+      tireSize: 711.2,
+      vehicleIndex: 2,
+    },
+  ];
+
+  // Source: ASW Permittable Interaxle Spacing - Boosters.feature @orv2-6030-2
+  it('raises interaxle spacing restriction for single axle booster with interaxle spacing between 3.0 m and 4.19 m behind semi trailer', () => {
+    axleConfiguration[3].numberOfAxles = 1;
+    axleConfiguration[3].interaxleSpacing = 419;
+    axleConfiguration[3].axleUnitWeight = 9101;
+
+    const results = configuredPolicy.runAxleCalculation(
+      vehicleConfiguration,
+      axleConfiguration,
+      100000,
+      COMMODITY_CODES.FIXED_EQUIPMENT,
+    ).results;
+
+    const failedResult = results.find(
+      (result) =>
+        result.id === PolicyCheckId.PermittableWeight &&
+        result.result === PolicyCheckResultType.Fail,
+    );
+
+    expect(failedResult?.message).toBe(
+      'Interaxle Spacing for Axle Unit 4 restricts Axle Weight to 9100 kg',
+    );
+  });
+
+  // Source: ASW Permittable Interaxle Spacing - Boosters.feature @orv2-6030-3
+  // bridge formula will not be applied in this case, see 'Single Axle Booster Exception' test in bridge-calc.spec.ts
+  it('raises interaxle spacing restriction for single axle booster with interaxle spacing below 3.0 m or below behind semi trailer', () => {
+    axleConfiguration[3].numberOfAxles = 1;
+    axleConfiguration[3].interaxleSpacing = 299;
+    axleConfiguration[3].axleUnitWeight = 9101;
+
+    const results = configuredPolicy.runAxleCalculation(
+      vehicleConfiguration,
+      axleConfiguration,
+      100000,
+      COMMODITY_CODES.FIXED_EQUIPMENT,
+    ).results;
+
+    const failedResult = results.find(
+      (result) =>
+        result.id === PolicyCheckId.PermittableWeight &&
+        result.result === PolicyCheckResultType.Fail,
+    );
+
+    expect(failedResult?.message).toBe(
+      'Interaxle Spacing for Axle Unit 4 restricts Axle Weight to 9100 kg',
+    );
   });
 });

@@ -4251,39 +4251,23 @@ export const data: PolicyDefinition = {
   },
   globalInteraxleSpacingDefaults: [
     {
-      axles: 11,
+      axles: [11, 12, 13, 21, 31],
       min: 300,
     },
     {
-      axles: 12,
-      min: 300,
-    },
-    {
-      axles: 13,
-      min: 300,
-    },
-    {
-      axles: 21,
-      min: 300,
-    },
-    {
-      axles: 22,
+      axles: [22],
       min: 500,
     },
     {
-      axles: 23,
+      axles: [23],
       min: 550,
     },
     {
-      axles: 31,
-      min: 300,
-    },
-    {
-      axles: 32,
+      axles: [32],
       min: 550,
     },
     {
-      axles: 33,
+      axles: [33],
       min: 600,
     },
   ],
@@ -4844,14 +4828,56 @@ export const data: PolicyDefinition = {
               category: 'semi',
               position: 'before',
               axles: 3,
-              minInterAxleSpacing: 0,
-              maxInterAxleSpacing: 419,
+              minInteraxleSpacing: 0,
+              maxInteraxleSpacing: 419,
             },
             legal: 9100,
             permittable: 9100,
           },
+          {
+            axles: 1,
+            modifier: {
+              category: 'semi',
+              position: 'before',
+              minInteraxleSpacing: 420,
+            },
+            permittable: 11000,
+          },
+          {
+            axles: 3,
+            modifier: {
+              category: 'semi',
+              position: 'before',
+              minInteraxleSpacing: 420,
+            },
+            permittable: 28000,
+          },
         ],
         displayCode: 'B',
+        interaxleSpacings: [
+          {
+            axles: [11, 21, 31],
+            min: 0,
+          },
+          {
+            axles: [12, 22, 32],
+            maxAxleUnitWeight: 23000,
+            modifier: {
+              category: 'semi',
+              position: 'before',
+            },
+            min: 420,
+          },
+          {
+            axles: [13, 23, 33],
+            maxAxleUnitWeight: 28000,
+            modifier: {
+              category: 'semi',
+              position: 'before',
+            },
+            min: 420,
+          },
+        ],
       },
       {
         id: 'DOLLIES',
@@ -4925,6 +4951,16 @@ export const data: PolicyDefinition = {
         category: 'accessory',
         ignoreForSizeDimensions: true,
         displayCode: 'J',
+        interaxleSpacings: [
+          {
+            axles: [11, 21, 31],
+            min: 120,
+          },
+          {
+            axles: [22, 32, 23, 33],
+            min: 420,
+          },
+        ],
       },
       {
         id: 'LOGNTAC',

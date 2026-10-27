@@ -13,6 +13,7 @@ import {
   AxleCalcResults,
   AxleConfiguration,
   AxleGroupPolicyCheckResult,
+  PolicyDefinition,
 } from '../../types';
 
 import {
@@ -25,7 +26,7 @@ import {
   CheckPickerTruckTractorWeightRestrictions,
   CheckWheelbaseLegalLimits,
   CheckDriveJeepLoadEqualization,
-  CheckLegalInteraxleSpacing,
+  CheckInteraxleSpacing,
 } from '../../helper/policy-check.helper';
 
 import {
@@ -104,15 +105,16 @@ describe('Axle Calculation Functions', () => {
       axleUnit: number,
       expectedResult: PolicyCheckResultType,
       expectedMessage?: string,
+      configuration: Array<string> = vehicleConfiguration,
     ) => {
-      const results = CheckLegalInteraxleSpacing(
+      const results = CheckInteraxleSpacing(
         policy,
-        vehicleConfiguration,
+        configuration,
         axleConfiguration,
       );
 
       expect(results[axleUnit - 1]).toMatchObject({
-        id: PolicyCheckId.LegalInteraxleSpacing,
+        id: PolicyCheckId.InteraxleSpacing,
         result: expectedResult,
         message: expectedMessage ?? '',
         axleUnit,
@@ -149,6 +151,64 @@ describe('Axle Calculation Functions', () => {
       ];
 
       expectInteraxleSpacingResult(ac, 1, PolicyCheckResultType.Pass);
+    });
+
+    it.each([
+      ['tandem jeep at minimum', 2, 420, PolicyCheckResultType.Pass],
+      ['tridem jeep at minimum', 3, 420, PolicyCheckResultType.Pass],
+      ['jeep below minimum', 2, 419, PolicyCheckResultType.Fail],
+    ])(
+      'validates jeep spacing for %s',
+      (_description, jeepAxles, spacingCm, expectedResult) => {
+        const ac: Array<AxleConfiguration> = [
+          { numberOfAxles: 1, axleUnitWeight: 5000 },
+          { numberOfAxles: 2, interaxleSpacing: 500, axleUnitWeight: 10000 },
+          { numberOfAxles: 2, interaxleSpacing: 500, axleUnitWeight: 12000 },
+          {
+            numberOfAxles: jeepAxles,
+            interaxleSpacing: spacingCm,
+            axleUnitWeight: 12000,
+          },
+        ];
+
+        const expectedMessage =
+          expectedResult === PolicyCheckResultType.Fail
+            ? `Interaxle Spacing between Axle Unit 3 and Axle Unit 4 must be at least 4.2 m.`
+            : '';
+
+        const customVehicleConfiguration = ['TRKTRAC', 'FEDRMMX', 'JEEPSRG'];
+
+        expectInteraxleSpacingResult(
+          ac,
+          4,
+          expectedResult,
+          expectedMessage,
+          customVehicleConfiguration,
+        );
+      },
+    );
+
+    it('skips the booster tridem interaxle-spacing exception when the booster axle unit exceeds maxAxleUnitWeight', () => {
+      const customVehicleConfiguration = ['TRKTRAC', 'SEMITRL', 'BOOSTER'];
+      const customAxleConfiguration: Array<AxleConfiguration> = [
+        { numberOfAxles: 1, axleUnitWeight: 6000 },
+        { numberOfAxles: 2, axleUnitWeight: 18000 },
+        { numberOfAxles: 3, axleUnitWeight: 27000, interaxleSpacing: 500 },
+        { numberOfAxles: 1, axleUnitWeight: 30000, interaxleSpacing: 410 },
+      ];
+
+      const results = CheckInteraxleSpacing(
+        policy,
+        customVehicleConfiguration,
+        customAxleConfiguration,
+      );
+
+      expect(results[3]).toMatchObject({
+        id: PolicyCheckId.InteraxleSpacing,
+        axleUnit: 4,
+        result: PolicyCheckResultType.Pass,
+        message: '',
+      });
     });
   });
 
@@ -735,6 +795,7 @@ describe('Axle Calculation Functions', () => {
 
     it.each([
       { steerAxleWeight: 17001, driveAxleWeight: 20000 },
+      { steerAxleWeight: 17001, driveAxleWeight: 20000 },
       { steerAxleWeight: 14000, driveAxleWeight: 28001 },
     ])(
       'defers weights above configured permit limits to the permittable weight check',
@@ -748,6 +809,21 @@ describe('Axle Calculation Functions', () => {
         });
       },
     );
+
+    it('still applies the towing restriction at the 17,000 kg steer permit maximum', () => {
+      const [ratioResult, trailerResult] = getResults(17000, 24000, [
+        POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+        TRAILER_CODES.SEMI_TRAILERS,
+      ]);
+      expect(ratioResult).toMatchObject({
+        result: PolicyCheckResultType.Pass,
+        message: '',
+      });
+      expect(trailerResult).toMatchObject({
+        result: PolicyCheckResultType.Fail,
+        message: trailerMessage,
+      });
+    });
 
     it('still applies the towing restriction at the 17,000 kg steer permit maximum', () => {
       const [ratioResult, trailerResult] = getResults(17000, 24000, [
@@ -1328,6 +1404,12 @@ describe('Axle Calculation Functions', () => {
         0,
         COMMODITY_CODES.NONE,
       );
+      results = policy.runAxleCalculation(
+        vehicleConfiguration,
+        ac,
+        0,
+        COMMODITY_CODES.NONE,
+      );
     }).not.toThrow();
     const numberOfAxlesResult = results?.results.find(
       (r) =>
@@ -1518,6 +1600,7 @@ describe('Axle Calculation Functions', () => {
     const bridgeResults = results.results.filter(
       (r) => r.id === PolicyCheckId.BridgeFormula,
     );
+
     expect(
       bridgeResults.every((r) => r.result === PolicyCheckResultType.Pass),
     ).toBe(false);
@@ -1632,12 +1715,7 @@ describe('Axle Calculation Functions', () => {
       },
     ];
 
-    const results = policy.runAxleCalculation(
-      vc,
-      ac,
-      0,
-      COMMODITY_CODES.NONE,
-    );
+    const results = policy.runAxleCalculation(vc, ac, 0, COMMODITY_CODES.NONE);
     const boosterAxleLimitResult = results.results.find(
       (r) => r.id === PolicyCheckId.BoosterAxleLimit,
     );
@@ -2026,12 +2104,7 @@ describe('Axle Calculation Functions', () => {
     ac[1].axleSpread = 140;
     ac[1].interaxleSpacing = 650;
 
-    const results = policy.runAxleCalculation(
-      vc,
-      ac,
-      0,
-      COMMODITY_CODES.NONE,
-    );
+    const results = policy.runAxleCalculation(vc, ac, 0, COMMODITY_CODES.NONE);
     const wheelbaseResult = results.results.find(
       (r) => r.id === PolicyCheckId.WheelbaseLegalLimits,
     );
@@ -2057,12 +2130,7 @@ describe('Axle Calculation Functions', () => {
         ac,
       )[0];
       const runAxleCalculationResult = policy
-        .runAxleCalculation(
-        vehicleConfiguration,
-        ac,
-        0,
-        COMMODITY_CODES.NONE,
-      )
+        .runAxleCalculation(vehicleConfiguration, ac, 0, COMMODITY_CODES.NONE)
         .results.find((r) => r.id === PolicyCheckId.WheelbaseLegalLimits);
 
       expect(runAxleCalculationResult).toMatchObject(directResult);
@@ -2677,12 +2745,7 @@ describe('Axle Calculation Functions', () => {
       targetAxle.axleUnitWeight = axleUnitWeight;
 
       return policy
-        .runAxleCalculation(
-        vehicleConfiguration,
-        ac,
-        0,
-        COMMODITY_CODES.NONE,
-      )
+        .runAxleCalculation(vehicleConfiguration, ac, 0, COMMODITY_CODES.NONE)
         .results.find((result) => result.id === PolicyCheckId.MaxTireLoad);
     };
 
@@ -2712,12 +2775,7 @@ describe('Axle Calculation Functions', () => {
       });
 
       const maxTireLoadResults = policy
-        .runAxleCalculation(
-        vehicleConfiguration,
-        ac,
-        0,
-        COMMODITY_CODES.NONE,
-      )
+        .runAxleCalculation(vehicleConfiguration, ac, 0, COMMODITY_CODES.NONE)
         .results.filter((result) => result.id === PolicyCheckId.MaxTireLoad);
 
       expect(maxTireLoadResults).toEqual([
@@ -2737,5 +2795,98 @@ describe('Axle Calculation Functions', () => {
         result: PolicyCheckResultType.Fail,
       });
     });
+  });
+});
+
+/* Source: ASW Permittable Interaxle Spacing - Boosters.feature */
+describe('booster exceptions', () => {
+  const configuredPolicyDefinition = JSON.parse(
+    JSON.stringify(currentPolicyConfig),
+  ) as PolicyDefinition;
+  const configuredPolicy = new Policy(configuredPolicyDefinition);
+  const vehicleConfiguration = ['TRKTRAC', 'SEMITRL', 'BOOSTER'];
+  const axleConfiguration: Array<AxleConfiguration> = [
+    {
+      numberOfAxles: 1,
+      axleUnitWeight: 6000,
+      numberOfTires: 2,
+      tireSize: 711.2,
+      vehicleIndex: 0,
+    },
+    {
+      numberOfAxles: 1,
+      interaxleSpacing: 300,
+      axleUnitWeight: 7000,
+      numberOfTires: 2,
+      tireSize: 711.2,
+      vehicleIndex: 0,
+    },
+    {
+      numberOfAxles: 3,
+      axleSpread: 240,
+      interaxleSpacing: 300,
+      axleUnitWeight: 17000,
+      numberOfTires: 12,
+      tireSize: 711.2,
+      vehicleIndex: 1,
+    },
+    {
+      numberOfAxles: 2,
+      axleSpread: 100,
+      interaxleSpacing: 419,
+      axleUnitWeight: 23000,
+      numberOfTires: 8,
+      tireSize: 711.2,
+      vehicleIndex: 2,
+    },
+  ];
+
+  // Source: ASW Permittable Interaxle Spacing - Boosters.feature @orv2-6030-4
+  it('raises interaxle spacing restriction for tandem axle booster with interaxle spacing of less than 4.2 m behind semi trailer', () => {
+    axleConfiguration[3].numberOfAxles = 2;
+    axleConfiguration[3].axleSpread = 100;
+    axleConfiguration[3].interaxleSpacing = 419;
+    axleConfiguration[3].axleUnitWeight = 23000;
+
+    const results = configuredPolicy.runAxleCalculation(
+      vehicleConfiguration,
+      axleConfiguration,
+      100000,
+      COMMODITY_CODES.FIXED_EQUIPMENT,
+    ).results;
+
+    const failedResult = results.find(
+      (result) =>
+        result.id === PolicyCheckId.InteraxleSpacing &&
+        result.result === PolicyCheckResultType.Fail,
+    );
+
+    expect(failedResult?.message).toBe(
+      'Interaxle Spacing between Axle Unit 3 and Axle Unit 4 must be at least 4.2 m.',
+    );
+  });
+
+  // Source: ASW Permittable Interaxle Spacing - Boosters.feature @orv2-6030-5
+  it('raises interaxle spacing restriction for tridem axle booster with interaxle spacing of less than 4.2 m behind semi trailer', () => {
+    axleConfiguration[3].numberOfAxles = 3;
+    axleConfiguration[3].interaxleSpacing = 419;
+    axleConfiguration[3].axleUnitWeight = 28000;
+
+    const results = configuredPolicy.runAxleCalculation(
+      vehicleConfiguration,
+      axleConfiguration,
+      100000,
+      COMMODITY_CODES.FIXED_EQUIPMENT,
+    ).results;
+
+    const failedResult = results.find(
+      (result) =>
+        result.id === PolicyCheckId.InteraxleSpacing &&
+        result.result === PolicyCheckResultType.Fail,
+    );
+
+    expect(failedResult?.message).toBe(
+      'Interaxle Spacing between Axle Unit 3 and Axle Unit 4 must be at least 4.2 m.',
+    );
   });
 });

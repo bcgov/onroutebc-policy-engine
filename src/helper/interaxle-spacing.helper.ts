@@ -3,6 +3,7 @@ import { Policy } from '../policy-engine';
 import { AxleConfiguration } from '../types/axle-configuration';
 import { InteraxleSpacingRequirement } from '../types/interaxle-spacing-requirement';
 import { formatMeters } from './format-meters.helper';
+import { getVehicleRelatives } from './dimensions.helper';
 
 export function getFailedInteraxleSpacingMessage(
   requirement: InteraxleSpacingRequirement,
@@ -62,20 +63,120 @@ export function getInteraxleSpacingRequirement(
     previousAxleUnit.numberOfAxles * POWER_UNIT_AXLE_CODE_MULTIPLIER +
     currentAxleUnit.numberOfAxles;
 
-  // NOTE: This intentionally resolves to a single requirement for the current
-  // axle pair. This mirrors the current simple lookup pattern, but if modifier-
-  // based interaxle spacing rules are introduced later, this should follow the
-  // same selection pattern used by CheckLegalWeight via
-  // selectCorrectWeightDimensionHelper, which chooses the correct candidate
-  // before applying the min/max threshold. We may also eventually start using
-  // legalMin/legalMax/permittableMin/permittableMax fields in this contract.
-  const requirement = isPowerUnit
+  const interaxleSpacingRequirements = isPowerUnit
     ? policy.getDefaultPowerUnitInteraxleSpacing(vehicleType, axles)
     : policy.getDefaultTrailerInteraxleSpacing(vehicleType, axles);
 
-  // Defensive compatibility guard for older callers that may still hand us an
-  // array-shaped requirement. The validator expects a single object.
-  return Array.isArray(requirement) ? requirement[0] : requirement;
+  const matchingRequirement = selectCorrectInteraxleSpacingRequirementHelper(
+    policy,
+    interaxleSpacingRequirements,
+    vehicleConfiguration,
+    axleConfiguration,
+    axleIndex,
+    axleUnitVehicleIndexes,
+  );
+
+  if (matchingRequirement) {
+    return JSON.parse(JSON.stringify(matchingRequirement));
+  }
+
+  return undefined;
+}
+
+export function selectCorrectInteraxleSpacingRequirementHelper(
+  policy: Policy,
+  interaxleSpacingRequirements: Array<InteraxleSpacingRequirement>,
+  vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+  axleIndex: number,
+  axleUnitVehicleIndexes: Array<number>,
+): InteraxleSpacingRequirement | null {
+  if (
+    !interaxleSpacingRequirements ||
+    interaxleSpacingRequirements.length === 0
+  ) {
+    return null;
+  }
+
+  const currentAxleUnit = axleConfiguration[axleIndex];
+
+  const relatives = getVehicleRelatives(
+    policy,
+    vehicleConfiguration,
+    axleIndex,
+    axleUnitVehicleIndexes,
+  );
+
+  const appliesToCurrentAxleWeight = (
+    requirement: InteraxleSpacingRequirement,
+  ): boolean => {
+    const maxAxleUnitWeight = requirement.maxAxleUnitWeight;
+
+    return (
+      maxAxleUnitWeight === undefined ||
+      !Number.isFinite(currentAxleUnit.axleUnitWeight) ||
+      currentAxleUnit.axleUnitWeight <= maxAxleUnitWeight
+    );
+  };
+
+  for (const requirement of interaxleSpacingRequirements) {
+    if (!appliesToCurrentAxleWeight(requirement)) {
+      continue;
+    }
+
+    const modifier = requirement.modifier;
+    if (!modifier) {
+      return requirement;
+    }
+
+    let isMatch = false;
+    let matcher = modifier.type;
+    let isTypeMatch = true;
+
+    if (!matcher) {
+      matcher = modifier.category;
+      isTypeMatch = false;
+    }
+
+    if (!matcher) {
+      continue;
+    }
+
+    if (modifier.position === 'before') {
+      isMatch =
+        matcher == (isTypeMatch ? relatives.prevType : relatives.prevCategory);
+
+      if (isMatch) {
+        return requirement;
+      }
+    }
+
+    if (modifier.position === 'after') {
+      const nextAxleUnit = axleConfiguration[axleIndex + 1];
+      if (!nextAxleUnit) {
+        continue;
+      }
+
+      isMatch =
+        matcher == (isTypeMatch ? relatives.nextType : relatives.nextCategory);
+
+      if (isMatch) {
+        return requirement;
+      }
+    }
+  }
+
+  const fallbackRequirement =
+    interaxleSpacingRequirements.find(
+      (requirement) =>
+        !requirement.modifier && appliesToCurrentAxleWeight(requirement),
+    ) ??
+    interaxleSpacingRequirements.find((requirement) =>
+      appliesToCurrentAxleWeight(requirement),
+    ) ??
+    null;
+
+  return fallbackRequirement;
 }
 
 /**
@@ -84,16 +185,16 @@ export function getInteraxleSpacingRequirement(
  * value of the isPowerUnit flag.
  * @param policy The instantiated policy object with weight config
  * @param subType Power Unit or Trailer subtype
- * @param axles 2-digit numner representing the two axle units to which this requirement applies. The number of with the most significant digit representing the current axle unit and the least significant digit representing the next axle unit.
+ * @param axles 2-digit number representing the two axle units to which this requirement applies. The number of with the most significant digit representing the current axle unit and the least significant digit representing the next axle unit.
  * @param isPowerUnit Whether this vehicle is a power unit
- * @returns Array of interaxle spacing specifications
+ * @returns Array of interaxle spacing specifications matching the axle pair
  */
 export function getDefaultInteraxleSpacingHelper(
   policy: Policy,
   subType: string,
   axles: number,
   isPowerUnit: boolean,
-): InteraxleSpacingRequirement {
+): Array<InteraxleSpacingRequirement> {
   const vehicleDefinition = isPowerUnit
     ? policy.getPowerUnitDefinition(subType)
     : policy.getTrailerDefinition(subType);
@@ -103,13 +204,11 @@ export function getDefaultInteraxleSpacingHelper(
   }
 
   // Prefer specific power unit / trailer subtype interaxle spacing.
-  // The config stores these as arrays, but validation expects a single
-  // requirement object for the current axle pair.
   const interaxleSpacings = vehicleDefinition.interaxleSpacings?.filter(
-    (exception) => exception.axles === axles,
+    (vehicleRequirement) => vehicleRequirement.axles?.includes(axles),
   );
   if (interaxleSpacings && interaxleSpacings.length > 0) {
-    return JSON.parse(JSON.stringify(interaxleSpacings[0]));
+    return JSON.parse(JSON.stringify(interaxleSpacings));
   }
 
   // Second preference is category interaxle spacing.
@@ -123,22 +222,22 @@ export function getDefaultInteraxleSpacingHelper(
 
   if (vehicleCategory) {
     const overridesForAxle = vehicleCategory.interaxleSpacings?.filter(
-      (override) => override.axles === axles,
+      (categoryRequirement) => categoryRequirement.axles?.includes(axles),
     );
     if (overridesForAxle && overridesForAxle.length > 0) {
-      return JSON.parse(JSON.stringify(overridesForAxle[0]));
+      return JSON.parse(JSON.stringify(overridesForAxle));
     }
   }
 
   // Least preference is global interaxle defaults.
   const globalDefaults = policy.policyDefinition.globalInteraxleSpacingDefaults;
 
-  const vehicleDefaults = globalDefaults?.filter(
-    (specification) => specification.axles === axles,
+  const vehicleDefaults = globalDefaults?.filter((defaultRequirement) =>
+    defaultRequirement?.axles?.includes(axles),
   );
-  if (vehicleDefaults && vehicleDefaults.length > 0) {
-    return JSON.parse(JSON.stringify(vehicleDefaults[0]));
-  }
 
-  return {} as InteraxleSpacingRequirement;
+  if (vehicleDefaults && vehicleDefaults.length > 0) {
+    return JSON.parse(JSON.stringify(vehicleDefaults));
+  }
+  return [];
 }
