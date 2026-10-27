@@ -331,21 +331,31 @@ describe('ORV2-5709 permittable weight maximums', () => {
       },
     );
 
-    // Trailer and additional power-unit tandem migrations are separately scoped in A7.
+    // Other wheeler, accessory and additional power-unit tandems remain separately scoped.
     it.each([
-      TRAILER_CODES.PONY_TRAILERS,
       TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
-    ])('preserves the existing tandem limit for %s', (trailerType) => {
-      for (const actualWeight of [23000, 23001]) {
-        expectPermittableResult(
-          { axleUnit: 3, axleCount: 2, actualWeight, spread: 160, trailerType },
-          23000,
-          actualWeight === 23000
-            ? PolicyCheckResultType.Pass
-            : PolicyCheckResultType.Fail,
-        );
-      }
-    });
+      TRAILER_CODES.JEEPS,
+      TRAILER_CODES.BOOSTER,
+    ])(
+      'preserves the existing tandem limit for %s',
+      (trailerType) => {
+        for (const actualWeight of [23000, 23001]) {
+          expectPermittableResult(
+            {
+              axleUnit: 3,
+              axleCount: 2,
+              actualWeight,
+              spread: 160,
+              trailerType,
+            },
+            23000,
+            actualWeight === 23000
+              ? PolicyCheckResultType.Pass
+              : PolicyCheckResultType.Fail,
+          );
+        }
+      },
+    );
 
     it.each([23000, 23001])(
       'preserves an additional power-unit tandem at %i kg',
@@ -465,19 +475,54 @@ describe('ORV2-5709 permittable weight maximums', () => {
       );
     });
 
-    it('allows 29,000 kg on a qualifying jeep tridem', () => {
-      expectPermittableResult(
-        {
-          axleUnit: 3,
-          axleCount: 3,
-          actualWeight: 29000,
-          spread: 240,
-          trailerType: TRAILER_CODES.JEEPS,
-        },
-        29000,
-        PolicyCheckResultType.Pass,
-      );
-    });
+    // XLS: Jeeps/Boosters, Tridem, K=28,000; BSA confirmed E2/E5 on 8 October 2026.
+    it.each([
+      [TRAILER_CODES.JEEPS, 240],
+      [TRAILER_CODES.JEEPS, 370],
+      [TRAILER_CODES.BOOSTER, 240],
+      [TRAILER_CODES.BOOSTER, 310],
+    ] as const)(
+      'keeps %s tridem at 28,000 kg with %i cm spread',
+      (trailerType, spread) => {
+        for (const actualWeight of [28000, 28001]) {
+          expectPermittableResult(
+            { axleUnit: 3, axleCount: 3, actualWeight, spread, trailerType },
+            28000,
+            actualWeight === 28000
+              ? PolicyCheckResultType.Pass
+              : PolicyCheckResultType.Fail,
+          );
+        }
+      },
+    );
+
+    it.each([TRAILER_CODES.JEEPS, TRAILER_CODES.BOOSTER])(
+      'reads the %s tridem limit from JSON',
+      (trailerType) => {
+        const changed: PolicyDefinition = JSON.parse(
+          JSON.stringify(currentPolicyConfig),
+        );
+        changed.globalWeightDefaults.trailers.find(
+          ({ axles }) => axles === 3,
+        )!.permittable = 27500;
+
+        expect(
+          getPermittableResult(
+            {
+              axleUnit: 3,
+              axleCount: 3,
+              actualWeight: 27501,
+              spread: 240,
+              trailerType,
+            },
+            new Policy(changed),
+          ),
+        ).toMatchObject({
+          thresholdWeight: 27500,
+          result: PolicyCheckResultType.Fail,
+        });
+      },
+    );
 
     it.each([
       [240, undefined, 29000, 29000, PolicyCheckResultType.Pass],
