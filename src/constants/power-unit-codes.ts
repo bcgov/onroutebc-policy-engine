@@ -1,3 +1,4 @@
+// TODO delete this constant once it is no longer in use by xls code
 export const POWER_UNIT_CODES = {
   BUSES: 'BUSCRUM',
   INTERCITY_BUSES_PULLING_PONY_TRAILERS: 'BUSTRLR',

@@ -27,7 +27,8 @@
     "test": "jest",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "format": "prettier --write \"src/**/*.ts\"",
-    "build": "tsc",
+    "export:config": "tsx -e \"import { writeFileSync } from 'node:fs'; import { data } from './src/_test/policy-config/_current-config.ts'; writeFileSync('./src/_test/policy-config/_current-config.json', JSON.stringify(data, null, 2) + '\\n');\"",
+    "build": "npm run export:config && tsc",
     "clean-build": "rimraf dist && rimraf -g *.tgz && tsc"
   },
   "repository": {
@@ -51,6 +52,7 @@
     "prettier": "^3.4.2",
     "rimraf": "^6.0.1",
     "ts-jest": "^29.2.5",
+    "tsx": "^4.23.15",
     "typescript": "^5.7.2"
   },
   "dependencies": {

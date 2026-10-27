@@ -1,7 +1,7 @@
 import { COMMODITY_CODES } from '../../constants/commodity-codes';
 import { PERMIT_CODES } from '../../constants/permit-codes';
-import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
-import { TRAILER_CODES } from '../../constants/trailer-codes';
+import { POWER_UNITS } from '../../constants/power-units';
+import { TRAILERS } from '../../constants/trailers';
 import { Policy } from '../../policy-engine';
 import stosPolicyConfig from '../policy-config/stos-vehicle-config.sample.json';
 
@@ -14,9 +14,9 @@ describe('Permit Engine Size Dimension Functions', () => {
       PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
       COMMODITY_CODES.EMPTY,
       [
-        POWER_UNIT_CODES.TRUCK_TRACTORS,
-        TRAILER_CODES.JEEPS,
-        TRAILER_CODES.HIBOYS_EXPANDOS,
+        POWER_UNITS.TRUCK_TRACTORS.id,
+        TRAILERS.JEEPS.id,
+        TRAILERS.HIBOYS_EXPANDOS.id,
       ],
     );
     expect(sizeDimension?.fp).toBe(3);
@@ -31,9 +31,9 @@ describe('Permit Engine Size Dimension Functions', () => {
       PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
       COMMODITY_CODES.EMPTY,
       [
-        POWER_UNIT_CODES.TRUCK_TRACTORS,
-        TRAILER_CODES.JEEPS,
-        TRAILER_CODES.PLATFORM_TRAILERS,
+        POWER_UNITS.TRUCK_TRACTORS.id,
+        TRAILERS.JEEPS.id,
+        TRAILERS.PLATFORM_TRAILERS.id,
       ],
       ['PCE'],
     );
@@ -47,9 +47,9 @@ describe('Permit Engine Size Dimension Functions', () => {
   it('should throw an error if an invalid permit type is specified', async () => {
     expect(() => {
       policy.getSizeDimension('_INVALID', COMMODITY_CODES.EMPTY, [
-        POWER_UNIT_CODES.TRUCK_TRACTORS,
-        TRAILER_CODES.JEEPS,
-        TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
+        POWER_UNITS.TRUCK_TRACTORS.id,
+        TRAILERS.JEEPS.id,
+        TRAILERS.SEMI_TRAILERS_WHEELERS.id,
       ]);
     }).toThrow();
   });
@@ -58,7 +58,7 @@ describe('Permit Engine Size Dimension Functions', () => {
     const sizeDimension = policy.getSizeDimension(
       PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
       COMMODITY_CODES.EMPTY,
-      ['_INVALID', TRAILER_CODES.JEEPS, TRAILER_CODES.SEMI_TRAILERS_WHEELERS],
+      ['_INVALID', TRAILERS.JEEPS.id, TRAILERS.SEMI_TRAILERS_WHEELERS.id],
     );
     expect(sizeDimension).toBeNull();
   });
@@ -67,7 +67,7 @@ describe('Permit Engine Size Dimension Functions', () => {
     const sizeDimension = policy.getSizeDimension(
       PERMIT_CODES.SINGLE_TRIP_OVERSIZE,
       COMMODITY_CODES.EMPTY,
-      [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.JEEPS],
+      [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.JEEPS.id],
     );
     expect(sizeDimension).toBeNull();
   });
@@ -75,8 +75,8 @@ describe('Permit Engine Size Dimension Functions', () => {
   it('should throw an error if an invalid commodity is specified', async () => {
     expect(() => {
       policy.getSizeDimension(PERMIT_CODES.SINGLE_TRIP_OVERSIZE, '_INVALID', [
-        POWER_UNIT_CODES.TRUCK_TRACTORS,
-        TRAILER_CODES.JEEPS,
+        POWER_UNITS.TRUCK_TRACTORS.id,
+        TRAILERS.JEEPS.id,
       ]);
     }).toThrow();
   });

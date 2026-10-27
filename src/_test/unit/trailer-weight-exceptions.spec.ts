@@ -1,10 +1,10 @@
 import { Policy } from '../../policy-engine';
-import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
-import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { COMMODITY_CODES } from '../../constants/commodity-codes';
 import { PolicyCheckId, PolicyCheckResultType } from '../../enum';
 import { AxleConfiguration } from '../../types';
 import config from '../policy-config/_current-config.json';
+import { POWER_UNITS } from '../../constants/power-units';
+import { TRAILERS } from '../../constants/trailers';
 
 const policy = new Policy(config);
 const axles = (
@@ -27,19 +27,19 @@ const axles = (
 // BSA confirmed D1/D2/E3: Pony/Fixed Equipment Pony after a Power Unit.
 // XLS rows 107–133, 137–145; N supplies the minimum spacing in metres.
 describe.each([
-  [TRAILER_CODES.PONY_TRAILERS, POWER_UNIT_CODES.TRUCKS],
+  [TRAILERS.PONY_TRAILERS.id, POWER_UNITS.TRUCKS.id],
   [
-    TRAILER_CODES.FIXED_EQUIPMENT_PONY_TRAILERS,
-    POWER_UNIT_CODES.FIXED_EQUIPMENT_TRUCKS_GRADERS,
+    TRAILERS.FIXED_EQUIPMENT_PONY_TRAILERS.id,
+    POWER_UNITS.FIXED_EQUIPMENT_TRUCKS_GRADERS.id,
   ],
   // H=Power Unit also includes the engine's multisteer category.
   [
-    TRAILER_CODES.PONY_TRAILERS,
-    POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+    TRAILERS.PONY_TRAILERS.id,
+    POWER_UNITS.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE.id,
   ],
   [
-    TRAILER_CODES.FIXED_EQUIPMENT_PONY_TRAILERS,
-    POWER_UNIT_CODES.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE,
+    TRAILERS.FIXED_EQUIPMENT_PONY_TRAILERS.id,
+    POWER_UNITS.OIL_AND_GAS_SERVICE_RIGS_HEAVY_FRONT_CRANE.id,
   ],
 ])('configured neighbour weights for %s after %s', (trailer, powerUnit) => {
   it.each<[number, number, number | undefined, number, number]>([
@@ -101,55 +101,55 @@ describe.each([
 // BSA confirmed E4: XLS K269/274/275/280/281 are exceptions to 5709-6.
 it.each([
   [
-    TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
+    TRAILERS.SEMI_TRAILERS_WHEELERS.id,
     COMMODITY_CODES.EMPTY,
-    POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+    POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
     40000,
   ],
   [
-    TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
+    TRAILERS.SEMI_TRAILERS_WHEELERS.id,
     'MFHOMEL',
-    POWER_UNIT_CODES.TRUCK_TRACTORS,
+    POWER_UNITS.TRUCK_TRACTORS.id,
     28000,
   ],
   [
-    TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
+    TRAILERS.SEMI_TRAILERS_WIDE_WHEELERS.id,
     COMMODITY_CODES.EMPTY,
-    POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
+    POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
     52000,
   ],
   [
-    TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
+    TRAILERS.SEMI_TRAILERS_WIDE_WHEELERS.id,
     COMMODITY_CODES.NON_REDUCIBLE_LOADS,
-    POWER_UNIT_CODES.TRUCK_WITH_PME,
+    POWER_UNITS.TRUCK_WITH_PME.id,
     52000,
   ],
   // XLS K335/K336: new Wide Wheeler commodity weights.
   [
-    TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
+    TRAILERS.SEMI_TRAILERS_WIDE_WHEELERS.id,
     'MFHOMEL',
-    POWER_UNIT_CODES.TRUCK_TRACTORS,
+    POWER_UNITS.TRUCK_TRACTORS.id,
     28000,
   ],
   [
-    TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS,
+    TRAILERS.SEMI_TRAILERS_WIDE_WHEELERS.id,
     COMMODITY_CODES.NONE,
-    POWER_UNIT_CODES.TRUCK_TRACTORS,
+    POWER_UNITS.TRUCK_TRACTORS.id,
     52000,
   ],
   // S3: manufactured-home Tridem Dolly, confirmed spread starts at 2.4 m.
-  [TRAILER_CODES.DOLLIES, 'MFHOMEL', POWER_UNIT_CODES.TRUCK_TRACTORS, 28000],
+  [TRAILERS.DOLLIES.id, 'MFHOMEL', POWER_UNITS.TRUCK_TRACTORS.id, 28000],
   // Other subtypes retain their prior limits.
   [
-    TRAILER_CODES.PLATFORM_TRAILERS_WHEELERS,
+    TRAILERS.PLATFORM_TRAILERS_WHEELERS.id,
     COMMODITY_CODES.EMPTY,
-    POWER_UNIT_CODES.TRUCK_TRACTORS,
+    POWER_UNITS.TRUCK_TRACTORS.id,
     29000,
   ],
   [
-    TRAILER_CODES.MANUFACTURED_HOMES_OVER_5M,
+    TRAILERS.MANUFACTURED_HOMES_OVER_5M.id,
     COMMODITY_CODES.NONE,
-    POWER_UNIT_CODES.TRUCK_TRACTORS,
+    POWER_UNITS.TRUCK_TRACTORS.id,
     21000,
   ],
 ] as const)(
@@ -186,9 +186,9 @@ it.each(['MFHOMEL', COMMODITY_CODES.NONE])(
     expect(
       policy
         .getNextPermittableVehicles('STOW', commodity, [
-          POWER_UNIT_CODES.TRUCK_TRACTORS,
+          POWER_UNITS.TRUCK_TRACTORS.id,
         ])
-        .has(TRAILER_CODES.SEMI_TRAILERS_WIDE_WHEELERS),
+        .has(TRAILERS.SEMI_TRAILERS_WIDE_WHEELERS.id),
     ).toBe(false);
   },
 );

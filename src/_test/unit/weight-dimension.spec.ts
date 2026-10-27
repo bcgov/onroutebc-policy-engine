@@ -3,18 +3,15 @@ import weightConfig from '../policy-config/weight-dimensions.sample.json';
 import testStow from '../permit-app/test-stow.json';
 import { PowerUnitWeightDimension, TrailerWeightDimension } from '../../types';
 import { getVehicleRelatives } from '../../helper/dimensions.helper';
-import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
-import { TRAILER_CODES } from '../../constants/trailer-codes';
+import { POWER_UNITS } from '../../constants/power-units';
+import { TRAILERS } from '../../constants/trailers';
 
 describe('Weight Default Tests', () => {
   const policy: Policy = new Policy(weightConfig);
 
   it('should retrieve the correct power unit weight from global default', () => {
     const dim: Array<PowerUnitWeightDimension> =
-      policy.getDefaultPowerUnitWeight(
-        POWER_UNIT_CODES.DOUBLE_DECKER_BUSES,
-        11,
-      );
+      policy.getDefaultPowerUnitWeight(POWER_UNITS.DOUBLE_DECKER_BUSES.id, 11);
     expect(dim).toHaveLength(1);
     expect(dim[0].axles).toBe(11);
     expect(dim[0].daLegal).toBe(9011);
@@ -26,7 +23,7 @@ describe('Weight Default Tests', () => {
 
   it('should retrieve the correct trailer weight from global default', () => {
     const dim: Array<TrailerWeightDimension> = policy.getDefaultTrailerWeight(
-      TRAILER_CODES.STEERING_TRAILERS_MANNED,
+      TRAILERS.STEERING_TRAILERS_MANNED.id,
       2,
     );
     expect(dim).toHaveLength(1);
@@ -38,7 +35,7 @@ describe('Weight Default Tests', () => {
 
   it('should retrieve the correct power unit weight from category default', () => {
     const dim: Array<PowerUnitWeightDimension> =
-      policy.getDefaultPowerUnitWeight(POWER_UNIT_CODES.CRANES_ALL_TERRAIN, 11);
+      policy.getDefaultPowerUnitWeight(POWER_UNITS.CRANES_ALL_TERRAIN.id, 11);
     expect(dim).toHaveLength(1);
     expect(dim[0].axles).toBe(11);
     expect(dim[0].daLegal).toBe(9511);
@@ -50,7 +47,7 @@ describe('Weight Default Tests', () => {
 
   it('should retrieve the correct trailer weight from category default', () => {
     const dim: Array<TrailerWeightDimension> = policy.getDefaultTrailerWeight(
-      TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS,
+      TRAILERS.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS.id,
       2,
     );
     expect(dim).toHaveLength(1);
@@ -62,7 +59,7 @@ describe('Weight Default Tests', () => {
 
   it('should retrieve the correct trailer weight when axles not permitted (zero weight)', () => {
     const dim: Array<TrailerWeightDimension> = policy.getDefaultTrailerWeight(
-      TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS,
+      TRAILERS.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS.id,
       1,
     );
     expect(dim).toHaveLength(1);
@@ -74,7 +71,7 @@ describe('Weight Default Tests', () => {
 
   it('should retrieve no weights for an invalid number of axles', () => {
     const dim: Array<TrailerWeightDimension> = policy.getDefaultTrailerWeight(
-      TRAILER_CODES.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS,
+      TRAILERS.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS.id,
       4,
     );
     expect(dim).toHaveLength(0);
@@ -83,7 +80,7 @@ describe('Weight Default Tests', () => {
   it('should retrieve the correct power unit weight from type specific', () => {
     const dim: Array<PowerUnitWeightDimension> =
       policy.getDefaultPowerUnitWeight(
-        POWER_UNIT_CODES.FIXED_EQUIPMENT_TRUCKS_GRADERS,
+        POWER_UNITS.FIXED_EQUIPMENT_TRUCKS_GRADERS.id,
         11,
       );
     expect(dim).toHaveLength(1);
@@ -98,7 +95,7 @@ describe('Weight Default Tests', () => {
   it('should retrieve the correct power unit weight from global with unconfigured type axle number', () => {
     const dim: Array<PowerUnitWeightDimension> =
       policy.getDefaultPowerUnitWeight(
-        POWER_UNIT_CODES.FIXED_EQUIPMENT_TRUCKS_GRADERS,
+        POWER_UNITS.FIXED_EQUIPMENT_TRUCKS_GRADERS.id,
         22,
       );
     expect(dim).toHaveLength(1);
@@ -112,7 +109,7 @@ describe('Weight Default Tests', () => {
 
   it('should retrieve the correct trailer weight from type specific', () => {
     const dim: Array<TrailerWeightDimension> = policy.getDefaultTrailerWeight(
-      TRAILER_CODES.FIXED_EQUIPMENT_PORTABLE_ASPHALT_BAGHOUSES,
+      TRAILERS.FIXED_EQUIPMENT_PORTABLE_ASPHALT_BAGHOUSES.id,
       2,
     );
     expect(dim).toHaveLength(1);
@@ -124,7 +121,7 @@ describe('Weight Default Tests', () => {
 
   it('should retrieve the correct trailer weight with modifiers', () => {
     const dim: Array<TrailerWeightDimension> = policy.getDefaultTrailerWeight(
-      TRAILER_CODES.BOOSTER,
+      TRAILERS.BOOSTER.id,
       1,
     );
     expect(dim).toHaveLength(2);
@@ -146,17 +143,20 @@ describe('Weight Dimension Modifier Tests', () => {
     const relatives = getVehicleRelatives(policy, configuration, 3);
     expect(relatives).not.toBeNull();
     expect(relatives.firstCategory).toBe('powerunit');
-    expect(relatives.firstType).toBe(POWER_UNIT_CODES.TRUCK_TRACTORS);
+    expect(relatives.firstType).toBe(POWER_UNITS.TRUCK_TRACTORS.id);
     expect(relatives.lastCategory).toBe('accessory');
-    expect(relatives.lastType).toBe(TRAILER_CODES.BOOSTER);
+    expect(relatives.lastType).toBe(TRAILERS.BOOSTER.id);
     expect(relatives.prevCategory).toBe('accessory');
-    expect(relatives.prevType).toBe(TRAILER_CODES.JEEPS);
+    expect(relatives.prevType).toBe(TRAILERS.JEEPS.id);
     expect(relatives.nextCategory).toBe('accessory');
-    expect(relatives.nextType).toBe(TRAILER_CODES.BOOSTER);
+    expect(relatives.nextType).toBe(TRAILERS.BOOSTER.id);
   });
 
   it('should retrieve the correct semi weight for tandem booster', () => {
-    const defaultTrailerWeight = policy.getDefaultTrailerWeight(TRAILER_CODES.PLATFORM_TRAILERS, 3);
+    const defaultTrailerWeight = policy.getDefaultTrailerWeight(
+      TRAILERS.PLATFORM_TRAILERS.id,
+      3,
+    );
     expect(defaultTrailerWeight).toHaveLength(3);
     expect(axleConfig).toHaveLength(5);
 
@@ -174,7 +174,10 @@ describe('Weight Dimension Modifier Tests', () => {
   });
 
   it('should retrieve the correct semi weight for tridem booster', () => {
-    const defaultTrailerWeight = policy.getDefaultTrailerWeight(TRAILER_CODES.PLATFORM_TRAILERS, 3);
+    const defaultTrailerWeight = policy.getDefaultTrailerWeight(
+      TRAILERS.PLATFORM_TRAILERS.id,
+      3,
+    );
     expect(defaultTrailerWeight).toHaveLength(3);
     expect(axleConfig).toHaveLength(5);
 
@@ -192,7 +195,10 @@ describe('Weight Dimension Modifier Tests', () => {
   });
 
   it('should retrieve the correct semi weight for single booster', () => {
-    const defaultTrailerWeight = policy.getDefaultTrailerWeight(TRAILER_CODES.PLATFORM_TRAILERS, 3);
+    const defaultTrailerWeight = policy.getDefaultTrailerWeight(
+      TRAILERS.PLATFORM_TRAILERS.id,
+      3,
+    );
     expect(defaultTrailerWeight).toHaveLength(3);
     expect(axleConfig).toHaveLength(5);
 
@@ -211,7 +217,7 @@ describe('Weight Dimension Modifier Tests', () => {
 
   it('should retrieve the correct booster weight after semi (close)', () => {
     const defaultTrailerWeight = policy.getDefaultTrailerWeight(
-      TRAILER_CODES.BOOSTER,
+      TRAILERS.BOOSTER.id,
       1,
     );
     expect(defaultTrailerWeight).toHaveLength(2);
@@ -235,7 +241,7 @@ describe('Weight Dimension Modifier Tests', () => {
 
   it('should retrieve the correct booster weight after semi (far)', () => {
     const defaultTrailerWeight = policy.getDefaultTrailerWeight(
-      TRAILER_CODES.BOOSTER,
+      TRAILERS.BOOSTER.id,
       1,
     );
     expect(defaultTrailerWeight).toHaveLength(2);

@@ -3,8 +3,8 @@ import {
   AxleConfiguration,
 } from 'onroute-policy-engine/types';
 import { Policy } from 'onroute-policy-engine';
-import { TRAILER_CODES } from '../constants/trailer-codes';
 import { getAxleUnitType } from '../types/axle-unit-type';
+import { TRAILERS } from '../constants/trailers';
 
 /**
  * Runs the bridge formula against the supplied vehicle axle configuration.
@@ -105,7 +105,7 @@ export function runBridgeFormula(
 
         // Tandem Drive with Single Axle Jeep Bridge Formula Exception
         const hasSingleAxleJeep =
-          vehicleConfiguration[1] === TRAILER_CODES.JEEPS &&
+          vehicleConfiguration[1] === TRAILERS.JEEPS.id &&
           getAxleUnitType(axleConfiguration[2]?.numberOfAxles) === 'SINGLE';
         const hasTandemDrive =
           getAxleUnitType(axleConfiguration[1]?.numberOfAxles) === 'TANDEM';

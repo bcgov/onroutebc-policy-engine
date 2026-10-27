@@ -2,6 +2,7 @@ import { TRAILER_CODES } from '../../src/constants/trailer-codes';
 
 // Workbook column D trailer names and their trailer codes.
 // Add each name explicitly. Do not guess a code from a similar name.
+// TODO delete this constant and make use of the new TRAILERS constant which includes both id and name
 export const TRAILER_VEHICLE_CODES: Record<string, string> = {
   Boosters: TRAILER_CODES.BOOSTER,
   Dollies: TRAILER_CODES.DOLLIES,

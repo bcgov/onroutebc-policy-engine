@@ -1,4 +1,5 @@
 import completePolicyConfig from '../_test/policy-config/_current-config.json';
+import { TRAILERS } from '../constants/trailers';
 import { Policy } from '../policy-engine';
 import { TrailerDimensions } from '../types';
 import { toCsv } from '@iwsio/json-csv-core';
@@ -15,12 +16,12 @@ const options = {
     { name: 'powerUnit', label: 'Power Unit' },
     { name: 'trailer', label: 'Trailer' },
     {
-      name: 'jeep',
+      name: TRAILERS.JEEPS.id,
       label: 'Allow Jeep',
       transform: (v: any) => (v ? 'X' : ''),
     },
     {
-      name: 'booster',
+      name: TRAILERS.BOOSTER.id,
       label: 'Allow Booster',
       transform: (v: any) => (v ? 'X' : ''),
     },

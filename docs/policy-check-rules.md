@@ -13,6 +13,7 @@ The policy engine performs several validation checks on vehicle configurations t
 **How it works:** The bridge formula is a provincial regulation that limits the weight a group of axles can carry based on how far apart they are.
 
 **What it checks:**
+
 - Calculates the maximum allowed weight for each possible group of axles
 - Compares the actual weight on each axle group against the calculated limit
 - Ensures no axle group exceeds its bridge formula limit
@@ -26,6 +27,7 @@ The policy engine performs several validation checks on vehicle configurations t
 **How it works:** Axle unit 1 is treated as the steer axle unit, axle unit 2 is treated as the drive axle unit, and axle units 3+ use the generic axle unit allowance.
 
 **What it checks:**
+
 - For steer axle unit 1, valid tire counts are number of axles × 2
 - For drive axle unit 2, valid tire counts are number of axles × 2 or number of axles × 4
 - For axle units 3+, valid tire counts are number of axles × 2, number of axles × 4, or number of axles × 8
@@ -41,6 +43,7 @@ The policy engine performs several validation checks on vehicle configurations t
 **How it works:** Different vehicle types and axle configurations have different weight limits. This rule looks up the appropriate limits in the policy configuration and compares them to actual weights.
 
 **What it checks:**
+
 - For power units: Checks steer axle and drive axle weights separately
 - For trailers: Checks trailer axle unit weights
 - Compares actual weights against the maximum permittable weights for each axle unit
@@ -55,6 +58,7 @@ The policy engine performs several validation checks on vehicle configurations t
 **How it works:** For vehicles with a single steer axle and a tridem (3-axle) drive axle, the steer axle must carry at least 27% of the drive axle weight.
 
 **What it checks:**
+
 - Only applies to vehicles with 1 steer axle and 3 drive axles
 - Calculates 27% of the drive axle weight
 - Ensures the steer axle weight meets or exceeds this minimum
@@ -68,6 +72,7 @@ The policy engine performs several validation checks on vehicle configurations t
 **How it works:** Drive axles must carry at least 20% of the total vehicle weight (GVCW), but not more than specific maximum limits.
 
 **What it checks:**
+
 - For tandem (2-axle) drive: Minimum 20% of GVCW or 23,000 kg (whichever is smaller)
 - For tridem (3-axle) drive: Minimum 20% of GVCW or 28,000 kg (whichever is smaller)
 - Only applies to tandem or tridem drive configurations
@@ -83,11 +88,13 @@ The policy engine performs several validation checks on vehicle configurations t
 **What it checks:**
 
 **For steer axles:**
+
 - Tire size must not exceed 455mm
 - For tires ≥445mm: Maximum weight is 9,100 kg
 - For tires <445mm: Maximum weight = (number of tires × tire size × 10)
 
 **For non-steer axles:**
+
 - For tires ≥445mm: Maximum weight = (number of tires × 3,850 kg)
 - For tires >300mm and <445mm: Maximum weight = (number of tires × 3,000 kg)
 - For tires ≤300mm: Maximum weight = (number of tires × tire size × 10)
@@ -107,14 +114,29 @@ When you call the `runAxleCalculation` method, all six rules are automatically a
 
 ```typescript
 const results = policy.runAxleCalculation(
-  ['TRKTRAC', 'SEMITRL'],  // Vehicle configuration
+  [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS], // Vehicle configuration
   [
-    { numberOfAxles: 2, axleUnitWeight: 12000, numberOfTires: 4, tireSize: 445 },  // Steer axle
-    { numberOfAxles: 3, axleUnitWeight: 34000, numberOfTires: 12, tireSize: 445 }, // Drive axle
-    { numberOfAxles: 3, axleUnitWeight: 34000, numberOfTires: 12, tireSize: 445 }  // Trailer axle
+    {
+      numberOfAxles: 2,
+      axleUnitWeight: 12000,
+      numberOfTires: 4,
+      tireSize: 445,
+    }, // Steer axle
+    {
+      numberOfAxles: 3,
+      axleUnitWeight: 34000,
+      numberOfTires: 12,
+      tireSize: 445,
+    }, // Drive axle
+    {
+      numberOfAxles: 3,
+      axleUnitWeight: 34000,
+      numberOfTires: 12,
+      tireSize: 445,
+    }, // Trailer axle
   ],
   63500, // Licensed GVW
-  'NONREDU' // Selected commodity ID
+  'NONREDU', // Selected commodity ID
 );
 ```
 

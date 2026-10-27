@@ -15,7 +15,7 @@ import {
   getUtcDatetime,
   TIMEZONE_IDS,
 } from '../../helper/date.helper';
-import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
+import { POWER_UNITS } from '../../constants/power-units';
 
 describe('Permit Engine Constructor', () => {
   it('should construct without error with special authorizations', () => {
@@ -148,7 +148,7 @@ describe('Policy Engine Validator', () => {
 
     // Set an LCV vehicle type
     permit.permitData.vehicleDetails.vehicleSubType =
-      POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES;
+      POWER_UNITS.LCV_ROCKY_MOUNTAIN_DOUBLES.id;
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);
@@ -165,7 +165,7 @@ describe('Policy Engine Validator', () => {
 
     // Set an LCV vehicle type
     permit.permitData.vehicleDetails.vehicleSubType =
-      POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES;
+      POWER_UNITS.LCV_ROCKY_MOUNTAIN_DOUBLES.id;
 
     const validationResult = await lcvPolicy.validate(permit);
     expect(validationResult.violations).toHaveLength(0);
@@ -182,7 +182,7 @@ describe('Policy Engine Validator', () => {
 
     // Set an LCV vehicle type
     permit.permitData.vehicleDetails.vehicleSubType =
-      POWER_UNIT_CODES.LCV_ROCKY_MOUNTAIN_DOUBLES;
+      POWER_UNITS.LCV_ROCKY_MOUNTAIN_DOUBLES.id;
 
     const validationResult = await policy.validate(permit);
     expect(validationResult.violations).toHaveLength(1);

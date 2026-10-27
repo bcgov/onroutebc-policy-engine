@@ -2,6 +2,7 @@ import { POWER_UNIT_CODES } from '../../src/constants/power-unit-codes';
 
 // Workbook column B vehicle names and their power unit codes.
 // Add each name explicitly. Do not guess a code from a similar name.
+// TODO delete this constant and make use of the new POWER_UNITS constant which includes both id and name
 export const POWER_UNIT_VEHICLE_CODES: Record<string, string> = {
   'Concrete Pumper Trucks': POWER_UNIT_CODES.CONCRETE_PUMPER_TRUCKS,
   'Crane - All Terrain': POWER_UNIT_CODES.CRANES_ALL_TERRAIN,

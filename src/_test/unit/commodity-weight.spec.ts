@@ -1,7 +1,5 @@
 import { Policy } from '../../policy-engine';
-import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
 import { COMMODITY_CODES } from '../../constants/commodity-codes';
-import { TRAILER_CODES } from '../../constants/trailer-codes';
 import { PolicyCheckId, PolicyCheckResultType } from '../../enum';
 import { AxleConfiguration, PolicyDefinition } from '../../types';
 import { PermitAppInfo } from '../../enum/permit-app-info';
@@ -12,6 +10,8 @@ import {
 } from '../../helper/date.helper';
 import config from '../policy-config/_current-config.json';
 import testStow from '../permit-app/test-stow.json';
+import { POWER_UNITS } from '../../constants/power-units';
+import { TRAILERS } from '../../constants/trailers';
 
 const axles = (driveCount: number): AxleConfiguration[] => [
   {
@@ -35,10 +35,10 @@ const policy = new Policy(config);
 
 // XLS J32/J36/J159/J204 (11) and J79/J80/J83/J96 (13).
 describe.each([
-  POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
-  POWER_UNIT_CODES.PICKER_TRUCKS,
-  POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
-  POWER_UNIT_CODES.TRUCK_WITH_PME,
+  POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
+  POWER_UNITS.PICKER_TRUCKS.id,
+  POWER_UNITS.TRUCK_TRACTOR_WITH_PME.id,
+  POWER_UNITS.TRUCK_WITH_PME.id,
 ])('commodity weights for %s', (type) => {
   it.each([
     [COMMODITY_CODES.NON_REDUCIBLE_LOADS, 1, 11000, PolicyCheckResultType.Pass],
@@ -87,7 +87,7 @@ describe.each([
     ])('uses %s threshold %i', (id, limit, above) => {
       for (const excess of [0, 1]) {
         const calculated = policy.runAxleCalculation(
-          [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS],
+          [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id],
           [
             ...axles(2),
             {
@@ -124,7 +124,7 @@ it.each([
     changed.globalWeightDefaults.trailers =
       changed.globalWeightDefaults.trailers.filter(({ axles }) => axles !== 2);
     const { results } = new Policy(changed).runAxleCalculation(
-      [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS],
+      [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id],
       [
         ...axles(2),
         {
@@ -156,7 +156,7 @@ describe('invalid commodity', () => {
     (commodity) => {
       expect(() =>
         policy.runAxleCalculation(
-          [POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS],
+          [POWER_UNITS.PICKER_TRUCK_TRACTORS.id],
           axles(1),
           100000,
           commodity as unknown as string,
