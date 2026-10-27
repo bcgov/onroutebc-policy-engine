@@ -1,4 +1,9 @@
-import { RelativePosition, VehicleCategory } from 'onroute-policy-engine/enum';
+import { matchesPermittableAxleSpread } from './permittable-axle-spread.helper';
+import {
+  AccessoryVehicleType,
+  RelativePosition,
+  VehicleCategory,
+} from 'onroute-policy-engine/enum';
 import { Policy } from 'onroute-policy-engine';
 import {
   AxleConfiguration,
@@ -431,7 +436,30 @@ export function selectCorrectWeightDimensionHelper(
     axleUnitVehicleIndexes,
   );
 
+  const axleUnit = axleConfiguration[axleIndex];
+  const vehicleIndex = axleUnitVehicleIndexes?.[axleIndex] ?? axleIndex - 1;
+  const nextVehicleIndex = vehicleIndex + 1;
+  const boosterAxle = axleConfiguration.find(
+    (_, index) =>
+      index > axleIndex &&
+      (axleUnitVehicleIndexes?.[index] ?? index - 1) === nextVehicleIndex,
+  );
+  // Keep the existing Tridem allowance limited to no Booster or a Single Booster.
+  const boosterQualifies =
+    axleUnit.numberOfAxles !== 3 ||
+    configuration[nextVehicleIndex] !== AccessoryVehicleType.Booster ||
+    boosterAxle?.numberOfAxles === 1;
+
   for (const weightDimension of weightDimensions) {
+    const spread = (weightDimension as TrailerWeightDimension)
+      .permittableAxleSpread;
+    if (
+      spread &&
+      (!boosterQualifies ||
+        !matchesPermittableAxleSpread(axleUnit.axleSpread, spread))
+    ) {
+      continue;
+    }
     // Just renaming this for conciseness
     const modifier = weightDimension.modifier;
     if (!modifier) {
