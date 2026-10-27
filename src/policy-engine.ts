@@ -1,3 +1,4 @@
+import { POWER_UNIT_AXLE_CODE_MULTIPLIER } from './constants/power-unit-axle-code-multiplier';
 import {
   PolicyDefinition,
   PermitType,
@@ -184,10 +185,13 @@ export class Policy {
         permit.permitData?.vehicleConfiguration?.axleConfiguration;
 
       if (shouldIncludeAxleCalculationResults) {
-        validationResults.axleCalculationResults =
-          await engineResult.almanac.factValue<AxleCalcResults>(
+        const axleCalculationResults =
+          await engineResult.almanac.factValue<AxleCalcResults | null>(
             'axleCalcResults',
           );
+        if (axleCalculationResults !== null) {
+          validationResults.axleCalculationResults = axleCalculationResults;
+        }
       }
 
       // Include an informational message if the client is an LCV carrier
@@ -1003,6 +1007,7 @@ export class Policy {
    *                          The length should match the vehicleConfiguration array plus one (since the first
    *                          vehicle in the configuration is a power unit with two axle units).
    * @param licensedGVW Licensed GVW of the vehicle being permitted.
+   * @param commodityId Selected configured commodity ID, including explicit None.
    * @returns AxleCalcResults object containing:
    *          - results: Array of PolicyCheckResult objects, each representing the outcome of a specific policy check
    *          - overload: Numeric value representing the total overload across all axle calculations
@@ -1016,7 +1021,9 @@ export class Policy {
    *     { numberOfAxles: 2, axleSpread: 1.8, numberOfTires: 4 },
    *     { numberOfAxles: 3, axleSpread: 4.2, numberOfTires: 12 },
    *     { numberOfAxles: 3, axleSpread: 3.0, numberOfTires: 12 }
-   *   ]
+   *   ],
+   *   100000,
+   *   'XXXXXXX'
    * );
    * // Returns results with bridge formula checks, tire count validations, etc.
    *
@@ -1028,7 +1035,11 @@ export class Policy {
     vehicleConfiguration: Array<string>,
     axleConfiguration: Array<AxleConfiguration>,
     licensedGVW: number,
+    commodityId: string,
   ): AxleCalcResults {
+    if (!this.getCommodityDefinition(commodityId)) {
+      throw new Error(`Unknown commodity: ${commodityId}`);
+    }
     const axleCalcResults: AxleCalcResults = {
       results: [],
       overload: 0,
@@ -1095,9 +1106,12 @@ export class Policy {
       }
 
       axleCalcResults.results.push(
-        ...policyCheck(this, vehicleConfiguration, axleConfiguration).map(
-          toAxleGroupPolicyCheckResult,
-        ),
+        ...policyCheck(
+          this,
+          vehicleConfiguration,
+          axleConfiguration,
+          commodityId,
+        ).map(toAxleGroupPolicyCheckResult),
       );
     }
     updateOverloadCalculation();
@@ -1256,6 +1270,66 @@ export class Policy {
       axles,
       false,
     ) as InteraxleSpacingRequirement;
+  }
+
+  /** Get legal and permitable weights from JSON, 
+   * resolve commodity rows first, then inherited 
+   * defaults for this axle unit. 
+   */
+  getApplicableAxleWeight(
+    configuration: Array<string>,
+    axleConfiguration: Array<AxleConfiguration>,
+    vehicleIndex: number,
+    axleIndex: number,
+    commodityId?: string,
+  ): SingleAxleDimension | null {
+    if (
+      commodityId !== undefined &&
+      !this.getCommodityDefinition(commodityId)
+    ) {
+      throw new Error(`Unknown commodity: ${commodityId}`);
+    }
+    const vehicleType = configuration[vehicleIndex];
+    const axle = axleConfiguration[axleIndex];
+    if (!vehicleType || !axle) return null;
+    const axles =
+      vehicleIndex === 0
+        ? axleConfiguration[0].numberOfAxles * POWER_UNIT_AXLE_CODE_MULTIPLIER +
+          axleConfiguration[1].numberOfAxles
+        : axle.numberOfAxles;
+    const commodityPowerUnit = this.getCommodityDefinition(
+      commodityId,
+    )?.powerUnits.find((powerUnit) => powerUnit.type === configuration[0]);
+    const commodityWeights =
+      vehicleIndex === 0
+        ? commodityPowerUnit?.weightDimensions
+        : commodityPowerUnit?.trailers.find(
+            (trailer) => trailer.type === vehicleType,
+          )?.weightDimensions;
+    const overrides =
+      commodityWeights?.filter((weight) => weight.axles === axles) || [];
+    // Copied existing modifier logic from src/helper/dimensions.helper.ts (selectCorrectWeightDimensionHelper).
+    if (overrides.length > 0) {
+      const selected = this.selectCorrectWeightDimension(
+        overrides,
+        configuration,
+        axleConfiguration,
+        axleIndex,
+      );
+      if (selected) return selected;
+    }
+    const defaults =
+      vehicleIndex === 0
+        ? this.getDefaultPowerUnitWeight(vehicleType, axles)
+        : this.getDefaultTrailerWeight(vehicleType, axles);
+    return defaults.length > 0
+      ? this.selectCorrectWeightDimension(
+          defaults,
+          configuration,
+          axleConfiguration,
+          axleIndex,
+        )
+      : null;
   }
 
   /**
