@@ -5404,35 +5404,44 @@ export const data: PolicyDefinition = {
             axles: [22, 32, 23, 33],
             min: 420,
           },
-          // {
-          //   axles: [21],
-          //   maxAxleUnitWeight: 24000,
-          //   modifier: {
-          //     category: VEHICLE_CATEGORIES.POWER_UNIT,
-          //     position: RelativePosition.Before,
-          //   },
-          //   max: 119,
-          // },
-          // {
-          //   axles: [21],
-          //   maxAxleUnitWeight: 28000,
-          //   modifier: {
-          //     category: VEHICLE_CATEGORIES.POWER_UNIT,
-          //     position: RelativePosition.Before,
-          //   },
-          //   min: 120,
-          //   max: 300,
-          // },
-          // {
-          //   axles: [21],
-          //   maxAxleUnitWeight: 29000,
-          //   modifier: {
-          //     category: VEHICLE_CATEGORIES.POWER_UNIT,
-          //     position: RelativePosition.Before,
-          //   },
-          //   min: 301,
-          //   max: 250,
-          // },
+          {
+            axles: [21],
+            maxAxleGroupWeight: 24000,
+            modifier: {
+              category: VEHICLE_CATEGORIES.POWER_UNIT,
+              position: RelativePosition.Before,
+            },
+            max: 119,
+          },
+          {
+            axles: [21],
+            maxAxleGroupWeight: 28000,
+            modifier: {
+              category: VEHICLE_CATEGORIES.POWER_UNIT,
+              position: RelativePosition.Before,
+            },
+            min: 120,
+            max: 300,
+          },
+          {
+            axles: [21],
+            maxAxleGroupWeight: 29000,
+            modifier: {
+              category: VEHICLE_CATEGORIES.POWER_UNIT,
+              position: RelativePosition.Before,
+            },
+            min: 301,
+            max: 350,
+          },
+          {
+            axles: [21],
+            minAxleGroupWeight: 29001,
+            modifier: {
+              category: VEHICLE_CATEGORIES.POWER_UNIT,
+              position: RelativePosition.Before,
+            },
+            min: 351,
+          },
         ],
       },
       {

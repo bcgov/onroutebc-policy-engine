@@ -1645,15 +1645,20 @@ export function CheckInteraxleSpacing(
     );
 
   return axleConfiguration.map((axleUnit, axleIndex) => {
-    let groupWeight;
+    const currentAxleUnitNumber = axleIndex + 1;
+    const previousAxleUnitNumber = axleIndex;
+    const groupWeight = checkAxleGroupMaximumLegalWeightThresholdResults.find(
+      (result) =>
+        result.startAxleUnit === previousAxleUnitNumber &&
+        result.endAxleUnit === currentAxleUnitNumber,
+    )?.actualWeight;
 
-    if (
-      checkAxleGroupMaximumLegalWeightThresholdResults[axleIndex]?.actualWeight
-    ) {
-      groupWeight =
-        checkAxleGroupMaximumLegalWeightThresholdResults[axleIndex]
-          .actualWeight;
-      console.log({ groupWeight });
+    console.log({ checkAxleGroupMaximumLegalWeightThresholdResults });
+
+    if (groupWeight) {
+      console.log(
+        `groupWeight: ${groupWeight} found for axleUnit number ${currentAxleUnitNumber}: ${JSON.stringify(axleConfiguration[axleIndex])}`,
+      );
     }
 
     const requirement = getInteraxleSpacingRequirement(
@@ -1671,9 +1676,6 @@ export function CheckInteraxleSpacing(
       !axleUnit.interaxleSpacing ||
       ((!requirement.min || axleUnit.interaxleSpacing >= requirement.min) &&
         (!requirement.max || axleUnit.interaxleSpacing <= requirement.max));
-
-    const currentAxleUnitNumber = axleIndex + 1;
-    const previousAxleUnitNumber = axleIndex;
 
     const message = shouldPass
       ? ''

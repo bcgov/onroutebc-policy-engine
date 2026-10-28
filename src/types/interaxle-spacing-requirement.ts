@@ -20,4 +20,8 @@ export type InteraxleSpacingRequirement = SelfIssuable & {
   modifier?: InteraxleSpacingModifier;
   /** Maximum weight of the axle unit in kilograms in order for the requirement to apply (optional) */
   maxAxleUnitWeight?: number;
+  /** Minimum weight of the axle group in kilograms in order for the requirement to apply (optional) */
+  minAxleGroupWeight?: number;
+  /** Maximum weight of the axle group in kilograms in order for the requirement to apply (optional) */
+  maxAxleGroupWeight?: number;
 };

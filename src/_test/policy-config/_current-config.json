@@ -5413,6 +5413,52 @@
               33
             ],
             "min": 420
+          },
+          {
+            "axles": [
+              21
+            ],
+            "maxAxleGroupWeight": 24000,
+            "modifier": {
+              "category": "powerunit",
+              "position": "before"
+            },
+            "max": 119
+          },
+          {
+            "axles": [
+              21
+            ],
+            "maxAxleGroupWeight": 28000,
+            "modifier": {
+              "category": "powerunit",
+              "position": "before"
+            },
+            "min": 120,
+            "max": 300
+          },
+          {
+            "axles": [
+              21
+            ],
+            "maxAxleGroupWeight": 29000,
+            "modifier": {
+              "category": "powerunit",
+              "position": "before"
+            },
+            "min": 301,
+            "max": 350
+          },
+          {
+            "axles": [
+              21
+            ],
+            "minAxleGroupWeight": 29001,
+            "modifier": {
+              "category": "powerunit",
+              "position": "before"
+            },
+            "min": 351
           }
         ]
       },
