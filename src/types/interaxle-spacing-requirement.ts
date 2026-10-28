@@ -12,6 +12,7 @@ export type InteraxleSpacingRequirement = SelfIssuable & {
    * least significant digit is the current axle unit.
    */
   axles?: Array<number>;
+
   /** The minimum permittable interaxle spacing value in centimetres (optional) */
   min?: number;
   /** The maximum permittable interaxle spacing value in centimetres (optional) */

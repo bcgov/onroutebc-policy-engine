@@ -4,7 +4,6 @@ import { PolicyCheckId, PolicyCheckResultType } from '../../enum/policy-check';
 import { AxleConfiguration, PolicyDefinition } from '../../types';
 import currentPolicyConfig from '../policy-config/_current-config.json';
 import { CheckPermittableWeight } from '../../helper/policy-check.helper';
-import { getAxleUnitVehicleIndexLookup } from '../../helper/dimensions.helper';
 import { POWER_UNITS } from '../../constants/power-units';
 import { TRAILERS } from '../../constants/trailers';
 
@@ -644,7 +643,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
           [239, 28000],
           [240, lowerLimit],
           [300, lowerLimit],
-          [300.5, 29000],
+          [300.5, lowerLimit],
           [301, 29000],
           [370, 29000],
           [371, 28000],
@@ -670,7 +669,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
         for (const [boosterAxleCount, spread, limit] of [
           [1, 240, lowerLimit],
           [1, 300, lowerLimit],
-          [1, 300.5, 29000],
+          [1, 300.5, lowerLimit],
           [1, 301, 29000],
           [1, 370, 29000],
           [2, 301, 28000],
@@ -722,9 +721,10 @@ describe('ORV2-5709 permittable weight maximums', () => {
         for (const [spread, boosterAxleCount, limit] of [
           [undefined, undefined, 27500],
           [300, undefined, 27500],
-          [300.5, undefined, 28500],
-          [300.5, 1, 28500],
-          [300.5, 2, 27500],
+          [300.5, undefined, 27500],
+          [301, undefined, 28500],
+          [301, 1, 28500],
+          [301, 2, 27500],
           [371, undefined, 27500],
         ] as const) {
           expect(
@@ -867,17 +867,19 @@ describe('ORV2-5709 permittable weight maximums', () => {
         TRAILERS.SEMI_TRAILERS.id,
       ];
 
-      const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
-        policy,
-        vehicleConfiguration,
-        axleConfiguration,
-      );
+      // TODO leaving this code commented for now since we will need to dicuss this with Michael when he returns from vacation
+      // const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
+      //   policy,
+      //   vehicleConfiguration,
+      //   axleConfiguration,
+      // );
 
       expect(
         policy.calculateBridge(
           axleConfiguration,
           vehicleConfiguration,
-          axleUnitVehicleIndexes,
+          // TODO leaving this code commented for now since we will need to dicuss this with Michael when he returns from vacation
+          // axleUnitVehicleIndexes,
         )[0].maxBridge,
       ).toBe(21000);
       expect(

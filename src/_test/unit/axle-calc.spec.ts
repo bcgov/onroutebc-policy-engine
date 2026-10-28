@@ -175,11 +175,7 @@ describe('Axle Calculation Functions', () => {
             ? `Interaxle Spacing between Axle Unit 3 and Axle Unit 4 must be at least 4.2 m.`
             : '';
 
-        const customVehicleConfiguration = [
-          POWER_UNITS.TRUCK_TRACTORS.id,
-          TRAILERS.FIXED_EQUIPMENT_COUNTER_FLOW_ASPHALT_DRUM_MIXERS.id,
-          TRAILERS.JEEPS.id,
-        ];
+        const customVehicleConfiguration = ['TRKTRAC', 'FEDRMMX', 'JEEPSRG'];
 
         expectInteraxleSpacingResult(
           ac,
@@ -192,11 +188,7 @@ describe('Axle Calculation Functions', () => {
     );
 
     it('skips the booster tridem interaxle-spacing exception when the booster axle unit exceeds maxAxleUnitWeight', () => {
-      const customVehicleConfiguration = [
-        POWER_UNITS.TRUCK_TRACTORS.id,
-        TRAILERS.SEMI_TRAILERS.id,
-        TRAILERS.BOOSTER.id,
-      ];
+      const customVehicleConfiguration = ['TRKTRAC', 'SEMITRL', 'BOOSTER'];
       const customAxleConfiguration: Array<AxleConfiguration> = [
         { numberOfAxles: 1, axleUnitWeight: 6000 },
         { numberOfAxles: 2, axleUnitWeight: 18000 },
@@ -2803,11 +2795,7 @@ describe('booster exceptions', () => {
     JSON.stringify(currentPolicyConfig),
   ) as PolicyDefinition;
   const configuredPolicy = new Policy(configuredPolicyDefinition);
-  const vehicleConfiguration = [
-    POWER_UNITS.TRUCK_TRACTORS.id,
-    TRAILERS.SEMI_TRAILERS.id,
-    TRAILERS.BOOSTER.id,
-  ];
+  const vehicleConfiguration = ['TRKTRAC', 'SEMITRL', 'BOOSTER'];
   const axleConfiguration: Array<AxleConfiguration> = [
     {
       numberOfAxles: 1,

@@ -226,7 +226,9 @@ export function selectCorrectInteraxleSpacingRequirementHelper(
  * @param policy The instantiated policy object with weight config
  * @param subType Power Unit or Trailer subtype
  * @param axles 2-digit number representing the two axle units to which this requirement applies. The number of with the most significant digit representing the current axle unit and the least significant digit representing the next axle unit.
+ * @param axles 2-digit number representing the two axle units to which this requirement applies. The number of with the most significant digit representing the current axle unit and the least significant digit representing the next axle unit.
  * @param isPowerUnit Whether this vehicle is a power unit
+ * @returns Array of interaxle spacing specifications matching the axle pair
  * @returns Array of interaxle spacing specifications matching the axle pair
  */
 export function getDefaultInteraxleSpacingHelper(

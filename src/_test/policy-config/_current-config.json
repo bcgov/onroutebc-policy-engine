@@ -1,5 +1,5 @@
 {
-  "minPEVersion": "2.0.0",
+  "minPEVersion": "3.0.0",
   "geographicRegions": [
     {
       "id": "LMN",
@@ -5395,7 +5395,6 @@
         "category": "jeep",
         "ignoreForSizeDimensions": true,
         "displayCode": "J",
-        "defaultWeightDimensions": [],
         "interaxleSpacings": [
           {
             "axles": [
@@ -5461,6 +5460,12 @@
             "min": 351
           }
         ]
+      },
+      {
+        "id": "LOGNTAC",
+        "name": "Legacy Logging Trailer Combinations - Non-TAC B-Trains",
+        "category": "trailer",
+        "defaultWeightDimensions": []
       },
       {
         "id": "LOGNTAC",
@@ -5870,7 +5875,7 @@
                   "legal": 24000,
                   "permittable": 29000,
                   "permittableAxleSpread": {
-                    "minExclusive": 300,
+                    "min": 301,
                     "max": 370
                   }
                 }
@@ -5909,7 +5914,7 @@
                   "legal": 24000,
                   "permittable": 29000,
                   "permittableAxleSpread": {
-                    "minExclusive": 300,
+                    "min": 301,
                     "max": 370
                   }
                 }
@@ -5931,7 +5936,7 @@
                   "legal": 24000,
                   "permittable": 29000,
                   "permittableAxleSpread": {
-                    "minExclusive": 300,
+                    "min": 301,
                     "max": 370
                   }
                 }
@@ -5953,7 +5958,7 @@
                   "legal": 24000,
                   "permittable": 29000,
                   "permittableAxleSpread": {
-                    "minExclusive": 300,
+                    "min": 301,
                     "max": 370
                   }
                 }
@@ -6002,7 +6007,7 @@
                   "legal": 24000,
                   "permittable": 29000,
                   "permittableAxleSpread": {
-                    "minExclusive": 300,
+                    "min": 301,
                     "max": 370
                   }
                 }
@@ -6565,7 +6570,7 @@
                   "legal": 24000,
                   "permittable": 29000,
                   "permittableAxleSpread": {
-                    "minExclusive": 300,
+                    "min": 301,
                     "max": 370
                   }
                 }
@@ -8764,7 +8769,7 @@
                   "legal": 24000,
                   "permittable": 29000,
                   "permittableAxleSpread": {
-                    "minExclusive": 300,
+                    "min": 301,
                     "max": 370
                   }
                 }
@@ -8916,7 +8921,7 @@
                   "legal": 24000,
                   "permittable": 29000,
                   "permittableAxleSpread": {
-                    "minExclusive": 300,
+                    "min": 301,
                     "max": 370
                   }
                 }

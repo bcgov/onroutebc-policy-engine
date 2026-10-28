@@ -7,11 +7,11 @@
 
 import { DimensionModifier, SelfIssuable } from 'onroute-policy-engine/types';
 
-/** Own axle spread in centimetres. The maximum is inclusive. */
-export type PermittableAxleSpread = { max: number } & (
-  | { min: number; minExclusive?: never }
-  | { min?: never; minExclusive: number }
-);
+/** Own axle spread in centimetres. Both bounds are inclusive. */
+export type PermittableAxleSpread = {
+  min: number;
+  max: number;
+};
 
 /**
  * Weight limits for a single axle unit

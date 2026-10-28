@@ -12,8 +12,7 @@ import { POWER_UNITS } from '../../constants/power-units';
 import { TRAILERS } from '../../constants/trailers';
 
 export const data: PolicyDefinition = {
-  // TODO get this number from the current gen version
-  minPEVersion: '2.0.0',
+  minPEVersion: '3.0.0',
   geographicRegions: [
     {
       id: GEOGRAPHIC_REGIONS.LOWER_MAINLAND,
@@ -5394,7 +5393,6 @@ export const data: PolicyDefinition = {
         category: VEHICLE_CATEGORIES.JEEP,
         ignoreForSizeDimensions: true,
         displayCode: 'J',
-        defaultWeightDimensions: [],
         interaxleSpacings: [
           {
             axles: [11, 21, 31],
@@ -5443,6 +5441,13 @@ export const data: PolicyDefinition = {
             min: 351,
           },
         ],
+      },
+      {
+        id: TRAILERS.LOGGING_NON_TAC_B_TRAINS.id,
+        name: TRAILERS.LOGGING_NON_TAC_B_TRAINS.name,
+        // TODO check category with Michael
+        category: VEHICLE_CATEGORIES.TRAILER,
+        defaultWeightDimensions: [],
       },
       {
         id: TRAILERS.LOGGING_NON_TAC_B_TRAINS.id,
@@ -5877,7 +5882,7 @@ export const data: PolicyDefinition = {
                   legal: 24000,
                   permittable: 29000,
                   permittableAxleSpread: {
-                    minExclusive: 300,
+                    min: 301,
                     max: 370,
                   },
                 },
@@ -5916,7 +5921,7 @@ export const data: PolicyDefinition = {
                   legal: 24000,
                   permittable: 29000,
                   permittableAxleSpread: {
-                    minExclusive: 300,
+                    min: 301,
                     max: 370,
                   },
                 },
@@ -5938,7 +5943,7 @@ export const data: PolicyDefinition = {
                   legal: 24000,
                   permittable: 29000,
                   permittableAxleSpread: {
-                    minExclusive: 300,
+                    min: 301,
                     max: 370,
                   },
                 },
@@ -5960,7 +5965,7 @@ export const data: PolicyDefinition = {
                   legal: 24000,
                   permittable: 29000,
                   permittableAxleSpread: {
-                    minExclusive: 300,
+                    min: 301,
                     max: 370,
                   },
                 },
@@ -6009,7 +6014,7 @@ export const data: PolicyDefinition = {
                   legal: 24000,
                   permittable: 29000,
                   permittableAxleSpread: {
-                    minExclusive: 300,
+                    min: 301,
                     max: 370,
                   },
                 },
@@ -6573,7 +6578,7 @@ export const data: PolicyDefinition = {
                   legal: 24000,
                   permittable: 29000,
                   permittableAxleSpread: {
-                    minExclusive: 300,
+                    min: 301,
                     max: 370,
                   },
                 },
@@ -8780,7 +8785,7 @@ export const data: PolicyDefinition = {
                   legal: 24000,
                   permittable: 29000,
                   permittableAxleSpread: {
-                    minExclusive: 300,
+                    min: 301,
                     max: 370,
                   },
                 },
@@ -8932,7 +8937,7 @@ export const data: PolicyDefinition = {
                   legal: 24000,
                   permittable: 29000,
                   permittableAxleSpread: {
-                    minExclusive: 300,
+                    min: 301,
                     max: 370,
                   },
                 },
