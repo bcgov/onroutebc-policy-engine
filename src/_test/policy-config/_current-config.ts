@@ -5301,50 +5301,6 @@ export const data: PolicyDefinition = {
             legal: 21000,
             permittable: 21000,
           },
-          {
-            axles: 3,
-            modifier: {
-              category: VEHICLE_CATEGORIES.POWER_UNIT,
-              position: RelativePosition.Before,
-              axles: 1,
-              minInteraxleSpacing: 300,
-            },
-            legal: 17000,
-            permittable: 17000,
-          },
-          {
-            axles: 3,
-            modifier: {
-              category: VEHICLE_CATEGORIES.MULTI_STEER,
-              position: RelativePosition.Before,
-              axles: 1,
-              minInteraxleSpacing: 300,
-            },
-            legal: 17000,
-            permittable: 17000,
-          },
-          {
-            axles: 3,
-            modifier: {
-              category: VEHICLE_CATEGORIES.POWER_UNIT,
-              position: RelativePosition.Before,
-              axles: 2,
-              minInteraxleSpacing: 550,
-            },
-            legal: 17000,
-            permittable: 21000,
-          },
-          {
-            axles: 3,
-            modifier: {
-              category: VEHICLE_CATEGORIES.MULTI_STEER,
-              position: RelativePosition.Before,
-              axles: 2,
-              minInteraxleSpacing: 550,
-            },
-            legal: 17000,
-            permittable: 21000,
-          },
         ],
       },
       {
@@ -5580,50 +5536,6 @@ export const data: PolicyDefinition = {
           {
             axles: 3,
             legal: 21000,
-            permittable: 21000,
-          },
-          {
-            axles: 3,
-            modifier: {
-              category: VEHICLE_CATEGORIES.POWER_UNIT,
-              position: RelativePosition.Before,
-              axles: 1,
-              minInteraxleSpacing: 300,
-            },
-            legal: 17000,
-            permittable: 17000,
-          },
-          {
-            axles: 3,
-            modifier: {
-              category: VEHICLE_CATEGORIES.MULTI_STEER,
-              position: RelativePosition.Before,
-              axles: 1,
-              minInteraxleSpacing: 300,
-            },
-            legal: 17000,
-            permittable: 17000,
-          },
-          {
-            axles: 3,
-            modifier: {
-              category: VEHICLE_CATEGORIES.POWER_UNIT,
-              position: RelativePosition.Before,
-              axles: 2,
-              minInteraxleSpacing: 550,
-            },
-            legal: 17000,
-            permittable: 21000,
-          },
-          {
-            axles: 3,
-            modifier: {
-              category: VEHICLE_CATEGORIES.MULTI_STEER,
-              position: RelativePosition.Before,
-              axles: 2,
-              minInteraxleSpacing: 550,
-            },
-            legal: 17000,
             permittable: 21000,
           },
         ],
