@@ -4,7 +4,6 @@ import { PolicyCheckId, PolicyCheckResultType } from '../../enum';
 import { AxleConfiguration } from '../../types';
 import config from '../policy-config/_current-config.json';
 import { POWER_UNITS } from '../../constants/power-units';
-import { POWER_UNIT_CODES } from '../../constants/power-unit-codes';
 import { TRAILERS } from '../../constants/trailers';
 
 const policy = new Policy(config);
@@ -111,7 +110,7 @@ describe.each([
   ])('uses 21,000 kg after %i drive axles at %i cm', (driveCount, spacing) => {
     for (const weight of [21000, 21001, 28000]) {
       const { results } = policy.runAxleCalculation(
-        [POWER_UNIT_CODES.TRUCKS, trailer],
+        [POWER_UNITS.TRUCKS.id, trailer],
         axles(driveCount, 3, spacing, weight),
         100000,
         COMMODITY_CODES.FIXED_EQUIPMENT,
