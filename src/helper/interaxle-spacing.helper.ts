@@ -84,7 +84,7 @@ export function getInteraxleSpacingRequirement(
     if (axleIndex === 2) {
       console.log({ matchingRequirement });
     }
-    return JSON.parse(JSON.stringify(matchingRequirement));
+    return matchingRequirement;
   }
 
   return undefined;

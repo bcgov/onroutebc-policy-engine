@@ -5440,6 +5440,24 @@ export const data: PolicyDefinition = {
             },
             min: 351,
           },
+          {
+            axles: [22, 32],
+            maxAxleUnitWeight: 23000,
+            modifier: {
+              category: VEHICLE_CATEGORIES.POWER_UNIT,
+              position: RelativePosition.Before,
+            },
+            min: 420,
+          },
+          {
+            axles: [23, 33],
+            maxAxleUnitWeight: 28000,
+            modifier: {
+              category: VEHICLE_CATEGORIES.POWER_UNIT,
+              position: RelativePosition.Before,
+            },
+            min: 420,
+          },
         ],
       },
       {

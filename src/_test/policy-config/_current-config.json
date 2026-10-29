@@ -5458,6 +5458,30 @@
               "position": "before"
             },
             "min": 351
+          },
+          {
+            "axles": [
+              22,
+              32
+            ],
+            "maxAxleUnitWeight": 23000,
+            "modifier": {
+              "category": "powerunit",
+              "position": "before"
+            },
+            "min": 420
+          },
+          {
+            "axles": [
+              23,
+              33
+            ],
+            "maxAxleUnitWeight": 28000,
+            "modifier": {
+              "category": "powerunit",
+              "position": "before"
+            },
+            "min": 420
           }
         ]
       },

@@ -2882,7 +2882,7 @@ describe('booster exceptions', () => {
   });
 });
 
-// Source: ASW Permittable Interaxle Spacing - Jeeps.feature @orv2-6069-1
+// Source: ASW Permittable Interaxle Spacing - Jeeps.feature @orv2-6069-1 @orv2-6069-2
 describe('jeep exceptions', () => {
   const configuredPolicyDefinition = JSON.parse(
     JSON.stringify(currentPolicyConfig),
@@ -3061,6 +3061,110 @@ describe('jeep exceptions', () => {
     axleConfiguration[2].numberOfAxles = 1;
     axleConfiguration[2].interaxleSpacing = 351;
     axleConfiguration[2].axleUnitWeight = 21001;
+
+    const results = configuredPolicy.runAxleCalculation(
+      vehicleConfiguration,
+      axleConfiguration,
+      100000,
+      COMMODITY_CODES.FIXED_EQUIPMENT,
+    ).results;
+
+    const checkInteraxleSpacingResults = results.filter(
+      (result) => result.id === PolicyCheckId.InteraxleSpacing,
+    );
+
+    expect(
+      checkInteraxleSpacingResults?.every(
+        (result) => result.result === PolicyCheckResultType.Pass,
+      ),
+    ).toBe(true);
+  });
+
+  it('raises interaxle spacing restriction for tandem axle jeep with interaxle spacing of less than 4.2 m behind power unit with jeep axle unit weight over 17,000 kg', () => {
+    axleConfiguration[1].numberOfAxles = 2;
+    axleConfiguration[1].axleSpread = 100;
+    axleConfiguration[2].numberOfAxles = 2;
+    axleConfiguration[2].axleSpread = 100;
+    axleConfiguration[2].interaxleSpacing = 419;
+    axleConfiguration[2].axleUnitWeight = 17001;
+
+    const results = configuredPolicy.runAxleCalculation(
+      vehicleConfiguration,
+      axleConfiguration,
+      100000,
+      COMMODITY_CODES.FIXED_EQUIPMENT,
+    ).results;
+
+    const failedResult = results.find(
+      (result) =>
+        result.id === PolicyCheckId.InteraxleSpacing &&
+        result.result === PolicyCheckResultType.Fail,
+    );
+
+    expect(failedResult?.message).toBe(
+      'Interaxle Spacing between Axle Unit 2 and Axle Unit 3 must be at least 4.2 m.',
+    );
+  });
+
+  it('does not raise below interaxle spacing restriction for tandem axle jeep with interaxle spacing of 4.2 m or greater behind power unit with jeep axle unit weight over 17,000 kg', () => {
+    axleConfiguration[1].numberOfAxles = 2;
+    axleConfiguration[1].axleSpread = 100;
+    axleConfiguration[2].numberOfAxles = 2;
+    axleConfiguration[2].axleSpread = 100;
+    axleConfiguration[2].interaxleSpacing = 420;
+    axleConfiguration[2].axleUnitWeight = 17001;
+
+    const results = configuredPolicy.runAxleCalculation(
+      vehicleConfiguration,
+      axleConfiguration,
+      100000,
+      COMMODITY_CODES.FIXED_EQUIPMENT,
+    ).results;
+
+    const checkInteraxleSpacingResults = results.filter(
+      (result) => result.id === PolicyCheckId.InteraxleSpacing,
+    );
+
+    expect(
+      checkInteraxleSpacingResults?.every(
+        (result) => result.result === PolicyCheckResultType.Pass,
+      ),
+    ).toBe(true);
+  });
+
+  it('raises interaxle spacing restriction for tridem axle jeep with interaxle spacing of less than 4.2 m behind power unit with jeep axle unit weight over 24,000 kg', () => {
+    axleConfiguration[1].numberOfAxles = 2;
+    axleConfiguration[1].axleSpread = 100;
+    axleConfiguration[2].numberOfAxles = 3;
+    axleConfiguration[2].axleSpread = 240;
+    axleConfiguration[2].interaxleSpacing = 419;
+    axleConfiguration[2].axleUnitWeight = 24001;
+
+    const results = configuredPolicy.runAxleCalculation(
+      vehicleConfiguration,
+      axleConfiguration,
+      100000,
+      COMMODITY_CODES.FIXED_EQUIPMENT,
+    ).results;
+
+    const failedResult = results.find(
+      (result) =>
+        result.id === PolicyCheckId.InteraxleSpacing &&
+        result.result === PolicyCheckResultType.Fail,
+    );
+
+    expect(failedResult?.message).toBe(
+      'Interaxle Spacing between Axle Unit 2 and Axle Unit 3 must be at least 4.2 m.',
+    );
+  });
+
+  it('does not raise below interaxle spacing restriction for tridem axle jeep with interaxle spacing of 4.2 m or greater behind power unit with jeep axle unit weight over 24,000 kg', () => {
+    axleConfiguration[1].numberOfAxles = 2;
+    axleConfiguration[1].axleSpread = 100;
+    axleConfiguration[2].numberOfAxles = 3;
+    axleConfiguration[2].axleSpread = 240;
+    axleConfiguration[2].interaxleSpacing = 420;
+    axleConfiguration[2].axleUnitWeight = 24001;
 
     const results = configuredPolicy.runAxleCalculation(
       vehicleConfiguration,
