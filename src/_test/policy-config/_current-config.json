@@ -5306,50 +5306,6 @@
             "axles": 3,
             "legal": 21000,
             "permittable": 21000
-          },
-          {
-            "axles": 3,
-            "modifier": {
-              "category": "powerunit",
-              "position": "before",
-              "axles": 1,
-              "minInteraxleSpacing": 300
-            },
-            "legal": 17000,
-            "permittable": 17000
-          },
-          {
-            "axles": 3,
-            "modifier": {
-              "category": "multisteer",
-              "position": "before",
-              "axles": 1,
-              "minInteraxleSpacing": 300
-            },
-            "legal": 17000,
-            "permittable": 17000
-          },
-          {
-            "axles": 3,
-            "modifier": {
-              "category": "powerunit",
-              "position": "before",
-              "axles": 2,
-              "minInteraxleSpacing": 550
-            },
-            "legal": 17000,
-            "permittable": 21000
-          },
-          {
-            "axles": 3,
-            "modifier": {
-              "category": "multisteer",
-              "position": "before",
-              "axles": 2,
-              "minInteraxleSpacing": 550
-            },
-            "legal": 17000,
-            "permittable": 21000
           }
         ]
       },
@@ -5581,50 +5537,6 @@
           {
             "axles": 3,
             "legal": 21000,
-            "permittable": 21000
-          },
-          {
-            "axles": 3,
-            "modifier": {
-              "category": "powerunit",
-              "position": "before",
-              "axles": 1,
-              "minInteraxleSpacing": 300
-            },
-            "legal": 17000,
-            "permittable": 17000
-          },
-          {
-            "axles": 3,
-            "modifier": {
-              "category": "multisteer",
-              "position": "before",
-              "axles": 1,
-              "minInteraxleSpacing": 300
-            },
-            "legal": 17000,
-            "permittable": 17000
-          },
-          {
-            "axles": 3,
-            "modifier": {
-              "category": "powerunit",
-              "position": "before",
-              "axles": 2,
-              "minInteraxleSpacing": 550
-            },
-            "legal": 17000,
-            "permittable": 21000
-          },
-          {
-            "axles": 3,
-            "modifier": {
-              "category": "multisteer",
-              "position": "before",
-              "axles": 2,
-              "minInteraxleSpacing": 550
-            },
-            "legal": 17000,
             "permittable": 21000
           }
         ]

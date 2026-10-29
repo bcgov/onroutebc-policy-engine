@@ -26,6 +26,7 @@ const axles = (
 
 // BSA confirmed D1/D2/E3: Pony/Fixed Equipment Pony after a Power Unit.
 // XLS rows 107–133, 137–145; N supplies the minimum spacing in metres.
+// ORORV2-6029: PO confirmed 21,000 kg for pony tridems, replacing the XLS limits.
 describe.each([
   [TRAILERS.PONY_TRAILERS.id, POWER_UNITS.TRUCKS.id],
   [
@@ -49,10 +50,10 @@ describe.each([
     [1, 3, 300, 9100, 9100],
     [1, 2, 299, 9100, 11000],
     [1, 2, undefined, 9100, 11000],
-    [3, 1, 300, 17000, 17000],
+    [3, 1, 300, 21000, 21000],
     [3, 1, 299, 21000, 21000],
     [3, 1, undefined, 21000, 21000],
-    [3, 2, 550, 17000, 21000],
+    [3, 2, 550, 21000, 21000],
     [3, 2, 549, 21000, 21000],
     [3, 3, 600, 21000, 21000],
     [2, 2, 500, 17000, 21000],
@@ -96,6 +97,52 @@ describe.each([
       }
     },
   );
+});
+
+describe.each([
+  TRAILERS.PONY_TRAILERS.id,
+  TRAILERS.FIXED_EQUIPMENT_PONY_TRAILERS.id,
+])('ORORV2-6029: Fixed Equipment with Trucks and %s', (trailer) => {
+  it.each([
+    [1, 300],
+    [2, 550],
+    [3, 600],
+  ])('uses 21,000 kg after %i drive axles at %i cm', (driveCount, spacing) => {
+    for (const weight of [21000, 21001, 28000]) {
+      const { results } = policy.runAxleCalculation(
+        [POWER_UNITS.TRUCKS.id, trailer],
+        axles(driveCount, 3, spacing, weight),
+        100000,
+        COMMODITY_CODES.FIXED_EQUIPMENT,
+      );
+      expect(results).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: PolicyCheckId.LegalWeight,
+            startAxleUnit: 3,
+            thresholdWeight: 21000,
+            result:
+              weight <= 21000
+                ? PolicyCheckResultType.Pass
+                : PolicyCheckResultType.Warning,
+            message:
+              weight <= 21000
+                ? 'Axle Unit Weight for Axle Unit 3 is legal'
+                : 'Axle Unit Weight for Axle Unit 3 must not exceed 21000 kg.',
+          }),
+          expect.objectContaining({
+            id: PolicyCheckId.PermittableWeight,
+            startAxleUnit: 3,
+            thresholdWeight: 21000,
+            result:
+              weight <= 21000
+                ? PolicyCheckResultType.Pass
+                : PolicyCheckResultType.Fail,
+          }),
+        ]),
+      );
+    }
+  });
 });
 
 // BSA confirmed E4: XLS K269/274/275/280/281 are exceptions to 5709-6.
