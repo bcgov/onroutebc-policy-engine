@@ -5418,6 +5418,7 @@
               21
             ],
             "maxAxleGroupWeight": 24000,
+            "maxAxleGroupSpacing": 239,
             "modifier": {
               "category": "powerunit",
               "position": "before"
@@ -5429,6 +5430,8 @@
               21
             ],
             "maxAxleGroupWeight": 28000,
+            "minAxleGroupSpacing": 240,
+            "maxAxleGroupSpacing": 299,
             "modifier": {
               "category": "powerunit",
               "position": "before"
@@ -5441,6 +5444,8 @@
               21
             ],
             "maxAxleGroupWeight": 29000,
+            "minAxleGroupSpacing": 301,
+            "maxAxleGroupSpacing": 370,
             "modifier": {
               "category": "powerunit",
               "position": "before"

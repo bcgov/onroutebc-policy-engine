@@ -25,4 +25,8 @@ export type InteraxleSpacingRequirement = SelfIssuable & {
   minAxleGroupWeight?: number;
   /** Maximum weight of the axle group in kilograms in order for the requirement to apply (optional) */
   maxAxleGroupWeight?: number;
+  /** Minimum spacing of the axle group in centimetres in order for the requirement to apply (optional) */
+  minAxleGroupSpacing?: number;
+  /** Maximum spacing of the axle group in centimetres in order for the requirement to apply (optional) */
+  maxAxleGroupSpacing?: number;
 };

@@ -41,6 +41,7 @@ export function getInteraxleSpacingRequirement(
   vehicleConfiguration: Array<string>,
   axleUnitVehicleIndexes: Array<number>,
   groupWeight?: number,
+  groupSpacing?: number,
 ): InteraxleSpacingRequirement | undefined {
   // the first axle unit will never have an interaxle spacing value or previous axle unit to compare against
   if (axleIndex === 0) {
@@ -78,6 +79,7 @@ export function getInteraxleSpacingRequirement(
     axleIndex,
     axleUnitVehicleIndexes,
     groupWeight,
+    groupSpacing,
   );
 
   if (matchingRequirement) {
@@ -98,6 +100,7 @@ export function selectCorrectInteraxleSpacingRequirementHelper(
   axleIndex: number,
   axleUnitVehicleIndexes: Array<number>,
   groupWeight?: number,
+  groupSpacing?: number,
 ): InteraxleSpacingRequirement | null {
   if (
     !interaxleSpacingRequirements ||
@@ -124,13 +127,13 @@ export function selectCorrectInteraxleSpacingRequirementHelper(
       return true;
     }
 
-    const weight = currentAxleUnit.axleUnitWeight;
+    const axleUnitWeight = currentAxleUnit.axleUnitWeight;
 
-    if (!Number.isFinite(weight)) {
+    if (!Number.isFinite(axleUnitWeight)) {
       return true;
     }
 
-    return weight <= maxAxleUnitWeight;
+    return axleUnitWeight <= maxAxleUnitWeight;
   };
 
   const appliesToCurrentAxleGroupWeight = (
@@ -142,15 +145,36 @@ export function selectCorrectInteraxleSpacingRequirementHelper(
       return true;
     }
 
-    const weight = groupWeight;
-
-    if (weight === undefined || !Number.isFinite(weight)) {
+    if (groupWeight === undefined || !Number.isFinite(groupWeight)) {
       return false;
     }
 
     return (
-      (minAxleGroupWeight === undefined || weight >= minAxleGroupWeight) &&
-      (maxAxleGroupWeight === undefined || weight <= maxAxleGroupWeight)
+      (minAxleGroupWeight === undefined || groupWeight >= minAxleGroupWeight) &&
+      (maxAxleGroupWeight === undefined || groupWeight <= maxAxleGroupWeight)
+    );
+  };
+
+  const appliesToCurrentGroupSpacing = (
+    requirement: InteraxleSpacingRequirement,
+  ): boolean => {
+    const { minAxleGroupSpacing, maxAxleGroupSpacing } = requirement;
+
+    if (
+      minAxleGroupSpacing === undefined &&
+      maxAxleGroupSpacing === undefined
+    ) {
+      return true;
+    }
+
+    if (groupSpacing === undefined || !Number.isFinite(groupSpacing)) {
+      return false;
+    }
+
+    return (
+      (minAxleGroupSpacing === undefined ||
+        groupSpacing >= minAxleGroupSpacing) &&
+      (maxAxleGroupSpacing === undefined || groupSpacing <= maxAxleGroupSpacing)
     );
   };
 
@@ -158,7 +182,8 @@ export function selectCorrectInteraxleSpacingRequirementHelper(
     requirement: InteraxleSpacingRequirement,
   ): boolean =>
     appliesToCurrentAxleUnitWeight(requirement) &&
-    appliesToCurrentAxleGroupWeight(requirement);
+    appliesToCurrentAxleGroupWeight(requirement) &&
+    appliesToCurrentGroupSpacing(requirement);
 
   for (const requirement of interaxleSpacingRequirements) {
     if (!requirementApplies(requirement)) {

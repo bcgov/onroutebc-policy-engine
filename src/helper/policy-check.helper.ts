@@ -1665,6 +1665,23 @@ export function CheckInteraxleSpacing(
       );
     }
 
+    let groupSpacing;
+
+    if (axleIndex >= 1) {
+      const prevAxleSpread = axleConfiguration[axleIndex - 1].axleSpread ?? 0;
+      const interaxleSpacing =
+        axleConfiguration[axleIndex].interaxleSpacing ?? 0;
+      const currentAxleSpread = axleConfiguration[axleIndex].axleSpread ?? 0;
+
+      groupSpacing = prevAxleSpread + interaxleSpacing + currentAxleSpread;
+    }
+
+    if (groupSpacing) {
+      console.log(
+        `groupSpacing: ${groupSpacing} found for axleUnit number ${currentAxleUnitNumber}: ${JSON.stringify(axleConfiguration[axleIndex])}`,
+      );
+    }
+
     const requirement = getInteraxleSpacingRequirement(
       policy,
       axleConfiguration,
@@ -1672,6 +1689,7 @@ export function CheckInteraxleSpacing(
       vehicleConfiguration,
       axleUnitVehicleIndexes,
       groupWeight,
+      groupSpacing,
     );
 
     // Pass when no requirement exists, interaxle spacing is missing, or interaxle spacing falls within the requirement's min/max bounds.

@@ -5405,6 +5405,7 @@ export const data: PolicyDefinition = {
           {
             axles: [21],
             maxAxleGroupWeight: 24000,
+            maxAxleGroupSpacing: 239,
             modifier: {
               category: VEHICLE_CATEGORIES.POWER_UNIT,
               position: RelativePosition.Before,
@@ -5414,6 +5415,8 @@ export const data: PolicyDefinition = {
           {
             axles: [21],
             maxAxleGroupWeight: 28000,
+            minAxleGroupSpacing: 240,
+            maxAxleGroupSpacing: 299,
             modifier: {
               category: VEHICLE_CATEGORIES.POWER_UNIT,
               position: RelativePosition.Before,
@@ -5424,6 +5427,8 @@ export const data: PolicyDefinition = {
           {
             axles: [21],
             maxAxleGroupWeight: 29000,
+            minAxleGroupSpacing: 301,
+            maxAxleGroupSpacing: 370,
             modifier: {
               category: VEHICLE_CATEGORIES.POWER_UNIT,
               position: RelativePosition.Before,
