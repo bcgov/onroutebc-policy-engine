@@ -976,8 +976,7 @@ export class Policy {
   calculateBridge(
     axleConfiguration: Array<AxleConfiguration>,
     vehicleConfiguration: Array<string>,
-    // TODO leaving this code commented for now since we will need to dicuss this with Michael when he returns from vacation
-    // axleUnitVehicleIndexes: Array<number>,
+    axleUnitVehicleIndexes: Array<number>,
   ): Array<BridgeCalculationResult> {
     let bridgeResults;
     try {
@@ -985,8 +984,7 @@ export class Policy {
         this,
         axleConfiguration,
         vehicleConfiguration,
-        // TODO leaving this code commented for now since we will need to dicuss this with Michael when he returns from vacation
-        // axleUnitVehicleIndexes,
+        axleUnitVehicleIndexes,
       );
     } catch (e: any) {
       console.log(`Error calculating bridge formula: ${e.message}`);

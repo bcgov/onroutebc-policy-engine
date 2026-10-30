@@ -5,6 +5,8 @@ import {
 import { Policy } from 'onroute-policy-engine';
 import { getAxleUnitType } from '../types/axle-unit-type';
 import { TRAILERS } from '../constants/trailers';
+import { getAxleGroupSpacings } from './interaxle-spacing.helper';
+import { isSemiTrailerType } from '../constants/semi-trailer-codes';
 
 /**
  * Runs the bridge formula against the supplied vehicle axle configuration.
@@ -20,8 +22,7 @@ export function runBridgeFormula(
   policy: Policy,
   axleConfiguration: Array<AxleConfiguration>,
   vehicleConfiguration: Array<string>,
-  // TODO leaving this code commented for now since we will need to dicuss this with Michael when he returns from vacation
-  // axleUnitVehicleIndexes: Array<number>,
+  axleUnitVehicleIndexes: Array<number>,
 ): Array<BridgeCalculationResult> {
   const BRIDGE_MULTIPLIER =
     policy.policyDefinition.bridgeCalculationConstants.multiplier;
@@ -37,6 +38,8 @@ export function runBridgeFormula(
       'Invalid axle configuration, bridge formula requires a minimum of two axle units',
     );
   }
+
+  axleConfiguration = getAxleGroupSpacings(axleConfiguration);
 
   // Loop through each axle unit in the configuration, and
   // calculate the bridge formula for each other axle unit. The
@@ -103,72 +106,21 @@ export function runBridgeFormula(
         }
         wheelbase += (axleN.axleSpread ?? 0) + axleN.interaxleSpacing;
 
-        // Tandem Drive with Single Axle Jeep Bridge Formula Exception
-        const hasSingleAxleJeep =
-          vehicleConfiguration[1] === TRAILERS.JEEPS.id &&
-          getAxleUnitType(axleConfiguration[2]?.numberOfAxles) === 'SINGLE';
-        const hasTandemDrive =
-          getAxleUnitType(axleConfiguration[1]?.numberOfAxles) === 'TANDEM';
-
-        const driveAxleSpread = axleConfiguration[1]?.axleSpread ?? 0;
-        const isDriveAxle = startAxleIndex === 1;
-        const isJeepAxle = hasSingleAxleJeep && startAxleIndex === 2;
-        const firstTrailerInteraxleSpacing =
-          axleConfiguration[2]?.interaxleSpacing ?? 0;
-
-        const isTandemDriveSingleAxleJeepException =
-          (isDriveAxle || isJeepAxle) && hasTandemDrive && hasSingleAxleJeep;
-
-        const isLowerTandemDriveSingleAxleJeepException =
-          isTandemDriveSingleAxleJeepException &&
-          driveAxleSpread >= 240 &&
-          driveAxleSpread <= 300 &&
-          firstTrailerInteraxleSpacing >= 120 &&
-          firstTrailerInteraxleSpacing <= 300;
-
-        const isUpperTandemDriveSingleAxleJeepException =
-          isTandemDriveSingleAxleJeepException &&
-          driveAxleSpread > 300 &&
-          driveAxleSpread <= 370 &&
-          firstTrailerInteraxleSpacing > 300 &&
-          firstTrailerInteraxleSpacing <= 350;
-
         // Calculate standard bridge formula result
-        const formulaMaxBridge =
-          BRIDGE_MULTIPLIER * wheelbase + BRIDGE_MIN_WEIGHT;
+        const maxBridge = BRIDGE_MULTIPLIER * wheelbase + BRIDGE_MIN_WEIGHT;
 
-        // Apply the Tandem Drive + Single Axle Jeep policy exception only when
-        // it increases the permitted weight (i.e. it's an allowance override).
-        let maxBridge = formulaMaxBridge;
-        if (isLowerTandemDriveSingleAxleJeepException) {
-          maxBridge = Math.max(formulaMaxBridge, 28000);
-        } else if (isUpperTandemDriveSingleAxleJeepException) {
-          maxBridge = Math.max(formulaMaxBridge, 29000);
-        }
-
-        // TODO leaving this code commented for now since we will need to dicuss this with Michael when he returns from vacation
-        /* Source: ASW Permittable Interaxle Spacing - Boosters.feature
-         * @orv2-6030-3 bridge formula result is not applicable
-         */
-        // const startAxleVehicleIndex =
-        //   axleUnitVehicleIndexes[startAxleIndex - 1];
-        // const endAxleVehicleIndex = axleUnitVehicleIndexes[endAxleIndex - 1];
-
-        // const startAxleVehicleType =
-        //   vehicleConfiguration[startAxleVehicleIndex];
-
-        // const endAxleVehicleType = vehicleConfiguration[endAxleVehicleIndex];
-
-        // const isStartAxleVehicleTypeSemiTrailer =
-        //   isSemiTrailerType(startAxleVehicleType);
-
-        // const isEndAxleVehicleTypeBooster =
-        //   endAxleVehicleType === TRAILER_CODES.BOOSTER;
-
-        // const exception =
-        //   isStartAxleVehicleTypeSemiTrailer && isEndAxleVehicleTypeBooster;
-
-        // const exception = false;
+        const exception =
+          isTandemDriveSingleAxleJeepException(
+            axleConfiguration,
+            vehicleConfiguration,
+            startAxleIndex,
+          ) ||
+          isSemiTrailerBoosterException(
+            vehicleConfiguration,
+            axleUnitVehicleIndexes,
+            startAxleIndex,
+            endAxleIndex,
+          );
 
         // Push the axle group result to the results array, including
         // a convenience success indicator.
@@ -177,7 +129,7 @@ export function runBridgeFormula(
           endAxleUnit: endAxleIndex,
           maxBridge: maxBridge,
           actualWeight: totalWeight,
-          success: totalWeight <= maxBridge,
+          success: exception ? true : totalWeight <= maxBridge,
         });
 
         endAxleIndex++;
@@ -188,3 +140,63 @@ export function runBridgeFormula(
 
   return results;
 }
+
+/* Source: ASW Tandem Drive Single Axle Jeep Exception.feature
+ * @orv2-5905-2
+ */
+const isTandemDriveSingleAxleJeepException = (
+  axleConfiguration: Array<AxleConfiguration>,
+  vehicleConfiguration: Array<string>,
+  startAxleIndex: number,
+) => {
+  const hasSingleAxleJeep =
+    vehicleConfiguration[1] === TRAILERS.JEEPS.id &&
+    getAxleUnitType(axleConfiguration[2]?.numberOfAxles) === 'SINGLE';
+  const hasTandemDrive =
+    getAxleUnitType(axleConfiguration[1]?.numberOfAxles) === 'TANDEM';
+
+  const trailerGroupSpacing = axleConfiguration[2]?.axleGroupSpacing ?? 0;
+  const isDriveAxle = startAxleIndex === 1;
+  const isJeepAxle = hasSingleAxleJeep && startAxleIndex === 2;
+  const firstTrailerInteraxleSpacing =
+    axleConfiguration[2]?.interaxleSpacing ?? 0;
+
+  const result =
+    (isDriveAxle || isJeepAxle) &&
+    hasTandemDrive &&
+    hasSingleAxleJeep &&
+    trailerGroupSpacing >= 240 &&
+    trailerGroupSpacing <= 370 &&
+    firstTrailerInteraxleSpacing >= 120 &&
+    firstTrailerInteraxleSpacing <= 350;
+
+  return result;
+};
+
+/* Source: ASW Permittable Interaxle Spacing - Boosters.feature
+ * @orv2-6030-3
+ */
+const isSemiTrailerBoosterException = (
+  vehicleConfiguration: Array<string>,
+  axleUnitVehicleIndexes: Array<number>,
+  startAxleIndex: number,
+  endAxleIndex: number,
+) => {
+  const startAxleVehicleIndex = axleUnitVehicleIndexes[startAxleIndex - 1];
+  const endAxleVehicleIndex = axleUnitVehicleIndexes[endAxleIndex - 1];
+
+  const startAxleVehicleType = vehicleConfiguration[startAxleVehicleIndex];
+
+  const endAxleVehicleType = vehicleConfiguration[endAxleVehicleIndex];
+
+  const isStartAxleVehicleTypeSemiTrailer =
+    isSemiTrailerType(startAxleVehicleType);
+
+  const isEndAxleVehicleTypeBooster =
+    endAxleVehicleType === TRAILERS.BOOSTER.id;
+
+  const result =
+    isStartAxleVehicleTypeSemiTrailer && isEndAxleVehicleTypeBooster;
+
+  return result;
+};

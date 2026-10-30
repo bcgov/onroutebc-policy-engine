@@ -24,6 +24,10 @@ export type AxleConfiguration = {
    * in vehicleConfiguration.
    */
   vehicleIndex?: number;
+  /** The sum of the current axles interaxleSpacing value + the previous and current axles axleSpread values (if applicable) in centimetres */
+  axleGroupSpacing?: number;
+  /** The sum of the current + previous axles axleUnitWeight values in kilograms */
+  axleGroupWeight?: number;
 };
 
 export type IndexedAxleConfiguration = AxleConfiguration & {

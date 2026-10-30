@@ -5,6 +5,7 @@ import { InteraxleSpacingRequirement } from '../types/interaxle-spacing-requirem
 import { formatMeters } from './format-meters.helper';
 import { getVehicleRelatives } from './dimensions.helper';
 import { RelativePosition } from '../enum';
+import { CheckAxleGroupMaximumLegalWeightThreshold } from './policy-check.helper';
 
 export function getFailedInteraxleSpacingMessage(
   requirement: InteraxleSpacingRequirement,
@@ -40,8 +41,6 @@ export function getInteraxleSpacingRequirement(
   axleIndex: number,
   vehicleConfiguration: Array<string>,
   axleUnitVehicleIndexes: Array<number>,
-  groupWeight?: number,
-  groupSpacing?: number,
 ): InteraxleSpacingRequirement | undefined {
   // the first axle unit will never have an interaxle spacing value or previous axle unit to compare against
   if (axleIndex === 0) {
@@ -78,8 +77,6 @@ export function getInteraxleSpacingRequirement(
     axleConfiguration,
     axleIndex,
     axleUnitVehicleIndexes,
-    groupWeight,
-    groupSpacing,
   );
 
   if (matchingRequirement) {
@@ -99,8 +96,6 @@ export function selectCorrectInteraxleSpacingRequirementHelper(
   axleConfiguration: Array<AxleConfiguration>,
   axleIndex: number,
   axleUnitVehicleIndexes: Array<number>,
-  groupWeight?: number,
-  groupSpacing?: number,
 ): InteraxleSpacingRequirement | null {
   if (
     !interaxleSpacingRequirements ||
@@ -139,25 +134,29 @@ export function selectCorrectInteraxleSpacingRequirementHelper(
   const appliesToCurrentAxleGroupWeight = (
     requirement: InteraxleSpacingRequirement,
   ): boolean => {
+    const axleGroupWeight = currentAxleUnit.axleGroupWeight;
     const { minAxleGroupWeight, maxAxleGroupWeight } = requirement;
 
     if (minAxleGroupWeight === undefined && maxAxleGroupWeight === undefined) {
       return true;
     }
 
-    if (groupWeight === undefined || !Number.isFinite(groupWeight)) {
+    if (axleGroupWeight === undefined || !Number.isFinite(axleGroupWeight)) {
       return false;
     }
 
     return (
-      (minAxleGroupWeight === undefined || groupWeight >= minAxleGroupWeight) &&
-      (maxAxleGroupWeight === undefined || groupWeight <= maxAxleGroupWeight)
+      (minAxleGroupWeight === undefined ||
+        axleGroupWeight >= minAxleGroupWeight) &&
+      (maxAxleGroupWeight === undefined ||
+        axleGroupWeight <= maxAxleGroupWeight)
     );
   };
 
   const appliesToCurrentGroupSpacing = (
     requirement: InteraxleSpacingRequirement,
   ): boolean => {
+    const axleGroupSpacing = currentAxleUnit.axleGroupSpacing;
     const { minAxleGroupSpacing, maxAxleGroupSpacing } = requirement;
 
     if (
@@ -167,14 +166,15 @@ export function selectCorrectInteraxleSpacingRequirementHelper(
       return true;
     }
 
-    if (groupSpacing === undefined || !Number.isFinite(groupSpacing)) {
+    if (axleGroupSpacing === undefined || !Number.isFinite(axleGroupSpacing)) {
       return false;
     }
 
     return (
       (minAxleGroupSpacing === undefined ||
-        groupSpacing >= minAxleGroupSpacing) &&
-      (maxAxleGroupSpacing === undefined || groupSpacing <= maxAxleGroupSpacing)
+        axleGroupSpacing >= minAxleGroupSpacing) &&
+      (maxAxleGroupSpacing === undefined ||
+        axleGroupSpacing <= maxAxleGroupSpacing)
     );
   };
 
@@ -307,4 +307,72 @@ export function getDefaultInteraxleSpacingHelper(
     return JSON.parse(JSON.stringify(vehicleDefaults));
   }
   return [];
+}
+
+export function getAxleGroupSpacings(
+  axleConfiguration: Array<AxleConfiguration>,
+) {
+  return axleConfiguration.map((axleUnit, axleIndex) => {
+    if (axleIndex === 0) {
+      return axleUnit;
+    }
+
+    const currentAxleUnitNumber = axleIndex + 1;
+
+    const prevAxleSpread = axleConfiguration[axleIndex - 1].axleSpread ?? 0;
+    const interaxleSpacing = axleUnit.interaxleSpacing ?? 0;
+    const currentAxleSpread = axleUnit.axleSpread ?? 0;
+
+    const axleGroupSpacing =
+      prevAxleSpread + interaxleSpacing + currentAxleSpread;
+
+    if (axleGroupSpacing) {
+      console.log(
+        `axleGroupSpacing: ${axleGroupSpacing} found for axleUnit number ${currentAxleUnitNumber}: ${JSON.stringify(axleConfiguration[axleIndex])}`,
+      );
+    } else {
+      console.log(
+        `axleGroupSpacing not found for axleUnit number ${currentAxleUnitNumber}: ${JSON.stringify(axleConfiguration[axleIndex])}`,
+      );
+    }
+
+    return { ...axleUnit, axleGroupSpacing };
+  });
+}
+
+export function getAxleGroupWeights(
+  policy: Policy,
+  vehicleConfiguration: Array<string>,
+  axleConfiguration: Array<AxleConfiguration>,
+) {
+  // TODO consider refactoring checkAxleGroupMaximumLegalWeightThresholdResults to use an abstracted helper function that we can call both here and within the checkAxleGroupMaximumLegalWeightThreshold function, rather than calling the complete checkAxleGroupMaximumLegalWeightThresholdResults evaluation here
+  const checkAxleGroupMaximumLegalWeightThresholdResults =
+    CheckAxleGroupMaximumLegalWeightThreshold(
+      policy,
+      vehicleConfiguration,
+      axleConfiguration,
+    );
+
+  return axleConfiguration.map((axleUnit, axleIndex) => {
+    const currentAxleUnitNumber = axleIndex + 1;
+    const previousAxleUnitNumber = axleIndex;
+    const axleGroupWeight =
+      checkAxleGroupMaximumLegalWeightThresholdResults.find(
+        (result) =>
+          result.startAxleUnit === previousAxleUnitNumber &&
+          result.endAxleUnit === currentAxleUnitNumber,
+      )?.actualWeight;
+
+    if (axleGroupWeight) {
+      console.log(
+        `axleGroupWeight: ${axleGroupWeight} found for axleUnit number ${currentAxleUnitNumber}: ${JSON.stringify(axleConfiguration[axleIndex])}`,
+      );
+    } else {
+      console.log(
+        `axleGroupWeight not found for axleUnit number ${currentAxleUnitNumber}: ${JSON.stringify(axleConfiguration[axleIndex])}`,
+      );
+    }
+
+    return { ...axleUnit, axleGroupWeight };
+  });
 }

@@ -16,6 +16,8 @@ import { AXLE_WEIGHT_PERMITTABLE_MAXIMUMS } from '../constants/axle-weight-permi
 import { getAxleSpreadThreshold } from './axle-spread.helper';
 import { isSemiTrailerType } from '../constants/semi-trailer-codes';
 import {
+  getAxleGroupSpacings,
+  getAxleGroupWeights,
   getFailedInteraxleSpacingMessage,
   getInteraxleSpacingRequirement,
 } from './interaxle-spacing.helper';
@@ -414,20 +416,16 @@ export function CheckBridgeFormula(
     return [];
   }
 
-  // TODO leaving this code commented for now since we will need to dicuss this with Michael when he returns from vacation
-  // axleUnitVehicleIndexes: Array<number>,
-  // const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
-  //   policy,
-  //   vehicleConfiguration,
-  //   axleConfiguration,
-  // );
+  const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
+    policy,
+    vehicleConfiguration,
+    axleConfiguration,
+  );
 
   const bridgeCalcResults = policy.calculateBridge(
     axleConfiguration,
     vehicleConfiguration,
-    // TODO leaving this code commented for now since we will need to dicuss this with Michael when he returns from vacation
-    // axleUnitVehicleIndexes: Array<number>,
-    // axleUnitVehicleIndexes,
+    axleUnitVehicleIndexes,
   );
   bridgeCalcResults.forEach((br) => {
     const message = `Axle group ${br.startAxleUnit} to ${br.endAxleUnit} ${br.success ? 'passes' : 'does not pass'} bridge formula.`;
@@ -1641,46 +1639,16 @@ export function CheckInteraxleSpacing(
     axleConfiguration,
   );
 
-  const checkAxleGroupMaximumLegalWeightThresholdResults =
-    CheckAxleGroupMaximumLegalWeightThreshold(
-      policy,
-      vehicleConfiguration,
-      axleConfiguration,
-    );
+  axleConfiguration = getAxleGroupWeights(
+    policy,
+    vehicleConfiguration,
+    axleConfiguration,
+  );
+  axleConfiguration = getAxleGroupSpacings(axleConfiguration);
 
   return axleConfiguration.map((axleUnit, axleIndex) => {
     const currentAxleUnitNumber = axleIndex + 1;
     const previousAxleUnitNumber = axleIndex;
-    const groupWeight = checkAxleGroupMaximumLegalWeightThresholdResults.find(
-      (result) =>
-        result.startAxleUnit === previousAxleUnitNumber &&
-        result.endAxleUnit === currentAxleUnitNumber,
-    )?.actualWeight;
-
-    console.log({ checkAxleGroupMaximumLegalWeightThresholdResults });
-
-    if (groupWeight) {
-      console.log(
-        `groupWeight: ${groupWeight} found for axleUnit number ${currentAxleUnitNumber}: ${JSON.stringify(axleConfiguration[axleIndex])}`,
-      );
-    }
-
-    let groupSpacing;
-
-    if (axleIndex >= 1) {
-      const prevAxleSpread = axleConfiguration[axleIndex - 1].axleSpread ?? 0;
-      const interaxleSpacing =
-        axleConfiguration[axleIndex].interaxleSpacing ?? 0;
-      const currentAxleSpread = axleConfiguration[axleIndex].axleSpread ?? 0;
-
-      groupSpacing = prevAxleSpread + interaxleSpacing + currentAxleSpread;
-    }
-
-    if (groupSpacing) {
-      console.log(
-        `groupSpacing: ${groupSpacing} found for axleUnit number ${currentAxleUnitNumber}: ${JSON.stringify(axleConfiguration[axleIndex])}`,
-      );
-    }
 
     const requirement = getInteraxleSpacingRequirement(
       policy,
@@ -1688,8 +1656,6 @@ export function CheckInteraxleSpacing(
       axleIndex,
       vehicleConfiguration,
       axleUnitVehicleIndexes,
-      groupWeight,
-      groupSpacing,
     );
 
     // Pass when no requirement exists, interaxle spacing is missing, or interaxle spacing falls within the requirement's min/max bounds.

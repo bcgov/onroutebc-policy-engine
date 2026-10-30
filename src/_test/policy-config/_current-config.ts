@@ -5369,21 +5369,18 @@ export const data: PolicyDefinition = {
       {
         id: TRAILERS.FIXED_EQUIPMENT_SEMI_TRAILER_PEACE_RIVER.id,
         name: TRAILERS.FIXED_EQUIPMENT_SEMI_TRAILER_PEACE_RIVER.name,
-        // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: TRAILERS.FLOAT_TRAILERS.id,
         name: TRAILERS.FLOAT_TRAILERS.name,
-        // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: TRAILERS.FULL_TRAILERS.id,
         name: TRAILERS.FULL_TRAILERS.name,
-        // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
@@ -5436,9 +5433,12 @@ export const data: PolicyDefinition = {
             min: 301,
             max: 350,
           },
+          // TODO we need to skip bridge formula for this configuration
+          // consider adding logic to bridge-formula eval that looks at this file and evalautes on a possible new property e.g. skipBridge: boolean
           {
             axles: [21],
             minAxleGroupWeight: 29001,
+            minAxleGroupSpacing: 371,
             modifier: {
               category: VEHICLE_CATEGORIES.POWER_UNIT,
               position: RelativePosition.Before,
@@ -5468,56 +5468,41 @@ export const data: PolicyDefinition = {
       {
         id: TRAILERS.LOGGING_NON_TAC_B_TRAINS.id,
         name: TRAILERS.LOGGING_NON_TAC_B_TRAINS.name,
-        // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
-        defaultWeightDimensions: [],
-      },
-      {
-        id: TRAILERS.LOGGING_NON_TAC_B_TRAINS.id,
-        name: TRAILERS.LOGGING_NON_TAC_B_TRAINS.name,
-        // TODO check category with Michael
-        category: VEHICLE_CATEGORIES.TRAILER,
-        displayCode: 'T',
       },
       {
         id: TRAILERS.LOGGING_SINGLE_AXLE_JEEPS.id,
         name: TRAILERS.LOGGING_SINGLE_AXLE_JEEPS.name,
-        // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: TRAILERS.LOGGING_TRI_AXLE_TRAILERS.id,
         name: TRAILERS.LOGGING_TRI_AXLE_TRAILERS.name,
-        // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: TRAILERS.LOGGING_TANDEM_POLE_TRAILERS_DOGLOGGERS.id,
         name: TRAILERS.LOGGING_TANDEM_POLE_TRAILERS_DOGLOGGERS.name,
-        // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: TRAILERS.LOGGING_SEMI_TRAILER_EMPTY.id,
         name: TRAILERS.LOGGING_SEMI_TRAILER_EMPTY.name,
-        // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: TRAILERS.LOGGING_FULL_TRAILERS.id,
         name: TRAILERS.LOGGING_FULL_TRAILERS.name,
-        // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: TRAILERS.LOGGING_OVERWIDTH_BUNKS.id,
         name: TRAILERS.LOGGING_OVERWIDTH_BUNKS.name,
-        // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
@@ -5542,14 +5527,12 @@ export const data: PolicyDefinition = {
       {
         id: TRAILERS.OVERDIMENSIONAL_TRAILERS_FOR_EXPORT.id,
         name: TRAILERS.OVERDIMENSIONAL_TRAILERS_FOR_EXPORT.name,
-        // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: TRAILERS.PARK_MODEL_HOMES.id,
         name: TRAILERS.PARK_MODEL_HOMES.name,
-        // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
@@ -5712,14 +5695,12 @@ export const data: PolicyDefinition = {
       {
         id: TRAILERS.SEMI_TRAILERS_A_TRAINS_C_TRAINS.id,
         name: TRAILERS.SEMI_TRAILERS_A_TRAINS_C_TRAINS.name,
-        // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: TRAILERS.SEMI_TRAILERS_B_TRAINS.id,
         name: TRAILERS.SEMI_TRAILERS_B_TRAINS.name,
-        // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
@@ -5738,28 +5719,24 @@ export const data: PolicyDefinition = {
       {
         id: TRAILERS.STEERING_DOLLIES.id,
         name: TRAILERS.STEERING_DOLLIES.name,
-        // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'B',
       },
       {
         id: TRAILERS.SEMI_TRAILERS_INSULATED_VANS_REEFER.id,
         name: TRAILERS.SEMI_TRAILERS_INSULATED_VANS_REEFER.name,
-        // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: TRAILERS.SEMI_TRAILERS_LOGGING.id,
         name: TRAILERS.SEMI_TRAILERS_LOGGING.name,
-        // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: TRAILERS.SEMI_TRAILERS_NON_TAC_SHORT_CHASSIS.id,
         name: TRAILERS.SEMI_TRAILERS_NON_TAC_SHORT_CHASSIS.name,
-        // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
@@ -5792,14 +5769,12 @@ export const data: PolicyDefinition = {
         id: TRAILERS.SEMI_TRAILERS_STINGER_STEEERED_AUTOMOBILE_TRANSPORTERS.id,
         name: TRAILERS.SEMI_TRAILERS_STINGER_STEEERED_AUTOMOBILE_TRANSPORTERS
           .name,
-        // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: TRAILERS.SEMI_TRAILERS_WALLED_B_TRAINS.id,
         name: TRAILERS.SEMI_TRAILERS_WALLED_B_TRAINS.name,
-        // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
@@ -5837,21 +5812,18 @@ export const data: PolicyDefinition = {
       {
         id: TRAILERS.STINGER_STEERED_AUTOMOBILE_TRANSPORTERS.id,
         name: TRAILERS.STINGER_STEERED_AUTOMOBILE_TRANSPORTERS.name,
-        // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: TRAILERS.TANDEM_TRIDEM_DRIVE_B_TRAIN.id,
         name: TRAILERS.TANDEM_TRIDEM_DRIVE_B_TRAIN.name,
-        // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },
       {
         id: TRAILERS.LEGACY_LOGGING_TRAILER_COMBINATIONS.id,
         name: TRAILERS.LEGACY_LOGGING_TRAILER_COMBINATIONS.name,
-        // TODO check category with Michael
         category: VEHICLE_CATEGORIES.TRAILER,
         displayCode: 'T',
       },

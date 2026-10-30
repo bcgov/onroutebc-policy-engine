@@ -5458,6 +5458,7 @@
               21
             ],
             "minAxleGroupWeight": 29001,
+            "minAxleGroupSpacing": 371,
             "modifier": {
               "category": "powerunit",
               "position": "before"
@@ -5493,14 +5494,7 @@
       {
         "id": "LOGNTAC",
         "name": "Legacy Logging Trailer Combinations - Non-TAC B-Trains",
-        "category": "trailer",
-        "defaultWeightDimensions": []
-      },
-      {
-        "id": "LOGNTAC",
-        "name": "Legacy Logging Trailer Combinations - Non-TAC B-Trains",
-        "category": "trailer",
-        "displayCode": "T"
+        "category": "trailer"
       },
       {
         "id": "LOGTNDM",
