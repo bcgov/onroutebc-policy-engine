@@ -5433,8 +5433,6 @@ export const data: PolicyDefinition = {
             min: 301,
             max: 350,
           },
-          // TODO we need to skip bridge formula for this configuration
-          // consider adding logic to bridge-formula eval that looks at this file and evalautes on a possible new property e.g. skipBridge: boolean
           {
             axles: [21],
             minAxleGroupWeight: 29001,
