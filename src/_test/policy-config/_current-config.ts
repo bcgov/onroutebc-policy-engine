@@ -4349,6 +4349,14 @@ export const data: PolicyDefinition = {
             permittable: 21000,
           },
         ],
+        // TODO do these axle spread values apply to the pony-trailer category or the specific pony trailer type?
+        axleSpreads: [
+          {
+            axles: 3,
+            minAxleSpread: 240,
+            maxAxleSpread: 250,
+          },
+        ],
       },
       {
         id: VEHICLE_CATEGORIES.PSEUDO,
@@ -4371,6 +4379,13 @@ export const data: PolicyDefinition = {
               min: 240,
               max: 370,
             },
+          },
+        ],
+        axleSpreads: [
+          {
+            axles: 3,
+            minAxleSpread: 240,
+            maxAxleSpread: 370,
           },
         ],
       },
@@ -4418,7 +4433,6 @@ export const data: PolicyDefinition = {
         id: VEHICLE_CATEGORIES.WIDE_WHEELERS,
         name: 'Wide Wheelers',
       },
-
       {
         id: VEHICLE_CATEGORIES.WHEELER,
         name: 'Wheeler',
@@ -4757,6 +4771,13 @@ export const data: PolicyDefinition = {
             saPermittable: 9100,
             daLegal: 24000,
             daPermittable: 28000,
+          },
+        ],
+        axleSpreads: [
+          {
+            axles: 3,
+            minAxleSpread: 240,
+            maxAxleSpread: 310,
           },
         ],
         displayCodePrefix: 'TT',
@@ -5515,6 +5536,13 @@ export const data: PolicyDefinition = {
         name: TRAILERS.POLE_TRAILERS.name,
         category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
+        axleSpreads: [
+          {
+            axles: 3,
+            minAxleSpread: 240,
+            maxAxleSpread: 310,
+          },
+        ],
       },
       {
         id: TRAILERS.PONY_TRAILERS.id,
@@ -5660,6 +5688,13 @@ export const data: PolicyDefinition = {
             axles: 2,
             legal: 9100,
             permittable: 18200,
+          },
+        ],
+        axleSpreads: [
+          {
+            axles: 2,
+            minAxleSpread: 186,
+            maxAxleSpread: 307,
           },
         ],
       },

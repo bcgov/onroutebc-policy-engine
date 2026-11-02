@@ -4345,6 +4345,13 @@
             "legal": 21000,
             "permittable": 21000
           }
+        ],
+        "axleSpreads": [
+          {
+            "axles": 3,
+            "minAxleSpread": 240,
+            "maxAxleSpread": 250
+          }
         ]
       },
       {
@@ -4368,6 +4375,13 @@
               "min": 240,
               "max": 370
             }
+          }
+        ],
+        "axleSpreads": [
+          {
+            "axles": 3,
+            "minAxleSpread": 240,
+            "maxAxleSpread": 370
           }
         ]
       },
@@ -4751,6 +4765,13 @@
             "saPermittable": 9100,
             "daLegal": 24000,
             "daPermittable": 28000
+          }
+        ],
+        "axleSpreads": [
+          {
+            "axles": 3,
+            "minAxleSpread": 240,
+            "maxAxleSpread": 310
           }
         ],
         "displayCodePrefix": "TT",
@@ -5514,7 +5535,14 @@
         "id": "POLETRL",
         "name": "Pole Trailers",
         "category": "semi",
-        "displayCode": "T"
+        "displayCode": "T",
+        "axleSpreads": [
+          {
+            "axles": 3,
+            "minAxleSpread": 240,
+            "maxAxleSpread": 310
+          }
+        ]
       },
       {
         "id": "PONYTRL",
@@ -5654,6 +5682,13 @@
             "axles": 2,
             "legal": 9100,
             "permittable": 18200
+          }
+        ],
+        "axleSpreads": [
+          {
+            "axles": 2,
+            "minAxleSpread": 186,
+            "maxAxleSpread": 307
           }
         ]
       },
