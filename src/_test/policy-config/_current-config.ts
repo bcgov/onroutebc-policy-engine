@@ -4295,6 +4295,23 @@ export const data: PolicyDefinition = {
       min: 600,
     },
   ],
+  globalAxleSpreadDefaults: [
+    {
+      axles: 1,
+      minAxleSpread: 0,
+      maxAxleSpread: 100,
+    },
+    {
+      axles: 2,
+      minAxleSpread: 100,
+      maxAxleSpread: 185,
+    },
+    {
+      axles: 3,
+      minAxleSpread: 240,
+      maxAxleSpread: 280,
+    },
+  ],
   vehicleCategories: {
     trailerCategories: [
       {

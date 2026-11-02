@@ -129,6 +129,7 @@
     "trailers": []
   },
   "globalInteraxleSpacingDefaults": [],
+  "globalAxleSpreadDefaults": [],
   "vehicleCategories": {
     "trailerCategories": [
       {

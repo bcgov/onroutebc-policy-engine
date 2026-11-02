@@ -7,33 +7,15 @@ import { AxleConfiguration } from '../types/axle-configuration';
 export function getTandemAxleSpreadThreshold(
   vehicleConfiguration: Array<string>,
   vehicleIndex: number,
-  axleConfiguration: Array<AxleConfiguration>,
-  axleIndex: number,
 ): { minCm: number; maxCm: number } {
   const vehicleType = vehicleConfiguration[vehicleIndex];
   const isSpreadTandemSemiTrailer =
     vehicleType === TRAILERS.SEMI_TRAILERS_SPREAD_TANDEMS.id;
-  const isDriveAxle = axleIndex === 1;
-  const hasSingleAxleJeep =
-    vehicleConfiguration[1] === TRAILERS.JEEPS.id &&
-    axleConfiguration[2].numberOfAxles === 1;
 
   if (isSpreadTandemSemiTrailer) {
     return {
       minCm: AXLE_SPREAD_LEGAL_LIMITS.TANDEM.SPREAD_TANDEM_SEMI_TRAILER.MINIMUM,
       maxCm: AXLE_SPREAD_LEGAL_LIMITS.TANDEM.SPREAD_TANDEM_SEMI_TRAILER.MAXIMUM,
-    };
-  }
-
-  // Tandem Drive with Single Axle Jeep Bridge Formula Exception
-  if (isDriveAxle && hasSingleAxleJeep) {
-    return {
-      minCm:
-        AXLE_SPREAD_LEGAL_LIMITS.TANDEM.DRIVE_AXLE_WITH_SINGLE_AXLE_JEEP
-          .MINIMUM,
-      maxCm:
-        AXLE_SPREAD_LEGAL_LIMITS.TANDEM.DRIVE_AXLE_WITH_SINGLE_AXLE_JEEP
-          .MAXIMUM,
     };
   }
 
@@ -120,12 +102,7 @@ export function getAxleSpreadThreshold(
   }
 
   if (isTandemAxle) {
-    return getTandemAxleSpreadThreshold(
-      vehicleConfiguration,
-      vehicleIndex,
-      axleConfiguration,
-      axleIndex,
-    );
+    return getTandemAxleSpreadThreshold(vehicleConfiguration, vehicleIndex);
   }
 
   if (isTridemAxle) {
