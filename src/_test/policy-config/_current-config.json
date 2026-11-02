@@ -4295,22 +4295,38 @@
   "vehicleCategories": {
     "trailerCategories": [
       {
-        "id": "trailer",
-        "name": "Default trailer category",
+        "id": "booster",
+        "name": "Booster"
+      },
+      {
+        "id": "booster-wheelers",
+        "name": "Booster Wheelers"
+      },
+      {
+        "id": "dolly",
+        "name": "Dolly"
+      },
+      {
+        "id": "jeep",
+        "name": "Jeep"
+      },
+      {
+        "id": "jeep-wheelers",
+        "name": "Jeep Wheelers"
+      },
+      {
+        "id": "pony",
+        "name": "Pony Trailer",
         "defaultWeightDimensions": [
           {
-            "axles": 3,
-            "legal": 24000,
-            "permittable": 28000
+            "axles": 2,
+            "legal": 17000,
+            "permittable": 21000
           },
           {
             "axles": 3,
-            "legal": 24000,
-            "permittable": 29000,
-            "permittableAxleSpread": {
-              "min": 240,
-              "max": 370
-            }
+            "legal": 21000,
+            "permittable": 21000
           }
         ]
       },
@@ -4339,27 +4355,6 @@
         ]
       },
       {
-        "id": "wheeler",
-        "name": "Wheeler",
-        "defaultWeightDimensions": [
-          {
-            "axles": 1,
-            "legal": 0,
-            "permittable": 0
-          },
-          {
-            "axles": 2,
-            "legal": 17000,
-            "permittable": 31000
-          },
-          {
-            "axles": 3,
-            "legal": 24000,
-            "permittable": 40000
-          }
-        ]
-      },
-      {
         "id": "steering",
         "name": "Steering Trailer",
         "defaultWeightDimensions": [
@@ -4380,22 +4375,47 @@
         ]
       },
       {
-        "id": "dolly",
-        "name": "Dolly"
-      },
-      {
-        "id": "pony",
-        "name": "Pony Trailer",
+        "id": "trailer",
+        "name": "Default trailer category",
         "defaultWeightDimensions": [
           {
-            "axles": 2,
-            "legal": 17000,
-            "permittable": 21000
+            "axles": 3,
+            "legal": 24000,
+            "permittable": 28000
           },
           {
             "axles": 3,
-            "legal": 21000,
-            "permittable": 21000
+            "legal": 24000,
+            "permittable": 29000,
+            "permittableAxleSpread": {
+              "min": 240,
+              "max": 370
+            }
+          }
+        ]
+      },
+      {
+        "id": "wide-wheelers",
+        "name": "Wide Wheelers"
+      },
+      {
+        "id": "wheeler",
+        "name": "Wheeler",
+        "defaultWeightDimensions": [
+          {
+            "axles": 1,
+            "legal": 0,
+            "permittable": 0
+          },
+          {
+            "axles": 2,
+            "legal": 17000,
+            "permittable": 31000
+          },
+          {
+            "axles": 3,
+            "legal": 24000,
+            "permittable": 40000
           }
         ]
       }
