@@ -4315,22 +4315,38 @@ export const data: PolicyDefinition = {
   vehicleCategories: {
     trailerCategories: [
       {
-        id: VEHICLE_CATEGORIES.TRAILER,
-        name: 'Default trailer category',
+        id: VEHICLE_CATEGORIES.BOOSTER,
+        name: 'Booster',
+      },
+      {
+        id: VEHICLE_CATEGORIES.BOOSTER_WHEELERS,
+        name: 'Booster Wheelers',
+      },
+      {
+        id: VEHICLE_CATEGORIES.DOLLY,
+        name: 'Dolly',
+      },
+      {
+        id: VEHICLE_CATEGORIES.JEEP,
+        name: 'Jeep',
+      },
+      {
+        id: VEHICLE_CATEGORIES.JEEP_WHEELERS,
+        name: 'Jeep Wheelers',
+      },
+      {
+        id: VEHICLE_CATEGORIES.PONY_TRAILER,
+        name: 'Pony Trailer',
         defaultWeightDimensions: [
           {
-            axles: 3,
-            legal: 24000,
-            permittable: 28000,
+            axles: 2,
+            legal: 17000,
+            permittable: 21000,
           },
           {
             axles: 3,
-            legal: 24000,
-            permittable: 29000,
-            permittableAxleSpread: {
-              min: 240,
-              max: 370,
-            },
+            legal: 21000,
+            permittable: 21000,
           },
         ],
       },
@@ -4359,27 +4375,6 @@ export const data: PolicyDefinition = {
         ],
       },
       {
-        id: VEHICLE_CATEGORIES.WHEELER,
-        name: 'Wheeler',
-        defaultWeightDimensions: [
-          {
-            axles: 1,
-            legal: 0,
-            permittable: 0,
-          },
-          {
-            axles: 2,
-            legal: 17000,
-            permittable: 31000,
-          },
-          {
-            axles: 3,
-            legal: 24000,
-            permittable: 40000,
-          },
-        ],
-      },
-      {
         id: VEHICLE_CATEGORIES.STEERING_TRAILER,
         name: 'Steering Trailer',
         defaultWeightDimensions: [
@@ -4400,22 +4395,48 @@ export const data: PolicyDefinition = {
         ],
       },
       {
-        id: VEHICLE_CATEGORIES.DOLLY,
-        name: 'Dolly',
-      },
-      {
-        id: VEHICLE_CATEGORIES.PONY_TRAILER,
-        name: 'Pony Trailer',
+        id: VEHICLE_CATEGORIES.TRAILER,
+        name: 'Default trailer category',
         defaultWeightDimensions: [
           {
-            axles: 2,
-            legal: 17000,
-            permittable: 21000,
+            axles: 3,
+            legal: 24000,
+            permittable: 28000,
           },
           {
             axles: 3,
-            legal: 21000,
-            permittable: 21000,
+            legal: 24000,
+            permittable: 29000,
+            permittableAxleSpread: {
+              min: 240,
+              max: 370,
+            },
+          },
+        ],
+      },
+      {
+        id: VEHICLE_CATEGORIES.WIDE_WHEELERS,
+        name: 'Wide Wheelers',
+      },
+
+      {
+        id: VEHICLE_CATEGORIES.WHEELER,
+        name: 'Wheeler',
+        defaultWeightDimensions: [
+          {
+            axles: 1,
+            legal: 0,
+            permittable: 0,
+          },
+          {
+            axles: 2,
+            legal: 17000,
+            permittable: 31000,
+          },
+          {
+            axles: 3,
+            legal: 24000,
+            permittable: 40000,
           },
         ],
       },
