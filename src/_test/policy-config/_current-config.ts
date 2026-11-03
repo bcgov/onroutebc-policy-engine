@@ -4742,6 +4742,13 @@ export const data: PolicyDefinition = {
             daPermittable: 28000,
           },
         ],
+        axleSpreads: [
+          {
+            axles: 3,
+            minAxleSpread: 240,
+            maxAxleSpread: 310,
+          },
+        ],
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
@@ -4773,13 +4780,7 @@ export const data: PolicyDefinition = {
             daPermittable: 28000,
           },
         ],
-        axleSpreads: [
-          {
-            axles: 3,
-            minAxleSpread: 240,
-            maxAxleSpread: 310,
-          },
-        ],
+
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',

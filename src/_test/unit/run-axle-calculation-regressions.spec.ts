@@ -106,16 +106,26 @@ describe('runAxleCalculation robustness regressions', () => {
       );
     }).not.toThrow();
 
-    expect(calculation!.results).toContainEqual(
-      expect.objectContaining({
-        id: PolicyCheckId.LegalAxleSpread,
-        result: PolicyCheckResultType.Fail,
-        message:
-          'Axle Spread for Axle Unit 2 must be between 1.0 m and 1.85 m.',
-        startAxleUnit: 2,
-        endAxleUnit: 2,
-      }),
+    const axleSpreadResults = calculation!.results.filter(
+      (result) => result.id === PolicyCheckId.AxleSpread,
     );
+
+    console.log({ axleSpreadResults });
+
+    const failedAxleSpreadCheck = calculation!.results.find(
+      (result) =>
+        result.id === PolicyCheckId.AxleSpread &&
+        result.result === PolicyCheckResultType.Fail,
+    );
+
+    expect(failedAxleSpreadCheck).toMatchObject({
+      id: PolicyCheckId.AxleSpread,
+      result: PolicyCheckResultType.Fail,
+      message: 'Axle Spread for Axle Unit 2 must be between 1.0 m and 1.85 m.',
+      startAxleUnit: 2,
+      endAxleUnit: 2,
+    });
+
     expect(calculation!.results).not.toContainEqual(
       expect.objectContaining({ id: PolicyCheckId.BridgeFormula }),
     );
