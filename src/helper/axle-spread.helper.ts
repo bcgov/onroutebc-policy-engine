@@ -54,8 +54,6 @@ export function getAxleSpreadRequirement(
     ? policy.getDefaultPowerUnitAxleSpread(vehicleType, axles)
     : policy.getDefaultTrailerAxleSpread(vehicleType, axles);
 
-  console.log({ axleSpreadRequirements });
-
   // Since there are currently no modifiers for axle spreads, there is no need for a selectCorrectAxleSpreadRequirementHelper as we see with other evaluations (e.g. selectCorrectInteraxleSpacingRequirementHelper). This may change in future, but for now we can return the first item in the array since the array will only ever contain one item.
   const matchingRequirement = axleSpreadRequirements[0];
 

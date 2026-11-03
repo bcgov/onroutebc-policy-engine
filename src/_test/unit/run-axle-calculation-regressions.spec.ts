@@ -110,8 +110,6 @@ describe('runAxleCalculation robustness regressions', () => {
       (result) => result.id === PolicyCheckId.AxleSpread,
     );
 
-    console.log({ axleSpreadResults });
-
     const failedAxleSpreadCheck = calculation!.results.find(
       (result) =>
         result.id === PolicyCheckId.AxleSpread &&
