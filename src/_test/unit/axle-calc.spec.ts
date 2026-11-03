@@ -18,7 +18,7 @@ import {
 
 import {
   CheckBoosterAxleLimit,
-  CheckLegalAxleSpread,
+  CheckAxleSpread,
   CheckNumTiresPerAxle,
   CheckMinDriveAxleWeight,
   CheckMinSteerAxleWeight,
@@ -2130,7 +2130,7 @@ describe('Axle Calculation Functions', () => {
 
   describe('legal axle spread policy check', () => {
     it('should pass valid truck tractor tandem axle spread', () => {
-      const results = CheckLegalAxleSpread(
+      const results = CheckAxleSpread(
         policy,
         [POWER_UNITS.TRUCK_TRACTORS.id],
         [
@@ -2139,9 +2139,9 @@ describe('Axle Calculation Functions', () => {
         ],
       );
 
-      expect(results).toHaveLength(1);
-      expect(results[0]).toMatchObject({
-        id: PolicyCheckId.LegalAxleSpread,
+      expect(results).toHaveLength(2);
+      expect(results[1]).toMatchObject({
+        id: PolicyCheckId.AxleSpread,
         result: PolicyCheckResultType.Pass,
         message: '',
         axleUnit: 2,
@@ -2149,7 +2149,7 @@ describe('Axle Calculation Functions', () => {
     });
 
     it('should fail invalid pony trailer tridem axle spread above 2.5m', () => {
-      const results = CheckLegalAxleSpread(
+      const results = CheckAxleSpread(
         policy,
         [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.PONY_TRAILERS.id],
         [
@@ -2159,9 +2159,9 @@ describe('Axle Calculation Functions', () => {
         ],
       );
 
-      expect(results).toHaveLength(1);
-      expect(results[0]).toMatchObject({
-        id: PolicyCheckId.LegalAxleSpread,
+      expect(results).toHaveLength(3);
+      expect(results[2]).toMatchObject({
+        id: PolicyCheckId.AxleSpread,
         result: PolicyCheckResultType.Fail,
         message: 'Axle Spread for Axle Unit 3 must be between 2.4 m and 2.5 m.',
         axleUnit: 3,
@@ -2169,7 +2169,7 @@ describe('Axle Calculation Functions', () => {
     });
 
     it('should apply tandem semi-trailer spread bounds for STWDTAN', () => {
-      const resultsPass = CheckLegalAxleSpread(
+      const resultsPass = CheckAxleSpread(
         policy,
         [
           POWER_UNITS.TRUCK_TRACTORS.id,
@@ -2196,13 +2196,13 @@ describe('Axle Calculation Functions', () => {
         (r) => r.axleUnit === 3,
       )!;
       expect(resPassAxle3).toMatchObject({
-        id: PolicyCheckId.LegalAxleSpread,
+        id: PolicyCheckId.AxleSpread,
         result: PolicyCheckResultType.Pass,
         message: '',
         axleUnit: 3,
       });
 
-      const resultsFail = CheckLegalAxleSpread(
+      const resultsFail = CheckAxleSpread(
         policy,
         [
           POWER_UNITS.TRUCK_TRACTORS.id,
@@ -2229,7 +2229,7 @@ describe('Axle Calculation Functions', () => {
         (r) => r.axleUnit === 3,
       )!;
       expect(resFailAxle3).toMatchObject({
-        id: PolicyCheckId.LegalAxleSpread,
+        id: PolicyCheckId.AxleSpread,
         result: PolicyCheckResultType.Fail,
         message:
           'Axle Spread for Axle Unit 3 must be between 1.86 m and 3.07 m.',
@@ -2239,7 +2239,7 @@ describe('Axle Calculation Functions', () => {
 
     it('should apply tridem semi-trailer and pole trailer exceptions', () => {
       // tridem on semi-trailer (power unit TRKTRAC)
-      const semiResults = CheckLegalAxleSpread(
+      const semiResults = CheckAxleSpread(
         policy,
         [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id],
         [
@@ -2263,13 +2263,13 @@ describe('Axle Calculation Functions', () => {
         (r) => r.axleUnit === 3,
       )!;
       expect(semiResAxle3).toMatchObject({
-        id: PolicyCheckId.LegalAxleSpread,
+        id: PolicyCheckId.AxleSpread,
         result: PolicyCheckResultType.Pass,
         message: '',
         axleUnit: 3,
       });
 
-      const semiFail = CheckLegalAxleSpread(
+      const semiFail = CheckAxleSpread(
         policy,
         [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id],
         [
@@ -2293,7 +2293,7 @@ describe('Axle Calculation Functions', () => {
       expect(semiFailAxle3.result).toBe(PolicyCheckResultType.Fail);
 
       // pole trailer special max
-      const poleResults = CheckLegalAxleSpread(
+      const poleResults = CheckAxleSpread(
         policy,
         [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.POLE_TRAILERS.id],
         [
@@ -2321,7 +2321,7 @@ describe('Axle Calculation Functions', () => {
 
     it('should apply oilfield bed truck tridem drive axle maximum', () => {
       // power unit is oilfield bed truck and drive axle is tridem
-      const resultsPass = CheckLegalAxleSpread(
+      const resultsPass = CheckAxleSpread(
         policy,
         [POWER_UNITS.OIL_AND_GAS_BED_TRUCKS.id],
         [
@@ -2335,10 +2335,10 @@ describe('Axle Calculation Functions', () => {
         ],
       );
 
-      expect(resultsPass).toHaveLength(1);
-      expect(resultsPass[0].result).toBe(PolicyCheckResultType.Pass);
+      expect(resultsPass).toHaveLength(2);
+      expect(resultsPass[1].result).toBe(PolicyCheckResultType.Pass);
 
-      const resultsFail = CheckLegalAxleSpread(
+      const resultsFail = CheckAxleSpread(
         policy,
         [POWER_UNITS.OIL_AND_GAS_BED_TRUCKS.id],
         [
@@ -2352,21 +2352,8 @@ describe('Axle Calculation Functions', () => {
         ],
       );
 
-      expect(resultsFail).toHaveLength(1);
-      expect(resultsFail[0].result).toBe(PolicyCheckResultType.Fail);
-    });
-
-    it('should not return a result when axleSpread is omitted', () => {
-      const results = CheckLegalAxleSpread(
-        policy,
-        [POWER_UNITS.TRUCK_TRACTORS.id],
-        [
-          { numberOfAxles: 1, axleUnitWeight: 6700 },
-          { numberOfAxles: 2, axleUnitWeight: 12000 },
-        ],
-      );
-
-      expect(results).toHaveLength(0);
+      expect(resultsFail).toHaveLength(2);
+      expect(resultsFail[1].result).toBe(PolicyCheckResultType.Fail);
     });
   });
 

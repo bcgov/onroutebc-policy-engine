@@ -13,7 +13,10 @@ import {
 import { getCtr717TableValue } from './ctr-717.helper';
 import { PolicyCheckId, PolicyCheckResultType } from '../enum';
 import { AXLE_WEIGHT_PERMITTABLE_MAXIMUMS } from '../constants/axle-weight-permittable-maximums';
-import { getAxleSpreadThreshold } from './axle-spread.helper';
+import {
+  getAxleSpreadRequirement,
+  getFailedAxleSpreadMessage,
+} from './axle-spread.helper';
 import { isSemiTrailerType } from '../constants/semi-trailer-codes';
 import {
   getAxleGroupSpacings,
@@ -21,7 +24,6 @@ import {
   getFailedInteraxleSpacingMessage,
   getInteraxleSpacingRequirement,
 } from './interaxle-spacing.helper';
-import { formatMeters } from './format-meters.helper';
 import { VEHICLE_CATEGORIES } from '../constants/vehicle-categories';
 import { POWER_UNITS } from '../constants/power-units';
 import { TRAILERS } from '../constants/trailers';
@@ -1621,8 +1623,7 @@ export function CheckDriveJeepLoadEqualization(
 }
 
 /**
- * Validates each axle unit against the minimum interaxle spacing for its
- * current axle unit and the next axle unit.
+ * Validates each axle unit against the minimum and maximum interaxle spacing requirements for its current axle unit and previous axle unit.
  * This function effectively handles both 'legal' and 'permittable' interaxle spacings.
  * See Table II for 'legal' interaxle spacings and exception stories for 'permittable' interaxle spacings
  */
@@ -1685,14 +1686,15 @@ export function CheckInteraxleSpacing(
 }
 
 /**
- * Validates each axle unit against its legal axle spread maximum.
+ * Validates each axle unit against the minimum and maximum axle spread requirements.
+ * This function effectively handles both 'legal' and 'permittable' axle spreads.
  */
-export function CheckLegalAxleSpread(
+export function CheckAxleSpread(
   policy: Policy,
   vehicleConfiguration: Array<string>,
   axleConfiguration: Array<AxleConfiguration>,
 ): Array<PolicyCheckResult> {
-  const policyId = PolicyCheckId.LegalAxleSpread;
+  const policyId = PolicyCheckId.AxleSpread;
   const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
     policy,
     vehicleConfiguration,
@@ -1700,35 +1702,34 @@ export function CheckLegalAxleSpread(
   );
 
   return axleConfiguration.flatMap((axleUnit, axleIndex) => {
-    const threshold = getAxleSpreadThreshold(
-      vehicleConfiguration,
-      axleUnitVehicleIndexes,
+    const requirement = getAxleSpreadRequirement(
+      policy,
       axleConfiguration,
       axleIndex,
+      vehicleConfiguration,
+      axleUnitVehicleIndexes,
     );
 
-    if (
-      axleUnit.axleSpread === undefined ||
-      !threshold ||
-      !Number.isFinite(axleUnit.axleSpread)
-    ) {
-      return [];
-    }
-
-    const result =
-      axleUnit.axleSpread >= threshold.minCm &&
-      axleUnit.axleSpread <= threshold.maxCm;
+    // Pass when no requirement exists, interaxle spacing is missing, or interaxle spacing falls within the requirement's min/max bounds.
+    const shouldPass =
+      !requirement ||
+      (axleUnit.axleSpread !== undefined &&
+        axleUnit.axleSpread !== null &&
+        axleUnit.axleSpread !== 0 &&
+        (!requirement.minAxleSpread ||
+          axleUnit.axleSpread >= requirement.minAxleSpread) &&
+        (!requirement.maxAxleSpread ||
+          axleUnit.axleSpread <= requirement.maxAxleSpread));
     const axleUnitNumber = axleIndex + 1;
-    const message = result
+
+    const message = shouldPass
       ? ''
-      : `Axle Spread for Axle Unit ${axleUnitNumber} must be between ${formatMeters(
-          threshold.minCm,
-        )} m and ${formatMeters(threshold.maxCm)} m.`;
+      : getFailedAxleSpreadMessage(requirement, axleUnitNumber);
 
     return [
       {
         id: policyId,
-        result: result
+        result: shouldPass
           ? PolicyCheckResultType.Pass
           : PolicyCheckResultType.Fail,
         message,
@@ -1750,7 +1751,7 @@ export function CheckLegalAxleSpread(
  * - AxleGroupMaximumLegalWeightThreshold: Validates axle groups within 8 m against CTR 7.17
  * - BridgeFormula: Validates axle groups against bridge formula requirements
  * - CheckLegalWeight: Validates axle units against legal weight limits
- * - CheckLegalAxleSpread: Validates axle units against legal axle spread limits
+ * - CheckAxleSpread: Validates axle units against legal axle spread limits
  * - CheckPermittableWeight: Validates total vehicle weight against permit limits
  * - MaxTireLoad: Validates tire load capacity for each axle unit
  * - MinDriveAxleWeight: Validates minimum weight requirements for drive axles
@@ -1775,7 +1776,7 @@ export const policyCheckMap = new Map<string, PolicyCheck>([
     PolicyCheckId.AxleGroupMaximumLegalWeightThreshold,
     CheckAxleGroupMaximumLegalWeightThreshold,
   ],
-  [PolicyCheckId.LegalAxleSpread, CheckLegalAxleSpread],
+  [PolicyCheckId.AxleSpread, CheckAxleSpread],
   [PolicyCheckId.LegalWeight, CheckLegalWeight],
   [PolicyCheckId.PermittableWeight, CheckPermittableWeight],
   [PolicyCheckId.MaxTireLoad, CheckMaxTireLoad],

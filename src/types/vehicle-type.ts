@@ -13,6 +13,7 @@ import {
   TrailerWeightDimension,
   InteraxleSpacingRequirement,
 } from 'onroute-policy-engine/types';
+import { AxleSpreadRequirement } from './axle-spread-requirement';
 
 /**
  * Base vehicle type with identification and configuration options
@@ -35,6 +36,8 @@ export type VehicleType = IdentifiedObject & {
   additionalAxleSubType?: string;
   /** Specfic interaxle spacing values for this vehicle type (optional) */
   interaxleSpacings?: InteraxleSpacingRequirement[];
+  /** Axle spread values for this vehicle category (optional) */
+  axleSpreads?: Array<AxleSpreadRequirement>;
 };
 
 /**

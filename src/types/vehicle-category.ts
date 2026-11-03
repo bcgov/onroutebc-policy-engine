@@ -13,6 +13,7 @@ import {
   WeightDimension,
   InteraxleSpacingRequirement,
 } from 'onroute-policy-engine/types';
+import { AxleSpreadRequirement } from './axle-spread-requirement';
 
 /**
  * Base vehicle category with identification and default dimensions
@@ -25,6 +26,8 @@ export type VehicleCategory = IdentifiedObject & {
   defaultWeightDimensions?: Array<WeightDimension>;
   /** Interaxle spacing values for this vehicle category (optional) */
   interaxleSpacings?: Array<InteraxleSpacingRequirement>;
+  /** Axle spread values for this vehicle category (optional) */
+  axleSpreads?: Array<AxleSpreadRequirement>;
 };
 
 /**

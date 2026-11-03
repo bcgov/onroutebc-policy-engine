@@ -51,6 +51,7 @@
     "l": 31
   },
   "globalInteraxleSpacingDefaults": [],
+  "globalAxleSpreadDefaults": [],
   "vehicleCategories": {
     "trailerCategories": [],
     "powerUnitCategories": []

@@ -4292,25 +4292,65 @@
       "min": 600
     }
   ],
+  "globalAxleSpreadDefaults": [
+    {
+      "axles": 1,
+      "minAxleSpread": 0,
+      "maxAxleSpread": 100
+    },
+    {
+      "axles": 2,
+      "minAxleSpread": 100,
+      "maxAxleSpread": 185
+    },
+    {
+      "axles": 3,
+      "minAxleSpread": 240,
+      "maxAxleSpread": 280
+    }
+  ],
   "vehicleCategories": {
     "trailerCategories": [
       {
-        "id": "trailer",
-        "name": "Default trailer category",
+        "id": "booster",
+        "name": "Booster"
+      },
+      {
+        "id": "booster-wheelers",
+        "name": "Booster Wheelers"
+      },
+      {
+        "id": "dolly",
+        "name": "Dolly"
+      },
+      {
+        "id": "jeep",
+        "name": "Jeep"
+      },
+      {
+        "id": "jeep-wheelers",
+        "name": "Jeep Wheelers"
+      },
+      {
+        "id": "pony",
+        "name": "Pony Trailer",
         "defaultWeightDimensions": [
           {
-            "axles": 3,
-            "legal": 24000,
-            "permittable": 28000
+            "axles": 2,
+            "legal": 17000,
+            "permittable": 21000
           },
           {
             "axles": 3,
-            "legal": 24000,
-            "permittable": 29000,
-            "permittableAxleSpread": {
-              "min": 240,
-              "max": 370
-            }
+            "legal": 21000,
+            "permittable": 21000
+          }
+        ],
+        "axleSpreads": [
+          {
+            "axles": 3,
+            "minAxleSpread": 240,
+            "maxAxleSpread": 250
           }
         ]
       },
@@ -4336,26 +4376,12 @@
               "max": 370
             }
           }
-        ]
-      },
-      {
-        "id": "wheeler",
-        "name": "Wheeler",
-        "defaultWeightDimensions": [
-          {
-            "axles": 1,
-            "legal": 0,
-            "permittable": 0
-          },
-          {
-            "axles": 2,
-            "legal": 17000,
-            "permittable": 31000
-          },
+        ],
+        "axleSpreads": [
           {
             "axles": 3,
-            "legal": 24000,
-            "permittable": 40000
+            "minAxleSpread": 240,
+            "maxAxleSpread": 370
           }
         ]
       },
@@ -4380,22 +4406,47 @@
         ]
       },
       {
-        "id": "dolly",
-        "name": "Dolly"
-      },
-      {
-        "id": "pony",
-        "name": "Pony Trailer",
+        "id": "trailer",
+        "name": "Default trailer category",
         "defaultWeightDimensions": [
           {
-            "axles": 2,
-            "legal": 17000,
-            "permittable": 21000
+            "axles": 3,
+            "legal": 24000,
+            "permittable": 28000
           },
           {
             "axles": 3,
-            "legal": 21000,
-            "permittable": 21000
+            "legal": 24000,
+            "permittable": 29000,
+            "permittableAxleSpread": {
+              "min": 240,
+              "max": 370
+            }
+          }
+        ]
+      },
+      {
+        "id": "wide-wheelers",
+        "name": "Wide Wheelers"
+      },
+      {
+        "id": "wheeler",
+        "name": "Wheeler",
+        "defaultWeightDimensions": [
+          {
+            "axles": 1,
+            "legal": 0,
+            "permittable": 0
+          },
+          {
+            "axles": 2,
+            "legal": 17000,
+            "permittable": 31000
+          },
+          {
+            "axles": 3,
+            "legal": 24000,
+            "permittable": 40000
           }
         ]
       }
@@ -4683,6 +4734,13 @@
             "saPermittable": 17000,
             "daLegal": 24000,
             "daPermittable": 28000
+          }
+        ],
+        "axleSpreads": [
+          {
+            "axles": 3,
+            "minAxleSpread": 240,
+            "maxAxleSpread": 310
           }
         ],
         "displayCodePrefix": "TT",
@@ -5306,50 +5364,6 @@
             "axles": 3,
             "legal": 21000,
             "permittable": 21000
-          },
-          {
-            "axles": 3,
-            "modifier": {
-              "category": "powerunit",
-              "position": "before",
-              "axles": 1,
-              "minInteraxleSpacing": 300
-            },
-            "legal": 17000,
-            "permittable": 17000
-          },
-          {
-            "axles": 3,
-            "modifier": {
-              "category": "multisteer",
-              "position": "before",
-              "axles": 1,
-              "minInteraxleSpacing": 300
-            },
-            "legal": 17000,
-            "permittable": 17000
-          },
-          {
-            "axles": 3,
-            "modifier": {
-              "category": "powerunit",
-              "position": "before",
-              "axles": 2,
-              "minInteraxleSpacing": 550
-            },
-            "legal": 17000,
-            "permittable": 21000
-          },
-          {
-            "axles": 3,
-            "modifier": {
-              "category": "multisteer",
-              "position": "before",
-              "axles": 2,
-              "minInteraxleSpacing": 550
-            },
-            "legal": 17000,
-            "permittable": 21000
           }
         ]
       },
@@ -5596,7 +5610,14 @@
         "id": "POLETRL",
         "name": "Pole Trailers",
         "category": "semi",
-        "displayCode": "T"
+        "displayCode": "T",
+        "axleSpreads": [
+          {
+            "axles": 3,
+            "minAxleSpread": 240,
+            "maxAxleSpread": 310
+          }
+        ]
       },
       {
         "id": "PONYTRL",
@@ -5656,50 +5677,6 @@
           {
             "axles": 3,
             "legal": 21000,
-            "permittable": 21000
-          },
-          {
-            "axles": 3,
-            "modifier": {
-              "category": "powerunit",
-              "position": "before",
-              "axles": 1,
-              "minInteraxleSpacing": 300
-            },
-            "legal": 17000,
-            "permittable": 17000
-          },
-          {
-            "axles": 3,
-            "modifier": {
-              "category": "multisteer",
-              "position": "before",
-              "axles": 1,
-              "minInteraxleSpacing": 300
-            },
-            "legal": 17000,
-            "permittable": 17000
-          },
-          {
-            "axles": 3,
-            "modifier": {
-              "category": "powerunit",
-              "position": "before",
-              "axles": 2,
-              "minInteraxleSpacing": 550
-            },
-            "legal": 17000,
-            "permittable": 21000
-          },
-          {
-            "axles": 3,
-            "modifier": {
-              "category": "multisteer",
-              "position": "before",
-              "axles": 2,
-              "minInteraxleSpacing": 550
-            },
-            "legal": 17000,
             "permittable": 21000
           }
         ]
@@ -5780,6 +5757,13 @@
             "axles": 2,
             "legal": 9100,
             "permittable": 18200
+          }
+        ],
+        "axleSpreads": [
+          {
+            "axles": 2,
+            "minAxleSpread": 186,
+            "maxAxleSpread": 307
           }
         ]
       },

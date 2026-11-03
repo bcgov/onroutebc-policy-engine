@@ -4295,26 +4295,67 @@ export const data: PolicyDefinition = {
       min: 600,
     },
   ],
+  globalAxleSpreadDefaults: [
+    {
+      axles: 1,
+      minAxleSpread: 0,
+      maxAxleSpread: 100,
+    },
+    {
+      axles: 2,
+      minAxleSpread: 100,
+      maxAxleSpread: 185,
+    },
+    {
+      axles: 3,
+      minAxleSpread: 240,
+      maxAxleSpread: 280,
+    },
+  ],
   vehicleCategories: {
     // TODO this array needs to be updated to include all of the trailer categories contained in the VEHICLE_CATEGORIES const
     trailerCategories: [
       {
-        id: VEHICLE_CATEGORIES.TRAILER,
-        name: 'Default trailer category',
+        id: VEHICLE_CATEGORIES.BOOSTER,
+        name: 'Booster',
+      },
+      {
+        id: VEHICLE_CATEGORIES.BOOSTER_WHEELERS,
+        name: 'Booster Wheelers',
+      },
+      {
+        id: VEHICLE_CATEGORIES.DOLLY,
+        name: 'Dolly',
+      },
+      {
+        id: VEHICLE_CATEGORIES.JEEP,
+        name: 'Jeep',
+      },
+      {
+        id: VEHICLE_CATEGORIES.JEEP_WHEELERS,
+        name: 'Jeep Wheelers',
+      },
+      {
+        id: VEHICLE_CATEGORIES.PONY_TRAILER,
+        name: 'Pony Trailer',
         defaultWeightDimensions: [
           {
-            axles: 3,
-            legal: 24000,
-            permittable: 28000,
+            axles: 2,
+            legal: 17000,
+            permittable: 21000,
           },
           {
             axles: 3,
-            legal: 24000,
-            permittable: 29000,
-            permittableAxleSpread: {
-              min: 240,
-              max: 370,
-            },
+            legal: 21000,
+            permittable: 21000,
+          },
+        ],
+        // TODO do these axle spread values apply to the pony-trailer category or the specific pony trailer type?
+        axleSpreads: [
+          {
+            axles: 3,
+            minAxleSpread: 240,
+            maxAxleSpread: 250,
           },
         ],
       },
@@ -4341,25 +4382,11 @@ export const data: PolicyDefinition = {
             },
           },
         ],
-      },
-      {
-        id: VEHICLE_CATEGORIES.WHEELER,
-        name: 'Wheeler',
-        defaultWeightDimensions: [
-          {
-            axles: 1,
-            legal: 0,
-            permittable: 0,
-          },
-          {
-            axles: 2,
-            legal: 17000,
-            permittable: 31000,
-          },
+        axleSpreads: [
           {
             axles: 3,
-            legal: 24000,
-            permittable: 40000,
+            minAxleSpread: 240,
+            maxAxleSpread: 370,
           },
         ],
       },
@@ -4384,22 +4411,47 @@ export const data: PolicyDefinition = {
         ],
       },
       {
-        id: VEHICLE_CATEGORIES.DOLLY,
-        name: 'Dolly',
-      },
-      {
-        id: VEHICLE_CATEGORIES.PONY_TRAILER,
-        name: 'Pony Trailer',
+        id: VEHICLE_CATEGORIES.TRAILER,
+        name: 'Default trailer category',
         defaultWeightDimensions: [
           {
-            axles: 2,
-            legal: 17000,
-            permittable: 21000,
+            axles: 3,
+            legal: 24000,
+            permittable: 28000,
           },
           {
             axles: 3,
-            legal: 21000,
-            permittable: 21000,
+            legal: 24000,
+            permittable: 29000,
+            permittableAxleSpread: {
+              min: 240,
+              max: 370,
+            },
+          },
+        ],
+      },
+      {
+        id: VEHICLE_CATEGORIES.WIDE_WHEELERS,
+        name: 'Wide Wheelers',
+      },
+      {
+        id: VEHICLE_CATEGORIES.WHEELER,
+        name: 'Wheeler',
+        defaultWeightDimensions: [
+          {
+            axles: 1,
+            legal: 0,
+            permittable: 0,
+          },
+          {
+            axles: 2,
+            legal: 17000,
+            permittable: 31000,
+          },
+          {
+            axles: 3,
+            legal: 24000,
+            permittable: 40000,
           },
         ],
       },
@@ -4691,6 +4743,13 @@ export const data: PolicyDefinition = {
             daPermittable: 28000,
           },
         ],
+        axleSpreads: [
+          {
+            axles: 3,
+            minAxleSpread: 240,
+            maxAxleSpread: 310,
+          },
+        ],
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
@@ -4722,6 +4781,7 @@ export const data: PolicyDefinition = {
             daPermittable: 28000,
           },
         ],
+
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
@@ -5302,50 +5362,6 @@ export const data: PolicyDefinition = {
             legal: 21000,
             permittable: 21000,
           },
-          {
-            axles: 3,
-            modifier: {
-              category: VEHICLE_CATEGORIES.POWER_UNIT,
-              position: RelativePosition.Before,
-              axles: 1,
-              minInteraxleSpacing: 300,
-            },
-            legal: 17000,
-            permittable: 17000,
-          },
-          {
-            axles: 3,
-            modifier: {
-              category: VEHICLE_CATEGORIES.MULTI_STEER,
-              position: RelativePosition.Before,
-              axles: 1,
-              minInteraxleSpacing: 300,
-            },
-            legal: 17000,
-            permittable: 17000,
-          },
-          {
-            axles: 3,
-            modifier: {
-              category: VEHICLE_CATEGORIES.POWER_UNIT,
-              position: RelativePosition.Before,
-              axles: 2,
-              minInteraxleSpacing: 550,
-            },
-            legal: 17000,
-            permittable: 21000,
-          },
-          {
-            axles: 3,
-            modifier: {
-              category: VEHICLE_CATEGORIES.MULTI_STEER,
-              position: RelativePosition.Before,
-              axles: 2,
-              minInteraxleSpacing: 550,
-            },
-            legal: 17000,
-            permittable: 21000,
-          },
         ],
       },
       {
@@ -5571,6 +5587,13 @@ export const data: PolicyDefinition = {
         name: TRAILERS.POLE_TRAILERS.name,
         category: VEHICLE_CATEGORIES.SEMI_TRAILER,
         displayCode: 'T',
+        axleSpreads: [
+          {
+            axles: 3,
+            minAxleSpread: 240,
+            maxAxleSpread: 310,
+          },
+        ],
       },
       {
         id: TRAILERS.PONY_TRAILERS.id,
@@ -5630,50 +5653,6 @@ export const data: PolicyDefinition = {
           {
             axles: 3,
             legal: 21000,
-            permittable: 21000,
-          },
-          {
-            axles: 3,
-            modifier: {
-              category: VEHICLE_CATEGORIES.POWER_UNIT,
-              position: RelativePosition.Before,
-              axles: 1,
-              minInteraxleSpacing: 300,
-            },
-            legal: 17000,
-            permittable: 17000,
-          },
-          {
-            axles: 3,
-            modifier: {
-              category: VEHICLE_CATEGORIES.MULTI_STEER,
-              position: RelativePosition.Before,
-              axles: 1,
-              minInteraxleSpacing: 300,
-            },
-            legal: 17000,
-            permittable: 17000,
-          },
-          {
-            axles: 3,
-            modifier: {
-              category: VEHICLE_CATEGORIES.POWER_UNIT,
-              position: RelativePosition.Before,
-              axles: 2,
-              minInteraxleSpacing: 550,
-            },
-            legal: 17000,
-            permittable: 21000,
-          },
-          {
-            axles: 3,
-            modifier: {
-              category: VEHICLE_CATEGORIES.MULTI_STEER,
-              position: RelativePosition.Before,
-              axles: 2,
-              minInteraxleSpacing: 550,
-            },
-            legal: 17000,
             permittable: 21000,
           },
         ],
@@ -5754,6 +5733,13 @@ export const data: PolicyDefinition = {
             axles: 2,
             legal: 9100,
             permittable: 18200,
+          },
+        ],
+        axleSpreads: [
+          {
+            axles: 2,
+            minAxleSpread: 186,
+            maxAxleSpread: 307,
           },
         ],
       },
