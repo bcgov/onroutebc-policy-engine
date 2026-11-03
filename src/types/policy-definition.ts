@@ -22,6 +22,7 @@ import {
 } from 'onroute-policy-engine/types';
 import { RuleProperties } from 'json-rules-engine';
 import { InteraxleSpacingRequirement } from './interaxle-spacing-requirement';
+import { AxleSpreadRequirement } from './axle-spread-requirement';
 
 /**
  * Complete policy definition containing all configuration data for the policy engine
@@ -41,6 +42,8 @@ export type PolicyDefinition = {
   globalSizeDefaults: SizeDimension;
   /** Global default interaxle spacing values for vehicles */
   globalInteraxleSpacingDefaults: InteraxleSpacingRequirement[];
+  /** Global default interaxle spacing values for vehicles */
+  globalAxleSpreadDefaults: AxleSpreadRequirement[];
   /** Vehicle categories configuration */
   vehicleCategories: VehicleCategories;
   /** Vehicle types configuration */

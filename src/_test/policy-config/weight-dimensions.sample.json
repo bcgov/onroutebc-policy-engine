@@ -443,6 +443,8 @@
       }
     ]
   },
+  "globalInteraxleSpacingDefaults": [],
+  "globalAxleSpreadDefaults": [],
   "vehicleCategories": {
     "trailerCategories": [
       {
@@ -5783,7 +5785,6 @@
     "h": 4.15,
     "l": 31
   },
-  "globalInteraxleSpacingDefaults": [],
   "conditions": [
     {
       "description": "General Permit Conditions",
