@@ -456,7 +456,7 @@ describe('Single Axle Booster Exception', () => {
       },
     ];
 
-    let axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
+    const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
       policy,
       vehicleConfiguration,
       axleConfiguration,
@@ -509,7 +509,7 @@ describe('Single Axle Jeep Tandem Drive Exception', () => {
       },
     ];
 
-    let axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
+    const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
       policy,
       vehicleConfiguration,
       axleConfiguration,
