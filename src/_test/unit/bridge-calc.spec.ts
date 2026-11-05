@@ -2,8 +2,7 @@ import { POWER_UNITS } from '../../constants/power-units';
 import { TRAILERS } from '../../constants/trailers';
 import { getAxleUnitVehicleIndexLookup } from '../../helper/dimensions.helper';
 import { Policy } from '../../policy-engine';
-import { AxleConfiguration, PolicyDefinition } from '../../types';
-import minimalPolicyDef from '../policy-config/mimimal.sample.json';
+import { AxleConfiguration } from '../../types';
 import currentPolicyConfig from '../policy-config/_current-config.json';
 
 const threeAxleConfig: Array<AxleConfiguration> = [
@@ -31,7 +30,7 @@ const vehicleConfiguration = [
 ];
 
 describe('Bridge Calculation Results Validation Tests', () => {
-  const policy: Policy = new Policy(minimalPolicyDef);
+  const policy: Policy = new Policy(currentPolicyConfig);
 
   let axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
     policy,
@@ -122,7 +121,7 @@ describe('Bridge Calculation Results Validation Tests', () => {
 });
 
 describe('Bridge Calculation Input Validation Error Tests', () => {
-  const policy: Policy = new Policy(minimalPolicyDef);
+  const policy: Policy = new Policy(currentPolicyConfig);
   let axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
     policy,
     vehicleConfiguration,
@@ -413,7 +412,7 @@ describe('Bridge Calculation Input Validation Error Tests', () => {
 
 // Source: ASW Permittable Interaxle Spacing - Boosters.feature @orv2-6030-3 - bridge formula result is not applicable
 describe('Single Axle Booster Exception', () => {
-  const policy: Policy = new Policy(minimalPolicyDef);
+  const policy: Policy = new Policy(currentPolicyConfig);
 
   it('when a booster is behind a semi trailer, all booster and semi trailer axle units should pass bridge formula successfully', async () => {
     const vehicleConfiguration = [
@@ -475,7 +474,7 @@ describe('Single Axle Booster Exception', () => {
 
 // Source: ASW Permittable Interaxle Spacing - Jeeps.feature @orv2-6069-1 - bridge formula result is not applicable
 describe('Single Axle Jeep Tandem Drive Exception', () => {
-  const policy: Policy = new Policy(minimalPolicyDef);
+  const policy: Policy = new Policy(currentPolicyConfig);
 
   it('when a single axle jeep is behind a tandem drive power unit, all axle groups which span the drive axle and jeep axle should pass bridge formula successfully when trailer group spacing is below 3.7 m', async () => {
     const vehicleConfiguration = [
