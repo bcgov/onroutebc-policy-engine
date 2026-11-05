@@ -129,6 +129,20 @@ describe('Axle Calculation Functions', () => {
       expectInteraxleSpacingResult(ac, 2, PolicyCheckResultType.Pass);
     });
 
+    it('fails when interaxle spacing is below the minimum threshold', () => {
+      const ac: Array<AxleConfiguration> = [
+        { numberOfAxles: 1, axleUnitWeight: 5000 },
+        { numberOfAxles: 2, interaxleSpacing: 299, axleUnitWeight: 10000 },
+      ];
+
+      expectInteraxleSpacingResult(
+        ac,
+        2,
+        PolicyCheckResultType.Fail,
+        'Interaxle Spacing between Axle Unit 1 and Axle Unit 2 must be at least 3.0 m.',
+      );
+    });
+
     it('passes for the first axle unit because it has no preceding interaxle spacing field', () => {
       const ac: Array<AxleConfiguration> = [
         { numberOfAxles: 1, axleUnitWeight: 5000 },
@@ -141,6 +155,7 @@ describe('Axle Calculation Functions', () => {
     it.each([
       ['tandem jeep at minimum', 2, 420, PolicyCheckResultType.Pass],
       ['tridem jeep at minimum', 3, 420, PolicyCheckResultType.Pass],
+      ['jeep below minimum', 2, 419, PolicyCheckResultType.Fail],
     ])(
       'validates jeep spacing for %s',
       (_description, jeepAxles, spacingCm, expectedResult) => {

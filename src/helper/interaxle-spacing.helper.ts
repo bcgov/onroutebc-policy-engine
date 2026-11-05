@@ -79,6 +79,10 @@ export function getInteraxleSpacingRequirement(
     axleUnitVehicleIndexes,
   );
 
+  if (matchingRequirement) {
+    return matchingRequirement;
+  }
+
   return undefined;
 }
 
