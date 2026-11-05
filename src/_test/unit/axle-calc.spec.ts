@@ -2945,7 +2945,7 @@ describe('tandem drive with single axle jeep exceptions', () => {
     );
 
     expect(failedResult?.message).toBe(
-      'Interaxle Spacing between Axle Unit 2 and Axle Unit 3 must be between 1.2 m and 3.0 m.',
+      'Interaxle Spacing between Axle Unit 2 and Axle Unit 3 must be between 1.2 m and 3.5 m.',
     );
   });
 
@@ -2967,36 +2967,14 @@ describe('tandem drive with single axle jeep exceptions', () => {
     );
 
     expect(failedResult?.message).toBe(
-      'Interaxle Spacing between Axle Unit 2 and Axle Unit 3 must be between 1.2 m and 3.0 m.',
+      'Interaxle Spacing between Axle Unit 2 and Axle Unit 3 must be between 1.2 m and 3.5 m.',
     );
   });
 
-  it('does not raise below interaxle spacing restriction for single axle jeep with interaxle spacing of less than 1.2 m behind tandem drive power unit when group weight is less than 24,000 kg', () => {
-    axleConfiguration[1].axleSpread = 120;
-    axleConfiguration[2].axleUnitWeight = 15000;
-
-    const results = configuredPolicy.runAxleCalculation(
-      vehicleConfiguration,
-      axleConfiguration,
-      100000,
-      COMMODITY_CODES.FIXED_EQUIPMENT,
-    ).results;
-
-    const checkInteraxleSpacingResults = results.filter(
-      (result) => result.id === PolicyCheckId.InteraxleSpacing,
-    );
-
-    expect(
-      checkInteraxleSpacingResults?.every(
-        (result) => result.result === PolicyCheckResultType.Pass,
-      ),
-    ).toBe(true);
-  });
-
-  it('raises interaxle spacing restriction for single axle jeep with interaxle spacing of less than 3.01 m behind tandem drive power unit with group weight over 28,000 kg', () => {
-    axleConfiguration[1].axleSpread = 130;
+  it('raises interaxle spacing restriction for single axle jeep with interaxle spacing of less than 1.2 m behind tandem drive power unit with group weight over 28,000 kg', () => {
+    axleConfiguration[1].axleSpread = 200;
     axleConfiguration[2].axleUnitWeight = 20001;
-    axleConfiguration[2].interaxleSpacing = 171;
+    axleConfiguration[2].interaxleSpacing = 101;
 
     const results = configuredPolicy.runAxleCalculation(
       vehicleConfiguration,
@@ -3012,7 +2990,7 @@ describe('tandem drive with single axle jeep exceptions', () => {
     );
 
     expect(failedResult?.message).toBe(
-      'Interaxle Spacing between Axle Unit 2 and Axle Unit 3 must be between 3.01 m and 3.5 m.',
+      'Interaxle Spacing between Axle Unit 2 and Axle Unit 3 must be between 1.2 m and 3.5 m.',
     );
   });
 

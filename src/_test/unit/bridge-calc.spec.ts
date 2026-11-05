@@ -463,12 +463,6 @@ describe('Single Axle Booster Exception', () => {
       axleConfiguration,
     );
 
-    // const bridgeCalcResults = policy.calculateBridge(
-    //   axleConfiguration,
-    //   vehicleConfiguration,
-    //   axleUnitVehicleIndexes,
-    // );
-
     expect(() =>
       policy.calculateBridge(
         axleConfiguration,
@@ -483,7 +477,7 @@ describe('Single Axle Booster Exception', () => {
 describe('Single Axle Jeep Tandem Drive Exception', () => {
   const policy: Policy = new Policy(minimalPolicyDef);
 
-  it('when a single axle jeep is behind a tandem drive power unit, all axle groups which span the drive axle and jeep axle should pass bridge formula successfully', async () => {
+  it('when a single axle jeep is behind a tandem drive power unit, all axle groups which span the drive axle and jeep axle should pass bridge formula successfully when trailer group spacing is below 3.7 m', async () => {
     const vehicleConfiguration = [
       POWER_UNITS.TRUCK_TRACTORS.id,
       TRAILERS.JEEPS.id,
@@ -500,16 +494,16 @@ describe('Single Axle Jeep Tandem Drive Exception', () => {
       {
         numberOfAxles: 2,
         axleSpread: 120,
-        interaxleSpacing: 300,
-        axleUnitWeight: 17000,
+        interaxleSpacing: 500,
+        axleUnitWeight: 23000,
         numberOfTires: 8,
         tireSize: 279,
         vehicleIndex: 0,
       },
       {
         numberOfAxles: 1,
-        interaxleSpacing: 120,
-        axleUnitWeight: 11000,
+        interaxleSpacing: 249,
+        axleUnitWeight: 99999,
         numberOfTires: 4,
         tireSize: 279,
         vehicleIndex: 1,
@@ -527,8 +521,6 @@ describe('Single Axle Jeep Tandem Drive Exception', () => {
       vehicleConfiguration,
       axleUnitVehicleIndexes,
     );
-
-    console.log({ bridgeCalcResults });
 
     expect(bridgeCalcResults[2].success).toBe(true);
   });

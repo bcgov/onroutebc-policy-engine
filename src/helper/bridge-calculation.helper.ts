@@ -3,7 +3,6 @@ import {
   AxleConfiguration,
 } from 'onroute-policy-engine/types';
 import { Policy } from 'onroute-policy-engine';
-import { getAxleUnitType } from '../types/axle-unit-type';
 import { TRAILERS } from '../constants/trailers';
 import { getAxleGroupSpacings } from './interaxle-spacing.helper';
 import { isSemiTrailerType } from '../constants/semi-trailer-codes';
@@ -149,26 +148,21 @@ const isTandemDriveSingleAxleJeepException = (
   vehicleConfiguration: Array<string>,
   startAxleIndex: number,
 ) => {
-  const hasSingleAxleJeep =
+  const hasSingleAxleJeepFollowingDriveAxle =
     vehicleConfiguration[1] === TRAILERS.JEEPS.id &&
-    getAxleUnitType(axleConfiguration[2]?.numberOfAxles) === 'SINGLE';
-  const hasTandemDrive =
-    getAxleUnitType(axleConfiguration[1]?.numberOfAxles) === 'TANDEM';
+    axleConfiguration[2]?.numberOfAxles === 1;
+
+  const hasTandemDrive = axleConfiguration[1]?.numberOfAxles === 2;
 
   const trailerGroupSpacing = axleConfiguration[2]?.axleGroupSpacing ?? 0;
-  const isDriveAxle = startAxleIndex === 1;
-  const isJeepAxle = hasSingleAxleJeep && startAxleIndex === 2;
-  const firstTrailerInteraxleSpacing =
-    axleConfiguration[2]?.interaxleSpacing ?? 0;
+
+  const isJeepAxle = startAxleIndex === 2;
 
   const result =
-    (isDriveAxle || isJeepAxle) &&
+    isJeepAxle &&
     hasTandemDrive &&
-    hasSingleAxleJeep &&
-    trailerGroupSpacing >= 240 &&
-    trailerGroupSpacing <= 370 &&
-    firstTrailerInteraxleSpacing >= 120 &&
-    firstTrailerInteraxleSpacing <= 350;
+    hasSingleAxleJeepFollowingDriveAxle &&
+    trailerGroupSpacing <= 370;
 
   return result;
 };

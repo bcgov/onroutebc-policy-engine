@@ -79,13 +79,6 @@ export function getInteraxleSpacingRequirement(
     axleUnitVehicleIndexes,
   );
 
-  if (matchingRequirement) {
-    if (axleIndex === 2) {
-      console.log({ matchingRequirement });
-    }
-    return matchingRequirement;
-  }
-
   return undefined;
 }
 
@@ -324,17 +317,6 @@ export function getAxleGroupSpacings(
     const axleGroupSpacing =
       prevAxleSpread + interaxleSpacing + currentAxleSpread;
 
-    // const currentAxleUnitNumber = axleIndex + 1;
-    // if (axleGroupSpacing) {
-    //   console.log(
-    //     `axleGroupSpacing: ${axleGroupSpacing} found for axleUnit number ${currentAxleUnitNumber}: ${JSON.stringify(axleConfiguration[axleIndex])}`,
-    //   );
-    // } else {
-    //   console.log(
-    //     `axleGroupSpacing not found for axleUnit number ${currentAxleUnitNumber}: ${JSON.stringify(axleConfiguration[axleIndex])}`,
-    //   );
-    // }
-
     return { ...axleUnit, axleGroupSpacing };
   });
 }
@@ -361,16 +343,6 @@ export function getAxleGroupWeights(
           result.startAxleUnit === previousAxleUnitNumber &&
           result.endAxleUnit === currentAxleUnitNumber,
       )?.actualWeight;
-
-    // if (axleGroupWeight) {
-    //   console.log(
-    //     `axleGroupWeight: ${axleGroupWeight} found for axleUnit number ${currentAxleUnitNumber}: ${JSON.stringify(axleConfiguration[axleIndex])}`,
-    //   );
-    // } else {
-    //   console.log(
-    //     `axleGroupWeight not found for axleUnit number ${currentAxleUnitNumber}: ${JSON.stringify(axleConfiguration[axleIndex])}`,
-    //   );
-    // }
 
     return { ...axleUnit, axleGroupWeight };
   });

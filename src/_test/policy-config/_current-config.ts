@@ -12,7 +12,7 @@ import { POWER_UNITS } from '../../constants/power-units';
 import { TRAILERS } from '../../constants/trailers';
 
 export const data: PolicyDefinition = {
-  minPEVersion: '3.0.0',
+  minPEVersion: '3.1.0',
   geographicRegions: [
     {
       id: GEOGRAPHIC_REGIONS.LOWER_MAINLAND,
@@ -4313,7 +4313,6 @@ export const data: PolicyDefinition = {
     },
   ],
   vehicleCategories: {
-    // TODO this array needs to be updated to include all of the trailer categories contained in the VEHICLE_CATEGORIES const
     trailerCategories: [
       {
         id: VEHICLE_CATEGORIES.BOOSTER,
@@ -5419,11 +5418,6 @@ export const data: PolicyDefinition = {
           {
             axles: [21],
             maxAxleGroupWeight: 28000,
-            // TODO given the outlined scenario below, it sounds like we need to reduce the minAxleGroupSpacing in order to show this error message. Is this correct?
-            // A1: In this scenario since the axle group spacing is 2.19 and the axle group weight is 24001 we would evaluate against 7.16g (24000) and 7.17 (18000) and establish legal as 24000 (because its greater than 18000). The result would be:
-            // 1. Interaxle Spacing between Axle Unit 2 and Axle Unit 3 must be between 1.2 and 3.5 m
-            // 1. Indicate on interaxle spacing between 2 and 3
-            // 2. Show an overload of 2901 kg on the axle unit 3
             minAxleGroupSpacing: 240,
             maxAxleGroupSpacing: 300,
             modifier: {
@@ -5479,6 +5473,7 @@ export const data: PolicyDefinition = {
         id: TRAILERS.LOGGING_NON_TAC_B_TRAINS.id,
         name: TRAILERS.LOGGING_NON_TAC_B_TRAINS.name,
         category: VEHICLE_CATEGORIES.TRAILER,
+        displayCode: 'T',
       },
       {
         id: TRAILERS.LOGGING_SINGLE_AXLE_JEEPS.id,
