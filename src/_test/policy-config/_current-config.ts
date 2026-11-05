@@ -5410,6 +5410,7 @@ export const data: PolicyDefinition = {
           {
             axles: [11, 21, 31],
             min: 120,
+            max: 350,
           },
           {
             axles: [22, 32, 23, 33],
@@ -5417,25 +5418,20 @@ export const data: PolicyDefinition = {
           },
           {
             axles: [21],
-            maxAxleGroupWeight: 24000,
-            maxAxleGroupSpacing: 239,
-            modifier: {
-              category: VEHICLE_CATEGORIES.POWER_UNIT,
-              position: RelativePosition.Before,
-            },
-            max: 119,
-          },
-          {
-            axles: [21],
             maxAxleGroupWeight: 28000,
+            // TODO given the outlined scenario below, it sounds like we need to reduce the minAxleGroupSpacing in order to show this error message. Is this correct?
+            // A1: In this scenario since the axle group spacing is 2.19 and the axle group weight is 24001 we would evaluate against 7.16g (24000) and 7.17 (18000) and establish legal as 24000 (because its greater than 18000). The result would be:
+            // 1. Interaxle Spacing between Axle Unit 2 and Axle Unit 3 must be between 1.2 and 3.5 m
+            // 1. Indicate on interaxle spacing between 2 and 3
+            // 2. Show an overload of 2901 kg on the axle unit 3
             minAxleGroupSpacing: 240,
-            maxAxleGroupSpacing: 299,
+            maxAxleGroupSpacing: 300,
             modifier: {
               category: VEHICLE_CATEGORIES.POWER_UNIT,
               position: RelativePosition.Before,
             },
             min: 120,
-            max: 300,
+            max: 350,
           },
           {
             axles: [21],
@@ -5446,7 +5442,7 @@ export const data: PolicyDefinition = {
               category: VEHICLE_CATEGORIES.POWER_UNIT,
               position: RelativePosition.Before,
             },
-            min: 301,
+            min: 120,
             max: 350,
           },
           {

@@ -2168,6 +2168,27 @@ describe('Axle Calculation Functions', () => {
       });
     });
 
+    it('should fail tandem axle spread below 1.0 m', () => {
+      const results = CheckAxleSpread(
+        policy,
+        [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id],
+        [
+          { numberOfAxles: 1, axleUnitWeight: 6700 },
+          { numberOfAxles: 1, axleUnitWeight: 6700 },
+          { numberOfAxles: 2, axleUnitWeight: 12000, axleSpread: 99 },
+        ],
+      );
+
+      expect(results).toHaveLength(3);
+      expect(results[2]).toMatchObject({
+        id: PolicyCheckId.AxleSpread,
+        result: PolicyCheckResultType.Fail,
+        message:
+          'Axle Spread for Axle Unit 3 must be between 1.0 m and 1.85 m.',
+        axleUnit: 3,
+      });
+    });
+
     it('should apply tandem semi-trailer spread bounds for STWDTAN', () => {
       const resultsPass = CheckAxleSpread(
         policy,

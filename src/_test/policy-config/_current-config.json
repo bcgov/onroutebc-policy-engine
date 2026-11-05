@@ -5416,7 +5416,8 @@
               21,
               31
             ],
-            "min": 120
+            "min": 120,
+            "max": 350
           },
           {
             "axles": [
@@ -5431,27 +5432,15 @@
             "axles": [
               21
             ],
-            "maxAxleGroupWeight": 24000,
-            "maxAxleGroupSpacing": 239,
-            "modifier": {
-              "category": "powerunit",
-              "position": "before"
-            },
-            "max": 119
-          },
-          {
-            "axles": [
-              21
-            ],
             "maxAxleGroupWeight": 28000,
             "minAxleGroupSpacing": 240,
-            "maxAxleGroupSpacing": 299,
+            "maxAxleGroupSpacing": 300,
             "modifier": {
               "category": "powerunit",
               "position": "before"
             },
             "min": 120,
-            "max": 300
+            "max": 350
           },
           {
             "axles": [
@@ -5464,7 +5453,7 @@
               "category": "powerunit",
               "position": "before"
             },
-            "min": 301,
+            "min": 120,
             "max": 350
           },
           {

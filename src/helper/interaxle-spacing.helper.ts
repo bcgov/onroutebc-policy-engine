@@ -317,8 +317,6 @@ export function getAxleGroupSpacings(
       return axleUnit;
     }
 
-    const currentAxleUnitNumber = axleIndex + 1;
-
     const prevAxleSpread = axleConfiguration[axleIndex - 1].axleSpread ?? 0;
     const interaxleSpacing = axleUnit.interaxleSpacing ?? 0;
     const currentAxleSpread = axleUnit.axleSpread ?? 0;
@@ -326,15 +324,16 @@ export function getAxleGroupSpacings(
     const axleGroupSpacing =
       prevAxleSpread + interaxleSpacing + currentAxleSpread;
 
-    if (axleGroupSpacing) {
-      console.log(
-        `axleGroupSpacing: ${axleGroupSpacing} found for axleUnit number ${currentAxleUnitNumber}: ${JSON.stringify(axleConfiguration[axleIndex])}`,
-      );
-    } else {
-      console.log(
-        `axleGroupSpacing not found for axleUnit number ${currentAxleUnitNumber}: ${JSON.stringify(axleConfiguration[axleIndex])}`,
-      );
-    }
+    // const currentAxleUnitNumber = axleIndex + 1;
+    // if (axleGroupSpacing) {
+    //   console.log(
+    //     `axleGroupSpacing: ${axleGroupSpacing} found for axleUnit number ${currentAxleUnitNumber}: ${JSON.stringify(axleConfiguration[axleIndex])}`,
+    //   );
+    // } else {
+    //   console.log(
+    //     `axleGroupSpacing not found for axleUnit number ${currentAxleUnitNumber}: ${JSON.stringify(axleConfiguration[axleIndex])}`,
+    //   );
+    // }
 
     return { ...axleUnit, axleGroupSpacing };
   });
@@ -363,15 +362,15 @@ export function getAxleGroupWeights(
           result.endAxleUnit === currentAxleUnitNumber,
       )?.actualWeight;
 
-    if (axleGroupWeight) {
-      console.log(
-        `axleGroupWeight: ${axleGroupWeight} found for axleUnit number ${currentAxleUnitNumber}: ${JSON.stringify(axleConfiguration[axleIndex])}`,
-      );
-    } else {
-      console.log(
-        `axleGroupWeight not found for axleUnit number ${currentAxleUnitNumber}: ${JSON.stringify(axleConfiguration[axleIndex])}`,
-      );
-    }
+    // if (axleGroupWeight) {
+    //   console.log(
+    //     `axleGroupWeight: ${axleGroupWeight} found for axleUnit number ${currentAxleUnitNumber}: ${JSON.stringify(axleConfiguration[axleIndex])}`,
+    //   );
+    // } else {
+    //   console.log(
+    //     `axleGroupWeight not found for axleUnit number ${currentAxleUnitNumber}: ${JSON.stringify(axleConfiguration[axleIndex])}`,
+    //   );
+    // }
 
     return { ...axleUnit, axleGroupWeight };
   });
