@@ -4749,6 +4749,30 @@ export const data: PolicyDefinition = {
             maxAxleSpread: 310,
           },
         ],
+        wheelbaseLimits: [
+          {
+            axles: 13,
+            minWheelbase: 660,
+          },
+          {
+            axles: 23,
+            maxWheelbase: 1000,
+          },
+          {
+            axles: 23,
+            minAxleSpread: 280,
+            maxAxleSpread: 299,
+            minWheelbase: 780,
+            maxWheelbase: 1000,
+          },
+          {
+            axles: 23,
+            minAxleSpread: 300,
+            maxAxleSpread: 310,
+            minWheelbase: 790,
+            maxWheelbase: 1000,
+          },
+        ],
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
@@ -4874,6 +4898,23 @@ export const data: PolicyDefinition = {
             daPermittable: 28000,
           },
         ],
+        wheelbaseLimits: [
+          {
+            axles: 12,
+            maxWheelbase: 720,
+          },
+          {
+            axles: 13,
+            minWheelbase: 660,
+            maxWheelbase: 680,
+          },
+          {
+            axles: 23,
+            minAxleSpread: 240,
+            maxAxleSpread: 279,
+            minWheelbase: 770,
+          },
+        ],
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
@@ -4912,6 +4953,19 @@ export const data: PolicyDefinition = {
             daPermittable: 28000,
           },
         ],
+        wheelbaseLimits: [
+          {
+            axles: 13,
+            minWheelbase: 660,
+            maxWheelbase: 680,
+          },
+          {
+            axles: 23,
+            minAxleSpread: 240,
+            maxAxleSpread: 279,
+            minWheelbase: 770,
+          },
+        ],
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
@@ -4948,6 +5002,19 @@ export const data: PolicyDefinition = {
             saPermittable: 15200,
             daLegal: 24000,
             daPermittable: 28000,
+          },
+        ],
+        wheelbaseLimits: [
+          {
+            axles: 13,
+            minWheelbase: 660,
+            maxWheelbase: 680,
+          },
+          {
+            axles: 23,
+            minAxleSpread: 240,
+            maxAxleSpread: 279,
+            minWheelbase: 770,
           },
         ],
         displayCodePrefix: 'TT',
@@ -5116,6 +5183,23 @@ export const data: PolicyDefinition = {
         id: POWER_UNITS.TRUCK_TRACTORS.id,
         name: POWER_UNITS.TRUCK_TRACTORS.name,
         category: VEHICLE_CATEGORIES.POWER_UNIT,
+        wheelbaseLimits: [
+          {
+            axles: 12,
+            maxWheelbase: 720,
+          },
+          {
+            axles: 13,
+            minWheelbase: 660,
+            maxWheelbase: 680,
+          },
+          {
+            axles: 23,
+            minAxleSpread: 240,
+            maxAxleSpread: 279,
+            minWheelbase: 770,
+          },
+        ],
         displayCodePrefix: 'TT',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'D',
@@ -5146,6 +5230,18 @@ export const data: PolicyDefinition = {
             saPermittable: 9100,
             daLegal: 17000,
             daPermittable: 23000,
+          },
+        ],
+        wheelbaseLimits: [
+          {
+            axles: 13,
+            minWheelbase: 660,
+          },
+          {
+            axles: 23,
+            minAxleSpread: 240,
+            maxAxleSpread: 279,
+            minWheelbase: 770,
           },
         ],
         displayCodePrefix: 'TT',

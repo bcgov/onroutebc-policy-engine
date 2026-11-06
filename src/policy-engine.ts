@@ -80,6 +80,8 @@ import { VEHICLE_CATEGORIES } from './constants/vehicle-categories';
 import { TRAILERS } from './constants/trailers';
 import { AxleSpreadRequirement } from './types/axle-spread-requirement';
 import { getDefaultAxleSpreadHelper } from './helper/axle-spread.helper';
+import { WheelbaseRequirement } from './types/wheelbase-requirement';
+import { getDefaultWheelbaseHelper } from './helper/wheelbase-helper';
 
 /** Class representing commercial vehicle policy. */
 export class Policy {
@@ -1282,6 +1284,23 @@ export class Policy {
     axles: number,
   ): Array<AxleSpreadRequirement> {
     return getDefaultAxleSpreadHelper(this, subType, axles, true);
+  }
+
+  /**
+   * Gets the default wheelbase value for a
+   * given power unit type and number of axles.
+   * @param subType Power unit subtype
+   * @param axles 2-digit number representing the axle unit pair this requirement
+   * applies to. The most significant digit is the previous axle unit and the
+   * least significant digit is the current axle unit, in this case the drive axle.
+   * @returns Array of wheelbase requirements. Multiple requirements may be returned if there are different values depending on subsequent trailers in the
+   * configuration (modifiers) or restrictions on axle spread values within the power unit. Will return an empty array if the number of axles is not configured in policy.
+   */
+  getDefaultPowerUnitWheelbase(
+    subType: string,
+    axles: number,
+  ): Array<WheelbaseRequirement> {
+    return getDefaultWheelbaseHelper(this, subType, axles);
   }
 
   /**

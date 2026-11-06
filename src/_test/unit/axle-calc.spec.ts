@@ -1819,7 +1819,7 @@ describe('Axle Calculation Functions', () => {
     });
   });
 
-  it('should fail single steer wheelbase below 6.6m for trucks', async () => {
+  it('should fail single steer wheelbase below 6.6 m for trucks', async () => {
     const results = CheckWheelbaseLegalLimits(
       policy,
       [POWER_UNITS.TRUCKS.id],
@@ -1837,11 +1837,11 @@ describe('Axle Calculation Functions', () => {
     expect(results[0]).toMatchObject({
       id: PolicyCheckId.WheelbaseLegalLimits,
       result: PolicyCheckResultType.Fail,
-      message: 'Wheelbase for Axle Unit 1 is less than 6.6 m.',
+      message: 'Wheelbase for Axle Unit 1 and Axle Unit 2 is less than 6.6 m.',
     });
   });
 
-  it('should fail single steer wheelbase above 6.8m for truck tractors', async () => {
+  it('should fail single steer wheelbase above 6.8 m for truck tractors', async () => {
     const results = CheckWheelbaseLegalLimits(
       policy,
       [POWER_UNITS.TRUCK_TRACTORS.id],
@@ -1859,11 +1859,12 @@ describe('Axle Calculation Functions', () => {
     expect(results[0]).toMatchObject({
       id: PolicyCheckId.WheelbaseLegalLimits,
       result: PolicyCheckResultType.Fail,
-      message: 'Wheelbase for Axle Unit 1 is greater than 6.8 m.',
+      message:
+        'Wheelbase for Axle Unit 1 and Axle Unit 2 is greater than 6.8 m.',
     });
   });
 
-  it('should fail tandem steer tridem drive wheelbase below 7.7m for supported subtypes', async () => {
+  it('should fail tandem steer tridem drive wheelbase below 7.7 m for supported subtypes', async () => {
     const results = CheckWheelbaseLegalLimits(
       policy,
       [POWER_UNITS.TRUCKS.id],
@@ -1881,11 +1882,11 @@ describe('Axle Calculation Functions', () => {
     expect(results[0]).toMatchObject({
       id: PolicyCheckId.WheelbaseLegalLimits,
       result: PolicyCheckResultType.Fail,
-      message: 'Wheelbase for Axle Unit 1 is less than 7.7 m.',
+      message: 'Wheelbase for Axle Unit 1 and Axle Unit 2 is less than 7.7 m.',
     });
   });
 
-  it('should fail oilfield bed truck wheelbase below 7.8m for 2.8m to less than 3.0m axle spread', async () => {
+  it('should fail oilfield bed truck wheelbase below 7.8 m for 2.8m to less than 3.0m axle spread', async () => {
     const results = CheckWheelbaseLegalLimits(
       policy,
       [POWER_UNITS.OIL_AND_GAS_BED_TRUCKS.id],
@@ -1903,11 +1904,11 @@ describe('Axle Calculation Functions', () => {
     expect(results[0]).toMatchObject({
       id: PolicyCheckId.WheelbaseLegalLimits,
       result: PolicyCheckResultType.Fail,
-      message: 'Wheelbase for Axle Unit 1 is less than 7.8 m.',
+      message: 'Wheelbase for Axle Unit 1 and Axle Unit 2 is less than 7.8 m.',
     });
   });
 
-  it('should fail oilfield bed truck wheelbase below 7.9m for 3.0m to 3.1m axle spread', async () => {
+  it('should fail oilfield bed truck wheelbase below 7.9 m for 3.0 m to 3.1 m axle spread', async () => {
     const results = CheckWheelbaseLegalLimits(
       policy,
       [POWER_UNITS.OIL_AND_GAS_BED_TRUCKS.id],
@@ -1925,7 +1926,7 @@ describe('Axle Calculation Functions', () => {
     expect(results[0]).toMatchObject({
       id: PolicyCheckId.WheelbaseLegalLimits,
       result: PolicyCheckResultType.Fail,
-      message: 'Wheelbase for Axle Unit 1 is less than 7.9 m.',
+      message: 'Wheelbase for Axle Unit 1 and Axle Unit 2 is less than 7.9 m.',
     });
   });
 
@@ -1947,7 +1948,8 @@ describe('Axle Calculation Functions', () => {
     expect(results[0]).toMatchObject({
       id: PolicyCheckId.WheelbaseLegalLimits,
       result: PolicyCheckResultType.Fail,
-      message: 'Wheelbase for Axle Unit 1 is greater than 10.0 m.',
+      message:
+        'Wheelbase for Axle Unit 1 and Axle Unit 2 is greater than 10.0 m.',
     });
   });
 
@@ -1971,7 +1973,7 @@ describe('Axle Calculation Functions', () => {
       id: PolicyCheckId.WheelbaseLegalLimits,
       result: PolicyCheckResultType.Warning,
       message:
-        'Wheelbase for Axle Unit 1 and Axle Unit 2 is between 6.2m and 7.2m. Semi-Trailer wheelbase must be within dimensions table found in CTPM 5.3.7.A.',
+        'Wheelbase for Axle Unit 1 and Axle Unit 2 is between 6.2 m and 7.2 m. Semi-Trailer wheelbase must be within dimensions table found in CTPM 5.3.7.A.',
       startAxleUnit: 1,
       endAxleUnit: 2,
     });
@@ -1997,7 +1999,7 @@ describe('Axle Calculation Functions', () => {
       id: PolicyCheckId.WheelbaseLegalLimits,
       result: PolicyCheckResultType.Fail,
       message:
-        'Wheelbase for Axle Unit 1 and Axle Unit 2 is greater than 7.2m.',
+        'Wheelbase for Axle Unit 1 and Axle Unit 2 is greater than 7.2 m.',
       startAxleUnit: 1,
       endAxleUnit: 2,
     });
@@ -2028,7 +2030,7 @@ describe('Axle Calculation Functions', () => {
     });
   });
 
-  it('should fail truck tractor wheelbase between 6.2m and 7.2m when trailer type is not semi-trailer type', async () => {
+  it('should fail truck tractor wheelbase between 6.2 m and 7.2 m when trailer type is not semi-trailer type', async () => {
     const jeepResults = CheckWheelbaseLegalLimits(
       policy,
       [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.JEEPS.id],
@@ -2078,12 +2080,12 @@ describe('Axle Calculation Functions', () => {
     expect(jeepResults[0]).toMatchObject({
       result: PolicyCheckResultType.Fail,
       message:
-        'Wheelbase for Axle Unit 1 and Axle Unit 2 is between 6.2m and 7.2m. See CTPM 5.3.7.A.',
+        'Wheelbase for Axle Unit 1 and Axle Unit 2 is between 6.2 m and 7.2 m. See CTPM 5.3.7.A.',
     });
     expect(boosterResults[0]).toMatchObject({
       result: PolicyCheckResultType.Fail,
       message:
-        'Wheelbase for Axle Unit 1 and Axle Unit 2 is between 6.2m and 7.2m. See CTPM 5.3.7.A.',
+        'Wheelbase for Axle Unit 1 and Axle Unit 2 is between 6.2 m and 7.2 m. See CTPM 5.3.7.A.',
     });
   });
 
