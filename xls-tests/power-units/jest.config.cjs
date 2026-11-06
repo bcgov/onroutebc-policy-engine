@@ -3,7 +3,10 @@ const base = require('../shared/jest.base.config.cjs');
 module.exports = {
   ...base,
   rootDir: __dirname,
-  testMatch: ['<rootDir>/power-unit-weight-limits.spec.ts'],
+  testMatch: [
+    '<rootDir>/vehicle-codes.spec.ts',
+    '<rootDir>/power-unit-weight-limits.spec.ts',
+  ],
   globalSetup: '<rootDir>/load-power-unit-rows.cjs',
   reporters: [
     'default',
