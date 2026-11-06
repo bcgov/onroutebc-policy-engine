@@ -163,7 +163,7 @@ export function runBridgeFormula(
         //   isSemiTrailerType(startAxleVehicleType);
 
         // const isEndAxleVehicleTypeBooster =
-        //   endAxleVehicleType === TRAILER_CODES.BOOSTER;
+        //   endAxleVehicleType === TRAILERS.BOOSTER.id;
 
         // const exception =
         //   isStartAxleVehicleTypeSemiTrailer && isEndAxleVehicleTypeBooster;

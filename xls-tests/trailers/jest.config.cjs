@@ -4,6 +4,7 @@ module.exports = {
   ...base,
   rootDir: __dirname,
   testMatch: [
+    '<rootDir>/vehicle-codes.spec.ts',
     '<rootDir>/trailer-weight-limits.spec.ts',
     '<rootDir>/source-geometry.spec.ts',
     '<rootDir>/trailer-fixture.spec.ts',

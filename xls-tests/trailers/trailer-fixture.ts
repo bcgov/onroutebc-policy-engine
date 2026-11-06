@@ -1,6 +1,6 @@
 // Builds the vehicle and axle configuration for one trailer workbook row.
-import { POWER_UNIT_CODES } from '../../src/constants/power-unit-codes';
-import { TRAILER_CODES } from '../../src/constants/trailer-codes';
+import { POWER_UNITS } from '../../src/constants/power-units';
+import { TRAILERS } from '../../src/constants/trailers';
 import { AxleConfiguration, Commodity } from '../../src/types';
 import { AXLE_TYPES, getAxleCount, isAxleType } from '../shared/axle-types';
 
@@ -49,11 +49,11 @@ export function getNeighbourAxleTypes(workbookAxleType: string): string[] {
  */
 export function getTrailerFixturePowerUnits(
   commodityPowerUnits: Commodity['powerUnits'],
-  trailerCode: string,
+  trailerCode: string | null,
   neighbourCategory: string,
 ): string[] {
   if (neighbourCategory === 'Cranes - Mobile') {
-    return [POWER_UNIT_CODES.CRANES_MOBILE];
+    return [POWER_UNITS.CRANES_MOBILE.id];
   }
   const powerUnitsThatTowTrailer = commodityPowerUnits
     .filter((powerUnit) =>
@@ -61,7 +61,7 @@ export function getTrailerFixturePowerUnits(
     )
     .map((powerUnit) => powerUnit.type);
   return [
-    ...new Set([POWER_UNIT_CODES.TRUCK_TRACTORS, ...powerUnitsThatTowTrailer]),
+    ...new Set([POWER_UNITS.TRUCK_TRACTORS.id, ...powerUnitsThatTowTrailer]),
   ];
 }
 
@@ -97,7 +97,7 @@ export function buildTrailerFixture(row: TrailerFixtureInput, weight: number) {
   ];
 
   if (neighbour === 'semi-trailer in front') {
-    vehicles.push(TRAILER_CODES.SEMI_TRAILERS);
+    vehicles.push(TRAILERS.SEMI_TRAILERS.id);
     axles.push({
       numberOfAxles: getAxleCount(row.neighbourAxleType),
       vehicleIndex: vehicles.length - 1,
@@ -121,7 +121,7 @@ export function buildTrailerFixture(row: TrailerFixtureInput, weight: number) {
   // So the spacing goes on the booster when it follows,
   // and on the trailer under test when a vehicle is in front of it.
   if (neighbour === 'booster follows') {
-    vehicles.push(TRAILER_CODES.BOOSTER);
+    vehicles.push(TRAILERS.BOOSTER.id);
     const booster: AxleConfiguration = {
       numberOfAxles: getAxleCount(row.neighbourAxleType),
       vehicleIndex: vehicles.length - 1,
@@ -181,7 +181,7 @@ function getNeighbour(row: TrailerFixtureInput): Neighbour {
     // A Mobile Crane counts as the power unit only when it is the power unit under test.
     if (
       row.neighbourCategory === 'Cranes - Mobile' &&
-      row.powerUnitCode === POWER_UNIT_CODES.CRANES_MOBILE
+      row.powerUnitCode === POWER_UNITS.CRANES_MOBILE.id
     ) {
       return 'power unit in front';
     }
