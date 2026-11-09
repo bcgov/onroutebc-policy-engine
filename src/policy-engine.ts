@@ -78,6 +78,8 @@ import { InteraxleSpacingRequirement } from './types/interaxle-spacing-requireme
 import { getDefaultInteraxleSpacingHelper } from './helper/interaxle-spacing.helper';
 import { VEHICLE_CATEGORIES } from './constants/vehicle-categories';
 import { TRAILERS } from './constants/trailers';
+import { AxleSpreadRequirement } from './types/axle-spread-requirement';
+import { getDefaultAxleSpreadHelper } from './helper/axle-spread.helper';
 
 /** Class representing commercial vehicle policy. */
 export class Policy {
@@ -1263,6 +1265,40 @@ export class Policy {
     axles: number,
   ): Array<InteraxleSpacingRequirement> {
     return getDefaultInteraxleSpacingHelper(this, subType, axles, false);
+  }
+
+  /**
+   * Gets the default axle spread value for a
+   * given power unit type and number of axles.
+   * @param subType Power unit subtype
+   * @param axles Number of axles in the power unit axle unit
+   * @returns Array of axle spread requirements. Multiple requirements may be returned if there are different values
+   * depending on prior / subsequent vehicles in the
+   * configuration (modifiers). Will return an empty array
+   * if the number of axles is not configured in policy.
+   */
+  getDefaultPowerUnitAxleSpread(
+    subType: string,
+    axles: number,
+  ): Array<AxleSpreadRequirement> {
+    return getDefaultAxleSpreadHelper(this, subType, axles, true);
+  }
+
+  /**
+   * Gets the default axle spread value for a
+   * given trailer type and number of axles.
+   * @param subType Trailer subtype
+   * @param axles Number of axles in the trailer axle units
+   * @returns Array of axle spread requirements. Multiple requirements may be returned if there are different values
+   * depending on prior / subsequent vehicles in the
+   * configuration (modifiers). Will return an empty array
+   * if the number of axles is not configured in policy.
+   */
+  getDefaultTrailerAxleSpread(
+    subType: string,
+    axles: number,
+  ): Array<AxleSpreadRequirement> {
+    return getDefaultAxleSpreadHelper(this, subType, axles, false);
   }
 
   /** Get legal and permitable weights from JSON,
