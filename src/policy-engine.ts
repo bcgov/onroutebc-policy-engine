@@ -59,6 +59,7 @@ import {
 } from './helper/vehicles.helper';
 import { getConditionsForPermitHelper } from './helper/conditions.helper';
 import {
+  getAxleUnitVehicleIndexLookup,
   getSizeDimensionHelper,
   selectCorrectWeightDimensionHelper,
 } from './helper/dimensions.helper';
@@ -976,10 +977,15 @@ export class Policy {
    * axle group in the vehicle configuration
    */
   calculateBridge(
+    policy: Policy,
     axleConfiguration: Array<AxleConfiguration>,
     vehicleConfiguration: Array<string>,
-    axleUnitVehicleIndexes: Array<number>,
   ): Array<BridgeCalculationResult> {
+    const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
+      policy,
+      vehicleConfiguration,
+      axleConfiguration,
+    );
     let bridgeResults;
     try {
       bridgeResults = runBridgeFormula(
