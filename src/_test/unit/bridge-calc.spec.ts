@@ -353,4 +353,76 @@ describe('Single Axle Jeep Tandem Drive Exception', () => {
 
     expect(bridgeCalcResults[2].success).toBe(true);
   });
+
+  it('should pass jeep exception axle units but still fail following axle units', async () => {
+    const vehicleConfiguration = [
+      POWER_UNITS.TRUCK_TRACTORS.id,
+      TRAILERS.JEEPS.id,
+      TRAILERS.SEMI_TRAILERS.id,
+    ];
+
+    const axleConfiguration: Array<AxleConfiguration> = [
+      {
+        numberOfAxles: 1,
+        axleUnitWeight: 9100,
+        numberOfTires: 2,
+        tireSize: 279,
+        vehicleIndex: 0,
+      },
+      {
+        numberOfAxles: 2,
+        axleSpread: 120,
+        interaxleSpacing: 500,
+        axleUnitWeight: 23000,
+        numberOfTires: 8,
+        tireSize: 279,
+        vehicleIndex: 0,
+      },
+      {
+        numberOfAxles: 1,
+        interaxleSpacing: 249,
+        axleUnitWeight: 99999,
+        numberOfTires: 4,
+        tireSize: 279,
+        vehicleIndex: 1,
+      },
+      {
+        numberOfAxles: 2,
+        axleSpread: 120,
+        interaxleSpacing: 300,
+        axleUnitWeight: 99999,
+        numberOfTires: 8,
+        tireSize: 279,
+        vehicleIndex: 2,
+      },
+    ];
+
+    const bridgeCalcResults = policy.calculateBridge(
+      policy,
+      axleConfiguration,
+      vehicleConfiguration,
+    );
+
+    const driveAxleUnitNumber = 2;
+    const jeepAxleUnitNumber = 3;
+
+    const jeepExceptionApplicableResultIndex = bridgeCalcResults.findIndex(
+      (result, index) =>
+        result.startAxleUnit === driveAxleUnitNumber &&
+        result.endAxleUnit === jeepAxleUnitNumber,
+    );
+
+    expect(bridgeCalcResults[jeepExceptionApplicableResultIndex].success).toBe(
+      true,
+    );
+
+    const followingResults = bridgeCalcResults.slice(
+      jeepExceptionApplicableResultIndex + 1,
+    );
+
+    expect(followingResults.map((result) => result.success)).toEqual([
+      false,
+      false,
+    ]);
+  });
 });

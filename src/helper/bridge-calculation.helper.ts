@@ -112,7 +112,9 @@ export function runBridgeFormula(
           isTandemDriveSingleAxleJeepException(
             axleConfiguration,
             vehicleConfiguration,
+            axleUnitVehicleIndexes,
             startAxleIndex,
+            endAxleIndex,
           ) ||
           isSemiTrailerBoosterException(
             vehicleConfiguration,
@@ -146,23 +148,40 @@ export function runBridgeFormula(
 const isTandemDriveSingleAxleJeepException = (
   axleConfiguration: Array<AxleConfiguration>,
   vehicleConfiguration: Array<string>,
+  axleUnitVehicleIndexes: Array<number>,
   startAxleIndex: number,
+  endAxleIndex: number,
 ) => {
-  const hasSingleAxleJeepFollowingDriveAxle =
-    vehicleConfiguration[1] === TRAILERS.JEEPS.id &&
-    axleConfiguration[2]?.numberOfAxles === 1;
+  const jeepVehicleIndexes = vehicleConfiguration.flatMap(
+    (vehicleType, vehicleIndex) =>
+      vehicleType === TRAILERS.JEEPS.id ? [vehicleIndex] : [],
+  );
+  const hasSingleAxleJeep = jeepVehicleIndexes.some(
+    (vehicleIndex) =>
+      axleConfiguration.reduce(
+        (totalAxles, axleUnit, axleUnitIndex) =>
+          axleUnitVehicleIndexes[axleUnitIndex] === vehicleIndex
+            ? totalAxles + axleUnit.numberOfAxles
+            : totalAxles,
+        0,
+      ) === 1,
+  );
 
   const hasTandemDrive = axleConfiguration[1]?.numberOfAxles === 2;
 
-  const trailerGroupSpacing = axleConfiguration[2]?.axleGroupSpacing ?? 0;
-
-  const isJeepAxle = startAxleIndex === 2;
+  const jeepAxleIndex = endAxleIndex - 1;
+  const jeepAxleVehicleIndex = axleUnitVehicleIndexes[jeepAxleIndex];
+  const isJeepAxle =
+    vehicleConfiguration[jeepAxleVehicleIndex] === TRAILERS.JEEPS.id;
+  const jeepGroupSpacing =
+    axleConfiguration[jeepAxleIndex]?.axleGroupSpacing ?? 0;
 
   const result =
+    startAxleIndex === 2 &&
     isJeepAxle &&
     hasTandemDrive &&
-    hasSingleAxleJeepFollowingDriveAxle &&
-    trailerGroupSpacing <= 370;
+    hasSingleAxleJeep &&
+    jeepGroupSpacing <= 370;
 
   return result;
 };
