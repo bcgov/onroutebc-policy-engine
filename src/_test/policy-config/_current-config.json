@@ -4893,8 +4893,12 @@
         ],
         "wheelbaseLimits": [
           {
+            "axles": 11,
+            "maxWheelbase": 620
+          },
+          {
             "axles": 12,
-            "maxWheelbase": 720
+            "maxWheelbase": 620
           },
           {
             "axles": 13,
@@ -4902,10 +4906,15 @@
             "maxWheelbase": 680
           },
           {
+            "axles": 22,
+            "minWheelbase": 625,
+            "maxWheelbase": 1250
+          },
+          {
             "axles": 23,
             "minAxleSpread": 240,
             "maxAxleSpread": 279,
-            "minWheelbase": 770
+            "minWheelbase": 720
           }
         ],
         "displayCodePrefix": "TT",
@@ -4999,9 +5008,23 @@
         ],
         "wheelbaseLimits": [
           {
+            "axles": 11,
+            "maxWheelbase": 620
+          },
+          {
+            "axles": 12,
+            "minWheelbase": 300,
+            "maxWheelbase": 620
+          },
+          {
             "axles": 13,
             "minWheelbase": 660,
             "maxWheelbase": 680
+          },
+          {
+            "axles": 22,
+            "minWheelbase": 625,
+            "maxWheelbase": 1250
           },
           {
             "axles": 23,
@@ -5177,6 +5200,10 @@
         "name": "Truck Tractors",
         "category": "powerunit",
         "wheelbaseLimits": [
+          {
+            "axles": 11,
+            "maxWheelbase": 620
+          },
           {
             "axles": 12,
             "maxWheelbase": 720

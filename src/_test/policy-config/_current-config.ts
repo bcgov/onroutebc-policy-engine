@@ -4900,8 +4900,12 @@ export const data: PolicyDefinition = {
         ],
         wheelbaseLimits: [
           {
+            axles: 11,
+            maxWheelbase: 620,
+          },
+          {
             axles: 12,
-            maxWheelbase: 720,
+            maxWheelbase: 620,
           },
           {
             axles: 13,
@@ -4909,10 +4913,15 @@ export const data: PolicyDefinition = {
             maxWheelbase: 680,
           },
           {
+            axles: 22,
+            minWheelbase: 625,
+            maxWheelbase: 1250,
+          },
+          {
             axles: 23,
             minAxleSpread: 240,
             maxAxleSpread: 279,
-            minWheelbase: 770,
+            minWheelbase: 720,
           },
         ],
         displayCodePrefix: 'TT',
@@ -5006,15 +5015,43 @@ export const data: PolicyDefinition = {
         ],
         wheelbaseLimits: [
           {
+            axles: 11,
+            // TODO do we want a minWheelbase here, since this will show a wheelbase error alongside the interaxle spacing error? Which other power units need this min?
+            maxWheelbase: 620,
+          },
+          {
+            axles: 12,
+            // TODO do we want a minWheelbase here, since this will show a wheelbase error alongside the interaxle spacing error? Which other power units need this min?
+            minWheelbase: 300,
+            maxWheelbase: 620,
+          },
+          {
             axles: 13,
             minWheelbase: 660,
             maxWheelbase: 680,
+          },
+          {
+            axles: 22,
+            minWheelbase: 625,
+            maxWheelbase: 1250,
           },
           {
             axles: 23,
             minAxleSpread: 240,
             maxAxleSpread: 279,
             minWheelbase: 770,
+          },
+          {
+            axles: 23,
+            minAxleSpread: 280,
+            maxAxleSpread: 299,
+            minWheelbase: 730,
+          },
+          {
+            axles: 23,
+            minAxleSpread: 300,
+            maxAxleSpread: 309,
+            minWheelbase: 740,
           },
         ],
         displayCodePrefix: 'TT',
@@ -5184,6 +5221,10 @@ export const data: PolicyDefinition = {
         name: POWER_UNITS.TRUCK_TRACTORS.name,
         category: VEHICLE_CATEGORIES.POWER_UNIT,
         wheelbaseLimits: [
+          {
+            axles: 11,
+            maxWheelbase: 620,
+          },
           {
             axles: 12,
             maxWheelbase: 720,
