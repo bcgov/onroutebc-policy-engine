@@ -2,7 +2,6 @@ import { POWER_UNIT_AXLE_CODE_MULTIPLIER } from '../constants/power-unit-axle-co
 import { RelativePosition } from '../enum';
 import { Policy } from '../policy-engine';
 import { AxleConfiguration } from '../types';
-import { AxleSpreadRequirement } from '../types/axle-spread-requirement';
 import { WheelbaseRequirement } from '../types/wheelbase-requirement';
 import { WheelbaseRequirementFailure } from '../types/wheelbase-requirement-failure';
 import { getVehicleRelatives } from './dimensions.helper';

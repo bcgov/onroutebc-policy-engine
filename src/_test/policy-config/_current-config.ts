@@ -4756,6 +4756,8 @@ export const data: PolicyDefinition = {
           },
           {
             axles: 23,
+            // TODO do we need a minWheelbase here? Shown in testing sheet
+            // TODO are max wheelbase values in 5.3.9 inclusive?
             maxWheelbase: 1000,
           },
           {
@@ -4763,6 +4765,7 @@ export const data: PolicyDefinition = {
             minAxleSpread: 280,
             maxAxleSpread: 299,
             minWheelbase: 780,
+            // TODO are max wheelbase values in 5.3.9 inclusive?
             maxWheelbase: 1000,
           },
           {
@@ -4770,6 +4773,7 @@ export const data: PolicyDefinition = {
             minAxleSpread: 300,
             maxAxleSpread: 310,
             minWheelbase: 790,
+            // TODO are max wheelbase values in 5.3.9 inclusive?
             maxWheelbase: 1000,
           },
         ],
@@ -4901,27 +4905,50 @@ export const data: PolicyDefinition = {
         wheelbaseLimits: [
           {
             axles: 11,
+            // TODO do we need a minWheelbase of 300 here? Shown in testing sheet
+            // TODO is this correct? Not shown in 5.3.9, but is in testing sheet
+            // TODO are max wheelbase values in 5.3.9 inclusive?
             maxWheelbase: 620,
           },
           {
             axles: 12,
+            minWheelbase: 300,
+            // TODO are max wheelbase values in 5.3.9 inclusive?
             maxWheelbase: 620,
           },
           {
             axles: 13,
             minWheelbase: 660,
+            // TODO are max wheelbase values in 5.3.9 inclusive?
             maxWheelbase: 680,
           },
           {
             axles: 22,
             minWheelbase: 625,
+            // TODO are max wheelbase values in 5.3.9 inclusive?
             maxWheelbase: 1250,
           },
+          // TODO are these tandem/tridem rules correct, they are duplicated on Truck Tractors with PME
           {
             axles: 23,
             minAxleSpread: 240,
+            // TODO are max axle spread values in 5.3.9 exclusive?
             maxAxleSpread: 279,
             minWheelbase: 720,
+          },
+          {
+            axles: 23,
+            minAxleSpread: 280,
+            // TODO are max axle spread values in 5.3.9 exclusive?
+            maxAxleSpread: 299,
+            minWheelbase: 730,
+          },
+          {
+            axles: 23,
+            minAxleSpread: 300,
+            // TODO are max axle spread values in 5.3.9 exclusive?
+            maxAxleSpread: 309,
+            minWheelbase: 740,
           },
         ],
         displayCodePrefix: 'TT',
@@ -4966,6 +4993,7 @@ export const data: PolicyDefinition = {
           {
             axles: 13,
             minWheelbase: 660,
+            // TODO are max wheelbase values in 5.3.9 inclusive?
             maxWheelbase: 680,
           },
           {
@@ -5016,29 +5044,35 @@ export const data: PolicyDefinition = {
         wheelbaseLimits: [
           {
             axles: 11,
-            // TODO do we want a minWheelbase here, since this will show a wheelbase error alongside the interaxle spacing error? Which other power units need this min?
+            // TODO do we need a minWheelbase here?
+            // TODO are max wheelbase values in 5.3.9 inclusive?
             maxWheelbase: 620,
           },
           {
             axles: 12,
             // TODO do we want a minWheelbase here, since this will show a wheelbase error alongside the interaxle spacing error? Which other power units need this min?
             minWheelbase: 300,
+            // TODO are max wheelbase values in 5.3.9 inclusive?
             maxWheelbase: 620,
           },
           {
             axles: 13,
             minWheelbase: 660,
+            // TODO are max wheelbase values in 5.3.9 inclusive?
             maxWheelbase: 680,
           },
           {
             axles: 22,
             minWheelbase: 625,
+            // TODO are max wheelbase values in 5.3.9 inclusive?
             maxWheelbase: 1250,
           },
+          // TODO are these tandem/tridem rules correct, they are duplicated on Picker Truck Tractors
           {
             axles: 23,
             minAxleSpread: 240,
             maxAxleSpread: 279,
+            // TODO is this minWheelbase number correct? Looks too high
             minWheelbase: 770,
           },
           {
