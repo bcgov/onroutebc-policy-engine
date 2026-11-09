@@ -867,19 +867,11 @@ describe('ORV2-5709 permittable weight maximums', () => {
         TRAILERS.SEMI_TRAILERS.id,
       ];
 
-      // TODO leaving this code commented for now since we will need to dicuss this with Michael when he returns from vacation
-      // const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
-      //   policy,
-      //   vehicleConfiguration,
-      //   axleConfiguration,
-      // );
-
       expect(
         policy.calculateBridge(
+          policy,
           axleConfiguration,
           vehicleConfiguration,
-          // TODO leaving this code commented for now since we will need to dicuss this with Michael when he returns from vacation
-          // axleUnitVehicleIndexes,
         )[0].maxBridge,
       ).toBe(21000);
       expect(
