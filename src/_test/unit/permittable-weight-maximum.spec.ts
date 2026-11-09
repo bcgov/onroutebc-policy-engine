@@ -6,7 +6,6 @@ import currentPolicyConfig from '../policy-config/_current-config.json';
 import { CheckPermittableWeight } from '../../helper/policy-check.helper';
 import { POWER_UNITS } from '../../constants/power-units';
 import { TRAILERS } from '../../constants/trailers';
-import { getAxleUnitVehicleIndexLookup } from '../../helper/dimensions.helper';
 
 describe('ORV2-5709 permittable weight maximums', () => {
   const policy = new Policy(currentPolicyConfig);
@@ -867,12 +866,6 @@ describe('ORV2-5709 permittable weight maximums', () => {
         POWER_UNITS.TRUCK_TRACTORS.id,
         TRAILERS.SEMI_TRAILERS.id,
       ];
-
-      const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
-        policy,
-        vehicleConfiguration,
-        axleConfiguration,
-      );
 
       expect(
         policy.calculateBridge(

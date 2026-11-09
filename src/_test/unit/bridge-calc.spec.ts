@@ -1,6 +1,5 @@
 import { POWER_UNITS } from '../../constants/power-units';
 import { TRAILERS } from '../../constants/trailers';
-import { getAxleUnitVehicleIndexLookup } from '../../helper/dimensions.helper';
 import { Policy } from '../../policy-engine';
 import { AxleConfiguration } from '../../types';
 import currentPolicyConfig from '../policy-config/_current-config.json';
@@ -296,12 +295,6 @@ describe('Single Axle Booster Exception', () => {
       },
     ];
 
-    const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
-      policy,
-      vehicleConfiguration,
-      axleConfiguration,
-    );
-
     expect(() =>
       policy.calculateBridge(policy, axleConfiguration, vehicleConfiguration),
     ).not.toThrow();
@@ -407,7 +400,7 @@ describe('Single Axle Jeep Tandem Drive Exception', () => {
     const jeepAxleUnitNumber = 3;
 
     const jeepExceptionApplicableResultIndex = bridgeCalcResults.findIndex(
-      (result, index) =>
+      (result) =>
         result.startAxleUnit === driveAxleUnitNumber &&
         result.endAxleUnit === jeepAxleUnitNumber,
     );
