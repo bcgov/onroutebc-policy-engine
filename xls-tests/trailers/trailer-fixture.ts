@@ -52,7 +52,7 @@ export function getTrailerFixturePowerUnits(
   trailerCode: string | null,
   neighbourCategory: string,
 ): string[] {
-  if (neighbourCategory === 'Cranes - Mobile') {
+  if (neighbourCategory === POWER_UNITS.CRANES_MOBILE.name) {
     return [POWER_UNITS.CRANES_MOBILE.id];
   }
   const powerUnitsThatTowTrailer = commodityPowerUnits
@@ -180,7 +180,7 @@ function getNeighbour(row: TrailerFixtureInput): Neighbour {
     }
     // A Mobile Crane counts as the power unit only when it is the power unit under test.
     if (
-      row.neighbourCategory === 'Cranes - Mobile' &&
+      row.neighbourCategory === POWER_UNITS.CRANES_MOBILE.name &&
       row.powerUnitCode === POWER_UNITS.CRANES_MOBILE.id
     ) {
       return 'power unit in front';

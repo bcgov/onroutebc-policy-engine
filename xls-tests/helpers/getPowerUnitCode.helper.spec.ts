@@ -1,5 +1,5 @@
 import { POWER_UNITS } from '../../src/constants/power-units';
-import { getPowerUnitCode } from './vehicle-codes';
+import { getPowerUnitCode } from './getPowerUnitCode.helper';
 
 describe('getPowerUnitCode', () => {
   it.each([

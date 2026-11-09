@@ -121,7 +121,7 @@ cannot read it without a guess. For example:
 
 - `Unmapped spreadsheet vehicle` or `Unmapped spreadsheet trailer`: the workbook
   vehicle name does not match `POWER_UNITS` or `TRAILERS`, or an explicit workbook
-  alias in `power-units/vehicle-codes.ts` or `trailers/vehicle-codes.ts`.
+  alias in `helpers/getPowerUnitCode.helper.ts` or `helpers/getTrailerCode.helper.ts`.
 - `Unsupported worksheet neighbour relationship`: `trailers/trailer-fixture.ts`
   does not know how to build the vehicle next to the trailer.
 - `Reversed geometry range` or `Invalid geometry`: the workbook geometry cells are not valid.
@@ -136,7 +136,7 @@ Workbook row → name mapping and geometry → vehicle/axle fixture → policy c
 
 | Failure | Check first |
 | --- | --- |
-| Unmapped vehicle or trailer | The workbook name and the relevant `vehicle-codes.ts`. The weight check has not run yet. |
+| Unmapped vehicle or trailer | The workbook name and the relevant lookup helper in `helpers/`. The weight check has not run yet. |
 | Invalid geometry or unsupported neighbour relationship | The workbook values, `trailers/source-geometry.ts`, and `trailers/trailer-fixture.ts`. |
 | Wrong `actualWeight` or axle unit | The generated axle configuration and the target axle index. |
 | Wrong `thresholdWeight` | The fixture inputs, commodity, policy data, and weight selection. |

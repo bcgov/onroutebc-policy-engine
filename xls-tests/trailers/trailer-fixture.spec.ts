@@ -1,3 +1,4 @@
+import { COMMODITY_CODES } from '../../src/constants/commodity-codes';
 import { POWER_UNITS } from '../../src/constants/power-units';
 import { TRAILERS } from '../../src/constants/trailers';
 import {
@@ -22,17 +23,18 @@ const base = {
 
 describe('worksheet vehicle and axle translation', () => {
   it.each<[string, string, string[]]>([
-    ['NONREDU', TRAILERS.PONY_TRAILERS.id, [POWER_UNITS.TRUCKS.id]],
     [
-      'XXXXXXX',
-      TRAILERS.FIXED_EQUIPMENT_PONY_TRAILERS.id,
-      [
-        POWER_UNITS.FIXED_EQUIPMENT_TRUCKS_GRADERS.id,
-        POWER_UNITS.TRUCKS.id,
-      ],
+      COMMODITY_CODES.NON_REDUCIBLE_LOADS,
+      TRAILERS.PONY_TRAILERS.id,
+      [POWER_UNITS.TRUCKS.id],
     ],
     [
-      'EMPTYXX',
+      COMMODITY_CODES.NONE,
+      TRAILERS.FIXED_EQUIPMENT_PONY_TRAILERS.id,
+      [POWER_UNITS.FIXED_EQUIPMENT_TRUCKS_GRADERS.id, POWER_UNITS.TRUCKS.id],
+    ],
+    [
+      COMMODITY_CODES.EMPTY,
       TRAILERS.SEMI_TRAILERS_WHEELERS.id,
       [
         POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
@@ -97,7 +99,7 @@ describe('worksheet vehicle and axle translation', () => {
     const powerUnits = getTrailerFixturePowerUnits(
       [],
       TRAILERS.DOLLIES.id,
-      'Cranes - Mobile',
+      POWER_UNITS.CRANES_MOBILE.name,
     );
     expect(powerUnits).toEqual([POWER_UNITS.CRANES_MOBILE.id]);
     const row = {
@@ -106,7 +108,7 @@ describe('worksheet vehicle and axle translation', () => {
       vehicleCode: TRAILERS.DOLLIES.id,
       axleType: 'Tandem',
       after: 'X',
-      neighbourCategory: 'Cranes - Mobile',
+      neighbourCategory: POWER_UNITS.CRANES_MOBILE.name,
       neighbourAxleType: 'Single',
     };
     const fixture = buildTrailerFixture(row, 23000);
@@ -131,6 +133,7 @@ describe('worksheet vehicle and axle translation', () => {
         vehicleCode: TRAILERS.BOOSTER.id,
         axleType: 'Single',
         after: 'x',
+        // Column H is a category, not the vehicle name 'Semi-Trailers'.
         neighbourCategory: 'Semi-Trailer',
         neighbourAxleType: 'Tridem',
         spreadCm: 100,

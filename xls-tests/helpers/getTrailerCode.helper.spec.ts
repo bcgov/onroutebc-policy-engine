@@ -1,5 +1,5 @@
 import { TRAILERS } from '../../src/constants/trailers';
-import { getTrailerCode } from './vehicle-codes';
+import { getTrailerCode } from './getTrailerCode.helper';
 
 describe('getTrailerCode', () => {
   it.each([

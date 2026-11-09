@@ -9,7 +9,7 @@ import currentPolicyConfig from '../../src/_test/policy-config/_current-config.j
 import { getAxleCount } from '../shared/axle-types';
 import { findCommodities, getOnlyCommodity } from '../shared/commodities';
 import { getWeightLimit } from '../shared/weight-limit';
-import { getPowerUnitCode } from './vehicle-codes';
+import { getPowerUnitCode } from '../helpers/getPowerUnitCode.helper';
 
 type PowerUnitRow = {
   row: number;

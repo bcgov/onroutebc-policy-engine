@@ -3,8 +3,9 @@ const base = require('../shared/jest.base.config.cjs');
 module.exports = {
   ...base,
   rootDir: __dirname,
+  roots: ['<rootDir>', '<rootDir>/../helpers'],
   testMatch: [
-    '<rootDir>/vehicle-codes.spec.ts',
+    '<rootDir>/../helpers/getTrailerCode.helper.spec.ts',
     '<rootDir>/trailer-weight-limits.spec.ts',
     '<rootDir>/source-geometry.spec.ts',
     '<rootDir>/trailer-fixture.spec.ts',

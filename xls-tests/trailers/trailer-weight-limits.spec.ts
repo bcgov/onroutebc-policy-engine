@@ -14,7 +14,7 @@ import {
   getNeighbourAxleTypes,
   getTrailerFixturePowerUnits,
 } from './trailer-fixture';
-import { getTrailerCode } from './vehicle-codes';
+import { getTrailerCode } from '../helpers/getTrailerCode.helper';
 
 type TrailerRow = {
   row: number;

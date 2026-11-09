@@ -2,7 +2,8 @@ import { TRAILERS } from '../../src/constants/trailers';
 import { getIdFromName } from '../../src/helper/lists.helper';
 
 export function getTrailerCode(name: string): string | null {
-  // These workbook names differ from the names in TRAILERS.
+  // The weight sheet uses "Spread Tandem"; the policy definition uses "Spread Tandems".
+  // Keep this workbook alias until the source names are standardized.
   switch (name) {
     case 'Semi-Trailers - Spread Tandem':
       return TRAILERS.SEMI_TRAILERS_SPREAD_TANDEMS.id;
