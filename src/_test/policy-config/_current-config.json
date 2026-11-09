@@ -5031,6 +5031,18 @@
             "minAxleSpread": 240,
             "maxAxleSpread": 279,
             "minWheelbase": 770
+          },
+          {
+            "axles": 23,
+            "minAxleSpread": 280,
+            "maxAxleSpread": 299,
+            "minWheelbase": 730
+          },
+          {
+            "axles": 23,
+            "minAxleSpread": 300,
+            "maxAxleSpread": 309,
+            "minWheelbase": 740
           }
         ],
         "displayCodePrefix": "TT",
