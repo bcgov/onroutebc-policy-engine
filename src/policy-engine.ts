@@ -59,6 +59,7 @@ import {
 } from './helper/vehicles.helper';
 import { getConditionsForPermitHelper } from './helper/conditions.helper';
 import {
+  getAxleUnitVehicleIndexLookup,
   getSizeDimensionHelper,
   selectCorrectWeightDimensionHelper,
 } from './helper/dimensions.helper';
@@ -978,19 +979,22 @@ export class Policy {
    * axle group in the vehicle configuration
    */
   calculateBridge(
+    policy: Policy,
     axleConfiguration: Array<AxleConfiguration>,
     vehicleConfiguration: Array<string>,
-    // TODO leaving this code commented for now since we will need to dicuss this with Michael when he returns from vacation
-    // axleUnitVehicleIndexes: Array<number>,
   ): Array<BridgeCalculationResult> {
+    const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
+      policy,
+      vehicleConfiguration,
+      axleConfiguration,
+    );
     let bridgeResults;
     try {
       bridgeResults = runBridgeFormula(
         this,
         axleConfiguration,
         vehicleConfiguration,
-        // TODO leaving this code commented for now since we will need to dicuss this with Michael when he returns from vacation
-        // axleUnitVehicleIndexes,
+        axleUnitVehicleIndexes,
       );
     } catch (e: any) {
       console.log(`Error calculating bridge formula: ${e.message}`);

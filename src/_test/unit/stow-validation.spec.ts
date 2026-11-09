@@ -239,6 +239,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     const permit = getDatedPermit();
 
     const validationResult = await policy.validate(permit);
+
     expect(validationResult.violations).toHaveLength(0);
   });
 

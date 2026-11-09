@@ -12,7 +12,7 @@ import { POWER_UNITS } from '../../constants/power-units';
 import { TRAILERS } from '../../constants/trailers';
 
 export const data: PolicyDefinition = {
-  minPEVersion: '3.0.0',
+  minPEVersion: '3.1.0',
   geographicRegions: [
     {
       id: GEOGRAPHIC_REGIONS.LOWER_MAINLAND,
@@ -5546,9 +5546,62 @@ export const data: PolicyDefinition = {
           {
             axles: [11, 21, 31],
             min: 120,
+            max: 350,
           },
           {
             axles: [22, 32, 23, 33],
+            min: 420,
+          },
+          {
+            axles: [21],
+            maxAxleGroupWeight: 28000,
+            minAxleGroupSpacing: 240,
+            maxAxleGroupSpacing: 300,
+            modifier: {
+              category: VEHICLE_CATEGORIES.POWER_UNIT,
+              position: RelativePosition.Before,
+            },
+            min: 120,
+            max: 350,
+          },
+          {
+            axles: [21],
+            maxAxleGroupWeight: 29000,
+            minAxleGroupSpacing: 301,
+            maxAxleGroupSpacing: 370,
+            modifier: {
+              category: VEHICLE_CATEGORIES.POWER_UNIT,
+              position: RelativePosition.Before,
+            },
+            min: 120,
+            max: 350,
+          },
+          {
+            axles: [21],
+            minAxleGroupWeight: 29001,
+            minAxleGroupSpacing: 371,
+            modifier: {
+              category: VEHICLE_CATEGORIES.POWER_UNIT,
+              position: RelativePosition.Before,
+            },
+            min: 351,
+          },
+          {
+            axles: [22, 32],
+            maxAxleUnitWeight: 23000,
+            modifier: {
+              category: VEHICLE_CATEGORIES.POWER_UNIT,
+              position: RelativePosition.Before,
+            },
+            min: 420,
+          },
+          {
+            axles: [23, 33],
+            maxAxleUnitWeight: 28000,
+            modifier: {
+              category: VEHICLE_CATEGORIES.POWER_UNIT,
+              position: RelativePosition.Before,
+            },
             min: 420,
           },
         ],

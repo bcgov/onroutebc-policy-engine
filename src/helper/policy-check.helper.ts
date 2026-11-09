@@ -19,6 +19,8 @@ import {
 } from './axle-spread.helper';
 import { isSemiTrailerType } from '../constants/semi-trailer-codes';
 import {
+  getAxleGroupSpacings,
+  getAxleGroupWeights,
   getFailedInteraxleSpacingMessage,
   getInteraxleSpacingRequirement,
 } from './interaxle-spacing.helper';
@@ -421,20 +423,10 @@ export function CheckBridgeFormula(
     return [];
   }
 
-  // TODO leaving this code commented for now since we will need to dicuss this with Michael when he returns from vacation
-  // axleUnitVehicleIndexes: Array<number>,
-  // const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
-  //   policy,
-  //   vehicleConfiguration,
-  //   axleConfiguration,
-  // );
-
   const bridgeCalcResults = policy.calculateBridge(
+    policy,
     axleConfiguration,
     vehicleConfiguration,
-    // TODO leaving this code commented for now since we will need to dicuss this with Michael when he returns from vacation
-    // axleUnitVehicleIndexes: Array<number>,
-    // axleUnitVehicleIndexes,
   );
   bridgeCalcResults.forEach((br) => {
     const message = `Axle group ${br.startAxleUnit} to ${br.endAxleUnit} ${br.success ? 'passes' : 'does not pass'} bridge formula.`;
@@ -1563,7 +1555,17 @@ export function CheckInteraxleSpacing(
     axleConfiguration,
   );
 
+  axleConfiguration = getAxleGroupWeights(
+    policy,
+    vehicleConfiguration,
+    axleConfiguration,
+  );
+  axleConfiguration = getAxleGroupSpacings(axleConfiguration);
+
   return axleConfiguration.map((axleUnit, axleIndex) => {
+    const currentAxleUnitNumber = axleIndex + 1;
+    const previousAxleUnitNumber = axleIndex;
+
     const requirement = getInteraxleSpacingRequirement(
       policy,
       axleConfiguration,
@@ -1578,9 +1580,6 @@ export function CheckInteraxleSpacing(
       !axleUnit.interaxleSpacing ||
       ((!requirement.min || axleUnit.interaxleSpacing >= requirement.min) &&
         (!requirement.max || axleUnit.interaxleSpacing <= requirement.max));
-
-    const currentAxleUnitNumber = axleIndex + 1;
-    const previousAxleUnitNumber = axleIndex;
 
     const message = shouldPass
       ? ''
