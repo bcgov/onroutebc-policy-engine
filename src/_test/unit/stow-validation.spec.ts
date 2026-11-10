@@ -452,21 +452,6 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     });
   });
 
-  it('should raise STOW axle calculation violation when truck tractor wheelbase exceeds 7.2m', async () => {
-    const permit = getDatedPermit();
-    setTruckTractorWheelbaseScenario(permit, 660, 140);
-
-    const validationResult = await policy.validate(permit);
-
-    expect(validationResult.violations).toHaveLength(1);
-    expect(validationResult.violations[0].message).toBe(
-      'Vehicle configuration failed axle calculation policy checks',
-    );
-    expect(validationResult.violations[0].details?.[0]).toContain(
-      'Wheelbase for Axle Unit 1 and Axle Unit 2 is greater than 7.2 m.',
-    );
-  });
-
   it('should raise STOW axle calculation violation when truck tractor wheelbase is between 6.2 m and 7.2 m with jeep and booster selected', async () => {
     const permit = getDatedPermit();
     setTruckTractorWheelbaseScenario(permit, 550, 141);

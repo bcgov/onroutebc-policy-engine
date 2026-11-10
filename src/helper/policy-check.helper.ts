@@ -28,6 +28,7 @@ import { VEHICLE_CATEGORIES } from '../constants/vehicle-categories';
 import { POWER_UNITS } from '../constants/power-units';
 import { TRAILERS } from '../constants/trailers';
 import {
+  calculateWheelbase,
   getFailedWheelbaseMessage,
   getWheelbaseRequirement,
 } from './wheelbase-helper';
@@ -1385,11 +1386,7 @@ export function CheckWheelbaseLegalLimits(
 
   const isSingleSteer = steerAxle.numberOfAxles === 1;
 
-  const wheelbase = isSingleSteer
-    ? driveAxle?.interaxleSpacing + driveAxle.axleSpread / 2
-    : steerAxle.axleSpread / 2 +
-      driveAxle.interaxleSpacing +
-      driveAxle.axleSpread / 2;
+  const wheelbase = calculateWheelbase(axleConfiguration);
 
   // the following logic covers the ASW 6.2 to 7.2m feature, we are grouping it with CheckWheelBaseLegalLimits because of feature overlap
   const isTandemDrive = driveAxle.numberOfAxles === 2;
@@ -1405,42 +1402,23 @@ export function CheckWheelbaseLegalLimits(
     hasTrailer &&
     isSingleSteer &&
     isTandemDrive &&
-    wheelbase > 620
+    wheelbase >= 620 &&
+    wheelbase <= 720
   ) {
-    if (wheelbase > 720) {
-      return [
-        {
-          ...resultBase,
-          result: PolicyCheckResultType.Fail,
-          message:
-            'Wheelbase for Axle Unit 1 and Axle Unit 2 is greater than 7.2 m.',
-        },
-      ];
-    }
+    const hasDisallowedTrailer = vehicleConfiguration
+      .slice(1)
+      .some((vehicleType) => !isSemiTrailerType(vehicleType));
 
-    if (wheelbase >= 620) {
-      const hasDisallowedTrailer = vehicleConfiguration
-        .slice(1)
-        .some((vehicleType) => !isSemiTrailerType(vehicleType));
-
-      return [
-        {
-          ...resultBase,
-          result: hasDisallowedTrailer
-            ? PolicyCheckResultType.Fail
-            : PolicyCheckResultType.Warning,
-          message:
-            hasTrailer && !hasDisallowedTrailer
-              ? `Wheelbase for Axle Unit ${resultBase.startAxleUnit} and Axle Unit ${resultBase.endAxleUnit} is between 6.2 m and 7.2 m. Semi-Trailer wheelbase must be within dimensions table found in CTPM 5.3.7.A.`
-              : `Wheelbase for Axle Unit ${resultBase.startAxleUnit} and Axle Unit ${resultBase.endAxleUnit} is between 6.2 m and 7.2 m. See CTPM 5.3.7.A.`,
-        },
-      ];
-    }
     return [
       {
         ...resultBase,
-        result: PolicyCheckResultType.Pass,
-        message: '',
+        result: hasDisallowedTrailer
+          ? PolicyCheckResultType.Fail
+          : PolicyCheckResultType.Warning,
+        message:
+          hasTrailer && !hasDisallowedTrailer
+            ? `Wheelbase for Axle Unit ${resultBase.startAxleUnit} and Axle Unit ${resultBase.endAxleUnit} is between 6.2 m and 7.2 m. Semi-Trailer wheelbase must be within dimensions table found in CTPM 5.3.7.A.`
+            : `Wheelbase for Axle Unit ${resultBase.startAxleUnit} and Axle Unit ${resultBase.endAxleUnit} is between 6.2 m and 7.2 m. See CTPM 5.3.7.A.`,
       },
     ];
   }

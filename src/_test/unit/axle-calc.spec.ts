@@ -3313,3 +3313,133 @@ describe('tridem jeep exceptions', () => {
     );
   });
 });
+
+// Source: ASW 6.2 to 7.2 m.feature @orv2-5514
+describe('6.2 to 7.2 m long wheelbase exceptions', () => {
+  const configuredPolicyDefinition = JSON.parse(
+    JSON.stringify(currentPolicyConfig),
+  ) as PolicyDefinition;
+  const configuredPolicy = new Policy(configuredPolicyDefinition);
+  const vehicleConfiguration = [
+    POWER_UNITS.TRUCK_TRACTORS.id,
+    TRAILERS.SEMI_TRAILERS.id,
+  ];
+  const axleConfiguration: Array<AxleConfiguration> = [
+    {
+      numberOfAxles: 1,
+      axleUnitWeight: 5000,
+      numberOfTires: 2,
+      tireSize: 711.2,
+      vehicleIndex: 0,
+    },
+    {
+      numberOfAxles: 2,
+      axleSpread: 180,
+      interaxleSpacing: 631,
+      axleUnitWeight: 8000,
+      numberOfTires: 8,
+      tireSize: 711.2,
+      vehicleIndex: 0,
+    },
+    {
+      numberOfAxles: 1,
+      axleUnitWeight: 8000,
+      interaxleSpacing: 300,
+      numberOfTires: 4,
+      tireSize: 711.2,
+      vehicleIndex: 1,
+    },
+  ];
+
+  it('should warn 6.2 to 7.2 m exception when wheelbase is within range with valid semi trailer type selected', () => {
+    axleConfiguration[1].interaxleSpacing = 600;
+
+    const results = configuredPolicy.runAxleCalculation(
+      vehicleConfiguration,
+      axleConfiguration,
+      100000,
+      COMMODITY_CODES.FIXED_EQUIPMENT,
+    ).results;
+
+    const checkWheelbaseLegalLimitsResults = results.filter(
+      (result) => result.id === PolicyCheckId.WheelbaseLegalLimits,
+    );
+
+    expect(checkWheelbaseLegalLimitsResults[0].result).toBe(
+      PolicyCheckResultType.Warning,
+    );
+
+    expect(checkWheelbaseLegalLimitsResults[0].message).toBe(
+      'Wheelbase for Axle Unit 1 and Axle Unit 2 is between 6.2 m and 7.2 m. Semi-Trailer wheelbase must be within dimensions table found in CTPM 5.3.7.A.',
+    );
+  });
+
+  it('should fail 6.2 to 7.2 m exception when wheelbase is within range with invalid trailer type selected', () => {
+    const vehicleConfiguration = [
+      POWER_UNITS.TRUCK_TRACTORS.id,
+      TRAILERS.PONY_TRAILERS.id,
+    ];
+    axleConfiguration[1].interaxleSpacing = 600;
+
+    const results = configuredPolicy.runAxleCalculation(
+      vehicleConfiguration,
+      axleConfiguration,
+      100000,
+      COMMODITY_CODES.FIXED_EQUIPMENT,
+    ).results;
+
+    const checkWheelbaseLegalLimitsResults = results.filter(
+      (result) => result.id === PolicyCheckId.WheelbaseLegalLimits,
+    );
+
+    expect(checkWheelbaseLegalLimitsResults[0].result).toBe(
+      PolicyCheckResultType.Fail,
+    );
+
+    expect(checkWheelbaseLegalLimitsResults[0].message).toBe(
+      'Wheelbase for Axle Unit 1 and Axle Unit 2 is between 6.2 m and 7.2 m. See CTPM 5.3.7.A.',
+    );
+  });
+
+  it('should bypass 6.2 to 7.2 m exception and fail on maxWheelbase defined in config when wheelbase is greater than 7.2 m', () => {
+    axleConfiguration[1].interaxleSpacing = 631;
+
+    const results = configuredPolicy.runAxleCalculation(
+      vehicleConfiguration,
+      axleConfiguration,
+      100000,
+      COMMODITY_CODES.FIXED_EQUIPMENT,
+    ).results;
+
+    const checkWheelbaseLegalLimitsResults = results.filter(
+      (result) => result.id === PolicyCheckId.WheelbaseLegalLimits,
+    );
+
+    expect(checkWheelbaseLegalLimitsResults[0].result).toBe(
+      PolicyCheckResultType.Fail,
+    );
+
+    expect(checkWheelbaseLegalLimitsResults[0].message).toBe(
+      'Wheelbase for Axle Unit 1 and Axle Unit 2 is greater than 7.2 m.',
+    );
+  });
+
+  it('should bypass 6.2 to 7.2 m exception and pass when wheelbase is between 3.0 and 6.2 m', () => {
+    axleConfiguration[1].interaxleSpacing = 529;
+
+    const results = configuredPolicy.runAxleCalculation(
+      vehicleConfiguration,
+      axleConfiguration,
+      100000,
+      COMMODITY_CODES.FIXED_EQUIPMENT,
+    ).results;
+
+    const checkWheelbaseLegalLimitsResults = results.filter(
+      (result) => result.id === PolicyCheckId.WheelbaseLegalLimits,
+    );
+
+    expect(checkWheelbaseLegalLimitsResults[0].result).toBe(
+      PolicyCheckResultType.Pass,
+    );
+  });
+});

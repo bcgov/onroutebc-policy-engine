@@ -202,3 +202,28 @@ export function getFailedWheelbaseMessage(
   }
   return '';
 }
+
+export function calculateWheelbase(
+  axleConfiguration: Array<AxleConfiguration>,
+) {
+  const steerAxle = {
+    ...axleConfiguration[0],
+    axleSpread: axleConfiguration[0].axleSpread ?? 0,
+  };
+
+  const driveAxle = {
+    ...axleConfiguration[1],
+    axleSpread: axleConfiguration[1].axleSpread ?? 0,
+    interaxleSpacing: axleConfiguration[1].interaxleSpacing ?? 0,
+  };
+
+  const isSingleSteer = steerAxle.numberOfAxles === 1;
+
+  const wheelbase = isSingleSteer
+    ? driveAxle?.interaxleSpacing + driveAxle.axleSpread / 2
+    : steerAxle.axleSpread / 2 +
+      driveAxle.interaxleSpacing +
+      driveAxle.axleSpread / 2;
+
+  return wheelbase;
+}
