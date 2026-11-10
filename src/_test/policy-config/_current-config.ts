@@ -4750,7 +4750,6 @@ export const data: PolicyDefinition = {
           },
         ],
         wheelbaseLimits: [
-          // TODO consider making axles an array to avoid these repeated values
           {
             axles: [11, 12, 13, 23],
             maxWheelbase: 1000,
