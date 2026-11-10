@@ -3,7 +3,7 @@ import { getIdFromName } from '../../src/helper/lists.helper';
 
 export function getTrailerCode(name: string): string | null {
   // The weight sheet uses "Spread Tandem"; the policy definition uses "Spread Tandems".
-  // Keep this workbook alias until the source names are standardized.
+  // TODO: Standardize the Overweight Dimension Sheet names and TRAILERS names, then remove this alias.
   switch (name) {
     case 'Semi-Trailers - Spread Tandem':
       return TRAILERS.SEMI_TRAILERS_SPREAD_TANDEMS.id;
