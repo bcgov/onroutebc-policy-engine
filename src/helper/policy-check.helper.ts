@@ -419,7 +419,6 @@ export function CheckBridgeFormula(
   }
 
   const bridgeCalcResults = policy.calculateBridge(
-    policy,
     axleConfiguration,
     vehicleConfiguration,
   );

@@ -977,12 +977,11 @@ export class Policy {
    * axle group in the vehicle configuration
    */
   calculateBridge(
-    policy: Policy,
     axleConfiguration: Array<AxleConfiguration>,
     vehicleConfiguration: Array<string>,
   ): Array<BridgeCalculationResult> {
     const axleUnitVehicleIndexes = getAxleUnitVehicleIndexLookup(
-      policy,
+      this,
       vehicleConfiguration,
       axleConfiguration,
     );
