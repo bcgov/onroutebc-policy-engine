@@ -9,7 +9,7 @@ import currentPolicyConfig from '../../src/_test/policy-config/_current-config.j
 import { getAxleCount } from '../shared/axle-types';
 import { findCommodities, getOnlyCommodity } from '../shared/commodities';
 import { getWeightLimit } from '../shared/weight-limit';
-import { POWER_UNIT_VEHICLE_CODES } from './vehicle-codes';
+import { getPowerUnitCode } from '../helpers/getPowerUnitCode.helper';
 
 type PowerUnitRow = {
   row: number;
@@ -80,7 +80,7 @@ describe(`XLS weight conformance: ${file}`, () => {
       it.each(testCases)(
         '$label',
         ({ row, column, axleIndex, kgAboveLimit }) => {
-          const vehicleCode = POWER_UNIT_VEHICLE_CODES[row.vehicle];
+          const vehicleCode = getPowerUnitCode(row.vehicle);
           if (!vehicleCode) {
             throw new Error(`Unmapped spreadsheet vehicle: '${row.vehicle}'`);
           }

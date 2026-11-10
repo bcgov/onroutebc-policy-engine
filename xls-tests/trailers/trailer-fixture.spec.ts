@@ -1,5 +1,6 @@
-import { POWER_UNIT_CODES } from '../../src/constants/power-unit-codes';
-import { TRAILER_CODES } from '../../src/constants/trailer-codes';
+import { COMMODITY_CODES } from '../../src/constants/commodity-codes';
+import { POWER_UNITS } from '../../src/constants/power-units';
+import { TRAILERS } from '../../src/constants/trailers';
 import {
   buildTrailerFixture,
   getNeighbourAxleTypes,
@@ -9,8 +10,8 @@ import currentPolicyConfig from '../../src/_test/policy-config/_current-config.j
 
 const base = {
   row: 1,
-  powerUnitCode: POWER_UNIT_CODES.TRUCK_TRACTORS,
-  vehicleCode: TRAILER_CODES.SEMI_TRAILERS,
+  powerUnitCode: POWER_UNITS.TRUCK_TRACTORS.id,
+  vehicleCode: TRAILERS.SEMI_TRAILERS.id,
   axleType: 'Tridem',
   before: '',
   after: '',
@@ -22,22 +23,23 @@ const base = {
 
 describe('worksheet vehicle and axle translation', () => {
   it.each<[string, string, string[]]>([
-    ['NONREDU', TRAILER_CODES.PONY_TRAILERS, [POWER_UNIT_CODES.TRUCKS]],
     [
-      'XXXXXXX',
-      TRAILER_CODES.FIXED_EQUIPMENT_PONY_TRAILERS,
-      [
-        POWER_UNIT_CODES.FIXED_EQUIPMENT_TRUCKS_GRADERS,
-        POWER_UNIT_CODES.TRUCKS,
-      ],
+      COMMODITY_CODES.NON_REDUCIBLE_LOADS,
+      TRAILERS.PONY_TRAILERS.id,
+      [POWER_UNITS.TRUCKS.id],
     ],
     [
-      'EMPTYXX',
-      TRAILER_CODES.SEMI_TRAILERS_WHEELERS,
+      COMMODITY_CODES.NONE,
+      TRAILERS.FIXED_EQUIPMENT_PONY_TRAILERS.id,
+      [POWER_UNITS.FIXED_EQUIPMENT_TRUCKS_GRADERS.id, POWER_UNITS.TRUCKS.id],
+    ],
+    [
+      COMMODITY_CODES.EMPTY,
+      TRAILERS.SEMI_TRAILERS_WHEELERS.id,
       [
-        POWER_UNIT_CODES.PICKER_TRUCK_TRACTORS,
-        POWER_UNIT_CODES.TRUCK_WITH_PME,
-        POWER_UNIT_CODES.TRUCK_TRACTOR_WITH_PME,
+        POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
+        POWER_UNITS.TRUCK_WITH_PME.id,
+        POWER_UNITS.TRUCK_TRACTOR_WITH_PME.id,
       ],
     ],
   ])(
@@ -52,7 +54,7 @@ describe('worksheet vehicle and axle translation', () => {
         '',
       );
       expect(powerUnits).toEqual([
-        POWER_UNIT_CODES.TRUCK_TRACTORS,
+        POWER_UNITS.TRUCK_TRACTORS.id,
         ...additional,
       ]);
       for (const powerUnitCode of powerUnits) {
@@ -67,8 +69,8 @@ describe('worksheet vehicle and axle translation', () => {
   );
 
   it('keeps a reference case when no commodity trailer entry is present', () => {
-    expect(getTrailerFixturePowerUnits([], TRAILER_CODES.DOLLIES, '')).toEqual([
-      POWER_UNIT_CODES.TRUCK_TRACTORS,
+    expect(getTrailerFixturePowerUnits([], TRAILERS.DOLLIES.id, '')).toEqual([
+      POWER_UNITS.TRUCK_TRACTORS.id,
     ]);
   });
 
@@ -96,28 +98,28 @@ describe('worksheet vehicle and axle translation', () => {
   it('uses only the named Mobile Crane before the Dolly', () => {
     const powerUnits = getTrailerFixturePowerUnits(
       [],
-      TRAILER_CODES.DOLLIES,
-      'Cranes - Mobile',
+      TRAILERS.DOLLIES.id,
+      POWER_UNITS.CRANES_MOBILE.name,
     );
-    expect(powerUnits).toEqual([POWER_UNIT_CODES.CRANES_MOBILE]);
+    expect(powerUnits).toEqual([POWER_UNITS.CRANES_MOBILE.id]);
     const row = {
       ...base,
       powerUnitCode: powerUnits[0],
-      vehicleCode: TRAILER_CODES.DOLLIES,
+      vehicleCode: TRAILERS.DOLLIES.id,
       axleType: 'Tandem',
       after: 'X',
-      neighbourCategory: 'Cranes - Mobile',
+      neighbourCategory: POWER_UNITS.CRANES_MOBILE.name,
       neighbourAxleType: 'Single',
     };
     const fixture = buildTrailerFixture(row, 23000);
     expect(fixture.vehicles).toEqual([
-      POWER_UNIT_CODES.CRANES_MOBILE,
-      TRAILER_CODES.DOLLIES,
+      POWER_UNITS.CRANES_MOBILE.id,
+      TRAILERS.DOLLIES.id,
     ]);
     expect(fixture.axles.map((axle) => axle.numberOfAxles)).toEqual([1, 1, 2]);
     expect(() =>
       buildTrailerFixture(
-        { ...row, powerUnitCode: POWER_UNIT_CODES.TRUCK_TRACTORS },
+        { ...row, powerUnitCode: POWER_UNITS.TRUCK_TRACTORS.id },
         23000,
       ),
     ).toThrow('Unsupported worksheet neighbour relationship');
@@ -128,9 +130,10 @@ describe('worksheet vehicle and axle translation', () => {
       {
         ...base,
         row: 5,
-        vehicleCode: TRAILER_CODES.BOOSTER,
+        vehicleCode: TRAILERS.BOOSTER.id,
         axleType: 'Single',
         after: 'x',
+        // Column H is a category, not the vehicle name 'Semi-Trailers'.
         neighbourCategory: 'Semi-Trailer',
         neighbourAxleType: 'Tridem',
         spreadCm: 100,
@@ -140,9 +143,9 @@ describe('worksheet vehicle and axle translation', () => {
     );
     expect(fixture).toEqual({
       vehicles: [
-        POWER_UNIT_CODES.TRUCK_TRACTORS,
-        TRAILER_CODES.SEMI_TRAILERS,
-        TRAILER_CODES.BOOSTER,
+        POWER_UNITS.TRUCK_TRACTORS.id,
+        TRAILERS.SEMI_TRAILERS.id,
+        TRAILERS.BOOSTER.id,
       ],
       targetAxleIndex: 3,
       axles: [
@@ -174,9 +177,9 @@ describe('worksheet vehicle and axle translation', () => {
     );
     expect(fixture.targetAxleIndex).toBe(2);
     expect(fixture.vehicles).toEqual([
-      POWER_UNIT_CODES.TRUCK_TRACTORS,
-      TRAILER_CODES.SEMI_TRAILERS,
-      TRAILER_CODES.BOOSTER,
+      POWER_UNITS.TRUCK_TRACTORS.id,
+      TRAILERS.SEMI_TRAILERS.id,
+      TRAILERS.BOOSTER.id,
     ]);
     expect(fixture.axles[2]).toEqual({
       numberOfAxles: 3,
@@ -200,7 +203,7 @@ describe('worksheet vehicle and axle translation', () => {
     const fixture = buildTrailerFixture(
       {
         ...base,
-        vehicleCode: TRAILER_CODES.JEEPS,
+        vehicleCode: TRAILERS.JEEPS.id,
         axleType: 'Single',
         after: 'X',
         neighbourCategory: 'Power Unit',
@@ -234,8 +237,8 @@ describe('worksheet vehicle and axle translation', () => {
         29000,
       );
       expect(fixture.vehicles).toEqual([
-        POWER_UNIT_CODES.TRUCK_TRACTORS,
-        TRAILER_CODES.SEMI_TRAILERS,
+        POWER_UNITS.TRUCK_TRACTORS.id,
+        TRAILERS.SEMI_TRAILERS.id,
       ]);
       expect(fixture.axles[2]).toEqual({
         numberOfAxles: 3,
@@ -251,7 +254,7 @@ describe('worksheet vehicle and axle translation', () => {
         {
           ...base,
           row: 41,
-          vehicleCode: TRAILER_CODES.DOLLIES,
+          vehicleCode: TRAILERS.DOLLIES.id,
           after: 'X',
           neighbourCategory: 'Power Unit',
         },

@@ -114,7 +114,7 @@ When you call the `runAxleCalculation` method, all six rules are automatically a
 
 ```typescript
 const results = policy.runAxleCalculation(
-  [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS], // Vehicle configuration
+  [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id], // Vehicle configuration
   [
     {
       numberOfAxles: 2,
