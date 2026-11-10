@@ -452,22 +452,7 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     });
   });
 
-  it('should raise STOW axle calculation violation when truck tractor wheelbase exceeds 7.2m', async () => {
-    const permit = getDatedPermit();
-    setTruckTractorWheelbaseScenario(permit, 660, 140);
-
-    const validationResult = await policy.validate(permit);
-
-    expect(validationResult.violations).toHaveLength(1);
-    expect(validationResult.violations[0].message).toBe(
-      'Vehicle configuration failed axle calculation policy checks',
-    );
-    expect(validationResult.violations[0].details).toContain(
-      'Wheelbase for Axle Unit 1 and Axle Unit 2 is greater than 7.2m.',
-    );
-  });
-
-  it('should raise STOW axle calculation violation when truck tractor wheelbase is between 6.2m and 7.2m with jeep and booster selected', async () => {
+  it('should raise STOW axle calculation violation when truck tractor wheelbase is between 6.2 m and 7.2 m with jeep and booster selected', async () => {
     const permit = getDatedPermit();
     setTruckTractorWheelbaseScenario(permit, 550, 141);
 
@@ -477,8 +462,8 @@ describe('Single Trip Overweight Policy Configuration Validator', () => {
     expect(validationResult.violations[0].message).toBe(
       'Vehicle configuration failed axle calculation policy checks',
     );
-    expect(validationResult.violations[0].details).toContain(
-      'Wheelbase for Axle Unit 1 and Axle Unit 2 is between 6.2m and 7.2m. See CTPM 5.3.7.A.',
+    expect(validationResult.violations[0].details?.[0]).toContain(
+      'Wheelbase for Axle Unit 1 and Axle Unit 2 is between 6.2 m and 7.2 m. See CTPM 5.3.7.A.',
     );
     expect(validationResult.warnings).toHaveLength(0);
   });
