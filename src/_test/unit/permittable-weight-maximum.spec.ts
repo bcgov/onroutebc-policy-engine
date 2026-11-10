@@ -868,11 +868,8 @@ describe('ORV2-5709 permittable weight maximums', () => {
       ];
 
       expect(
-        policy.calculateBridge(
-          policy,
-          axleConfiguration,
-          vehicleConfiguration,
-        )[0].maxBridge,
+        policy.calculateBridge(axleConfiguration, vehicleConfiguration)[0]
+          .maxBridge,
       ).toBe(21000);
       expect(
         getPermittableResult({
