@@ -73,7 +73,7 @@ export function getDefaultWheelbaseHelper(
 
   // Prefer specific power unit subtype wheelbase requirements.
   const wheelbaseLimits = vehicleDefinition.wheelbaseLimits?.filter(
-    (vehicleRequirement) => vehicleRequirement.axles === axles,
+    (vehicleRequirement) => vehicleRequirement?.axles?.includes(axles),
   );
 
   if (wheelbaseLimits && wheelbaseLimits.length > 0) {

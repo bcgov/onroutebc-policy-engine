@@ -11,7 +11,7 @@ export type WheelbaseRequirement = SelfIssuable & {
    * applies to. The most significant digit is the previous axle unit and the
    * least significant digit is the current axle unit, in this case the drive axle.
    */
-  axles?: number;
+  axles?: Array<number>;
   /** The minimum permittable wheelbase value in centimetres (optional) */
   minWheelbase?: number;
   /** The maximum permittable wheelbase value in centimetres (optional) */

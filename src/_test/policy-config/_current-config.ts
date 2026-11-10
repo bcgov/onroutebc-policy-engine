@@ -4752,30 +4752,18 @@ export const data: PolicyDefinition = {
         wheelbaseLimits: [
           // TODO consider making axles an array to avoid these repeated values
           {
-            axles: 11,
+            axles: [11, 12, 13, 23],
             maxWheelbase: 1000,
           },
           {
-            axles: 12,
-            maxWheelbase: 1000,
-          },
-          {
-            axles: 13,
-            maxWheelbase: 1000,
-          },
-          {
-            axles: 23,
-            maxWheelbase: 1000,
-          },
-          {
-            axles: 23,
+            axles: [23],
             minAxleSpread: 280,
             maxAxleSpread: 299,
             minWheelbase: 780,
             maxWheelbase: 1000,
           },
           {
-            axles: 23,
+            axles: [23],
             minAxleSpread: 300,
             maxAxleSpread: 310,
             minWheelbase: 790,
@@ -4909,34 +4897,34 @@ export const data: PolicyDefinition = {
         ],
         wheelbaseLimits: [
           {
-            axles: 12,
+            axles: [12],
             minWheelbase: 300,
             maxWheelbase: 620,
           },
           {
-            axles: 13,
+            axles: [13],
             minWheelbase: 660,
             maxWheelbase: 680,
           },
           {
-            axles: 22,
+            axles: [22],
             minWheelbase: 625,
             maxWheelbase: 1250,
           },
           {
-            axles: 23,
+            axles: [23],
             minAxleSpread: 240,
             maxAxleSpread: 279,
             minWheelbase: 720,
           },
           {
-            axles: 23,
+            axles: [23],
             minAxleSpread: 280,
             maxAxleSpread: 299,
             minWheelbase: 730,
           },
           {
-            axles: 23,
+            axles: [23],
             minAxleSpread: 300,
             maxAxleSpread: 309,
             minWheelbase: 740,
@@ -4982,12 +4970,12 @@ export const data: PolicyDefinition = {
         ],
         wheelbaseLimits: [
           {
-            axles: 13,
+            axles: [13],
             minWheelbase: 660,
             maxWheelbase: 680,
           },
           {
-            axles: 23,
+            axles: [23],
             minAxleSpread: 240,
             maxAxleSpread: 279,
             minWheelbase: 770,
@@ -5033,16 +5021,16 @@ export const data: PolicyDefinition = {
         ],
         wheelbaseLimits: [
           {
-            axles: 11,
+            axles: [11],
             maxWheelbase: 620,
           },
           {
-            axles: 12,
+            axles: [12],
             minWheelbase: 300,
             maxWheelbase: 620,
           },
           {
-            axles: 12,
+            axles: [12],
             modifier: {
               category: VEHICLE_CATEGORIES.SEMI_TRAILER,
               position: RelativePosition.After,
@@ -5051,7 +5039,7 @@ export const data: PolicyDefinition = {
             maxWheelbase: 720,
           },
           {
-            axles: 13,
+            axles: [13],
             minWheelbase: 660,
             maxWheelbase: 680,
           },
@@ -5224,16 +5212,16 @@ export const data: PolicyDefinition = {
         category: VEHICLE_CATEGORIES.POWER_UNIT,
         wheelbaseLimits: [
           {
-            axles: 11,
+            axles: [11],
             maxWheelbase: 620,
           },
           {
-            axles: 12,
+            axles: [12],
             minWheelbase: 300,
             maxWheelbase: 620,
           },
           {
-            axles: 12,
+            axles: [12],
             modifier: {
               category: VEHICLE_CATEGORIES.SEMI_TRAILER,
               position: RelativePosition.After,
@@ -5242,12 +5230,12 @@ export const data: PolicyDefinition = {
             maxWheelbase: 720,
           },
           {
-            axles: 13,
+            axles: [13],
             minWheelbase: 660,
             maxWheelbase: 680,
           },
           {
-            axles: 23,
+            axles: [23],
             minAxleSpread: 240,
             maxAxleSpread: 279,
             minWheelbase: 770,
@@ -5287,11 +5275,11 @@ export const data: PolicyDefinition = {
         ],
         wheelbaseLimits: [
           {
-            axles: 13,
+            axles: [13],
             minWheelbase: 660,
           },
           {
-            axles: 23,
+            axles: [23],
             minAxleSpread: 240,
             maxAxleSpread: 279,
             minWheelbase: 770,
