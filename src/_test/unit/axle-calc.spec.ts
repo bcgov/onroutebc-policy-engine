@@ -3444,83 +3444,196 @@ describe('6.2 to 7.2 m long wheelbase exceptions', () => {
   });
 });
 
+// Source: ASW Permittable Interaxle Spacing - Wheelers.feature @orv2-6071
 describe('wheelers permittable interaxle spacing', () => {
   const configuredPolicyDefinition = JSON.parse(
     JSON.stringify(currentPolicyConfig),
   ) as PolicyDefinition;
   const configuredPolicy = new Policy(configuredPolicyDefinition);
-  const vehicleConfiguration = [
-    POWER_UNITS.TRUCK_TRACTORS.id,
-    TRAILERS.SEMI_TRAILERS_WHEELERS.id,
-  ];
-  const axleConfiguration: Array<AxleConfiguration> = [
-    {
-      numberOfAxles: 1,
-      axleUnitWeight: 8000,
-      numberOfTires: 2,
-      tireSize: 711.2,
-      vehicleIndex: 0,
-    },
-    {
+
+  // @orv2-6071-1
+  describe('Front-to-Back Major Separation for Wheelers', () => {
+    const applicablePowerUnitTypes = [
+      POWER_UNITS.TRUCK_TRACTORS.id,
+      POWER_UNITS.TRUCK_TRACTOR_WITH_PME.id,
+      POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
+    ];
+    const applicableWheelerTrailerTypes = [
+      TRAILERS.SEMI_TRAILERS_WHEELERS.id,
+      TRAILERS.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS.id,
+      TRAILERS.PLATFORM_TRAILERS_WHEELERS.id,
+    ];
+    const applicableVehicleConfigurations: Array<[string, string]> =
+      applicablePowerUnitTypes.flatMap((powerUnitType) =>
+        applicableWheelerTrailerTypes.map((trailerType): [string, string] => [
+          powerUnitType,
+          trailerType,
+        ]),
+      );
+
+    const axleConfiguration: Array<AxleConfiguration> = [
+      {
+        numberOfAxles: 1,
+        axleUnitWeight: 8000,
+        numberOfTires: 2,
+        tireSize: 711.2,
+        vehicleIndex: 0,
+      },
+      {
+        numberOfAxles: 2,
+        axleSpread: 100,
+        interaxleSpacing: 300,
+        axleUnitWeight: 8000,
+        numberOfTires: 8,
+        tireSize: 711.2,
+        vehicleIndex: 0,
+      },
+      {
+        numberOfAxles: 2,
+        axleSpread: 100,
+        axleUnitWeight: 17000,
+        numberOfTires: 4,
+        tireSize: 711.2,
+        vehicleIndex: 1,
+      },
+    ];
+    const jeepVehicleConfiguration = [
+      POWER_UNITS.TRUCK_TRACTORS.id,
+      TRAILERS.JEEPS.id,
+      TRAILERS.SEMI_TRAILERS_WIDE_WHEELERS.id,
+    ];
+    const jeepAxleUnit: AxleConfiguration = {
       numberOfAxles: 2,
       axleSpread: 100,
-      interaxleSpacing: 300,
+      interaxleSpacing: 500,
       axleUnitWeight: 8000,
       numberOfTires: 8,
       tireSize: 711.2,
-      vehicleIndex: 0,
-    },
-    {
-      numberOfAxles: 2,
-      axleSpread: 100,
-      axleUnitWeight: 17000,
-      numberOfTires: 4,
-      tireSize: 711.2,
       vehicleIndex: 1,
-    },
-  ];
+    };
 
-  it('does not raise interaxle spacing restriction for semi trailer wheeler with interaxle spacing of more than 7.0 m behind power unit', () => {
-    axleConfiguration[2].interaxleSpacing = 700;
+    it.each(applicableVehicleConfigurations)(
+      'does not raise interaxle spacing restriction behind power unit %s with wheeler trailer %s and spacing greater than 7.0 m',
+      (powerUnitType, trailerType) => {
+        const testVehicleConfiguration = [powerUnitType, trailerType];
+        const testAxleConfiguration = axleConfiguration.map(
+          (axleUnit, index) =>
+            index === 2
+              ? { ...axleUnit, interaxleSpacing: 700 }
+              : { ...axleUnit },
+        );
 
-    const results = configuredPolicy.runAxleCalculation(
-      vehicleConfiguration,
-      axleConfiguration,
-      100000,
-      COMMODITY_CODES.REDUCIBLE_LOADS,
-    ).results;
+        const results = configuredPolicy.runAxleCalculation(
+          testVehicleConfiguration,
+          testAxleConfiguration,
+          100000,
+          COMMODITY_CODES.REDUCIBLE_LOADS,
+        ).results;
 
-    const interaxleSpacingResults = results.filter(
-      (result) => result.id === PolicyCheckId.InteraxleSpacing,
+        const interaxleSpacingResults = results.filter(
+          (result) => result.id === PolicyCheckId.InteraxleSpacing,
+        );
+
+        expect(interaxleSpacingResults[2].result).toBe(
+          PolicyCheckResultType.Pass,
+        );
+      },
     );
 
-    expect(interaxleSpacingResults[2].result).toBe(PolicyCheckResultType.Pass);
-  });
+    it.each(applicableVehicleConfigurations)(
+      'raises interaxle spacing restriction behind power unit %s with wheeler trailer %s and spacing less than 7.0 m',
+      (powerUnitType, trailerType) => {
+        const testVehicleConfiguration = [powerUnitType, trailerType];
+        const testAxleConfiguration = axleConfiguration.map(
+          (axleUnit, index) =>
+            index === 2
+              ? { ...axleUnit, interaxleSpacing: 699 }
+              : { ...axleUnit },
+        );
 
-  it('raises interaxle spacing restriction for semi trailer wheeler with interaxle spacing of less than 7.0 m behind power unit', () => {
-    axleConfiguration[2].interaxleSpacing = 699;
+        const results = configuredPolicy.runAxleCalculation(
+          testVehicleConfiguration,
+          testAxleConfiguration,
+          100000,
+          COMMODITY_CODES.REDUCIBLE_LOADS,
+        ).results;
 
-    const results = configuredPolicy.runAxleCalculation(
-      vehicleConfiguration,
-      axleConfiguration,
-      100000,
-      COMMODITY_CODES.REDUCIBLE_LOADS,
-    ).results;
+        const interaxleSpacingResults = results.filter(
+          (result) => result.id === PolicyCheckId.InteraxleSpacing,
+        );
 
-    const interaxleSpacingResults = results.filter(
-      (result) => result.id === PolicyCheckId.InteraxleSpacing,
+        expect(interaxleSpacingResults[2].result).toBe(
+          PolicyCheckResultType.Fail,
+        );
+        expect(interaxleSpacingResults[2].message).toBe(
+          'Interaxle Spacing between Axle Unit 2 and Axle Unit 3 must be at least 7.0 m.',
+        );
+      },
     );
 
-    expect(interaxleSpacingResults[2].result).toBe(PolicyCheckResultType.Fail);
+    it('does not raise interaxle spacing restriction for semi trailer wide wheeler with interaxle spacing of more than 7.0 m behind Jeep', () => {
+      const jeepAxleConfiguration = axleConfiguration.map((axleUnit) => ({
+        ...axleUnit,
+      }));
+      jeepAxleConfiguration.splice(2, 0, { ...jeepAxleUnit });
+      jeepAxleConfiguration[3].vehicleIndex = 2;
+      jeepAxleConfiguration[3].interaxleSpacing = 700;
+
+      const results = configuredPolicy.runAxleCalculation(
+        jeepVehicleConfiguration,
+        jeepAxleConfiguration,
+        100000,
+        COMMODITY_CODES.REDUCIBLE_LOADS,
+      ).results;
+
+      const interaxleSpacingResults = results.filter(
+        (result) => result.id === PolicyCheckId.InteraxleSpacing,
+      );
+
+      expect(interaxleSpacingResults[3].result).toBe(
+        PolicyCheckResultType.Pass,
+      );
+    });
+
+    it('raises interaxle spacing restriction for semi trailer wide wheeler with interaxle spacing of less than 7.0 m behind Jeep', () => {
+      const jeepAxleConfiguration = axleConfiguration.map((axleUnit) => ({
+        ...axleUnit,
+      }));
+      jeepAxleConfiguration.splice(2, 0, { ...jeepAxleUnit });
+      jeepAxleConfiguration[3].vehicleIndex = 2;
+      jeepAxleConfiguration[3].interaxleSpacing = 699;
+
+      const results = configuredPolicy.runAxleCalculation(
+        jeepVehicleConfiguration,
+        jeepAxleConfiguration,
+        100000,
+        COMMODITY_CODES.REDUCIBLE_LOADS,
+      ).results;
+
+      const interaxleSpacingResults = results.filter(
+        (result) => result.id === PolicyCheckId.InteraxleSpacing,
+      );
+
+      expect(interaxleSpacingResults[3].result).toBe(
+        PolicyCheckResultType.Fail,
+      );
+      expect(interaxleSpacingResults[3].message).toBe(
+        'Interaxle Spacing between Axle Unit 3 and Axle Unit 4 must be at least 7.0 m.',
+      );
+    });
   });
 
-  it('does not raise interaxle spacing restriction for semi trailer wide wheeler with interaxle spacing of more than 7.0 m behind Jeep', () => {
-    const vehicleConfiguration = [
+  // @orv2-6071-2
+  describe('Inter-Axle Spacing Between Tractor Drive Unit and Front-Most Jeeps or Jeep - Wheelers', () => {
+    const applicablePowerUnitTypes = [
       POWER_UNITS.TRUCK_TRACTORS.id,
-      TRAILERS.JEEPS.id,
-      TRAILERS.SEMI_TRAILERS_WIDE_WHEELERS.id,
+      POWER_UNITS.TRUCK_TRACTOR_WITH_PME.id,
+      POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
     ];
-    const axleConfiguration: Array<AxleConfiguration> = [
+    const applicableVehicleConfigurations = applicablePowerUnitTypes.map(
+      (powerUnitType): [string, string] => [powerUnitType, TRAILERS.JEEPS.id],
+    );
+    const jeepAxleConfiguration: Array<AxleConfiguration> = [
       {
         numberOfAxles: 1,
         axleUnitWeight: 8000,
@@ -3540,93 +3653,64 @@ describe('wheelers permittable interaxle spacing', () => {
       {
         numberOfAxles: 2,
         axleSpread: 100,
-        interaxleSpacing: 500,
+        interaxleSpacing: 420,
         axleUnitWeight: 8000,
         numberOfTires: 8,
         tireSize: 711.2,
         vehicleIndex: 1,
       },
-      {
-        numberOfAxles: 2,
-        axleSpread: 100,
-        axleUnitWeight: 17000,
-        numberOfTires: 4,
-        tireSize: 711.2,
-        vehicleIndex: 2,
-      },
     ];
 
-    axleConfiguration[3].interaxleSpacing = 700;
+    it.each(applicableVehicleConfigurations)(
+      'does not raise interaxle spacing restriction behind power unit %s with Jeep %s at 4.20 m',
+      (powerUnitType, jeepType) => {
+        const testAxleConfiguration = jeepAxleConfiguration.map((axleUnit) => ({
+          ...axleUnit,
+        }));
+        const results = configuredPolicy.runAxleCalculation(
+          [powerUnitType, jeepType],
+          testAxleConfiguration,
+          100000,
+          COMMODITY_CODES.REDUCIBLE_LOADS,
+        ).results;
 
-    const results = configuredPolicy.runAxleCalculation(
-      vehicleConfiguration,
-      axleConfiguration,
-      100000,
-      COMMODITY_CODES.REDUCIBLE_LOADS,
-    ).results;
+        const interaxleSpacingResults = results.filter(
+          (result) => result.id === PolicyCheckId.InteraxleSpacing,
+        );
 
-    const interaxleSpacingResults = results.filter(
-      (result) => result.id === PolicyCheckId.InteraxleSpacing,
+        expect(interaxleSpacingResults[2].result).toBe(
+          PolicyCheckResultType.Pass,
+        );
+      },
     );
 
-    expect(interaxleSpacingResults[3].result).toBe(PolicyCheckResultType.Pass);
-  });
+    it.each(applicableVehicleConfigurations)(
+      'raises interaxle spacing restriction behind power unit %s with Jeep %s below 4.20 m',
+      (powerUnitType, jeepType) => {
+        const testAxleConfiguration = jeepAxleConfiguration.map(
+          (axleUnit, index) =>
+            index === 2
+              ? { ...axleUnit, interaxleSpacing: 419 }
+              : { ...axleUnit },
+        );
+        const results = configuredPolicy.runAxleCalculation(
+          [powerUnitType, jeepType],
+          testAxleConfiguration,
+          100000,
+          COMMODITY_CODES.REDUCIBLE_LOADS,
+        ).results;
 
-  it('raises interaxle spacing restriction for semi trailer wide wheeler with interaxle spacing of less than 7.0 m behind Jeep', () => {
-    const vehicleConfiguration = [
-      POWER_UNITS.TRUCK_TRACTORS.id,
-      TRAILERS.JEEPS.id,
-      TRAILERS.SEMI_TRAILERS_WIDE_WHEELERS.id,
-    ];
-    const axleConfiguration: Array<AxleConfiguration> = [
-      {
-        numberOfAxles: 1,
-        axleUnitWeight: 8000,
-        numberOfTires: 2,
-        tireSize: 711.2,
-        vehicleIndex: 0,
-      },
-      {
-        numberOfAxles: 2,
-        axleSpread: 100,
-        interaxleSpacing: 300,
-        axleUnitWeight: 8000,
-        numberOfTires: 8,
-        tireSize: 711.2,
-        vehicleIndex: 0,
-      },
-      {
-        numberOfAxles: 2,
-        axleSpread: 100,
-        interaxleSpacing: 500,
-        axleUnitWeight: 8000,
-        numberOfTires: 8,
-        tireSize: 711.2,
-        vehicleIndex: 1,
-      },
-      {
-        numberOfAxles: 2,
-        axleSpread: 100,
-        axleUnitWeight: 17000,
-        numberOfTires: 4,
-        tireSize: 711.2,
-        vehicleIndex: 2,
-      },
-    ];
+        const interaxleSpacingResults = results.filter(
+          (result) => result.id === PolicyCheckId.InteraxleSpacing,
+        );
 
-    axleConfiguration[3].interaxleSpacing = 699;
-
-    const results = configuredPolicy.runAxleCalculation(
-      vehicleConfiguration,
-      axleConfiguration,
-      100000,
-      COMMODITY_CODES.REDUCIBLE_LOADS,
-    ).results;
-
-    const interaxleSpacingResults = results.filter(
-      (result) => result.id === PolicyCheckId.InteraxleSpacing,
+        expect(interaxleSpacingResults[2].result).toBe(
+          PolicyCheckResultType.Fail,
+        );
+        expect(interaxleSpacingResults[2].message).toBe(
+          'Interaxle Spacing between Axle Unit 2 and Axle Unit 3 must be at least 4.2 m.',
+        );
+      },
     );
-
-    expect(interaxleSpacingResults[3].result).toBe(PolicyCheckResultType.Fail);
   });
 });

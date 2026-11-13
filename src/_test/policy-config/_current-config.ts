@@ -4329,10 +4329,38 @@ export const data: PolicyDefinition = {
       {
         id: VEHICLE_CATEGORIES.JEEP,
         name: 'Jeep',
+        interaxleSpacings: [
+          {
+            axles: [11, 21, 31, 12, 22, 32, 13, 23, 33],
+            modifier: {
+              position: RelativePosition.Before,
+              type: [
+                POWER_UNITS.TRUCK_TRACTORS.id,
+                POWER_UNITS.TRUCK_TRACTOR_WITH_PME.id,
+                POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
+              ],
+            },
+            min: 420,
+          },
+        ],
       },
       {
         id: VEHICLE_CATEGORIES.JEEP_WHEELERS,
         name: 'Jeep Wheelers',
+        interaxleSpacings: [
+          {
+            axles: [11, 21, 31, 12, 22, 32, 13, 23, 33],
+            modifier: {
+              position: RelativePosition.Before,
+              type: [
+                POWER_UNITS.TRUCK_TRACTORS.id,
+                POWER_UNITS.TRUCK_TRACTOR_WITH_PME.id,
+                POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
+              ],
+            },
+            min: 420,
+          },
+        ],
       },
       {
         id: VEHICLE_CATEGORIES.PONY_TRAILER,
@@ -4349,7 +4377,6 @@ export const data: PolicyDefinition = {
             permittable: 21000,
           },
         ],
-        // TODO do these axle spread values apply to the pony-trailer category or the specific pony trailer type?
         axleSpreads: [
           {
             axles: 3,

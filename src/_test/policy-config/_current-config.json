@@ -4325,11 +4325,59 @@
       },
       {
         "id": "jeep",
-        "name": "Jeep"
+        "name": "Jeep",
+        "interaxleSpacings": [
+          {
+            "axles": [
+              11,
+              21,
+              31,
+              12,
+              22,
+              32,
+              13,
+              23,
+              33
+            ],
+            "modifier": {
+              "position": "before",
+              "type": [
+                "TRKTRAC",
+                "TRACPME",
+                "PICKRTT"
+              ]
+            },
+            "min": 420
+          }
+        ]
       },
       {
         "id": "jeep-wheelers",
-        "name": "Jeep Wheelers"
+        "name": "Jeep Wheelers",
+        "interaxleSpacings": [
+          {
+            "axles": [
+              11,
+              21,
+              31,
+              12,
+              22,
+              32,
+              13,
+              23,
+              33
+            ],
+            "modifier": {
+              "position": "before",
+              "type": [
+                "TRKTRAC",
+                "TRACPME",
+                "PICKRTT"
+              ]
+            },
+            "min": 420
+          }
+        ]
       },
       {
         "id": "pony",
