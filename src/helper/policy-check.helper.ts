@@ -581,6 +581,7 @@ function getApplicablePermittableWeightThreshold(
  * It maps axle units to their owning vehicles, selects the configured or legacy limit,
  * then compares actual axle unit weights against that limit. Additional axle units require explicit
  * vehicleIndex values on the axle configuration so ownership is not inferred.
+ * Also checks the configured combined weight cap for a tandem drive and single axle jeep.
  *
  * @param policy - The policy instance containing weight dimension configurations and validation rules
  * @param vehicleConfiguration - Array of vehicle type identifiers representing the vehicle configuration.
@@ -588,8 +589,7 @@ function getApplicablePermittableWeightThreshold(
  * @param axleConfiguration - Array of axle configurations containing weight and axle count information.
  *                           For power units, this includes steer, drive, and any configured additional
  *                           axle units.
- * @returns Array of AxleUnitPolicyCheckResult objects, one for each axle unit tested.
- *          Each result indicates whether the axle unit's weight is within permittable limits.
+ * @returns A weight result for each axle unit, including drive/jeep group failures.
  *
  * @example
  * // For a truck-tractor with 2-axle steer, 3-axle drive, and a 3-axle semi-trailer
@@ -639,6 +639,13 @@ export function CheckPermittableWeight(
     axleConfiguration,
   );
 
+  axleConfiguration = getAxleGroupWeights(
+    policy,
+    vehicleConfiguration,
+    axleConfiguration,
+  );
+  axleConfiguration = getAxleGroupSpacings(axleConfiguration);
+
   return axleConfiguration.map((axleUnit, axleIndex) => {
     const vehicleIndex = axleUnitVehicleIndexes[axleIndex];
     const weightThreshold = getApplicablePermittableWeightThreshold(
@@ -667,6 +674,53 @@ export function CheckPermittableWeight(
           : `must not exceed ${weightThreshold?.permittable} kgs`
       }`;
     }
+
+    const previousAxle = axleConfiguration[axleIndex - 1];
+    const isTandemDriveSingleJeep =
+      vehicleConfiguration[vehicleIndex] === TRAILERS.JEEPS.id &&
+      axleUnit.numberOfAxles === 1 &&
+      axleUnitVehicleIndexes[axleIndex - 1] === 0 &&
+      previousAxle.numberOfAxles === 2;
+
+    // @orv2-6069-1: single axle jeep axle group permit max scenario.
+    if (isTandemDriveSingleJeep) {
+      const groupWeight = axleUnit.axleGroupWeight ?? 0;
+      const groupSpacing = axleUnit.axleGroupSpacing ?? 0;
+      const interaxleSpacingRequirement = policy
+        .getDefaultTrailerInteraxleSpacing(TRAILERS.JEEPS.id, 21)
+        .find((requirement) => {
+          const meetsMinimumSpacing =
+            requirement.minAxleGroupSpacing === undefined ||
+            groupSpacing >= requirement.minAxleGroupSpacing;
+          const meetsMaximumSpacing =
+            requirement.maxAxleGroupSpacing === undefined ||
+            groupSpacing <= requirement.maxAxleGroupSpacing;
+
+          return (
+            requirement.maxAxleGroupWeight !== undefined &&
+            meetsMinimumSpacing &&
+            meetsMaximumSpacing
+          );
+        });
+      const permittableGroupWeight =
+        interaxleSpacingRequirement?.maxAxleGroupWeight;
+
+      if (
+        permittableGroupWeight !== undefined &&
+        groupWeight > permittableGroupWeight
+      ) {
+        return {
+          id: policyId,
+          result: PolicyCheckResultType.Fail,
+          message: `Axle Unit ${axleIndex} and Axle Unit ${axleUnitNumber} combined must not exceed ${permittableGroupWeight} kg.`,
+          startAxleUnit: axleIndex,
+          endAxleUnit: axleUnitNumber,
+          actualWeight: groupWeight,
+          thresholdWeight: permittableGroupWeight,
+        } as AxleGroupPolicyCheckResult;
+      }
+    }
+
     return {
       id: policyId,
       message,
