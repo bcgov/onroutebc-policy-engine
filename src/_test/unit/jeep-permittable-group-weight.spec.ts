@@ -181,7 +181,11 @@ describe('ORV2-6163 single axle jeep permittable group weight', () => {
     permit.permitData.vehicleConfiguration.axleConfiguration.splice(
       0,
       3,
-      ...axleConfiguration.map(({ vehicleIndex, ...axle }) => axle),
+      ...axleConfiguration.map((axle) => {
+        const permitAxle = { ...axle };
+        delete permitAxle.vehicleIndex;
+        return permitAxle;
+      }),
     );
     const validation = await policy.validate(permit);
 
