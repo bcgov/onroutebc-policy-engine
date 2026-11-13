@@ -639,7 +639,14 @@ export function CheckPermittableWeight(
     axleConfiguration,
   );
 
-  return getAxleGroupSpacings(axleConfiguration).map((axleUnit, axleIndex) => {
+  axleConfiguration = getAxleGroupWeights(
+    policy,
+    vehicleConfiguration,
+    axleConfiguration,
+  );
+  axleConfiguration = getAxleGroupSpacings(axleConfiguration);
+
+  return axleConfiguration.map((axleUnit, axleIndex) => {
     const vehicleIndex = axleUnitVehicleIndexes[axleIndex];
     const weightThreshold = getApplicablePermittableWeightThreshold(
       policy,
@@ -677,25 +684,26 @@ export function CheckPermittableWeight(
 
     // @orv2-6069-1: single axle jeep axle group permit max scenario.
     if (isTandemDriveSingleJeep) {
-      const groupWeight = previousAxle.axleUnitWeight + axleUnit.axleUnitWeight;
+      const groupWeight = axleUnit.axleGroupWeight ?? 0;
       const groupSpacing = axleUnit.axleGroupSpacing ?? 0;
-      const spacingTier = policy
+      const interaxleSpacingRequirement = policy
         .getDefaultTrailerInteraxleSpacing(TRAILERS.JEEPS.id, 21)
-        .find((tier) => {
+        .find((requirement) => {
           const meetsMinimumSpacing =
-            tier.minAxleGroupSpacing === undefined ||
-            groupSpacing >= tier.minAxleGroupSpacing;
+            requirement.minAxleGroupSpacing === undefined ||
+            groupSpacing >= requirement.minAxleGroupSpacing;
           const meetsMaximumSpacing =
-            tier.maxAxleGroupSpacing === undefined ||
-            groupSpacing <= tier.maxAxleGroupSpacing;
+            requirement.maxAxleGroupSpacing === undefined ||
+            groupSpacing <= requirement.maxAxleGroupSpacing;
 
           return (
-            tier.maxAxleGroupWeight !== undefined &&
+            requirement.maxAxleGroupWeight !== undefined &&
             meetsMinimumSpacing &&
             meetsMaximumSpacing
           );
         });
-      const permittableGroupWeight = spacingTier?.maxAxleGroupWeight;
+      const permittableGroupWeight =
+        interaxleSpacingRequirement?.maxAxleGroupWeight;
 
       if (
         permittableGroupWeight !== undefined &&
