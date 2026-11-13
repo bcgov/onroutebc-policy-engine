@@ -4427,7 +4427,23 @@
       },
       {
         "id": "wide-wheelers",
-        "name": "Wide Wheelers"
+        "name": "Wide Wheelers",
+        "interaxleSpacings": [
+          {
+            "axles": [
+              11,
+              21,
+              31,
+              12,
+              22,
+              32,
+              13,
+              23,
+              33
+            ],
+            "min": 700
+          }
+        ]
       },
       {
         "id": "wheeler",
@@ -4447,6 +4463,22 @@
             "axles": 3,
             "legal": 24000,
             "permittable": 40000
+          }
+        ],
+        "interaxleSpacings": [
+          {
+            "axles": [
+              11,
+              21,
+              31,
+              12,
+              22,
+              32,
+              13,
+              23,
+              33
+            ],
+            "min": 700
           }
         ]
       }

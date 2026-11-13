@@ -4432,6 +4432,12 @@ export const data: PolicyDefinition = {
       {
         id: VEHICLE_CATEGORIES.WIDE_WHEELERS,
         name: 'Wide Wheelers',
+        interaxleSpacings: [
+          {
+            axles: [11, 21, 31, 12, 22, 32, 13, 23, 33],
+            min: 700,
+          },
+        ],
       },
       {
         id: VEHICLE_CATEGORIES.WHEELER,
@@ -4451,6 +4457,12 @@ export const data: PolicyDefinition = {
             axles: 3,
             legal: 24000,
             permittable: 40000,
+          },
+        ],
+        interaxleSpacings: [
+          {
+            axles: [11, 21, 31, 12, 22, 32, 13, 23, 33],
+            min: 700,
           },
         ],
       },
