@@ -163,8 +163,8 @@ const permitApp = {
   permitType: 'TROS',
   permitData: {
     vehicleConfiguration: [
-      POWER_UNIT_CODES.TRUCK_TRACTORS,
-      TRAILER_CODES.SEMI_TRAILERS,
+      POWER_UNITS.TRUCK_TRACTORS.id,
+      TRAILERS.SEMI_TRAILERS.id,
     ],
     axleConfiguration: [
       {
@@ -201,7 +201,7 @@ console.log(
 ```typescript
 // Validate axle configuration against policy rules
 const axleResults = policy.runAxleCalculation(
-  [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS],
+  [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id],
   [
     {
       numberOfAxles: 2,
@@ -254,7 +254,7 @@ console.log('TROS commodities:', Array.from(commodities.entries()));
 
 // Get valid next vehicles for a configuration
 const nextVehicles = policy.getNextPermittableVehicles('STOS', 'IMCONTN', [
-  POWER_UNIT_CODES.TRUCK_TRACTORS,
+  POWER_UNITS.TRUCK_TRACTORS.id,
 ]);
 console.log('Valid next vehicles:', Array.from(nextVehicles.entries()));
 ```

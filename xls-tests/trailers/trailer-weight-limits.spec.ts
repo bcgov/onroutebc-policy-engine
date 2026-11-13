@@ -14,7 +14,7 @@ import {
   getNeighbourAxleTypes,
   getTrailerFixturePowerUnits,
 } from './trailer-fixture';
-import { TRAILER_VEHICLE_CODES } from './vehicle-codes';
+import { getTrailerCode } from '../helpers/getTrailerCode.helper';
 
 type TrailerRow = {
   row: number;
@@ -87,7 +87,7 @@ function getTestCases(row: TrailerRow, column: string): TrailerTestCase[] {
   const commodities = findCommodities(policy, row.commodity);
   const powerUnitCodes = getTrailerFixturePowerUnits(
     commodities[0]?.powerUnits || [],
-    TRAILER_VEHICLE_CODES[row.vehicle],
+    getTrailerCode(row.vehicle),
     row.neighbourCategory,
   );
   const neighbourAxleTypes = getNeighbourAxleTypes(row.neighbourAxleType);
@@ -132,7 +132,7 @@ describe(`XLS trailer weight conformance: ${file}`, () => {
           throw new Error(testCase.geometryError);
         }
         const commodity = getOnlyCommodity(testCase.commodities, row.commodity);
-        const trailerCode = TRAILER_VEHICLE_CODES[row.vehicle];
+        const trailerCode = getTrailerCode(row.vehicle);
         if (!trailerCode) {
           throw new Error(`Unmapped spreadsheet trailer: '${row.vehicle}'`);
         }

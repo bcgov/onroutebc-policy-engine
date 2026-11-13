@@ -81,6 +81,8 @@ import { VEHICLE_CATEGORIES } from './constants/vehicle-categories';
 import { TRAILERS } from './constants/trailers';
 import { AxleSpreadRequirement } from './types/axle-spread-requirement';
 import { getDefaultAxleSpreadHelper } from './helper/axle-spread.helper';
+import { WheelbaseRequirement } from './types/wheelbase-requirement';
+import { getDefaultWheelbaseHelper } from './helper/wheelbase-helper';
 
 /** Class representing commercial vehicle policy. */
 export class Policy {
@@ -1010,7 +1012,7 @@ export class Policy {
    *
    * @param vehicleConfiguration Array of vehicle type identifiers representing the vehicle configuration.
    *                            The first element should be a power unit type, followed by trailer types.
-   *                            Example: [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILERS.SEMI_TRAILERS.id] for a truck tractor with semi-trailer.
+   *                            Example: [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id] for a truck tractor with semi-trailer.
    * @param axleConfiguration Array of axle configurations corresponding to each vehicle in the configuration.
    *                          Each axle configuration contains details like number of axles, spacing, tire count, etc.
    *                          The length should match the vehicleConfiguration array plus one (since the first
@@ -1025,7 +1027,7 @@ export class Policy {
    * @example
    * // For a truck-tractor with 2-axle steer, 3-axle drive, and a 3-axle semi-trailer
    * const results = policy.runAxleCalculation(
-   *   [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILERS.SEMI_TRAILERS.id],
+   *   [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id],
    *   [
    *     { numberOfAxles: 2, axleSpread: 1.8, numberOfTires: 4 },
    *     { numberOfAxles: 3, axleSpread: 4.2, numberOfTires: 12 },
@@ -1288,6 +1290,23 @@ export class Policy {
   }
 
   /**
+   * Gets the default wheelbase value for a
+   * given power unit type and number of axles.
+   * @param subType Power unit subtype
+   * @param axles 2-digit number representing the axle unit pair this requirement
+   * applies to. The most significant digit is the previous axle unit and the
+   * least significant digit is the current axle unit, in this case the drive axle.
+   * @returns Array of wheelbase requirements. Multiple requirements may be returned if there are different values depending on subsequent trailers in the
+   * configuration (modifiers) or restrictions on axle spread values within the power unit. Will return an empty array if the number of axles is not configured in policy.
+   */
+  getDefaultPowerUnitWheelbase(
+    subType: string,
+    axles: number,
+  ): Array<WheelbaseRequirement> {
+    return getDefaultWheelbaseHelper(this, subType, axles);
+  }
+
+  /**
    * Gets the default axle spread value for a
    * given trailer type and number of axles.
    * @param subType Trailer subtype
@@ -1425,7 +1444,7 @@ export class Policy {
    *
    * @example
    * // For a truck-tractor with 2-axle steer, 3-axle drive, and a 3-axle semi-trailer
-   * const code = policy.getVehicleDisplayCode([POWER_UNIT_CODES.TRUCK_TRACTORS], [
+   * const code = policy.getVehicleDisplayCode([POWER_UNITS.TRUCK_TRACTORS.id], [
    *   { numberOfAxles: 2, axleSpread: 1.8, ... },
    *   { numberOfAxles: 3, axleSpread: 4.2, ... },
    *   { numberOfAxles: 3, axleSpread: 3.0, ... }
@@ -1450,7 +1469,7 @@ export class Policy {
    * vehicle configuration in the order: [powerUnit, trailer1, trailer2, ...].
    *
    * @param vehicleDetails - The vehicle details containing power unit information including
-   *                        the vehicle subtype (e.g., POWER_UNIT_CODES.TRUCK_TRACTORS for truck-tractor)
+   *                        the vehicle subtype (e.g., POWER_UNITS.TRUCK_TRACTORS.id for truck-tractor)
    * @param vehicleConfiguration - The vehicle configuration containing trailer information
    *                              and other vehicle configuration details
    * @returns An array of vehicle type identifiers representing the complete vehicle configuration.
@@ -1460,18 +1479,18 @@ export class Policy {
    * @example
    * // For a truck-tractor with a semi-trailer
    * const config = policy.getSimplifiedVehicleConfiguration(
-   *   { vehicleSubType: POWER_UNIT_CODES.TRUCK_TRACTORS, ... },
+   *   { vehicleSubType: POWER_UNITS.TRUCK_TRACTORS.id, ... },
    *   { trailers: [{ vehicleSubType: TRAILERS.SEMI_TRAILERS.id }] }
    * );
-   * // Returns: [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILERS.SEMI_TRAILERS.id]
+   * // Returns: [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id]
    *
    * @example
    * // For a single power unit with no trailers
    * const config = policy.getSimplifiedVehicleConfiguration(
-   *   { vehicleSubType: POWER_UNIT_CODES.TRUCK_TRACTORS, ... },
+   *   { vehicleSubType: POWER_UNITS.TRUCK_TRACTORS.id, ... },
    *   { trailers: [] }
    * );
-   * // Returns: [POWER_UNIT_CODES.TRUCK_TRACTORS]
+   * // Returns: [POWER_UNITS.TRUCK_TRACTORS.id]
    */
   getSimplifiedVehicleConfiguration(
     vehicleDetails: PermitVehicleDetails,

@@ -85,7 +85,7 @@ export function filterVehiclesByType(
  * vehicle configuration in the order: [powerUnit, trailer1, trailer2, ...].
  *
  * @param vehicleDetails - The vehicle details containing power unit information including
- *                        the vehicle subtype (e.g., POWER_UNIT_CODES.TRUCK_TRACTORS for truck-tractor)
+ *                        the vehicle subtype (e.g., POWER_UNITS.TRUCK_TRACTORS.id for truck-tractor)
  * @param vehicleConfiguration - The vehicle configuration containing trailer information
  *                              and other vehicle configuration details
  * @returns An array of vehicle type identifiers representing the complete vehicle configuration.
@@ -95,29 +95,29 @@ export function filterVehiclesByType(
  * @example
  * // For a truck-tractor with a semi-trailer
  * const config = getSimplifiedVehicleConfigurationHelper(
- *   { vehicleSubType: POWER_UNIT_CODES.TRUCK_TRACTORS, ... },
- *   { trailers: [{ vehicleSubType: TRAILER_CODES.SEMI_TRAILERS }] }
+ *   { vehicleSubType: POWER_UNITS.TRUCK_TRACTORS.id, ... },
+ *   { trailers: [{ vehicleSubType: TRAILERS.SEMI_TRAILERS.id }] }
  * );
- * // Returns: [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS]
+ * // Returns: [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id]
  *
  * @example
  * // For a single power unit with no trailers
  * const config = getSimplifiedVehicleConfigurationHelper(
- *   { vehicleSubType: POWER_UNIT_CODES.TRUCK_TRACTORS, ... },
+ *   { vehicleSubType: POWER_UNITS.TRUCK_TRACTORS.id, ... },
  *   { trailers: [] }
  * );
- * // Returns: [POWER_UNIT_CODES.TRUCK_TRACTORS]
+ * // Returns: [POWER_UNITS.TRUCK_TRACTORS.id]
  *
  * @example
  * // For a power unit with multiple trailers
  * const config = getSimplifiedVehicleConfigurationHelper(
- *   { vehicleSubType: POWER_UNIT_CODES.TRUCK_TRACTORS, ... },
+ *   { vehicleSubType: POWER_UNITS.TRUCK_TRACTORS.id, ... },
  *   { trailers: [
- *     { vehicleSubType: TRAILER_CODES.SEMI_TRAILERS },
- *     { vehicleSubType: TRAILER_CODES.BOOSTER }
+ *     { vehicleSubType: TRAILERS.SEMI_TRAILERS.id },
+ *     { vehicleSubType: TRAILERS.BOOSTER.id }
  *   ]}
  * );
- * // Returns: [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.SEMI_TRAILERS, TRAILER_CODES.BOOSTER]
+ * // Returns: [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.SEMI_TRAILERS.id, TRAILERS.BOOSTER.id]
  */
 export function getSimplifiedVehicleConfigurationHelper(
   vehicleDetails: PermitVehicleDetails,

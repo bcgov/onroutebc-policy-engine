@@ -72,27 +72,27 @@ function start() {
     '***PERMITTABLE NEXT VEHICLES WITH TRUCK TRACTOR AND JEEP, STOS AND EMPTY***',
   );
   const vehicleTypes2 = policy.getNextPermittableVehicles(PERMIT_CODES.SINGLE_TRIP_OVERSIZE, 'EMPTYXX', [
-    POWER_UNIT_CODES.TRUCK_TRACTORS,
-    TRAILER_CODES.JEEPS,
+    POWER_UNITS.TRUCK_TRACTORS.id,
+    TRAILERS.JEEPS.id,
   ]);
   console.log(JSON.stringify(Array.from(vehicleTypes2.entries()), null, '   '));
 
   console.log(
     '***MAX SIZE FOR TRUCK TRACTOR, JEEP, HIBOEXP, STOS AND EMPTYXX***',
   );
-  const sizeDimension = policy.getSizeDimension(PERMIT_CODES.SINGLE_TRIP_OVERSIZE, 'EMPTYXX', [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.JEEPS, TRAILER_CODES.HIBOYS_EXPANDOS]);
+  const sizeDimension = policy.getSizeDimension(PERMIT_CODES.SINGLE_TRIP_OVERSIZE, 'EMPTYXX', [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.JEEPS.id, TRAILERS.HIBOYS_EXPANDOS.id]);
   console.log(JSON.stringify(sizeDimension, null, '   '));
 
   console.log(
     '***MAX SIZE FOR TRUCK TRACTOR, JEEP, HIBOEXP, STOS AND EMPTYXX IN PEACE***',
   );
-  const sizeDimensionPeace = policy.getSizeDimension(PERMIT_CODES.SINGLE_TRIP_OVERSIZE, 'EMPTYXX', [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.JEEPS, TRAILER_CODES.HIBOYS_EXPANDOS], ['PCE']);
+  const sizeDimensionPeace = policy.getSizeDimension(PERMIT_CODES.SINGLE_TRIP_OVERSIZE, 'EMPTYXX', [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.JEEPS.id, TRAILERS.HIBOYS_EXPANDOS.id], ['PCE']);
   console.log(JSON.stringify(sizeDimensionPeace, null, '   '));
 
   console.log(
     '***MAX SIZE FOR TRUCK TRACTOR, JEEP, HIBOEXP, STOS AND EMPTYXX IN PEACE,BC DEFAULT***',
   );
-  const sizeDimensionPeaceBC = policy.getSizeDimension(PERMIT_CODES.SINGLE_TRIP_OVERSIZE, 'EMPTYXX', [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.JEEPS, TRAILER_CODES.HIBOYS_EXPANDOS], ['PCE','BCD']);
+  const sizeDimensionPeaceBC = policy.getSizeDimension(PERMIT_CODES.SINGLE_TRIP_OVERSIZE, 'EMPTYXX', [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.JEEPS.id, TRAILERS.HIBOYS_EXPANDOS.id], ['PCE','BCD']);
   console.log(JSON.stringify(sizeDimensionPeaceBC, null, '   '));
   */
 }

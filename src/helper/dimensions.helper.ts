@@ -649,7 +649,7 @@ export function getVehicleRelatives(
  *
  * @example
  * // Additional power-unit axle: CONCRET owns all three axle units explicitly.
- * getAxleUnitVehicleIndexes(policy, [POWER_UNIT_CODES.CONCRETE_PUMPER_TRUCKS], [
+ * getAxleUnitVehicleIndexes(policy, [POWER_UNITS.CONCRETE_PUMPER_TRUCKS.id], [
  *   { ...axleUnit, vehicleIndex: 0 },
  *   { ...axleUnit, vehicleIndex: 0 },
  *   { ...axleUnit, vehicleIndex: 0 },
@@ -658,7 +658,7 @@ export function getVehicleRelatives(
  *
  * @example
  * // Additional trailer axle: the trailer owns both trailer axle units explicitly.
- * getAxleUnitVehicleIndexes(policy, [POWER_UNIT_CODES.TRUCK_TRACTORS, TRAILER_CODES.STEERING_TRAILERS_MANNED], [
+ * getAxleUnitVehicleIndexes(policy, [POWER_UNITS.TRUCK_TRACTORS.id, TRAILERS.STEERING_TRAILERS_MANNED.id], [
  *   { ...axleUnit, vehicleIndex: 0 },
  *   { ...axleUnit, vehicleIndex: 0 },
  *   { ...axleUnit, vehicleIndex: 1 },

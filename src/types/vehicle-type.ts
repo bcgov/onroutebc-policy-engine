@@ -14,6 +14,7 @@ import {
   InteraxleSpacingRequirement,
 } from 'onroute-policy-engine/types';
 import { AxleSpreadRequirement } from './axle-spread-requirement';
+import { WheelbaseRequirement } from './wheelbase-requirement';
 
 /**
  * Base vehicle type with identification and configuration options
@@ -35,7 +36,7 @@ export type VehicleType = IdentifiedObject & {
   /** Additional axle subtype identifier (optional) */
   additionalAxleSubType?: string;
   /** Specfic interaxle spacing values for this vehicle type (optional) */
-  interaxleSpacings?: InteraxleSpacingRequirement[];
+  interaxleSpacings?: Array<InteraxleSpacingRequirement>;
   /** Axle spread values for this vehicle category (optional) */
   axleSpreads?: Array<AxleSpreadRequirement>;
 };
@@ -47,6 +48,8 @@ export type VehicleType = IdentifiedObject & {
 export type PowerUnitType = VehicleType & {
   /** Default weight dimensions specific to power units (optional) */
   defaultWeightDimensions?: Array<PowerUnitWeightDimension>;
+  /** Specfic wheelbase limits for this vehicle type (optional) */
+  wheelbaseLimits?: Array<WheelbaseRequirement>;
   /** Display code prefix for this power unit type (optional) */
   displayCodePrefix?: string;
   /** Display code for steer axle (optional) */
