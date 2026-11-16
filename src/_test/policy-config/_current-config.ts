@@ -5749,6 +5749,10 @@ export const data: PolicyDefinition = {
         ],
         interaxleSpacings: [
           {
+            axles: [11, 21, 31, 12, 22, 32, 13, 23, 33],
+            min: 700,
+          },
+          {
             axles: [22, 32, 23, 33],
             min: 420,
             modifier: {

@@ -5,7 +5,6 @@ import {
 import { Policy } from 'onroute-policy-engine';
 import { TRAILERS } from '../constants/trailers';
 import { getAxleGroupSpacings } from './interaxle-spacing.helper';
-import { isSemiTrailerType } from '../constants/semi-trailer-codes';
 import { VEHICLE_CATEGORIES } from '../constants/vehicle-categories';
 
 /**
@@ -118,6 +117,7 @@ export function runBridgeFormula(
             endAxleIndex,
           ) ||
           isSemiTrailerBoosterException(
+            policy,
             vehicleConfiguration,
             axleUnitVehicleIndexes,
             startAxleIndex,
@@ -197,6 +197,7 @@ const isTandemDriveSingleAxleJeepException = (
  * @orv2-6030-3
  */
 const isSemiTrailerBoosterException = (
+  policy: Policy,
   vehicleConfiguration: Array<string>,
   axleUnitVehicleIndexes: Array<number>,
   startAxleIndex: number,
@@ -209,14 +210,20 @@ const isSemiTrailerBoosterException = (
 
   const endAxleVehicleType = vehicleConfiguration[endAxleVehicleIndex];
 
-  const isStartAxleVehicleTypeSemiTrailer =
-    isSemiTrailerType(startAxleVehicleType);
+  const startAxleVehicleCategory =
+    policy.getTrailerDefinition(startAxleVehicleType)?.category;
 
-  const isEndAxleVehicleTypeBooster =
-    endAxleVehicleType === TRAILERS.BOOSTER.id;
+  const endAxleVehicleCategory =
+    policy.getTrailerDefinition(endAxleVehicleType)?.category;
+
+  const isStartAxleVehicleCategorySemiTrailer =
+    startAxleVehicleCategory === VEHICLE_CATEGORIES.SEMI_TRAILER;
+
+  const isEndAxleVehicleCategoryBooster =
+    endAxleVehicleCategory === VEHICLE_CATEGORIES.BOOSTER;
 
   const result =
-    isStartAxleVehicleTypeSemiTrailer && isEndAxleVehicleTypeBooster;
+    isStartAxleVehicleCategorySemiTrailer && isEndAxleVehicleCategoryBooster;
 
   return result;
 };
