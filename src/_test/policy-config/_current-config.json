@@ -5857,6 +5857,23 @@
               "max": 370
             }
           }
+        ],
+        "interaxleSpacings": [
+          {
+            "axles": [
+              22,
+              32,
+              23,
+              33
+            ],
+            "min": 420,
+            "modifier": {
+              "position": "current",
+              "type": [
+                "PLATWHE"
+              ]
+            }
+          }
         ]
       },
       {

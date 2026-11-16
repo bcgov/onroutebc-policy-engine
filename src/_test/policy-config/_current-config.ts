@@ -5747,6 +5747,16 @@ export const data: PolicyDefinition = {
             },
           },
         ],
+        interaxleSpacings: [
+          {
+            axles: [22, 32, 23, 33],
+            min: 420,
+            modifier: {
+              position: RelativePosition.Current,
+              type: [TRAILERS.PLATFORM_TRAILERS_WHEELERS.id],
+            },
+          },
+        ],
       },
       {
         id: TRAILERS.POLE_TRAILERS.id,

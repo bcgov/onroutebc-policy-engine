@@ -3713,4 +3713,89 @@ describe('wheelers permittable interaxle spacing', () => {
       },
     );
   });
+
+  // @orv2-6071-3
+  describe('Inter-axle spacing between adjacent tandem or tridem wheeler axle groups must be at least 4.20 m', () => {
+    const vehicleConfiguration = [
+      POWER_UNITS.TRUCK_TRACTORS.id,
+      TRAILERS.PLATFORM_TRAILERS_WHEELERS.id,
+    ];
+
+    const axleConfiguration: Array<AxleConfiguration> = [
+      {
+        numberOfAxles: 1,
+        axleUnitWeight: 8000,
+        numberOfTires: 2,
+        tireSize: 711.2,
+        vehicleIndex: 0,
+      },
+      {
+        numberOfAxles: 2,
+        axleSpread: 100,
+        interaxleSpacing: 300,
+        axleUnitWeight: 8000,
+        numberOfTires: 8,
+        tireSize: 711.2,
+        vehicleIndex: 0,
+      },
+      {
+        numberOfAxles: 2,
+        axleSpread: 100,
+        interaxleSpacing: 300,
+        axleUnitWeight: 17000,
+        numberOfTires: 4,
+        tireSize: 711.2,
+        vehicleIndex: 1,
+      },
+      {
+        numberOfAxles: 2,
+        axleSpread: 100,
+        axleUnitWeight: 17000,
+        numberOfTires: 4,
+        tireSize: 711.2,
+        vehicleIndex: 1,
+      },
+    ];
+
+    it('does not raise interaxle spacing restriction between axles multi axle platform trailer - wheeler with spacing equal or greater than 4.2 m', () => {
+      axleConfiguration[3].interaxleSpacing = 420;
+
+      const results = configuredPolicy.runAxleCalculation(
+        vehicleConfiguration,
+        axleConfiguration,
+        100000,
+        COMMODITY_CODES.REDUCIBLE_LOADS,
+      ).results;
+
+      const interaxleSpacingResults = results.filter(
+        (result) => result.id === PolicyCheckId.InteraxleSpacing,
+      );
+
+      expect(interaxleSpacingResults[3].result).toBe(
+        PolicyCheckResultType.Pass,
+      );
+    });
+
+    it('raises interaxle spacing restriction between axles multi axle platform trailer - wheeler with spacing less than 4.2 m', () => {
+      axleConfiguration[3].interaxleSpacing = 419;
+
+      const results = configuredPolicy.runAxleCalculation(
+        vehicleConfiguration,
+        axleConfiguration,
+        100000,
+        COMMODITY_CODES.REDUCIBLE_LOADS,
+      ).results;
+
+      const interaxleSpacingResults = results.filter(
+        (result) => result.id === PolicyCheckId.InteraxleSpacing,
+      );
+
+      expect(interaxleSpacingResults[3].result).toBe(
+        PolicyCheckResultType.Fail,
+      );
+      expect(interaxleSpacingResults[3].message).toBe(
+        'Interaxle Spacing between Axle Unit 3 and Axle Unit 4 must be at least 4.2 m.',
+      );
+    });
+  });
 });

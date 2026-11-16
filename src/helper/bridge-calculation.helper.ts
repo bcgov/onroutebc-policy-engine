@@ -6,6 +6,7 @@ import { Policy } from 'onroute-policy-engine';
 import { TRAILERS } from '../constants/trailers';
 import { getAxleGroupSpacings } from './interaxle-spacing.helper';
 import { isSemiTrailerType } from '../constants/semi-trailer-codes';
+import { VEHICLE_CATEGORIES } from '../constants/vehicle-categories';
 
 /**
  * Runs the bridge formula against the supplied vehicle axle configuration.
@@ -121,6 +122,12 @@ export function runBridgeFormula(
             axleUnitVehicleIndexes,
             startAxleIndex,
             endAxleIndex,
+          ) ||
+          isMultiAxleWheelerException(
+            vehicleConfiguration,
+            axleUnitVehicleIndexes,
+            startAxleIndex,
+            endAxleIndex,
           );
 
         // Push the axle group result to the results array, including
@@ -210,6 +217,35 @@ const isSemiTrailerBoosterException = (
 
   const result =
     isStartAxleVehicleTypeSemiTrailer && isEndAxleVehicleTypeBooster;
+
+  return result;
+};
+
+/* Source: ASW Permittable Interaxle Spacing - Wheelers.feature
+ * @orv2-6071-3
+ */
+const isMultiAxleWheelerException = (
+  vehicleConfiguration: Array<string>,
+  axleUnitVehicleIndexes: Array<number>,
+  startAxleIndex: number,
+  endAxleIndex: number,
+) => {
+  const startAxleVehicleIndex = axleUnitVehicleIndexes[startAxleIndex - 1];
+  const endAxleVehicleIndex = axleUnitVehicleIndexes[endAxleIndex - 1];
+
+  const startAxleVehicleType = vehicleConfiguration[startAxleVehicleIndex];
+
+  const endAxleVehicleType = vehicleConfiguration[endAxleVehicleIndex];
+
+  const isStartAxleVehicleTypePlatformTrailerWheeler =
+    startAxleVehicleType === TRAILERS.PLATFORM_TRAILERS_WHEELERS.id;
+
+  const isEndAxleVehicleTypePlatformTrailerWheeler =
+    endAxleVehicleType === TRAILERS.PLATFORM_TRAILERS_WHEELERS.id;
+
+  const result =
+    isStartAxleVehicleTypePlatformTrailerWheeler &&
+    isEndAxleVehicleTypePlatformTrailerWheeler;
 
   return result;
 };

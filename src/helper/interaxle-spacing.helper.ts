@@ -102,6 +102,13 @@ export function selectCorrectInteraxleSpacingRequirementHelper(
   }
 
   const currentAxleUnit = axleConfiguration[axleIndex];
+  const previousAxleVehicleIndex = axleUnitVehicleIndexes[axleIndex - 1];
+  const previousAxleVehicle =
+    previousAxleVehicleIndex === undefined
+      ? undefined
+      : policy.getVehicleDefinition(
+          vehicleConfiguration[previousAxleVehicleIndex],
+        );
 
   const relatives = getVehicleRelatives(
     policy,
@@ -236,14 +243,28 @@ export function selectCorrectInteraxleSpacingRequirementHelper(
         return requirement;
       }
     }
+
+    if (modifier.position === RelativePosition.Current) {
+      isMatch = matchesRelative(
+        isTypeMatch
+          ? previousAxleVehicle?.id
+          : previousAxleVehicle?.category,
+      );
+
+      if (isMatch) {
+        return requirement;
+      }
+    }
   }
 
   const fallbackRequirement =
     interaxleSpacingRequirements.find(
       (requirement) => !requirement.modifier && requirementApplies(requirement),
     ) ??
-    interaxleSpacingRequirements.find((requirement) =>
-      requirementApplies(requirement),
+    interaxleSpacingRequirements.find(
+      (requirement) =>
+        requirement.modifier?.position !== RelativePosition.Current &&
+        requirementApplies(requirement),
     ) ??
     null;
 
