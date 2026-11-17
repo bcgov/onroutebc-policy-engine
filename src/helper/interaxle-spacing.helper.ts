@@ -102,6 +102,13 @@ export function selectCorrectInteraxleSpacingRequirementHelper(
   }
 
   const currentAxleUnit = axleConfiguration[axleIndex];
+  const previousAxleVehicleIndex = axleUnitVehicleIndexes[axleIndex - 1];
+  const previousAxleVehicle =
+    previousAxleVehicleIndex === undefined
+      ? undefined
+      : policy.getVehicleDefinition(
+          vehicleConfiguration[previousAxleVehicleIndex],
+        );
 
   const relatives = getVehicleRelatives(
     policy,
@@ -193,7 +200,7 @@ export function selectCorrectInteraxleSpacingRequirementHelper(
     }
 
     let isMatch = false;
-    let matcher = modifier.type;
+    let matcher: string | Array<string> | undefined = modifier.type;
     let isTypeMatch = true;
 
     if (!matcher) {
@@ -205,9 +212,17 @@ export function selectCorrectInteraxleSpacingRequirementHelper(
       continue;
     }
 
+    const matchesRelative = (relative: string | null | undefined): boolean =>
+      Array.isArray(matcher)
+        ? relative !== null &&
+          relative !== undefined &&
+          matcher.includes(relative)
+        : matcher === relative;
+
     if (modifier.position === RelativePosition.Before) {
-      isMatch =
-        matcher == (isTypeMatch ? relatives.prevType : relatives.prevCategory);
+      isMatch = matchesRelative(
+        isTypeMatch ? relatives.prevType : relatives.prevCategory,
+      );
 
       if (isMatch) {
         return requirement;
@@ -220,8 +235,21 @@ export function selectCorrectInteraxleSpacingRequirementHelper(
         continue;
       }
 
-      isMatch =
-        matcher == (isTypeMatch ? relatives.nextType : relatives.nextCategory);
+      isMatch = matchesRelative(
+        isTypeMatch ? relatives.nextType : relatives.nextCategory,
+      );
+
+      if (isMatch) {
+        return requirement;
+      }
+    }
+
+    if (modifier.position === RelativePosition.Current) {
+      isMatch = matchesRelative(
+        isTypeMatch
+          ? previousAxleVehicle?.id
+          : previousAxleVehicle?.category,
+      );
 
       if (isMatch) {
         return requirement;
@@ -233,8 +261,10 @@ export function selectCorrectInteraxleSpacingRequirementHelper(
     interaxleSpacingRequirements.find(
       (requirement) => !requirement.modifier && requirementApplies(requirement),
     ) ??
-    interaxleSpacingRequirements.find((requirement) =>
-      requirementApplies(requirement),
+    interaxleSpacingRequirements.find(
+      (requirement) =>
+        requirement.modifier?.position !== RelativePosition.Current &&
+        requirementApplies(requirement),
     ) ??
     null;
 

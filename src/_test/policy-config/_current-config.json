@@ -4325,11 +4325,59 @@
       },
       {
         "id": "jeep",
-        "name": "Jeep"
+        "name": "Jeep",
+        "interaxleSpacings": [
+          {
+            "axles": [
+              11,
+              21,
+              31,
+              12,
+              22,
+              32,
+              13,
+              23,
+              33
+            ],
+            "modifier": {
+              "position": "before",
+              "type": [
+                "TRKTRAC",
+                "TRACPME",
+                "PICKRTT"
+              ]
+            },
+            "min": 420
+          }
+        ]
       },
       {
         "id": "jeep-wheelers",
-        "name": "Jeep Wheelers"
+        "name": "Jeep Wheelers",
+        "interaxleSpacings": [
+          {
+            "axles": [
+              11,
+              21,
+              31,
+              12,
+              22,
+              32,
+              13,
+              23,
+              33
+            ],
+            "modifier": {
+              "position": "before",
+              "type": [
+                "TRKTRAC",
+                "TRACPME",
+                "PICKRTT"
+              ]
+            },
+            "min": 420
+          }
+        ]
       },
       {
         "id": "pony",
@@ -4427,7 +4475,23 @@
       },
       {
         "id": "wide-wheelers",
-        "name": "Wide Wheelers"
+        "name": "Wide Wheelers",
+        "interaxleSpacings": [
+          {
+            "axles": [
+              11,
+              21,
+              31,
+              12,
+              22,
+              32,
+              13,
+              23,
+              33
+            ],
+            "min": 700
+          }
+        ]
       },
       {
         "id": "wheeler",
@@ -4447,6 +4511,22 @@
             "axles": 3,
             "legal": 24000,
             "permittable": 40000
+          }
+        ],
+        "interaxleSpacings": [
+          {
+            "axles": [
+              11,
+              21,
+              31,
+              12,
+              22,
+              32,
+              13,
+              23,
+              33
+            ],
+            "min": 700
           }
         ]
       }
@@ -5775,6 +5855,37 @@
             "permittableAxleSpread": {
               "min": 240,
               "max": 370
+            }
+          }
+        ],
+        "interaxleSpacings": [
+          {
+            "axles": [
+              11,
+              21,
+              31,
+              12,
+              22,
+              32,
+              13,
+              23,
+              33
+            ],
+            "min": 700
+          },
+          {
+            "axles": [
+              22,
+              32,
+              23,
+              33
+            ],
+            "min": 420,
+            "modifier": {
+              "position": "current",
+              "type": [
+                "PLATWHE"
+              ]
             }
           }
         ]

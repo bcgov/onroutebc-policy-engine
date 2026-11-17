@@ -375,3 +375,147 @@ describe('Single Axle Jeep Tandem Drive Exception', () => {
     ]);
   });
 });
+
+// Source: ASW Permittable Interaxle Spacing - Wheelers.feature @orv2-6071-3 - bridge formula result is not applicable
+describe('Multi-axle wheeler Exception', () => {
+  const policy: Policy = new Policy(currentPolicyConfig);
+
+  it('when the interaxle spacing between two axle units belonging to a multi axle platform trailer - wheeler is below 4.2 m, all wheeler axles should pass bridge formula successfully', async () => {
+    const vehicleConfiguration = [
+      POWER_UNITS.TRUCK_TRACTORS.id,
+      TRAILERS.PLATFORM_TRAILERS_WHEELERS.id,
+    ];
+
+    const axleConfiguration: Array<AxleConfiguration> = [
+      {
+        numberOfAxles: 1,
+        axleUnitWeight: 8000,
+        numberOfTires: 2,
+        tireSize: 711.2,
+        vehicleIndex: 0,
+      },
+      {
+        numberOfAxles: 2,
+        axleSpread: 100,
+        interaxleSpacing: 300,
+        axleUnitWeight: 8000,
+        numberOfTires: 8,
+        tireSize: 711.2,
+        vehicleIndex: 0,
+      },
+      {
+        numberOfAxles: 2,
+        axleSpread: 100,
+        interaxleSpacing: 300,
+        axleUnitWeight: 99999,
+        numberOfTires: 4,
+        tireSize: 711.2,
+        vehicleIndex: 1,
+      },
+      {
+        numberOfAxles: 2,
+        axleSpread: 100,
+        interaxleSpacing: 420,
+        axleUnitWeight: 99999,
+        numberOfTires: 4,
+        tireSize: 711.2,
+        vehicleIndex: 1,
+      },
+    ];
+
+    const bridgeCalcResults = policy.calculateBridge(
+      axleConfiguration,
+      vehicleConfiguration,
+    );
+
+    expect(bridgeCalcResults[5].success).toBe(true);
+  });
+
+  it('should pass multi axle platform trailer - wheeler exception axle units but still fail following axle units', async () => {
+    const vehicleConfiguration = [
+      POWER_UNITS.TRUCK_TRACTORS.id,
+      TRAILERS.PLATFORM_TRAILERS_WHEELERS.id,
+      // Per the overweight dimension set (OWDS), the only trailer type that can follow a Wheeler platform trailer is a booster, however since boosters have their own exception, we are using an incompatible trailer following the platform trailer to test this exception works correctly.
+      TRAILERS.SEMI_TRAILERS.id,
+    ];
+
+    const axleConfiguration: Array<AxleConfiguration> = [
+      {
+        numberOfAxles: 1,
+        axleUnitWeight: 8000,
+        numberOfTires: 2,
+        tireSize: 711.2,
+        vehicleIndex: 0,
+      },
+      {
+        numberOfAxles: 2,
+        axleSpread: 100,
+        interaxleSpacing: 300,
+        axleUnitWeight: 8000,
+        numberOfTires: 8,
+        tireSize: 711.2,
+        vehicleIndex: 0,
+      },
+      {
+        numberOfAxles: 2,
+        axleSpread: 100,
+        interaxleSpacing: 300,
+        axleUnitWeight: 99999,
+        numberOfTires: 4,
+        tireSize: 711.2,
+        vehicleIndex: 1,
+      },
+      {
+        numberOfAxles: 2,
+        axleSpread: 100,
+        interaxleSpacing: 420,
+        axleUnitWeight: 99999,
+        numberOfTires: 4,
+        tireSize: 711.2,
+        vehicleIndex: 1,
+      },
+      {
+        numberOfAxles: 2,
+        axleSpread: 100,
+        interaxleSpacing: 300,
+        axleUnitWeight: 99999,
+        numberOfTires: 4,
+        tireSize: 711.2,
+        vehicleIndex: 2,
+      },
+    ];
+
+    const bridgeCalcResults = policy.calculateBridge(
+      axleConfiguration,
+      vehicleConfiguration,
+    );
+
+    const firstWheelerAxleUnitNumber = 3;
+    const secondWheelerAxleUnitNumber = 4;
+
+    const wheelerExceptionApplicableResultIndex = bridgeCalcResults.findIndex(
+      (result) =>
+        result.startAxleUnit === firstWheelerAxleUnitNumber &&
+        result.endAxleUnit === secondWheelerAxleUnitNumber,
+    );
+
+    expect(
+      bridgeCalcResults[wheelerExceptionApplicableResultIndex].success,
+    ).toBe(true);
+
+    expect(
+      bridgeCalcResults.find(
+        (result) =>
+          result.startAxleUnit === firstWheelerAxleUnitNumber &&
+          result.endAxleUnit === 5,
+      )?.success,
+    ).toBe(false);
+    expect(
+      bridgeCalcResults.find(
+        (result) =>
+          result.startAxleUnit === secondWheelerAxleUnitNumber &&
+          result.endAxleUnit === 5,
+      )?.success,
+    ).toBe(false);
+  });
+});

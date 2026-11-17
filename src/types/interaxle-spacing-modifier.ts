@@ -12,8 +12,8 @@ import { SelfIssuable } from './self-issuable';
 export type InteraxleSpacingModifier = SelfIssuable & {
   /** Position relative to the current axle unit */
   position: string;
-  /** Matching vehicle type / subtype for this modifier */
-  type?: string;
+  /** Matching vehicle type / subtype(s) for this modifier */
+  type?: Array<string>;
   /** Matching vehicle category for this modifier */
   category?: string;
 };
