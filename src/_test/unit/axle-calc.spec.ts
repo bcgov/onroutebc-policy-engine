@@ -3562,8 +3562,6 @@ describe('wheelers permittable interaxle spacing', () => {
           (result) => result.id === PolicyCheckId.InteraxleSpacing,
         );
 
-        console.log({ interaxleSpacingResults });
-
         expect(interaxleSpacingResults[2].result).toBe(
           PolicyCheckResultType.Fail,
         );
