@@ -283,7 +283,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
     ).toBe(true);
   });
 
-  it('should pass for a pickup truck tractor with a platform wheel trailer', () => {
+  it('should pass for a picker truck tractor with a platform wheel trailer', () => {
     const results = policy.runAxleCalculation(
       [
         POWER_UNITS.PICKER_TRUCK_TRACTORS.id,
@@ -309,7 +309,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
         {
           numberOfAxles: 2,
           axleSpread: 160,
-          interaxleSpacing: 500,
+          interaxleSpacing: 700,
           axleUnitWeight: 5000,
           numberOfTires: 4,
           tireSize: 279,

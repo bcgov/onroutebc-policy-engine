@@ -17,7 +17,6 @@ import {
   getAxleSpreadRequirement,
   getFailedAxleSpreadMessage,
 } from './axle-spread.helper';
-import { isSemiTrailerType } from '../constants/semi-trailer-codes';
 import {
   getAxleGroupSpacings,
   getAxleGroupWeights,
@@ -1461,7 +1460,11 @@ export function CheckWheelbaseLegalLimits(
   ) {
     const hasDisallowedTrailer = vehicleConfiguration
       .slice(1)
-      .some((vehicleType) => !isSemiTrailerType(vehicleType));
+      .some(
+        (vehicleType) =>
+          policy.getTrailerDefinition(vehicleType)?.category !==
+          VEHICLE_CATEGORIES.SEMI_TRAILER,
+      );
 
     return [
       {
