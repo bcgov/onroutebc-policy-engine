@@ -1,5 +1,5 @@
 {
-  "minPEVersion": "3.1.0",
+  "minPEVersion": "3.5.0",
   "geographicRegions": [
     {
       "id": "LMN",
@@ -4601,7 +4601,23 @@
         "additionalAxleSubType": "ATCAXLE",
         "displayCodePrefix": "MC",
         "displayCodeSteerAxle": "S",
-        "displayCodeDriveAxle": "A"
+        "displayCodeDriveAxle": "A",
+        "interaxleSpacings": [
+          {
+            "axles": [
+              11,
+              12,
+              13,
+              21,
+              22,
+              23,
+              31,
+              32,
+              33
+            ],
+            "max": 420
+          }
+        ]
       },
       {
         "id": "CRANEMB",
@@ -4609,7 +4625,23 @@
         "category": "multisteer",
         "displayCodePrefix": "MC",
         "displayCodeSteerAxle": "S",
-        "displayCodeDriveAxle": "A"
+        "displayCodeDriveAxle": "A",
+        "interaxleSpacings": [
+          {
+            "axles": [
+              11,
+              12,
+              13,
+              21,
+              22,
+              23,
+              31,
+              32,
+              33
+            ],
+            "min": 420
+          }
+        ]
       },
       {
         "id": "CRAFTAT",
@@ -5548,7 +5580,70 @@
         "id": "DOLLIES",
         "name": "Dollies",
         "category": "dolly",
-        "displayCode": "B"
+        "displayCode": "B",
+        "interaxleSpacings": [
+          {
+            "axles": [
+              11,
+              12,
+              13,
+              21,
+              22,
+              23,
+              31,
+              32,
+              33
+            ],
+            "modifier": {
+              "position": "before",
+              "type": [
+                "CRANEAT",
+                "CRANEMB"
+              ]
+            },
+            "min": 420
+          },
+          {
+            "axles": [
+              11,
+              12,
+              13,
+              21,
+              22,
+              23,
+              31,
+              32,
+              33
+            ],
+            "modifier": {
+              "position": "current",
+              "type": [
+                "DOLLIES"
+              ]
+            },
+            "min": 420
+          },
+          {
+            "axles": [
+              11,
+              12,
+              13,
+              21,
+              22,
+              23,
+              31,
+              32,
+              33
+            ],
+            "modifier": {
+              "position": "before",
+              "type": [
+                "TRKTRAC"
+              ]
+            },
+            "min": 700
+          }
+        ]
       },
       {
         "id": "EXPANDO",
