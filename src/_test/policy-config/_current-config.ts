@@ -7683,6 +7683,75 @@ export const data: PolicyDefinition = {
             },
           ],
         },
+        {
+          type: POWER_UNITS.TRUCK_TRACTOR_WITH_PME.id,
+          trailers: [
+            {
+              type: TRAILERS.LOGGING_FULL_TRAILERS.id,
+              jeep: false,
+              booster: false,
+              selfIssue: false,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 10,
+                  rp: 10,
+                  w: 2.6,
+                  h: 4.15,
+                  l: 40,
+                },
+              ],
+            },
+            {
+              type: TRAILERS.POLE_TRAILERS.id,
+              jeep: true,
+              booster: true,
+              selfIssue: false,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 8,
+                  rp: 9,
+                  w: 2.6,
+                  h: 4.15,
+                  l: 40,
+                },
+              ],
+            },
+            {
+              type: TRAILERS.STEERING_TRAILERS_MANNED.id,
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 10,
+                  rp: 10,
+                  w: 2.6,
+                  h: 4.15,
+                  l: 40,
+                },
+              ],
+            },
+            {
+              type: TRAILERS.STEERING_TRAILERS_SELF_REMOTE.id,
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 10,
+                  rp: 10,
+                  w: 2.6,
+                  h: 4.15,
+                  l: 36,
+                },
+              ],
+            },
+          ],
+        },
       ],
     },
     {
@@ -7765,6 +7834,58 @@ export const data: PolicyDefinition = {
         },
         {
           type: POWER_UNITS.TRUCK_TRACTORS.id,
+          trailers: [
+            {
+              type: TRAILERS.SEMI_TRAILERS.id,
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 7.5,
+                  w: 5,
+                  h: 4.88,
+                  l: 31.5,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                      l: 36,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: TRAILERS.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED
+                .id,
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 7.5,
+                  w: 5,
+                  h: 4.88,
+                  l: 31.5,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                      l: 36,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: POWER_UNITS.TRUCK_TRACTOR_WITH_PME.id,
           trailers: [
             {
               type: TRAILERS.SEMI_TRAILERS.id,
@@ -7900,6 +8021,93 @@ export const data: PolicyDefinition = {
         },
         {
           type: POWER_UNITS.TRUCK_TRACTORS.id,
+          trailers: [
+            {
+              type: TRAILERS.SEMI_TRAILERS.id,
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 7.5,
+                  w: 6,
+                  h: 4.88,
+                  l: 31.5,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      w: 6.1,
+                      h: 5.33,
+                      l: 36,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: TRAILERS.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED
+                .id,
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 7.5,
+                  w: 6,
+                  h: 4.88,
+                  l: 31.5,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      w: 6.1,
+                      h: 5.33,
+                      l: 36,
+                    },
+                  ],
+                },
+              ],
+              weightPermittable: true,
+            },
+            {
+              type: TRAILERS.DOLLIES.id,
+              jeep: false,
+              booster: false,
+              weightPermittable: true,
+              canAddAxleUnits: true,
+            },
+            {
+              type: TRAILERS.SEMI_TRAILERS_WHEELERS.id,
+              jeep: false,
+              booster: false,
+              weightPermittable: true,
+              weightDimensions: [
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 28000,
+                },
+              ],
+            },
+            {
+              type: TRAILERS.SEMI_TRAILERS_WIDE_WHEELERS.id,
+              jeep: false,
+              booster: false,
+              weightDimensions: [
+                {
+                  axles: 3,
+                  legal: 24000,
+                  permittable: 28000,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: POWER_UNITS.TRUCK_TRACTOR_WITH_PME.id,
           trailers: [
             {
               type: TRAILERS.SEMI_TRAILERS.id,
@@ -10668,6 +10876,100 @@ export const data: PolicyDefinition = {
             },
           ],
         },
+        {
+          type: POWER_UNITS.TRUCK_TRACTOR_WITH_PME.id,
+          trailers: [
+            {
+              type: TRAILERS.SEMI_TRAILERS_A_TRAINS_C_TRAINS.id,
+              jeep: false,
+              booster: false,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 1,
+                  rp: 1,
+                  w: 3.05,
+                  h: 4.3,
+                  l: 26,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 4.8,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: TRAILERS.SEMI_TRAILERS_B_TRAINS.id,
+              jeep: false,
+              booster: false,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 1,
+                  rp: 1,
+                  w: 3.05,
+                  h: 4.3,
+                  l: 27.5,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 4.8,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: TRAILERS.HIBOYS_FLAT_DECKS.id,
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 3.05,
+                  h: 4.3,
+                  l: 23,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 4.8,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: TRAILERS.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED
+                .id,
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 3.05,
+                  h: 4.3,
+                  l: 23,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 4.8,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
       ],
     },
     {
@@ -10676,6 +10978,65 @@ export const data: PolicyDefinition = {
       powerUnits: [
         {
           type: POWER_UNITS.TRUCK_TRACTORS.id,
+          trailers: [
+            {
+              type: TRAILERS.POLE_TRAILERS.id,
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 2.6,
+                  h: 4.15,
+                  l: 31,
+                },
+              ],
+            },
+            {
+              type: TRAILERS.SEMI_TRAILERS.id,
+              jeep: false,
+              booster: false,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 3.2,
+                  h: 4.3,
+                  l: 31,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: TRAILERS.STEERING_DOLLIES.id,
+              jeep: false,
+              booster: false,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 2.6,
+                  h: 4.15,
+                  l: 36,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: POWER_UNITS.TRUCK_TRACTOR_WITH_PME.id,
           trailers: [
             {
               type: TRAILERS.POLE_TRAILERS.id,
@@ -12298,6 +12659,58 @@ export const data: PolicyDefinition = {
             },
           ],
         },
+        {
+          type: POWER_UNITS.TRUCK_TRACTOR_WITH_PME.id,
+          trailers: [
+            {
+              type: TRAILERS.SEMI_TRAILERS.id,
+              jeep: false,
+              booster: false,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 2.6,
+                  h: 4.15,
+                  l: 23,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      w: 4.57,
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: TRAILERS.SEMI_TRAILERS_SINGLE_DOUBLE_DROP_STEP_DECK_LOWBED
+                .id,
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 2.6,
+                  h: 4.15,
+                  l: 23,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      w: 4.57,
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
       ],
     },
     {
@@ -12306,6 +12719,151 @@ export const data: PolicyDefinition = {
       powerUnits: [
         {
           type: POWER_UNITS.TRUCK_TRACTORS.id,
+          trailers: [
+            {
+              type: TRAILERS.FIXED_EQUIPMENT_SEMI_TRAILER_PEACE_RIVER.id,
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 3.2,
+                  h: 4.3,
+                  l: 27.5,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      w: 3.8,
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: TRAILERS.FIXED_EQUIPMENT_CONVEYORS.id,
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 4,
+                  rp: 9.5,
+                  w: 3.8,
+                  h: 4.72,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+              weightPermittable: true,
+            },
+            {
+              type: TRAILERS.FIXED_EQUIPMENT_COUNTER_FLOW_ASPHALT_DRUM_MIXERS
+                .id,
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 3.8,
+                  h: 4.72,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+              weightPermittable: true,
+            },
+            {
+              type: TRAILERS.FIXED_EQUIPMENT_PORTABLE_ASPHALT_BAGHOUSES.id,
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 4.26,
+                  h: 4.72,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+              weightPermittable: true,
+            },
+            {
+              type: TRAILERS.FIXED_EQUIPMENT_SEMI_TRAILERS.id,
+              jeep: true,
+              booster: true,
+              selfIssue: true,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 3.8,
+                  h: 4.72,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+              weightPermittable: true,
+            },
+            {
+              type: TRAILERS.FIXED_EQUIPMENT_WHEELER_SEMI_TRAILERS.id,
+              jeep: true,
+              booster: true,
+              selfIssue: false,
+              sizePermittable: true,
+              sizeDimensions: [
+                {
+                  fp: 3,
+                  rp: 6.5,
+                  w: 3.8,
+                  h: 4.72,
+                  regions: [
+                    {
+                      region: 'PCE',
+                      h: 5.33,
+                    },
+                  ],
+                },
+              ],
+              weightPermittable: true,
+            },
+            {
+              type: TRAILERS.SEMI_TRAILERS_SPREAD_TANDEMS.id,
+              jeep: false,
+              booster: false,
+              weightPermittable: true,
+            },
+          ],
+        },
+        {
+          type: POWER_UNITS.TRUCK_TRACTOR_WITH_PME.id,
           trailers: [
             {
               type: TRAILERS.FIXED_EQUIPMENT_SEMI_TRAILER_PEACE_RIVER.id,
