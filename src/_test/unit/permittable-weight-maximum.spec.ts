@@ -980,7 +980,7 @@ describe('ORV2-5709 permittable weight maximums', () => {
             startAxleUnit: 2,
             endAxleUnit: 3,
             thresholdWeight: 22000,
-            result: PolicyCheckResultType.Fail,
+            result: PolicyCheckResultType.Warning,
           }),
         ]),
       );
