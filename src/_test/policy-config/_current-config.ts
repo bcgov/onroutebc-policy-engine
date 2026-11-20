@@ -10,9 +10,10 @@ import {
 import { GEOGRAPHIC_REGIONS } from '../../constants/geographic-regions';
 import { POWER_UNITS } from '../../constants/power-units';
 import { TRAILERS } from '../../constants/trailers';
+import { version } from '../../../src/version';
 
 export const data: PolicyDefinition = {
-  minPEVersion: '3.5.0',
+  minPEVersion: version,
   geographicRegions: [
     {
       id: GEOGRAPHIC_REGIONS.LOWER_MAINLAND,
