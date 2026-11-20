@@ -10,9 +10,10 @@ import {
 import { GEOGRAPHIC_REGIONS } from '../../constants/geographic-regions';
 import { POWER_UNITS } from '../../constants/power-units';
 import { TRAILERS } from '../../constants/trailers';
+import { version } from '../../../src/version';
 
 export const data: PolicyDefinition = {
-  minPEVersion: '3.1.0',
+  minPEVersion: version,
   geographicRegions: [
     {
       id: GEOGRAPHIC_REGIONS.LOWER_MAINLAND,
@@ -4566,6 +4567,12 @@ export const data: PolicyDefinition = {
         displayCodePrefix: 'MC',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'A',
+        interaxleSpacings: [
+          {
+            axles: [11, 12, 13, 21, 22, 23, 31, 32, 33],
+            max: 420,
+          },
+        ],
       },
       {
         id: POWER_UNITS.CRANES_MOBILE.id,
@@ -4574,6 +4581,12 @@ export const data: PolicyDefinition = {
         displayCodePrefix: 'MC',
         displayCodeSteerAxle: 'S',
         displayCodeDriveAxle: 'A',
+        interaxleSpacings: [
+          {
+            axles: [11, 12, 13, 21, 22, 23, 31, 32, 33],
+            min: 420,
+          },
+        ],
       },
       {
         id: POWER_UNITS.CRANES_RUBBER_TIRED_LOADERS_FIRETRUCKS_ALL_TERRAIN.id,
@@ -5457,6 +5470,35 @@ export const data: PolicyDefinition = {
         name: TRAILERS.DOLLIES.name,
         category: VEHICLE_CATEGORIES.DOLLY,
         displayCode: 'B',
+        interaxleSpacings: [
+          {
+            axles: [11, 12, 13, 21, 22, 23, 31, 32, 33],
+            modifier: {
+              position: RelativePosition.Before,
+              type: [
+                POWER_UNITS.CRANES_ALL_TERRAIN.id,
+                POWER_UNITS.CRANES_MOBILE.id,
+              ],
+            },
+            min: 420,
+          },
+          {
+            axles: [11, 12, 13, 21, 22, 23, 31, 32, 33],
+            modifier: {
+              position: RelativePosition.Current,
+              type: [TRAILERS.DOLLIES.id],
+            },
+            min: 420,
+          },
+          {
+            axles: [11, 12, 13, 21, 22, 23, 31, 32, 33],
+            modifier: {
+              position: RelativePosition.Before,
+              type: [POWER_UNITS.TRUCK_TRACTORS.id],
+            },
+            min: 700,
+          },
+        ],
       },
       {
         id: TRAILERS.EXPANDO_SEMI_TRAILERS.id,

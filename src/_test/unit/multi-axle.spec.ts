@@ -250,7 +250,6 @@ describe('Multi-Axle Unit Calculation Tests', () => {
       [
         {
           numberOfAxles: 1,
-          interaxleSpacing: 300,
           axleUnitWeight: 5000,
           numberOfTires: 2,
           tireSize: 279,
@@ -258,7 +257,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
         },
         {
           numberOfAxles: 1,
-          interaxleSpacing: 300,
+          interaxleSpacing: 420,
           axleUnitWeight: 5000,
           numberOfTires: 2,
           tireSize: 279,
@@ -266,7 +265,7 @@ describe('Multi-Axle Unit Calculation Tests', () => {
         },
         {
           numberOfAxles: 1,
-          interaxleSpacing: 300,
+          interaxleSpacing: 420,
           axleUnitWeight: 5000,
           numberOfTires: 2,
           tireSize: 279,
