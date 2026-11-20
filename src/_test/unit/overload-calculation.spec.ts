@@ -14,10 +14,7 @@ const overloadSource = (
   thresholdWeight: number,
 ): AxleGroupPolicyCheckResult => ({
   id,
-  result:
-    id === PolicyCheckId.LegalWeight
-      ? PolicyCheckResultType.Warning
-      : PolicyCheckResultType.Fail,
+  result: PolicyCheckResultType.Warning,
   message: '',
   startAxleUnit,
   endAxleUnit,
@@ -100,24 +97,33 @@ describe('ORV2-5899 overload calculation details', () => {
   it('prefers individual axle rows when an overlapping group ties their total', () => {
     const result = calculateOverload(
       [
-        overloadSource(PolicyCheckId.LegalWeight, 2, 2, 18000, 17000),
-        overloadSource(PolicyCheckId.LegalWeight, 3, 3, 10000, 9000),
+        overloadSource(PolicyCheckId.LegalWeight, 2, 2, 11000, 9100),
+        overloadSource(PolicyCheckId.LegalWeight, 3, 3, 11000, 9100),
         overloadSource(
           PolicyCheckId.AxleGroupMaximumLegalWeightThreshold,
           2,
           3,
-          28000,
-          26000,
+          22000,
+          18200,
         ),
       ],
-      34000,
+      28000,
       100000,
       3,
     );
 
+    expect(result.overload).toBe(3800);
     expect(result.overloadDetails).toEqual([
-      expect.objectContaining({ startAxleUnit: 2, endAxleUnit: 2 }),
-      expect.objectContaining({ startAxleUnit: 3, endAxleUnit: 3 }),
+      expect.objectContaining({
+        startAxleUnit: 2,
+        endAxleUnit: 2,
+        overload: 1900,
+      }),
+      expect.objectContaining({
+        startAxleUnit: 3,
+        endAxleUnit: 3,
+        overload: 1900,
+      }),
     ]);
   });
 

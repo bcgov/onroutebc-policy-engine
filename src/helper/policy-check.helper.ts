@@ -265,7 +265,7 @@ export function CheckAxleGroupMaximumLegalWeightThreshold(
         id: policyId,
         result: passes
           ? PolicyCheckResultType.Pass
-          : PolicyCheckResultType.Fail,
+          : PolicyCheckResultType.Warning,
         message: passes
           ? ''
           : `Axle Group ${startAxleUnit} to ${endAxleUnit} exceeds the maximum legal weight threshold of ${thresholdWeight} kg by ${overloadAmount} kg.`,
@@ -1697,7 +1697,7 @@ export function CheckAxleSpread(
  * this map with additional entries.
  *
  * Currently includes:
- * - AxleGroupMaximumLegalWeightThreshold: Validates axle groups within 8 m against CTR 7.17
+ * - AxleGroupMaximumLegalWeightThreshold: Assesses legal overload for axle groups within 8 m
  * - BridgeFormula: Validates axle groups against bridge formula requirements
  * - CheckLegalWeight: Validates axle units against legal weight limits
  * - CheckAxleSpread: Validates axle units against legal axle spread limits

@@ -49,10 +49,9 @@ const getAxleOverloadCandidates = (
   results
     .filter(
       ({ id, result, actualWeight, thresholdWeight }) =>
-        ((id === PolicyCheckId.LegalWeight &&
-          result === PolicyCheckResultType.Warning) ||
-          (id === PolicyCheckId.AxleGroupMaximumLegalWeightThreshold &&
-            result === PolicyCheckResultType.Fail)) &&
+        (id === PolicyCheckId.LegalWeight ||
+          id === PolicyCheckId.AxleGroupMaximumLegalWeightThreshold) &&
+        result === PolicyCheckResultType.Warning &&
         Number.isFinite(actualWeight) &&
         Number.isFinite(thresholdWeight) &&
         (thresholdWeight as number) > 0 &&
